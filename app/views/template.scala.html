@@ -1,0 +1,33 @@
+@(title: String)(head: => Html)(body: => Html)(scripts: => Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300|Montserrat' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src='@routes.Assets.at("javascripts/hello.js")' type="text/javascript"></script>
+    </head>
+    <body>
+    <nav>
+        <ul class="info_nav">
+            <li>Products</li>
+            <li>Ingredients</li>
+            <li>Guides</li>
+        </ul>
+        <ul class="user_nav">
+            <li>Erica</li>
+            <li>Profile</li>
+            <li>Favorites</li>
+            <li>Logout</li>
+        </ul>
+    </nav>
+    <div id="logo"><h1>SKIN WISE</h1></div>
+
+    <div id="content_wrapper">
+        @body
+    </div>
+    </body>
+</html>

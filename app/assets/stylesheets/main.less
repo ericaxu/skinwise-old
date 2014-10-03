@@ -1,0 +1,135 @@
+@import "util/_mixins";
+@import "util/_colors";
+
+@import "partials/_base";
+
+#logo {
+    h1 {
+        color: #222;
+        font-size: 70px;
+        letter-spacing: 7px;
+        text-align: center;
+        font-weight: 100;
+    }
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: #000;
+    color: @light_text;
+
+    ul {
+        list-style: none;
+        margin: 0;
+
+        li {
+            display: inline-block;
+            margin-right: 25px;
+            cursor: pointer;
+            padding: 15px 10px;
+        }
+    }
+}
+
+.info_nav {
+    float: left;
+}
+
+.user_nav {
+    float: right;
+}
+
+#content_wrapper {
+    width: 70%;
+    margin: 0 auto;
+}
+
+#hero {
+    h2 {
+        font-size: 40px;
+        font-family: "Proxima Nova Thin";
+    }
+    .primary {
+        float: right;
+    }
+}
+
+.primary {
+    width: 200px;
+    height: 50px;
+    font-size: 22px;
+    letter-spacing: 1px;
+    background: @nav_bg;
+    color: @light_text;
+    border: none;
+    text-transform: uppercase;
+}
+
+#homepage_search {
+    input {
+        display: block;
+        border: 1px solid @border;
+        width: 50%;
+        height: 36px;
+        font-size: 22px;
+        border-radius: 105px;
+        padding: 3px 20px;
+        margin: 0 auto;
+    }
+}
+
+.picture, .info {
+    float: left;
+}
+
+.info {
+    width: 600px;
+    margin-left: 50px;
+}
+
+.name {
+    font-size: 32px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.size {
+    font-size: 20px;
+}
+
+.active_ingredients {
+
+}
+
+.fav_ingredient, .dangerous_ingredient {
+    border-radius: 5px;
+    padding: 3px 5px;
+    margin-right: 0px;
+}
+
+.fav_ingredient {
+    background: @fav;
+}
+
+.dangerous_ingredient {
+    background: @warning;
+}
+
+#product_detail {
+    margin-top: 75px;
+}
+
+.name {
+    margin-bottom: 25px;
+}
+
+.price, .size {
+    margin-bottom: 10px;
+}

@@ -1,0 +1,54 @@
+.bg_gradient(@top, @bottom, @fallback) {
+    background: @fallback;
+    background: -moz-linear-gradient(top, @top 0%, @bottom 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, @top), color-stop(100%, @bottom));
+    background: -webkit-linear-gradient(top, @top 0%, @bottom 100%);
+    background: -o-linear-gradient(top, @top 0%, @bottom 100%);
+    background: -ms-linear-gradient(top, @top 0%, @bottom 100%);
+    background: linear-gradient(to bottom, @top 0%, @bottom 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@top', endColorstr='@bottom',GradientType=0 );
+}
+
+.noselect {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.square(@side) {
+    width: @side;
+    height: @side;
+}
+
+.hidden {
+    display: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.wholepage {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.nomargin {
+    margin: 0;
+}
+
+.hor_center(@top: 0, @bottom: @top) {
+    margin: @top auto @bottom auto;
+}
+
+.border(@top, @right: @top, @bottom: @top, @left: @top, @style: solid, @width: 1px) {
+    border-top-color: @top;
+    border-right-color: @right;
+    border-bottom-color: @bottom;
+    border-left-color: @left;
+    border-style: @style;
+    border-width: @width;
+}
