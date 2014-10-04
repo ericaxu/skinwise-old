@@ -14,6 +14,8 @@ public class Application extends Controller {
 
 	public static Result ingredient() { return ok(ingredient.render()); }
 
-	public static Result products() {return ok(products.render()); }
+	public static Result products() { return ok(products.render()); }
+
+	public static Result ingredients() { return ok(ingredients.render()); }
 
 }

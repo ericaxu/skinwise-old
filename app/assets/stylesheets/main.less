@@ -2,6 +2,8 @@
 
 #logo {
     h1 {
+        margin-bottom: 40px;
+
         color: #222;
 
         font-family: "Proxima Nova Thin";
@@ -45,6 +47,7 @@ nav {
 }
 
 .info_nav {
+    margin-left: 30px;
     float: left;
 }
 
@@ -96,56 +99,52 @@ nav {
     }
 }
 
-.picture, .info {
-    float: left;
+.ingredient_detail, .product_detail {
+    .picture, .info {
+        float: left;
+    }
+
+    .info {
+        width: 600px;
+        margin-left: 50px;
+    }
+
+    .name {
+        font-size: 32px;
+        margin-bottom: 25px;
+    }
+
+    .price {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .size {
+        font-size: 20px;
+    }
+
+    .price, .size {
+        margin-bottom: 10px;
+    }
 }
 
-.info {
-    width: 600px;
-    margin-left: 50px;
-}
 
-.name {
-    font-size: 32px;
-}
-
-.price {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.size {
-    font-size: 20px;
-}
-
-.active_ingredients {
-
-}
-
-.fav_ingredient, .dangerous_ingredient {
+.fav.ingredient, .warning.ingredient, .fav.function, .warning.function {
     border-radius: 5px;
     padding: 3px 5px;
     margin-right: 0px;
 }
 
-.fav_ingredient {
+.fav {
     background: @fav;
 }
 
-.dangerous_ingredient {
+.warning {
     background: @warning;
 }
 
 #page_content {
     margin-top: 75px;
-}
-
-.name {
-    margin-bottom: 25px;
-}
-
-.price, .size {
-    margin-bottom: 10px;
 }
 
 .product_pic {
@@ -174,24 +173,21 @@ nav {
     }
 }
 
-.product_infobox {
+.product {
     position: relative;
     width: 405px;
     height: 350px;
-
     margin-bottom: 80px;
-
     text-align: center;
 
-    .product_brand {
+    .brand {
         position: absolute;
         bottom: 25px;
-
         width: 100%;
-
         font-weight: bold;
     }
-    .product_name {
+
+    .name {
         width: 100%;
         position: absolute;
         bottom: 0;
@@ -203,7 +199,7 @@ nav {
     float: left;
 }
 
-.products_catalog {
+.products_catalog, .ingredients_list {
     width: 70%;
     float: right;
     padding-left: 7%;
@@ -223,4 +219,18 @@ nav {
             text-decoration: underline;
         }
     }
+}
+
+.ingredient {
+    margin-bottom: 40px;
+
+    .function {
+        border-radius: 5px;
+        padding: 3px 5px;
+        margin-right: 10px;
+    }
+}
+
+.neutral {
+    background: @neutral;
 }
