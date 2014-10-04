@@ -34,6 +34,13 @@ nav {
     li {
         padding: 15px 10px;
         cursor: pointer;
+
+        a {
+            text-decoration: none;
+            &:visited {
+                color: @light_text;
+            }
+        }
     }
 }
 
@@ -170,13 +177,50 @@ nav {
 .product_infobox {
     position: relative;
     width: 405px;
-    height: 315px;
+    height: 350px;
+
+    margin-bottom: 80px;
 
     text-align: center;
 
+    .product_brand {
+        position: absolute;
+        bottom: 25px;
+
+        width: 100%;
+
+        font-weight: bold;
+    }
     .product_name {
         width: 100%;
         position: absolute;
         bottom: 0;
+    }
+}
+
+.filter_area {
+    width: 20%;
+    float: left;
+}
+
+.products_catalog {
+    width: 70%;
+    float: right;
+    padding-left: 7%;
+    border-left: 1px solid @nav_bg;
+}
+
+.filter_section {
+    margin-top: 40px;
+}
+
+.filter_option {
+    margin-bottom: 4px;
+
+    label {
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }

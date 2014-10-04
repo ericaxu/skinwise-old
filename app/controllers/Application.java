@@ -2,9 +2,7 @@ package controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
-import views.html.product;
-import views.html.ingredient;
+import views.html.*;
 
 public class Application extends Controller {
 
@@ -15,5 +13,7 @@ public class Application extends Controller {
 	}
 
 	public static Result ingredient() { return ok(ingredient.render()); }
+
+	public static Result products() {return ok(products.render()); }
 
 }
