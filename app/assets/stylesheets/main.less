@@ -2,21 +2,32 @@
 
 #logo {
     h1 {
-        font-family: "Proxima Nova Thin";
         color: #222;
+
+        font-family: "Proxima Nova Thin";
         font-size: 70px;
+        font-weight: 100;
         letter-spacing: 7px;
         text-align: center;
-        font-weight: 100;
+
+        a {
+            text-decoration: none;
+            &:visited {
+                color: #222;
+            }
+        }
     }
 }
 
 nav {
     position: fixed;
+    z-index: 999;
     top: 0;
     left: 0;
+
     width: 100%;
     height: 50px;
+
     background: #000;
     color: @light_text;
 
@@ -52,24 +63,29 @@ nav {
 .primary {
     width: 200px;
     height: 50px;
-    font-size: 22px;
-    letter-spacing: 1px;
+    border: none;
+
     background: @nav_bg;
     color: @light_text;
-    border: none;
+
+    font-size: 22px;
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
 #homepage_search {
     input {
         display: block;
-        border: 1px solid @border;
-        width: 50%;
+        width: 700px;
         height: 36px;
-        font-size: 22px;
+        border: 1px solid @border;
         border-radius: 105px;
-        padding: 3px 20px;
         margin: 0 auto;
+        padding: 3px 20px;
+
+        font-size: 22px;
+
+        outline: 0;
     }
 }
 
@@ -152,10 +168,11 @@ nav {
 }
 
 .product_infobox {
-    width: 405px;
     position: relative;
-    text-align: center;
+    width: 405px;
     height: 315px;
+
+    text-align: center;
 
     .product_name {
         width: 100%;
