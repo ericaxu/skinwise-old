@@ -35,10 +35,12 @@ nav {
 
     li {
         padding: 15px 10px;
+        font-weight: bold;
         cursor: pointer;
 
         a {
             text-decoration: none;
+
             &:visited {
                 color: @light_text;
             }
@@ -233,4 +235,17 @@ nav {
 
 .neutral {
     background: @neutral;
+}
+
+.field {
+    margin-bottom: 10px;
+
+    input, select {
+        height: 20px;
+    }
+
+    select {
+        height: 25px;
+        -webkit-appearance: menulist-button;
+    }
 }

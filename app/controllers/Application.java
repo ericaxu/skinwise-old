@@ -18,4 +18,6 @@ public class Application extends Controller {
 
 	public static Result ingredients() { return ok(ingredients.render()); }
 
+	public static Result profile() { return ok(profile.render()); }
+
 }
