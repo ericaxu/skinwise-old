@@ -1,10 +1,8 @@
-@import "util/_mixins";
-@import "util/_colors";
-
 @import "partials/_base";
 
 #logo {
     h1 {
+        font-family: "Proxima Nova Thin";
         color: #222;
         font-size: 70px;
         letter-spacing: 7px;
@@ -22,16 +20,9 @@ nav {
     background: #000;
     color: @light_text;
 
-    ul {
-        list-style: none;
-        margin: 0;
-
-        li {
-            display: inline-block;
-            margin-right: 25px;
-            cursor: pointer;
-            padding: 15px 10px;
-        }
+    li {
+        padding: 15px 10px;
+        cursor: pointer;
     }
 }
 
@@ -122,7 +113,7 @@ nav {
     background: @warning;
 }
 
-#product_detail {
+#page_content {
     margin-top: 75px;
 }
 
@@ -132,4 +123,43 @@ nav {
 
 .price, .size {
     margin-bottom: 10px;
+}
+
+.product_pic {
+    max-height: 300px;
+    max-width: 300px;
+}
+
+.contained_products {
+    ul {
+        text-align: justify;
+        -ms-text-justify: distribute-all-lines;
+        text-justify: distribute-all-lines;
+
+        li {
+            vertical-align: top;
+            display: inline-block;
+            *display: inline;
+            zoom: 1
+        }
+
+        .stretch {
+            width: 100%;
+            font-size: 0;
+            line-height: 0
+        }
+    }
+}
+
+.product_infobox {
+    width: 405px;
+    position: relative;
+    text-align: center;
+    height: 315px;
+
+    .product_name {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+    }
 }

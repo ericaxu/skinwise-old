@@ -1,3 +1,6 @@
+@import "../util/_mixins";
+@import "../util/_colors";
+
 @font-face {
     font-family: "Proxima Nova Light";
     src: url("../fonts/Proxima Nova Light.otf") format("opentype");
@@ -12,12 +15,13 @@ body {
     font-family: "Proxima Nova Light", "Montserrat", sans-serif;
     background: @bg;
     margin-top: 100px;
-    padding-bottom: 5000px;
+    padding-bottom: 200px;
 }
 
 p {
     font-size: 18px;
     line-height: 1.5em;
+    margin: 5px 0 0 0;
 }
 
 input, button {
@@ -25,9 +29,20 @@ input, button {
 }
 
 h3 {
-    margin-bottom: 0;
+    margin-bottom: 10px;
 }
 
-p {
-    margin-top: 0.2em;
+ul {
+    list-style: none;
+    .no_margin;
+    .no_padding;
+
+    li {
+        display: inline-block;
+        margin-right: 25px;
+    }
+}
+
+.section {
+    margin-bottom: 40px;
 }
