@@ -14,7 +14,7 @@ public class Ingredient extends Model {
 	@Column(length = 1024, unique = true)
 	private String name;
 
-	@Column(length = 128, unique = true)
+	@Column(length = 128)
 	private String cas_number;
 
 	@Column(length = 1024)
@@ -23,8 +23,20 @@ public class Ingredient extends Model {
 	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER)
 	private List<IngredientName> names = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	private List<IngredientFunction> functions = new ArrayList<>();
+
+	public Ingredient(String name,
+	                  String cas_number,
+	                  String short_desc,
+	                  List<IngredientName> names,
+	                  List<IngredientFunction> functions) {
+		this.name = name;
+		this.cas_number = cas_number;
+		this.short_desc = short_desc;
+		this.names = names;
+		this.functions = functions;
+	}
 
 	public List<IngredientFunction> getFunctions() {
 		return functions;
@@ -56,5 +68,11 @@ public class Ingredient extends Model {
 
 	public static Ingredient byId(long id) {
 		return find.byId(id);
+	}
+
+	public static Ingredient byINCIName(String name) {
+		return find.where()
+				.eq("name", name)
+				.findUnique();
 	}
 }
