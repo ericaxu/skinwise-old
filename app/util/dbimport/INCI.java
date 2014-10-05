@@ -2,6 +2,7 @@ package util.dbimport;
 
 import models.Ingredient;
 import models.IngredientFunction;
+import models.IngredientName;
 import util.Json;
 import util.Logger;
 
@@ -14,15 +15,15 @@ public class INCI {
 	public static void importDB(String json) throws IOException {
 		INCIFormat result = Json.deserialize(json, INCIFormat.class);
 		for (INCIIngredientFunction object : result.ingredient_functions) {
-			IngredientFunction ingredientFunction = IngredientFunction.byName(object.name.toUpperCase());
+			IngredientFunction ingredientFunction = IngredientFunction.byName(object.name.toLowerCase());
 			if (ingredientFunction == null) {
-				ingredientFunction = new IngredientFunction(object.name.toUpperCase(), object.description);
+				ingredientFunction = new IngredientFunction(object.name.toLowerCase(), object.description);
 				ingredientFunction.save();
 			}
 		}
 
 		for (INCIIngredient object : result.ingredients) {
-			Ingredient ingredient = Ingredient.byINCIName(object.inci_name);
+			Ingredient ingredient = Ingredient.byINCIName(object.inci_name.toLowerCase());
 			if (ingredient == null) {
 				Set<IngredientFunction> functionList = new HashSet<>();
 				String[] functions = object.functions.split("(,|/|;)");
@@ -31,7 +32,7 @@ public class INCI {
 					if(function.isEmpty()) {
 						continue;
 					}
-					IngredientFunction function1 = IngredientFunction.byName(function.toUpperCase());
+					IngredientFunction function1 = IngredientFunction.byName(function.toLowerCase());
 					if (function1 == null) {
 						Logger.debug("TAG", object.functions);
 					}
@@ -39,10 +40,10 @@ public class INCI {
 						functionList.add(function1);
 					}
 				}
-				ingredient = new Ingredient(object.inci_name,
+				ingredient = new Ingredient(object.inci_name.toLowerCase(),
 						object.cas_no,
 						object.restriction,
-						new ArrayList<>(),
+						new ArrayList<IngredientName>(),
 						new ArrayList<>(functionList)
 				);
 				ingredient.save();
