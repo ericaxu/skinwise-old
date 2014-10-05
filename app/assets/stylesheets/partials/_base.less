@@ -39,10 +39,6 @@ h1, h2, h3, h4 {
     margin-bottom: 10px;
 }
 
-h1 {
-    font-size: 28px;
-}
-
 ul {
     list-style: none;
     .no_margin;
@@ -56,4 +52,19 @@ ul {
 
 .section {
     margin-bottom: 40px;
+}
+
+a {
+    &:link {
+        text-decoration: none;
+        color: @dark_text;
+    }
+
+    &:visited {
+        color: @dark_text;
+    }
+
+    &:hover {
+        text-decoration: underline;
+    }
 }

@@ -1,66 +1,5 @@
-@import "partials/_base";
-
-#logo {
-    h1 {
-        margin-bottom: 40px;
-
-        color: #222;
-
-        font-family: "Proxima Nova Thin";
-        font-size: 70px;
-        font-weight: 100;
-        letter-spacing: 7px;
-        text-align: center;
-
-        a {
-            text-decoration: none;
-            &:visited {
-                color: #222;
-            }
-        }
-    }
-}
-
-nav {
-    position: fixed;
-    z-index: 999;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 50px;
-
-    background: @nav_bg;
-    color: @light_text;
-
-    li {
-        padding: 15px 10px;
-        font-weight: bold;
-        cursor: pointer;
-
-        a {
-            text-decoration: none;
-
-            &:link, &:visited {
-                color: @light_text;
-            }
-        }
-    }
-}
-
-.info_nav {
-    margin-left: 30px;
-    float: left;
-}
-
-.user_nav {
-    float: right;
-}
-
-#content_wrapper {
-    width: 70%;
-    margin: 0 auto;
-}
+@import "util/_mixins";
+@import "util/_colors";
 
 #hero {
     h2 {
@@ -88,22 +27,6 @@ nav {
 
     cursor: pointer;
     outline: 0;
-}
-
-#homepage_search {
-    input {
-        display: block;
-        width: 700px;
-        height: 36px;
-        border: 1px solid @border;
-        border-radius: 105px;
-        margin: 0 auto;
-        padding: 3px 20px;
-
-        font-size: 22px;
-
-        outline: 0;
-    }
 }
 
 .ingredient_detail, .product_detail {
@@ -135,12 +58,12 @@ nav {
     }
 }
 
-
-.fav.ingredient, .warning.ingredient, .fav.function, .warning.function {
+.ingredient, .function {
     border-radius: 5px;
     padding: 3px 5px;
-    margin-right: 0px;
 }
+
+
 
 .fav {
     background: @fav;
@@ -228,8 +151,8 @@ nav {
     }
 }
 
-.ingredient {
-    margin-bottom: 40px;
+.ingredient_item, .ingredient_infobox {
+    margin-bottom: 15px;
 
     .function {
         border-radius: 5px;
@@ -272,7 +195,7 @@ nav {
     width: 400px;
     padding: 40px;
     text-align: left;
-    background-color: #FFF;
+    background-color: @bg;
     opacity: 1;
     border: none;
     z-index: 9999;
@@ -302,7 +225,6 @@ nav {
     display: inline-block;
     .square(20px);
     color: @nav_bg;
-//    font-weight: bolder;
     font-size: 30px;
     cursor: pointer;
     top: 0;
@@ -312,4 +234,30 @@ nav {
     &::before {
         content: "\D7";
     }
+}
+
+input[type="checkbox"] {
+    position: relative;
+    top: 4px;
+}
+
+.ingredient_infobox {
+    position: absolute;
+    .hidden;
+    width: 400px;
+    padding: 0 30px 20px 30px;
+    background: @bg;
+    border: 1px solid @border;
+}
+
+.ingredient {
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+a.explicit {
+    text-decoration: underline;
 }

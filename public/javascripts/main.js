@@ -1,17 +1,29 @@
+var SW_TEST_ING_LIST = {
+    'zinc oxide': {
+        functions: [ 'Sunscreen', 'Anti-inflammatory' ],
+        short_desc: 'Zinc oxide is a mineral that is primarily used as a sunscreen ingredient, providing physical protection ' +
+            'against both UVA and UVB rays. It also has antibacterial and anti-inflammatory properties, often making an appearance ' +
+            'in acne treatments, calamine lotion and diaper rash creams.'
+    }
+};
+
+var ING_INFOBOX_TIMEOUT_EVENT = null;
+var ING_INFOBOX_TIMEOUT = 500;
+
 function setupPopups() {
     // Closing popup
-    $(".wrapper, .close_btn").on("click", function(e) {
-        $(".popup").hide();
+    $('.wrapper, .close_btn').on('click', function(e) {
+        $('.popup').hide();
     });
 
     // Allow user to close popup with ESC key
     $(document).keydown(function(e){
         if(e.keyCode == 27){
-            $(".popup").hide();
+            $('.popup').hide();
         }
     });
 
-    $(".form_container").click(function(e) {
+    $('.form_container').click(function(e) {
         e.stopPropagation();
     });
 
@@ -20,19 +32,58 @@ function setupPopups() {
 }
 
 function setupLoginPopup() {
-    $("#login_link").on("click", function(e) {
-        $(".login.popup").show();
+    $('#login_link').on('click', function(e) {
+        $('.login.popup').show();
         e.preventDefault();
     });
 }
 
 function setupSignupPopup() {
-    $("#signup_link").on("click", function(e) {
-        $(".signup.popup").show();
+    $('#signup_link').on('click', function(e) {
+        $('.signup.popup').show();
         e.preventDefault();
     });
 }
 
 $(document).ready(function() {
     setupPopups();
+
+    var $ingredient = $('.ingredient');
+
+    $ingredient.on('click', function(e) {
+        var ingredient_name = $(this).text()
+        $('.ingredient_infobox').remove();
+        if (SW_TEST_ING_LIST[ingredient_name.toLowerCase()]) {
+
+            var ingredient_data = SW_TEST_ING_LIST[ingredient_name.toLowerCase()];
+            var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function(e) {
+                e.stopPropagation();
+            });
+            var close_button = $('<span/>', { class: 'close_btn' }).on('click', function() {
+                $('.ingredient_infobox').remove();
+            })
+            ingredient_info.append(close_button);
+            ingredient_info.append($('<h2/>', { text: ingredient_name }));
+            var functions = $('<p/>', { class: 'functions' });
+            for (var i = 0; i < ingredient_data.functions.length; i++) {
+                functions.append($('<span/>', {
+                    class: 'function neutral',
+                    text: ingredient_data.functions[i]
+                }));
+            }
+            ingredient_info.append(functions);
+            ingredient_info.appendTo('body');
+            ingredient_info.append($('<p/>', { text: ingredient_data.short_desc }));
+            ingredient_info.append('<p><a class="explicit" href="#">More details</a></p>');
+            ingredient_info.show().offset({ top: e.pageY, left: e.pageX });
+        }
+    });
+
+    $(document).on('click', function() {
+        $('.ingredient_infobox').remove();
+    });
+
+    $ingredient.on('click', function(e) {
+        e.stopPropagation();
+    });
 });

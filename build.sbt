@@ -12,3 +12,5 @@ libraryDependencies ++= Seq(
   cache,
   javaWs
 )
+
+includeFilter in (Assets, LessKeys.less) := "*.less"
