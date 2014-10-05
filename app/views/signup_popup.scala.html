@@ -1,0 +1,28 @@
+@()
+<div class="signup popup">
+    <div class="popup_bg"></div>
+    <div class="wrapper">
+        <div class="popup_cell">
+            <div class="form_container">
+                <span class="close_btn"></span>
+
+                <form id="signup_form" method="post" onsubmit="return false;">
+                    <h1>Sign up</h1>
+                    <div id="signup_error" class="error_msg">Error</div>
+                    <div class="field">
+                        <label for="signup_email">Email:</label>
+                        <input type="email" id="signup_email" required/>
+                    </div>
+
+                    <div class="field">
+                        <label for="signup_password">Password:</label>
+                        <input type="password" id="signup_password" required/>
+                    </div>
+                    <div id="signup_btn_container">
+                        <input id="signup_btn" class="primary" type="submit" name="login_submit" value="Sign up">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

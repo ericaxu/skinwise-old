@@ -6,9 +6,8 @@
     <head>
         <title>@title</title>
         <link href='http://fonts.googleapis.com/css?family=Lato:300|Montserrat' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.ico?")">
-        <script src='@routes.Assets.at("javascripts/hello.js")' type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
+        <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.ico")'>
     </head>
     <body>
     <nav>
@@ -18,7 +17,8 @@
             <li>Guides</li>
         </ul>
         <ul class="user_nav horizontal">
-            <li>Erica</li>
+            <li id="signup_link"><a href="#">Sign up</a></li>
+            <li id="login_link"><a href="#">Sign in</a></li>
             <li><a href="/profile">Profile</a></li>
             <li>Favorites</li>
             <li>Logout</li>
@@ -33,5 +33,9 @@
     <div id="content_wrapper">
         @body
     </div>
+    @signup_popup()
+    @login_popup()
+    <script src='@routes.Assets.at("javascripts/vendor/jquery-1.9.0.min.js")'></script>
+    <script src='@routes.Assets.at("javascripts/main.js")'></script>
     </body>
 </html>
