@@ -33,6 +33,7 @@ function setupPopups() {
 
 function setupLoginPopup() {
     $('#login_link').on('click', function(e) {
+        $('.popup').hide();
         $('.login.popup').show();
         e.preventDefault();
     });
@@ -40,6 +41,7 @@ function setupLoginPopup() {
 
 function setupSignupPopup() {
     $('#signup_link').on('click', function(e) {
+        $('.popup').hide();
         $('.signup.popup').show();
         e.preventDefault();
     });
