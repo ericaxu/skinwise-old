@@ -75,4 +75,10 @@ public class Ingredient extends Model {
 				.eq("name", name)
 				.findUnique();
 	}
+
+	public static List<Ingredient> byName(String name) {
+		return find.where()
+				.like("name", name)
+				.findList();
+	}
 }

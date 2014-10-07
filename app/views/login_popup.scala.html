@@ -7,22 +7,24 @@
                 <span class="close_btn"></span>
 
                 <form id="login_form" method="post" onsubmit="return false;">
-                    <h1>Login</h1>
+                    <h1>Sign in</h1>
                     <div id="login_error" class="error_msg">Error</div>
-                    <div class="field">
-                        <label for="login_email">Email:</label>
-                        <input type="email" id="login_email" required/>
-                    </div>
 
-                    <div class="field">
-                        <label for="login_password">Password:</label>
-                        <input type="password" id="login_password" required/>
+                        <div class="labels">
+                            <label for="login_email">Email:</label>
+                            <label for="login_password">Password:</label>
+                        </div>
+
+                        <div class="inputs">
+                            <input type="email" id="login_email" required/>
+                            <input type="password" id="login_password" required/>
+
+                        <div class="field">
+                            <input type="checkbox" checked="false" id="remember_me">
+                            <label for="remember_me">Remember me</label>
+                        </div>
                     </div>
-                    <div class="field">
-                        <input type="checkbox" checked="false" id="remember_me">
-                        <label for="remember_me">Remember me</label>
-                    </div>
-                    <div id="login_btn_container">
+                    <div class="button_container">
                         <input id="login_btn" class="primary" type="submit" name="login_submit" value="Sign in">
                     </div>
             </form>

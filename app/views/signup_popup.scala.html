@@ -9,16 +9,17 @@
                 <form id="signup_form" method="post" onsubmit="return false;">
                     <h1>Sign up</h1>
                     <div id="signup_error" class="error_msg">Error</div>
-                    <div class="field">
+                    <div class="labels">
                         <label for="signup_email">Email:</label>
-                        <input type="email" id="signup_email" required/>
+                        <label for="signup_password">Password:</label>
                     </div>
 
-                    <div class="field">
-                        <label for="signup_password">Password:</label>
+                    <div class="inputs">
+                        <input type="email" id="signup_email" required/>
                         <input type="password" id="signup_password" required/>
                     </div>
-                    <div id="signup_btn_container">
+
+                    <div class="button_container">
                         <input id="signup_btn" class="primary" type="submit" name="login_submit" value="Sign up">
                     </div>
                 </form>
