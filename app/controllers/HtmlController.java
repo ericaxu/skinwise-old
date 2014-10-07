@@ -8,7 +8,7 @@ import views.html.*;
 
 import java.io.IOException;
 
-public class Application extends Controller {
+public class HtmlController extends Controller {
 
 	public static Result index() {
 		return ok(index.render());

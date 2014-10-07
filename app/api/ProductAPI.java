@@ -1,14 +1,16 @@
 package api;
 
+import api.request.Request;
+import api.response.Response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class ProductAPI {
 	public static class RequestProductInfo extends Request {
 		@NotEmpty
-		public String product_id;
+		public long product_id;
 
-		public RequestProductInfo(@JsonProperty("product_id") String product_id) {
+		public RequestProductInfo(@JsonProperty("product_id") long product_id) {
 			this.product_id = product_id;
 		}
 	}

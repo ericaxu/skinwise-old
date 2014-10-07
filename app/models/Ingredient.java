@@ -42,6 +42,14 @@ public class Ingredient extends Model {
 		return functions;
 	}
 
+	public ArrayList<String> getFunctionNames() {
+		ArrayList<String> functionNames = new ArrayList<String>();
+		for (int i = 0; i < functions.size(); i++) {
+			functionNames.add(functions.get(i).getName());
+		}
+		return functionNames;
+	}
+
 	public List<IngredientName> getNames() {
 		return names;
 	}
