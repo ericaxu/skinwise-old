@@ -74,7 +74,7 @@
 }
 
 #page_content {
-    margin-top: 75px;
+    margin-top: 50px;
 }
 
 .product_pic {
@@ -277,3 +277,40 @@ a.explicit {
 .button_container {
     margin-top: 20px;
 }
+
+#search_icon {
+    position: relative;
+    top: 8px;
+    padding: 3px;
+    .square(22px);
+    fill: @light_text;
+
+    &:hover {
+        fill: darken(@light_text, 15);
+    }
+}
+
+#nav_searchbar {
+    border-radius: 999px;
+    height: 25px;
+    font-size: 17px;
+    padding: 0 12px;
+    letter-spacing: 0.5px;
+
+    -moz-transition: width 0.2s ease-in-out;
+    -o-transition: width 0.2s ease-in-out;
+    -webkit-transition: width 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out;
+
+    &.closed {
+        width: 0;
+        background: @nav_bg;
+        border: none;
+    }
+
+    &.activated {
+        width: 400px;
+        background: @bg;
+        border: 1px solid @border;
+    }
+ }

@@ -17,6 +17,10 @@
             <li><a href="/products">Products</a></li>
             <li><a href="/ingredients">Ingredients</a></li>
             <li><a href="#">Guides</a></li>
+            <li>
+                @search_icon()
+                <input id="nav_searchbar" class="closed" type="text" placeholder="Type in any ingredient or product&hellip;"/>
+            </li>
         </ul>
         <ul class="user_nav horizontal">
             <li id="signup_link"><a href="#">Sign up</a></li>
@@ -26,12 +30,10 @@
             <li><a href="#">Logout</a></li>
         </ul>
     </nav>
-    <div id="logo"><h1><a href="/">SKIN WISE</a></h1></div>
-
-
-    <div id="homepage_search">
-        <input type="text" placeholder="Type in any ingredient or product&hellip;"/>
+    <div id="logo">
+        <h1><a href="/">SKIN WISE</a></h1>
     </div>
+
     <div id="content_wrapper">
         @body
     </div>

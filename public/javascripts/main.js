@@ -9,6 +9,7 @@ var SW_TEST_ING_LIST = {
 
 var ING_INFOBOX_TIMEOUT_EVENT = null;
 var ING_INFOBOX_TIMEOUT = 500;
+var SEARCHBAR_EXPAND_TIMEOUT_EVENT = null;
 
 function setupPopups() {
     // Closing popup
@@ -87,5 +88,17 @@ $(document).ready(function() {
 
     $ingredient.on('click', function(e) {
         e.stopPropagation();
+    });
+
+    $('#search_icon').on('click', function() {
+        $(this).hide();
+        $('#nav_searchbar').addClass('activated');
+    }).on('mouseenter', function(e) {
+        SEARCHBAR_EXPAND_TIMEOUT_EVENT = setTimeout($.proxy(function() {
+            $(this).hide();
+            $('#nav_searchbar').addClass('activated');
+        }, this), 400);
+    }).on('mouseleave', function() {
+        clearTimeout(SEARCHBAR_EXPAND_TIMEOUT_EVENT);
     });
 });
