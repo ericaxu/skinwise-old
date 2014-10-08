@@ -33,6 +33,9 @@ function getIngredientFromId($id) {
 	$ingredient["description"] = trim(strip_tags($ingredient_data["inci_Description"]));
 	$ingredient["restriction"] = trim(strip_tags($ingredient_data["inci_Restriction"]));
 
+	$ingredient["restriction"] = parser_preg_remove("Last update on [0-9]+ [a-zA-Z]+ [0-9]+ - ", $ingredient["restriction"]);
+	$ingredient["restriction"] = parser_preg_remove("no restriction", $ingredient["restriction"]);
+
 	$ingredient_functions = parser_match_all("<a[^>]*>(.*?)<\\/a>", $ingredient_data["inci_Functions"]);
 	$ingredient["functions"] = implode(",", $ingredient_functions[1]);
 
