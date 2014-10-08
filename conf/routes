@@ -16,6 +16,9 @@ GET        /api/ingredient/:id        controllers.api.IngredientController.info(
 # Product API
 GET        /api/product/:id           controllers.api.ProductController.info(id: Long)
 
+# User API
+POST       /api/user/login            controllers.api.UserController.login()
+
 # Admin console
 GET        /admin                     controllers.AdminController.home()
 

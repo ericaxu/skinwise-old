@@ -38,6 +38,22 @@ function setupLoginPopup() {
         $('.login.popup').show();
         e.preventDefault();
     });
+
+    setupLoginCall();
+}
+
+function setupLoginCall() {
+    $('#login_btn').on('click', function(e) {
+        $(this).val('Signing in...');
+        postToAPI('/api/user/login', {
+            email: $('#login_email').val(),
+            password: $('#login_password').val()
+        }, loginSuccess);
+    });
+}
+
+function loginSuccess() {
+    location.reload();
 }
 
 function setupSignupPopup() {
