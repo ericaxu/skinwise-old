@@ -42,10 +42,10 @@ public class Ingredient extends Model {
 		return functions;
 	}
 
-	public ArrayList<String> getFunctionNames() {
-		ArrayList<String> functionNames = new ArrayList<String>();
-		for (int i = 0; i < functions.size(); i++) {
-			functionNames.add(functions.get(i).getName());
+	public List<String> getFunctionNames() {
+		List<String> functionNames = new ArrayList<>();
+		for (IngredientFunction function : functions) {
+			functionNames.add(function.getName());
 		}
 		return functionNames;
 	}

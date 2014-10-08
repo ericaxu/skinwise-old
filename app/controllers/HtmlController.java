@@ -1,12 +1,8 @@
 package controllers;
 
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import util.dbimport.INCI;
 import views.html.*;
-
-import java.io.IOException;
 
 public class HtmlController extends Controller {
 

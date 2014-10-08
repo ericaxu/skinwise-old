@@ -6,6 +6,7 @@ import api.response.Response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class IngredientAPI {
 	public static class RequestIngredientInfo extends Request {
@@ -20,11 +21,11 @@ public class IngredientAPI {
 	public static class ResponseIngredientInfo extends Response {
 		@NotEmpty
 		public String ingredient_name;
-		public ArrayList<String> functions;
+		public List<String> functions;
 		public String description;
 
 		public ResponseIngredientInfo(@JsonProperty("ingredient_name") String ingredient_name,
-		                              @JsonProperty("functions") ArrayList<String> functions,
+		                              @JsonProperty("functions") List<String> functions,
 		                              @JsonProperty("description") String description) {
 			this.ingredient_name = ingredient_name;
 			this.functions = functions;
