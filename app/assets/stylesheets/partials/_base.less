@@ -1,6 +1,8 @@
 @import "../util/_mixins";
 @import "../util/_colors";
 
+/* Base styles: styling general tags */
+
 @font-face {
     font-family: "Proxima Nova Light";
     src: url("../fonts/Proxima Nova Light.otf") format("opentype");
@@ -20,6 +22,11 @@ body {
     overflow-y: scroll;
 }
 
+::selection {
+    background: @nav_bg;
+    color: @light_text;
+}
+
 p {
     line-height: 1.5em;
     margin: 5px 0 0 0;
@@ -31,6 +38,12 @@ input, button, select {
     font-family: "Proxima Nova Light";
     font-size: 18px;
     outline: 0;
+}
+
+// Checkboxes are not quite aligned with text
+input[type="checkbox"] {
+    position: relative;
+    top: 4px;
 }
 
 select {
