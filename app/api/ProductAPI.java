@@ -19,16 +19,13 @@ public class ProductAPI {
 		@NotEmpty
 		public String product_name;
 		public String product_brand;
-		public String[] ingredients;
 		public String description;
 
 		public ResponseProductInfo(@JsonProperty("product_id") String product_name,
 		                           @JsonProperty("product_brand") String product_brand,
-		                           @JsonProperty("functions") String[] ingredients,
 		                           @JsonProperty("description") String description) {
 			this.product_name = product_name;
 			this.product_brand = product_brand;
-			this.ingredients = ingredients;
 			this.description = description;
 		}
 	}

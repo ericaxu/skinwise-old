@@ -19,12 +19,13 @@ public class Product extends Model {
 	@Column(length = 1024)
 	private String name;
 
-	public Product(String brand,
-	                  String line,
-	                  String name) {
+	@Column(length = 4096)
+	private String description;
+
+	public Product(String name, String brand, String description) {
 		this.name = name;
 		this.brand = brand;
-		this.line = line;
+		this.description = description;
 	}
 
 	public String getBrand() {
@@ -38,6 +39,8 @@ public class Product extends Model {
 	public String getName() {
 		return name;
 	}
+
+	public String getDescription() { return description; }
 
 	public long getId() {
 		return id;

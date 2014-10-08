@@ -24,8 +24,8 @@ public class IngredientAPI {
 		public String description;
 
 		public ResponseIngredientInfo(@JsonProperty("ingredient_name") String ingredient_name,
-		                           @JsonProperty("functions") ArrayList<String> functions,
-		                           @JsonProperty("description") String description) {
+		                              @JsonProperty("functions") ArrayList<String> functions,
+		                              @JsonProperty("description") String description) {
 			this.ingredient_name = ingredient_name;
 			this.functions = functions;
 			this.description = description;
