@@ -17,4 +17,14 @@ public class AdminController extends Controller {
 
 		return ok(admin_home.render());
 	}
+
+	public static Result auto_import() {
+		User user = SessionHelper.getUser(session());
+
+		if (user == null || !user.hasPermission(Permission.ADMIN_ALL)) {
+			return ErrorController.notfound();
+		}
+
+		return ok(admin_home.render());
+	}
 }
