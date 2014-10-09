@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class INCI {
-	private static final String TAG = "INCI";
+public class ImportIngredients {
+	private static final String TAG = "ImportIngredients";
 
 	public static void importDB(String json) throws IOException {
 		INCIFormat result = Json.deserialize(json, INCIFormat.class);
@@ -71,7 +71,7 @@ public class INCI {
 			Logger.error(TAG, "Ingredient description not matching! " +
 					oldDescription + "|" + ingredient.description);
 		}
-		
+
 		Set<IngredientFunction> functionList = object.getFunctions();
 		String[] functions = ingredient.functions.split(",");
 		for (String function : functions) {

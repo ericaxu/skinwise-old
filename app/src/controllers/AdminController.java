@@ -8,7 +8,7 @@ import src.controllers.session.SessionHelper;
 import src.models.User;
 import src.user.Permission;
 import src.util.Logger;
-import src.util.dbimport.INCI;
+import src.util.dbimport.ImportIngredients;
 import views.html.admin_home;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class AdminController extends Controller {
 		try {
 			byte[] data = Files.readAllBytes(Paths.get("php/data/specialchem-ingredients.json.txt"));
 			String inci = new String(data);
-			INCI.importDB(inci);
+			ImportIngredients.importDB(inci);
 		}
 		catch (IOException e) {
 			Logger.error("AdminController", e);
