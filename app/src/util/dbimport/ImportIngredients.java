@@ -2,78 +2,75 @@ package src.util.dbimport;
 
 import src.models.Ingredient;
 import src.models.IngredientFunction;
-import src.models.IngredientName;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ImportIngredients {
 	private static final String TAG = "ImportIngredients";
 
 	public static void importDB(String json) throws IOException {
-		INCIFormat result = Json.deserialize(json, INCIFormat.class);
+		IngredientFormat result = Json.deserialize(json, IngredientFormat.class);
 
 		//Import functions
-		for (INCIIngredientFunction object : result.ingredient_functions) {
+		for (IngredientFunctionObject object : result.ingredient_functions) {
 			createOrUpdate(object);
 		}
 
 		//Import ingredients
-		for (INCIIngredient object : result.ingredients) {
+		for (IngredientObject object : result.ingredients) {
 			createOrUpdate(object);
 		}
 	}
 
-	private static void createOrUpdate(INCIIngredientFunction function) {
-		function.description = Util.notNull(function.description);
-		function.name = Util.notNull(function.name).toLowerCase();
-		IngredientFunction object = IngredientFunction.byName(function.name);
-		if (object == null) {
-			object = new IngredientFunction(function.name, function.description);
+	private static void createOrUpdate(IngredientFunctionObject object) {
+		object.description = Util.notNull(object.description);
+		object.name = Util.notNull(object.name).toLowerCase();
+		IngredientFunction function = IngredientFunction.byName(object.name);
+		if (function == null) {
+			function = new IngredientFunction(object.name, object.description);
 		}
 
-		String oldDescription = object.getDescription();
+		String oldDescription = function.getDescription();
 		if (oldDescription == null || oldDescription.isEmpty()) {
-			object.setDescription(function.description);
+			function.setDescription(object.description);
 		}
-		else if (!oldDescription.equals(function.description)) {
+		else if (!oldDescription.equals(object.description)) {
 			Logger.error(TAG, "Function description not matching! " +
-					oldDescription + "|" + function.description);
+					oldDescription + "|" + object.description);
 		}
 
-		object.save();
+		function.save();
 	}
 
-	private static void createOrUpdate(INCIIngredient ingredient) {
-		ingredient.inci_name = Util.notNull(ingredient.inci_name).toLowerCase();
-		ingredient.description = Util.notNull(ingredient.description);
-		ingredient.cas_no = Util.notNull(ingredient.cas_no);
-		ingredient.restriction = Util.notNull(ingredient.restriction);
+	private static void createOrUpdate(IngredientObject object) {
+		object.inci_name = Util.notNull(object.inci_name).toLowerCase();
+		object.description = Util.notNull(object.description);
+		object.cas_no = Util.notNull(object.cas_no);
+		object.restriction = Util.notNull(object.restriction);
 
-		Ingredient object = Ingredient.byINCIName(ingredient.inci_name);
-		if (object == null) {
-			object = new Ingredient(ingredient.inci_name,
-					ingredient.cas_no,
-					ingredient.description
+		Ingredient ingredient = Ingredient.byINCIName(object.inci_name);
+		if (ingredient == null) {
+			ingredient = new Ingredient(object.inci_name,
+					object.cas_no,
+					object.description
 			);
 		}
 
-		String oldDescription = object.getDescription();
+		String oldDescription = ingredient.getDescription();
 		if (oldDescription == null || oldDescription.isEmpty()) {
-			object.setDescription(ingredient.description);
+			ingredient.setDescription(object.description);
 		}
-		else if (!oldDescription.equals(ingredient.description)) {
+		else if (!oldDescription.equals(object.description)) {
 			Logger.error(TAG, "Ingredient description not matching! " +
-					oldDescription + "|" + ingredient.description);
+					oldDescription + "|" + object.description);
 		}
 
-		Set<IngredientFunction> functionList = object.getFunctions();
-		String[] functions = ingredient.functions.split(",");
+		Set<IngredientFunction> functionList = ingredient.getFunctions();
+		String[] functions = object.functions.split(",");
 		for (String function : functions) {
 			function = function.trim();
 			if (function.isEmpty()) {
@@ -81,41 +78,41 @@ public class ImportIngredients {
 			}
 			IngredientFunction function1 = IngredientFunction.byName(function.toLowerCase());
 			if (function1 == null) {
-				Logger.debug(TAG, ingredient.functions);
+				Logger.debug(TAG, object.functions);
 			}
 			else if (!functionList.contains(function1)) {
 				functionList.add(function1);
 			}
 		}
-		object.addFunctions(functionList);
+		ingredient.addFunctions(functionList);
 
-		object.save();
+		ingredient.save();
 	}
 
-	public static class INCIFormat {
-		public INCIIngredient[] ingredients;
-		public INCIIngredientFunction[] ingredient_functions;
-		public INCIIngredientAbbreviation[] ingredient_abbreviations;
+	public static class IngredientFormat {
+		public IngredientObject[] ingredients;
+		public IngredientFunctionObject[] ingredient_functions;
+		public IngredientAbbreviationObject[] ingredient_abbreviations;
 	}
 
-	public static class INCIIngredient {
+	public static class IngredientObject {
 		public String inci_name;
 		public String inn_name;
 		public String ph_eur_name;
+		public String iupac_name;
 		public String cas_no;
 		public String ec_no;
-		public String iupac_name;
 		public String description;
 		public String restriction;
 		public String functions;
 	}
 
-	public static class INCIIngredientFunction {
+	public static class IngredientFunctionObject {
 		public String name;
 		public String description;
 	}
 
-	public static class INCIIngredientAbbreviation {
+	public static class IngredientAbbreviationObject {
 		public String shorthand;
 		public String full;
 	}
