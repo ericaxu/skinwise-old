@@ -1,4 +1,4 @@
-@(title: String)(head: => Html)(body: => Html)(scripts: => Html)
+@(title: String, response: src.api.response.Response = null)(head: => Html)(body: => Html)(scripts: => Html)
 
 <!DOCTYPE html>
 
@@ -43,5 +43,12 @@
     <script src='@routes.Assets.at("javascripts/util.js")'></script>
     <script src='@routes.Assets.at("javascripts/main.js")'></script>
     @scripts
+    @if(response != null) {
+        <script>
+            //ALERT.processResponse(
+            var response = @Html(src.util.Json.serialize(response));
+            //);
+        </script>
+    }
     </body>
 </html>

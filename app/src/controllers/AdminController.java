@@ -1,5 +1,6 @@
 package src.controllers;
 
+import src.api.response.Response;
 import src.controllers.session.SessionHelper;
 import src.user.Permission;
 import src.models.User;
@@ -15,7 +16,7 @@ public class AdminController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(admin_home.render());
+		return ok(admin_home.render(new Response().setError("TestError")));
 	}
 
 	public static Result auto_import() {
@@ -25,6 +26,6 @@ public class AdminController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(admin_home.render());
+		return ok(admin_home.render(null));
 	}
 }

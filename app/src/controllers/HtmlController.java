@@ -7,26 +7,26 @@ import views.html.*;
 public class HtmlController extends Controller {
 
 	public static Result index() {
-		return ok(index.render());
+		return ok(index.render(null));
 	}
 
 	public static Result product() {
-		return ok(product.render());
+		return ok(product.render(null));
 	}
 
 	public static Result ingredient() {
-		return ok(ingredient.render());
+		return ok(ingredient.render(null));
 	}
 
 	public static Result products() {
-		return ok(products.render());
+		return ok(products.render(null));
 	}
 
 	public static Result ingredients() {
-		return ok(ingredients.render());
+		return ok(ingredients.render(null));
 	}
 
 	public static Result profile() {
-		return ok(profile.render());
+		return ok(profile.render(null));
 	}
 }
