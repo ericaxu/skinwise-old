@@ -1,15 +1,18 @@
 package src.user;
 
+import src.util.Logger;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Permission {
 	public static final String ADMIN_ALL = "ADMIN.*";
+	public static final String ADMIN_IMPORT = "ADMIN.IMPORT";
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {
 		String[] parts = permission.split("\\.");
-		for (int i = 0; i < parts.length - 1; i++) {
+		for (int i = 0; i < parts.length; i++) {
 			StringBuilder sb = new StringBuilder();
 			for (int j = 0; j < i; j++) {
 				sb.append(parts[j]).append(".");

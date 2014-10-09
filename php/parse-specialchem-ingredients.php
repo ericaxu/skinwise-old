@@ -28,8 +28,8 @@ function getIngredientFromId($id) {
 	$ingredient_data = parser_match_all("<td id=\"([^\"]*)\"[^>]*>(.*?)<\\/td>", $result_html);
 	$ingredient_data = util_rotate_array($ingredient_data, 1, 2);
 
-	$ingredient["cas_number"] = trim(strip_tags($ingredient_data["inci_CASNumber"]));
-	$ingredient["inn_name"] = trim(strip_tags($ingredient_data["inci_EINECS_ELINCS"]));
+	$ingredient["cas_no"] = trim(strip_tags($ingredient_data["inci_CASNumber"]));
+	$ingredient["ec_no"] = trim(strip_tags($ingredient_data["inci_EINECS_ELINCS"]));
 	$ingredient["description"] = trim(strip_tags($ingredient_data["inci_Description"]));
 	$ingredient["restriction"] = trim(strip_tags($ingredient_data["inci_Restriction"]));
 
@@ -58,15 +58,30 @@ util_json_write($file_specialchem_search_json, $search_ids);
 
 
 $ingredients = array();
+$functions = array();
+$ingredient_functions = array();
 
 foreach($search_ids as $id) {
 	$ingredient = getIngredientFromId($id);
 	$ingredients[] = $ingredient;
+	foreach(explode(",", $ingredient["functions"]) as $function) {
+		$function = trim($function);
+		$functions[$function] = $function;
+	}
 }
+
+foreach($functions as $key => $value) {
+	$ingredient_functions[] = array("name" => $key);
+}
+
 
 $result = array();
 $result["ingredients"] = $ingredients;
+$result["ingredient_functions"] = $ingredient_functions;
 
 util_json_write($file_specialchem_json, $result);
+
+parser_echo_count($ingredients, "Ingredients");
+parser_echo_count($ingredient_functions, "Functions");
 
 ?>

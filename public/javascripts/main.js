@@ -141,4 +141,8 @@ $(document).ready(function() {
     setupIngredientInfobox();
 
     setupExpandableSearchbar();
+
+    $("#import_ingredient_btn").on('click', function() {
+        postToAPI('/api/admin/import', {});
+    });
 });

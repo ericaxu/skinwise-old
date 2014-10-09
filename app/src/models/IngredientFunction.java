@@ -26,6 +26,14 @@ public class IngredientFunction extends Model {
 		return name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	//Static
 
 	public static Finder<Long, IngredientFunction> find = new Finder<>(Long.class, IngredientFunction.class);

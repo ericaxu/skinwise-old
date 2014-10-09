@@ -90,4 +90,8 @@ $result["ingredient_abbreviations"] = $ingredient_abbreviations;
 
 util_json_write($file_inci_json, $result);
 
+parser_echo_count($ingredients, "Ingredients");
+parser_echo_count($ingredient_functions, "Functions");
+parser_echo_count($ingredient_abbreviations, "Abbreviations");
+
 ?>

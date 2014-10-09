@@ -56,4 +56,8 @@ function _urlencode(&$string) {
 	$string = rawurlencode($string);
 }
 
+function parser_echo_count($data, $title) {
+	echo $title . ": " . count($data) . "<br>\n";
+}
+
 ?>

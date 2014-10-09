@@ -3,8 +3,7 @@ package src.models;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Ingredient extends Model {
@@ -18,27 +17,35 @@ public class Ingredient extends Model {
 	private String cas_number;
 
 	@Column(length = 1024)
-	private String short_desc;
+	private String description;
 
 	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER)
-	private List<IngredientName> names = new ArrayList<>();
+	private Set<IngredientName> names = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	private List<IngredientFunction> functions = new ArrayList<>();
+	private Set<IngredientFunction> functions = new HashSet<>();
 
 	public Ingredient(String name,
 	                  String cas_number,
-	                  String short_desc,
-	                  List<IngredientName> names,
-	                  List<IngredientFunction> functions) {
+	                  String description) {
 		this.name = name;
 		this.cas_number = cas_number;
-		this.short_desc = short_desc;
-		this.names = names;
-		this.functions = functions;
+		this.description = description;
 	}
 
-	public List<IngredientFunction> getFunctions() {
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public boolean addNames(Collection<IngredientName> c) {
+		return names.addAll(c);
+	}
+
+	public boolean addFunctions(Collection<IngredientFunction> c) {
+		return functions.addAll(c);
+	}
+
+	public Set<IngredientFunction> getFunctions() {
 		return functions;
 	}
 
@@ -50,12 +57,12 @@ public class Ingredient extends Model {
 		return functionNames;
 	}
 
-	public List<IngredientName> getNames() {
+	public Set<IngredientName> getNames() {
 		return names;
 	}
 
-	public String getShort_desc() {
-		return short_desc;
+	public String getDescription() {
+		return description;
 	}
 
 	public String getCas_number() {

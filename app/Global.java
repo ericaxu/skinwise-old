@@ -1,17 +1,12 @@
-import src.controllers.ErrorController;
-import src.user.Permission;
-import src.models.User;
-import src.models.Usergroup;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import src.util.dbimport.INCI;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import src.controllers.ErrorController;
+import src.models.User;
+import src.models.Usergroup;
+import src.user.Permission;
 
 public class Global extends GlobalSettings {
 	public static final String ADMIN_USER_GROUP = "Administrators";
@@ -32,15 +27,6 @@ public class Global extends GlobalSettings {
 			admin = new User(admin_email, admin_pass, "Admin");
 			admin.setGroup(admin_group);
 			admin.save();
-		}
-
-		try {
-			byte[] data = Files.readAllBytes(Paths.get("data/inci.json.txt"));
-			String inci = new String(data);
-			INCI.importDB(inci);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

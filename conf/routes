@@ -3,24 +3,25 @@
 # ~~~~
 
 # Home page
-GET        /                          src.controllers.HtmlController.index()
-GET        /product/1                 src.controllers.HtmlController.product()
-GET        /ingredient/1              src.controllers.HtmlController.ingredient()
-GET        /products                  src.controllers.HtmlController.products()
-GET        /ingredients               src.controllers.HtmlController.ingredients()
-GET        /profile                   src.controllers.HtmlController.profile()
+GET         /                          src.controllers.HtmlController.index()
+GET         /product/1                 src.controllers.HtmlController.product()
+GET         /ingredient/1              src.controllers.HtmlController.ingredient()
+GET         /products                  src.controllers.HtmlController.products()
+GET         /ingredients               src.controllers.HtmlController.ingredients()
+GET         /profile                   src.controllers.HtmlController.profile()
 
 # Ingredient API
-GET        /api/ingredient/:id        src.controllers.api.IngredientController.info(id: Long)
+GET         /api/ingredient/:id        src.controllers.IngredientController.api_info(id: Long)
 
 # Product API
-GET        /api/product/:id           src.controllers.api.ProductController.info(id: Long)
+GET         /api/product/:id           src.controllers.ProductController.api_info(id: Long)
 
 # User API
-POST       /api/user/login            src.controllers.api.UserController.login()
+POST        /api/user/login            src.controllers.UserController.api_login()
 
 # Admin console
-GET        /admin                     src.controllers.AdminController.home()
+GET         /admin                     src.controllers.AdminController.home()
+POST        /api/admin/import          src.controllers.AdminController.api_auto_import()
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file              controllers.Assets.at(path="/public", file)
+GET         /assets/*file              controllers.Assets.at(path="/public", file)

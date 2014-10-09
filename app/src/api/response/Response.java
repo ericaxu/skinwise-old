@@ -8,6 +8,7 @@ public class Response {
 	public transient static final String INVALID = "Invalid";
 	public transient static final String INTERNAL_ERROR = "InternalError";
 	public transient static final String UNAUTHORIZED = "Unauthorized";
+	public transient static final String NOT_FOUND = "NotFound";
 
 	private String code = "";
 	private String info = "";
