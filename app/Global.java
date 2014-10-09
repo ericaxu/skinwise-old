@@ -1,5 +1,5 @@
 import src.controllers.ErrorController;
-import src.models.Permission;
+import src.user.Permission;
 import src.models.User;
 import src.models.Usergroup;
 import play.Application;
@@ -51,5 +51,10 @@ public class Global extends GlobalSettings {
 	@Override
 	public F.Promise<Result> onHandlerNotFound(Http.RequestHeader requestHeader) {
 		return F.Promise.pure(ErrorController.notfound());
+	}
+
+	@Override
+	public F.Promise<Result> onError(Http.RequestHeader requestHeader, Throwable throwable) {
+		return super.onError(requestHeader, throwable);
 	}
 }

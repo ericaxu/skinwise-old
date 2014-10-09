@@ -26,7 +26,6 @@ public class Json {
 			return mapper().writeValueAsString(object);
 		}
 		catch (JsonProcessingException e) {
-			//TODO
 			Logger.fatal(TAG, "Json serialization error", e);
 		}
 		return "";

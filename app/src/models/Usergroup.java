@@ -1,6 +1,7 @@
 package src.models;
 
 import play.db.ebean.Model;
+import src.user.Permission;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,19 +20,37 @@ public class Usergroup extends Model {
 		this.name = name;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<Permission> permissions = new HashSet<>();
+	@Lob
+	private String permissions = "";
+	private transient String permissions_cache = "";
+	private transient Set<String> permissions_set = new HashSet<>();
+
+	public Set<String> getPermissions_set() {
+		// permission set and string out of sync
+		if (permissions_set == null || !permissions_cache.equals(permissions)) {
+			permissions_set = Permission.readPermissions(permissions);
+			permissions_cache = permissions;
+		}
+		return permissions_set;
+	}
+
+	public void savePermissions() {
+		permissions = Permission.writePermissions(permissions_set);
+		permissions_cache = permissions;
+	}
 
 	public void addPermission(String permission) {
-		permissions.add(Permission.get(permission));
+		getPermissions_set().add(permission);
+		savePermissions();
 	}
 
 	public void removePermission(String permission) {
-		permissions.remove(Permission.get(permission));
+		getPermissions_set().remove(permission);
+		savePermissions();
 	}
 
 	public boolean hasPermission(String permission) {
-		return permissions.contains(Permission.get(permission));
+		return Permission.hasPermission(getPermissions_set(), permission);
 	}
 
 	//Static

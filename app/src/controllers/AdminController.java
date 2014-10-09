@@ -1,7 +1,7 @@
 package src.controllers;
 
 import src.controllers.session.SessionHelper;
-import src.models.Permission;
+import src.user.Permission;
 import src.models.User;
 import play.mvc.Controller;
 import play.mvc.Result;

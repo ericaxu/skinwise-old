@@ -2,6 +2,7 @@ package src.models;
 
 import play.db.ebean.Model;
 import src.user.Permissible;
+import src.user.Permission;
 import src.util.BCrypt;
 
 import javax.persistence.*;
@@ -24,8 +25,10 @@ public class User extends Model implements Permissible {
 	@JoinColumn(name = "group_id", referencedColumnName = "id")
 	private Usergroup group;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<Permission> permissions = new HashSet<>();
+	@Lob
+	private String permissions = "";
+	private transient String permissions_cache = "";
+	private transient Set<String> permissions_set = new HashSet<>();
 
 	public User(String email, String password, String name) {
 		this.email = email.toLowerCase();
@@ -53,19 +56,39 @@ public class User extends Model implements Permissible {
 		this.group = group;
 	}
 
+	public void setPermissions(String permissions) {
+		this.permissions = permissions;
+	}
+
+	public Set<String> getPermissions_set() {
+		// permission set and string out of sync
+		if (permissions_set == null || !permissions_cache.equals(permissions)) {
+			permissions_set = Permission.readPermissions(permissions);
+			permissions_cache = permissions;
+		}
+		return permissions_set;
+	}
+
+	public void savePermissions() {
+		setPermissions(Permission.writePermissions(permissions_set));
+		permissions_cache = permissions;
+	}
+
 	public void addPermission(String permission) {
-		permissions.add(Permission.get(permission));
+		getPermissions_set().add(permission);
+		savePermissions();
 	}
 
 	public void removePermission(String permission) {
-		permissions.remove(Permission.get(permission));
+		getPermissions_set().remove(permission);
+		savePermissions();
 	}
 
 	public boolean hasPermission(String permission) {
-		if(getGroup().hasPermission(permission)) {
+		if (getGroup().hasPermission(permission)) {
 			return true;
 		}
-		return permissions.contains(Permission.get(permission));
+		return Permission.hasPermission(getPermissions_set(), permission);
 	}
 
 	//Static
