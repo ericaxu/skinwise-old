@@ -142,7 +142,11 @@ $(document).ready(function() {
 
     setupExpandableSearchbar();
 
-    $("#import_ingredient_btn").on('click', function() {
+    $('#import_ingredient_btn').on('click', function() {
         postToAPI('/api/admin/import', {});
     });
+
+    $('.notice_container .close_btn').on('click', function() {
+        $(this).parent().fadeOut(200);
+    })
 });

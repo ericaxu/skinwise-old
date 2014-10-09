@@ -315,3 +315,31 @@ a.explicit {
         border: 1px solid @border;
     }
  }
+
+.notice_container {
+    position: fixed;
+    top: 80px;
+    left: 30px;
+
+    .info, .error {
+        position: relative;
+        display: none;
+        width: 400px;
+        min-height: 50px;
+        margin-bottom: 20px;
+        padding: 20px 20px 5px 20px;
+        color: @light_text;
+
+        .close_btn {
+            color: @light_text;
+        }
+    }
+
+    .info {
+        background: @nav_bg;
+    }
+
+    .error {
+        background: @error;
+    }
+}

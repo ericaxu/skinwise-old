@@ -37,6 +37,18 @@
     <div id="content_wrapper">
         @body
     </div>
+
+    <div class="notice_container">
+        <div class="info">
+            <span class="close_btn"></span>
+            <p class="message"></p>
+        </div>
+
+        <div class="error">
+            <span class="close_btn"></span>
+            <p class="message"></p>
+        </div>
+    </div>
     @signup_popup()
     @login_popup()
     <script src='@routes.Assets.at("javascripts/vendor/jquery-1.9.0.min.js")'></script>
