@@ -27,6 +27,10 @@
 
     cursor: pointer;
     outline: 0;
+
+    &:hover {
+        color: darken(@light_text, 15);
+    }
 }
 
 .ingredient_detail, .product_detail {
@@ -204,9 +208,6 @@
 }
 
 .form_container {
-    h1 {
-        margin-bottom: 30px;
-    }
     .field {
         margin-bottom: 20px;
     }
@@ -280,9 +281,9 @@ a.explicit {
 
 #search_icon {
     position: relative;
-    top: 8px;
+    top: 7px;
     padding: 3px;
-    .square(22px);
+    .square(20px);
     fill: @light_text;
 
     &:hover {
