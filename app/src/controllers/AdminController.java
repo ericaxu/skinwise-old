@@ -4,6 +4,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
 import src.api.response.Response;
+import src.api.response.ResponseMessage;
 import src.controllers.session.SessionHelper;
 import src.models.User;
 import src.user.Permission;
@@ -16,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class AdminController extends Controller {
+	private static final String TAG = "AdminController";
+
 	public static Result home() {
 		User user = SessionHelper.getUser(session());
 
@@ -30,8 +33,11 @@ public class AdminController extends Controller {
 		User user = SessionHelper.getUser(session());
 
 		if (user == null || !user.hasPermission(Permission.ADMIN_IMPORT)) {
-			return API.writeResponse(new Response(Response.UNAUTHORIZED).setError("You are not allowed to do that!"));
+			return API.writeResponse(new Response(Response.UNAUTHORIZED)
+					.addMessage(ResponseMessage.error("You are not allowed to do that!")));
 		}
+
+		Logger.info(TAG, "DB import started");
 
 		try {
 			byte[] data = Files.readAllBytes(Paths.get("php/data/specialchem-ingredients.json.txt"));
@@ -39,11 +45,13 @@ public class AdminController extends Controller {
 			ImportIngredients.importDB(inci);
 		}
 		catch (IOException e) {
-			Logger.error("AdminController", e);
+			Logger.error(TAG, e);
 		}
+
+		Logger.info(TAG, "DB import finished");
 
 		System.gc();
 
-		return API.writeResponse(new Response());
+		return API.writeResponse(new Response().addMessage(ResponseMessage.info("Import success")));
 	}
 }

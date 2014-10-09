@@ -4,6 +4,7 @@ import src.api.API;
 import src.api.UserAPI;
 import src.api.request.BadRequestException;
 import src.api.response.Response;
+import src.api.response.ResponseMessage;
 import src.controllers.session.SessionHelper;
 import src.models.User;
 import play.mvc.Controller;
@@ -27,7 +28,8 @@ public class UserController extends Controller {
 		User user = User.byEmail(request.email);
 
 		if (user == null || !user.checkPassword(request.password)) {
-			return new Response(Response.UNAUTHORIZED).setError("Login failed");
+			return new Response(Response.UNAUTHORIZED)
+					.addMessage(ResponseMessage.error("Login failed"));
 		}
 		else {
 			SessionHelper.setUser(session(), user);

@@ -2,6 +2,9 @@ package src.api.response;
 
 import src.api.request.BadRequestException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Response {
 	public transient static final String OK = "Ok";
 	public transient static final String BAD_JSON = "BadJson";
@@ -11,8 +14,7 @@ public class Response {
 	public transient static final String NOT_FOUND = "NotFound";
 
 	private String code = "";
-	private String info = "";
-	private String error = "";
+	private List<ResponseMessage> messages = new ArrayList<>();
 
 	public Response() {
 		this(OK);
@@ -20,7 +22,7 @@ public class Response {
 
 	public Response(BadRequestException exception) {
 		this(exception.getCode());
-		this.setError(exception.getError());
+		this.addMessage(ResponseMessage.error(exception.getError()));
 	}
 
 	public Response(String code) {
@@ -35,32 +37,13 @@ public class Response {
 		return code;
 	}
 
-	public String getInfo() {
-		return info;
-	}
-
-	public String getError() {
-		return error;
-	}
-
-	public Response setInfo(String info) {
-		if (info == null) {
-			info = "";
-		}
-		this.info = info;
-		return this;
-	}
-
-	public Response setError(String error) {
-		if (error == null) {
-			error = "";
-		}
-		this.error = error;
+	public Response addMessage(ResponseMessage message) {
+		this.messages.add(message);
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return code + " Info: " + info + " Error: " + error;
+		return code;
 	}
 }
