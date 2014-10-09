@@ -1,13 +1,13 @@
-import controllers.ErrorController;
-import models.Permission;
-import models.User;
-import models.Usergroup;
+import src.controllers.ErrorController;
+import src.models.Permission;
+import src.models.User;
+import src.models.Usergroup;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
-import util.dbimport.INCI;
+import src.util.dbimport.INCI;
 
 import java.io.IOException;
 import java.nio.file.Files;

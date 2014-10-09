@@ -3,24 +3,24 @@
 # ~~~~
 
 # Home page
-GET        /                          controllers.HtmlController.index()
-GET        /product/1                 controllers.HtmlController.product()
-GET        /ingredient/1              controllers.HtmlController.ingredient()
-GET        /products                  controllers.HtmlController.products()
-GET        /ingredients               controllers.HtmlController.ingredients()
-GET        /profile                   controllers.HtmlController.profile()
+GET        /                          src.controllers.HtmlController.index()
+GET        /product/1                 src.controllers.HtmlController.product()
+GET        /ingredient/1              src.controllers.HtmlController.ingredient()
+GET        /products                  src.controllers.HtmlController.products()
+GET        /ingredients               src.controllers.HtmlController.ingredients()
+GET        /profile                   src.controllers.HtmlController.profile()
 
 # Ingredient API
-GET        /api/ingredient/:id        controllers.api.IngredientController.info(id: Long)
+GET        /api/ingredient/:id        src.controllers.api.IngredientController.info(id: Long)
 
 # Product API
-GET        /api/product/:id           controllers.api.ProductController.info(id: Long)
+GET        /api/product/:id           src.controllers.api.ProductController.info(id: Long)
 
 # User API
-POST       /api/user/login            controllers.api.UserController.login()
+POST       /api/user/login            src.controllers.api.UserController.login()
 
 # Admin console
-GET        /admin                     controllers.AdminController.home()
+GET        /admin                     src.controllers.AdminController.home()
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file              controllers.Assets.at(path="/public", file)
