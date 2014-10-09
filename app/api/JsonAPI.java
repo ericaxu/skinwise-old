@@ -3,11 +3,11 @@ package api;
 import api.request.BadRequestException;
 import api.request.Request;
 import api.response.Response;
-import api.response.ResponseStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import util.Logger;
 
 import java.io.IOException;
 
@@ -30,7 +30,7 @@ public class JsonAPI {
 			return mapper().writeValueAsString(object);
 		}
 		catch (JsonProcessingException e) {
-			e.printStackTrace();
+			Logger.fatal(TAG, "JSON Serialization error", e);
 		}
 		return "";
 	}
@@ -58,7 +58,7 @@ public class JsonAPI {
 			return deserialize(input, clazz);
 		}
 		catch (IOException e) {
-			throw new BadRequestException(ResponseStatus.BAD_JSON);
+			throw new BadRequestException(Response.BAD_JSON);
 		}
 	}
 

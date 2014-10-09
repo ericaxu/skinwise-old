@@ -1,6 +1,7 @@
 package models;
 
 import play.db.ebean.Model;
+import user.Permissible;
 import util.BCrypt;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class User extends Model {
+public class User extends Model implements Permissible {
 	@Id
 	private long id;
 
@@ -16,10 +17,12 @@ public class User extends Model {
 	private String email;
 	@Column(length = 256)
 	private String password_hash;
-	@Column(length = 256)
-	private String password_salt;
 	@Column(length = 512)
 	private String name;
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "group_id", referencedColumnName = "id")
+	private Usergroup group;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Permission> permissions = new HashSet<>();
@@ -31,16 +34,23 @@ public class User extends Model {
 	}
 
 	public void setPassword(String password) {
-		this.password_salt = BCrypt.gensalt();
-		this.password_hash = BCrypt.hashpw(password, password_salt);
+		this.password_hash = BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
 	public boolean checkPassword(String password) {
-		return BCrypt.hashpw(password, password_salt).equals(password_hash);
+		return BCrypt.checkpw(password, password_hash);
 	}
 
 	public long getId() {
 		return id;
+	}
+
+	public Usergroup getGroup() {
+		return group;
+	}
+
+	public void setGroup(Usergroup group) {
+		this.group = group;
 	}
 
 	public void addPermission(String permission) {
@@ -52,6 +62,9 @@ public class User extends Model {
 	}
 
 	public boolean hasPermission(String permission) {
+		if(getGroup().hasPermission(permission)) {
+			return true;
+		}
 		return permissions.contains(Permission.get(permission));
 	}
 

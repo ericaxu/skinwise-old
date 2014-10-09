@@ -18,7 +18,7 @@ public class Permission extends Model {
 
 	//Static
 
-	public static final String ADMIN_ALL = "ADMIN.ALL";
+	public static final String ADMIN_ALL = "ADMIN.*";
 	private static Finder<String, Permission> find = new Finder<>(String.class, Permission.class);
 
 	public static Permission get(String name) {

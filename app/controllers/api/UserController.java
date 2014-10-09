@@ -1,10 +1,8 @@
 package controllers.api;
 
-import api.API;
 import api.UserAPI;
 import api.request.BadRequestException;
 import api.response.Response;
-import api.response.ResponseStatus;
 import controllers.session.SessionHelper;
 import models.User;
 import play.mvc.Controller;
@@ -19,20 +17,20 @@ public class UserController extends Controller {
 			response = login(request);
 		}
 		catch (BadRequestException e) {
-			response = API.response(e);
+			response = new Response(e);
 		}
-		return API.writeResponse(ctx(), response);
+		return API.writeResponse(response);
 	}
 
 	public static Response login(UserAPI.RequestLogin request) {
 		User user = User.byEmail(request.email);
 
 		if (user == null || !user.checkPassword(request.password)) {
-			return API.response(ResponseStatus.UNAUTHORIZED);
+			return new Response(Response.UNAUTHORIZED).setError("Login failed");
 		}
 		else {
 			SessionHelper.setUser(session(), user);
-			return API.response(ResponseStatus.OK);
+			return new Response(Response.OK);
 		}
 	}
 }

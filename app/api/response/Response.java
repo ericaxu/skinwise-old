@@ -3,24 +3,63 @@ package api.response;
 import api.request.BadRequestException;
 
 public class Response {
-	private ResponseStatus status;
+	public transient static final String OK = "Ok";
+	public transient static final String BAD_JSON = "BadJson";
+	public transient static final String INVALID = "Invalid";
+	public transient static final String INTERNAL_ERROR = "InternalError";
+	public transient static final String UNAUTHORIZED = "Unauthorized";
+
+	private String code = "";
+	private String info = "";
+	private String error = "";
 
 	public Response() {
-		this(ResponseStatus.OK.clone());
+		this(OK);
 	}
 
 	public Response(BadRequestException exception) {
-		this(exception.getState());
+		this(exception.getCode());
+		this.setError(exception.getError());
 	}
 
-	public Response(ResponseStatus status) {
-		this.status = status;
-		if (status.equals(ResponseStatus.INTERNAL_ERROR)) {
-			new Exception().printStackTrace();
+	public Response(String code) {
+		if (code == null) {
+			code = "";
 		}
+
+		this.code = code;
 	}
 
-	public ResponseStatus getStatus() {
-		return status;
+	public String getCode() {
+		return code;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public Response setInfo(String info) {
+		if (info == null) {
+			info = "";
+		}
+		this.info = info;
+		return this;
+	}
+
+	public Response setError(String error) {
+		if (error == null) {
+			error = "";
+		}
+		this.error = error;
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return code + " Info: " + info + " Error: " + error;
 	}
 }

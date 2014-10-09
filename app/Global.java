@@ -1,6 +1,7 @@
 import controllers.ErrorController;
 import models.Permission;
 import models.User;
+import models.Usergroup;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.F;
@@ -13,14 +14,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Global extends GlobalSettings {
+	public static final String ADMIN_USER_GROUP = "Administrators";
+
 	@Override
 	public void onStart(Application app) {
+		Usergroup admin_group = Usergroup.byName(ADMIN_USER_GROUP);
+		if (admin_group == null) {
+			admin_group = new Usergroup(ADMIN_USER_GROUP);
+			admin_group.addPermission(Permission.ADMIN_ALL);
+			admin_group.save();
+		}
+
 		String admin_email = "admin@skinwise.com";
 		String admin_pass = "test@123?!";
 		User admin = User.byEmail(admin_email);
 		if (admin == null) {
 			admin = new User(admin_email, admin_pass, "Admin");
-			admin.addPermission(Permission.ADMIN_ALL);
+			admin.setGroup(admin_group);
 			admin.save();
 		}
 

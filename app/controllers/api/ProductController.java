@@ -1,6 +1,5 @@
 package controllers.api;
 
-import api.API;
 import api.ProductAPI;
 import api.response.Response;
 import models.Product;
@@ -12,10 +11,16 @@ public class ProductController extends Controller {
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result info(long product_id) {
 		Product product = Product.byId(product_id);
-		Response response = new ProductAPI.ResponseProductInfo(product.getName(),
-														       product.getBrand(),
-				                                               product.getDescription());
+		if (product == null) {
+			return API.writeResponse(new Response(Response.OK).setError("Product not found"));
+		}
 
-		return API.writeResponse(ctx(), response);
+		Response response = new ProductAPI.ResponseProductInfo(
+				product.getName(),
+				product.getBrand(),
+				product.getDescription()
+		);
+
+		return API.writeResponse(response);
 	}
 }

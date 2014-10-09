@@ -16,7 +16,6 @@ public class ProductAPI {
 	}
 
 	public static class ResponseProductInfo extends Response {
-		@NotEmpty
 		public String product_name;
 		public String product_brand;
 		public String description;

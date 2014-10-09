@@ -1,20 +1,28 @@
 package api.request;
 
-import api.response.ResponseStatus;
-
 public class BadRequestException extends Exception {
-	private ResponseStatus state;
+	private String code;
+	private String error;
 
-	public BadRequestException(ResponseStatus state) {
-		this.state = state;
+	public BadRequestException(String code) {
+		this(code, "");
 	}
 
-	public ResponseStatus getState() {
-		return state;
+	public BadRequestException(String code, String error) {
+		this.code = code;
+		this.error = error;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public String getError() {
+		return error;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " (BadRequestException: " + state.toString() + ")";
+		return super.toString() + " (BadRequestException: " + code + " Error: " + error + ")";
 	}
 }
