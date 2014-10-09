@@ -11,6 +11,10 @@ var ING_INFOBOX_TIMEOUT_EVENT = null;
 var ING_INFOBOX_TIMEOUT = 500;
 var SEARCHBAR_EXPAND_TIMEOUT_EVENT = null;
 
+function cleanupErrors() {
+    $('.error_msg').hide();
+}
+
 function setupPopups() {
     // Closing popup
     $('.wrapper, .close_btn').on('click', function(e) {
@@ -44,16 +48,28 @@ function setupLoginPopup() {
 
 function setupLoginCall() {
     $('#login_btn').on('click', function(e) {
+        cleanupErrors();
         $(this).val('Signing in...');
         postToAPI('/api/user/login', {
             email: $('#login_email').val(),
             password: $('#login_password').val()
-        }, loginSuccess);
+        }, loginSuccess, loginError);
     });
 }
 
 function loginSuccess() {
     location.reload();
+}
+
+function showLoginErrorMsg(message) {
+    $('#login_error').text(message).show();
+}
+
+function loginError(status) {
+    $('#login_btn').val('Sign in');
+    if (status.code == 'Unauthorized') {
+        showLoginErrorMsg('Email or password is incorrect.');
+    }
 }
 
 function setupSignupPopup() {
@@ -64,9 +80,21 @@ function setupSignupPopup() {
     });
 }
 
-$(document).ready(function() {
-    setupPopups();
+function setupExpandableSearchbar() {
+    $('#search_icon').on('click', function() {
+        $(this).hide();
+        $('#nav_searchbar').addClass('activated');
+    }).on('mouseenter', function(e) {
+        SEARCHBAR_EXPAND_TIMEOUT_EVENT = setTimeout($.proxy(function() {
+            $(this).hide();
+            $('#nav_searchbar').addClass('activated');
+        }, this), 400);
+    }).on('mouseleave', function() {
+        clearTimeout(SEARCHBAR_EXPAND_TIMEOUT_EVENT);
+    });
+}
 
+function setupIngredientInfobox() {
     var $ingredient = $('.ingredient');
 
     $ingredient.on('click', function(e) {
@@ -105,16 +133,12 @@ $(document).ready(function() {
     $ingredient.on('click', function(e) {
         e.stopPropagation();
     });
+}
 
-    $('#search_icon').on('click', function() {
-        $(this).hide();
-        $('#nav_searchbar').addClass('activated');
-    }).on('mouseenter', function(e) {
-        SEARCHBAR_EXPAND_TIMEOUT_EVENT = setTimeout($.proxy(function() {
-            $(this).hide();
-            $('#nav_searchbar').addClass('activated');
-        }, this), 400);
-    }).on('mouseleave', function() {
-        clearTimeout(SEARCHBAR_EXPAND_TIMEOUT_EVENT);
-    });
+$(document).ready(function() {
+    setupPopups();
+
+    setupIngredientInfobox();
+
+    setupExpandableSearchbar();
 });

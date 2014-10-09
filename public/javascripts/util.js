@@ -4,9 +4,15 @@ function postToAPI(url, params, successCallback, errorCallback) {
         contentType: "text/plain",
         type: "POST",
         data: JSON.stringify(params),
+        dataType: "json",
         success: function(response, status, jqxhr) {
             console.log(response);
-            successCallback && successCallback(response);
+            if (response.status.code == "Ok") {
+                successCallback && successCallback(response);
+            } else if (errorCallback) {
+                console.log("Error communicating with API: " + response.status.code);
+                errorCallback(response.status);
+            }
         },
 
         error: function(jqxhr, status, err) {
