@@ -1,9 +1,12 @@
 function postToAPI(url, params, successCallback, errorCallback, message) {
     console.log(url, params);
     if (message) {
-        var $message_box = $(getNoticeHTML('info', message));
+        var $message_box = $(SW.TEMPALTES.NOTICE({
+            type: 'info',
+            message: message
+        }));
         $('.notice_container').append($message_box);
-        $message_box.fadeIn(200);
+        $message_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
     }
     $.ajax(url, {
         contentType: 'text/plain',
@@ -14,7 +17,7 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
             console.log(response);
 
             if (message) {
-                $message_box.fadeOut(200);
+                $message_box.fadeOut(SW.CONFIG.NOTICE_FADE_OUT);
             }
 
             showMessages(response.messages);
@@ -37,15 +40,14 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
 function showMessages(messages) {
     for (var i = 0; i < messages.length; i++) {
         var message = messages[i];
-        var $notice_box = $(getNoticeHTML(message.type, message.message));
+        var $notice_box = $(SW.TEMPALTES.NOTICE({
+            type: message.type,
+            message: message.message
+        }));
         $('.notice_container').append($notice_box);
-        $notice_box.fadeIn(200);
+        $notice_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
         setTimeout(function() {
             $notice_box.fadeOut(200);
         }, message.timeout);
     }
-}
-
-function getNoticeHTML(type, message) {
-    return '<div class="' + type + '"><span class="close_btn"></span><p class="message">' + message + '</p></div>';
 }
