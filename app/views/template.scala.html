@@ -1,6 +1,5 @@
 @(title: String, state: src.views.ResponseState)(head: => Html)(body: => Html)(scripts: => Html)
 
-
 <!DOCTYPE html>
 
 <html>
@@ -63,11 +62,10 @@
     <script src='@routes.Assets.at("javascripts/util.js")'></script>
     <script src='@routes.Assets.at("javascripts/main.js")'></script>
     @scripts
-    @if(response != null) {
+    @if(state.getResponse() != null) {
         <script>
-            //ALERT.processResponse(
-            var response = @Html(src.util.Json.serialize(response));
-            //);
+            var messages = @Html(src.util.Json.serialize(state.getResponse().getMessages()));
+            showMessages(messages);
         </script>
     }
     </body>

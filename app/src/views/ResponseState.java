@@ -13,13 +13,21 @@ public class ResponseState {
 		this.user = SessionHelper.getUser(session);
 		this.response = new Response();
 	}
-
 	public User getUser() {
 		return user;
 	}
 
+	public void setUser(User user) {
+
+		this.user = user;
+	}
+
 	public Response getResponse() {
 		return response;
+	}
+
+	public void setResponse(Response response) {
+		this.response = response;
 	}
 
 	public boolean userHasPermission(String permission) {

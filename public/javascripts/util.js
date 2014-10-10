@@ -8,15 +8,7 @@ function postToAPI(url, params, successCallback, errorCallback) {
         success: function(response, status, jqxhr) {
             console.log(response);
 
-            for (var i = 0; i < response.messages.length; i++) {
-                var message = response.messages[i];
-                var $notice_box = $(getNoticeHTML(message.type, message.message));
-                $('.notice_container').append($notice_box);
-                $notice_box.fadeIn(200);
-                setTimeout(function() {
-                    $notice_box.fadeOut(200);
-                }, message.timeout);
-            }
+            showMessages(response.messages);
 
             if (response.code == "Ok") {
                 successCallback && successCallback(response);
@@ -31,6 +23,18 @@ function postToAPI(url, params, successCallback, errorCallback) {
             errorCallback && errorCallback(response);
         }
     });
+}
+
+function showMessages(messages) {
+    for (var i = 0; i < messages.length; i++) {
+        var message = messages[i];
+        var $notice_box = $(getNoticeHTML(message.type, message.message));
+        $('.notice_container').append($notice_box);
+        $notice_box.fadeIn(200);
+        setTimeout(function() {
+            $notice_box.fadeOut(200);
+        }, message.timeout);
+    }
 }
 
 function getNoticeHTML(type, message) {
