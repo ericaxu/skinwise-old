@@ -15,7 +15,7 @@ import src.util.Logger;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-public class API {
+public class Api {
 	private static final String TAG = "API";
 
 	public static <T extends Request> T read(Http.Context context, Class<? extends T> clazz)

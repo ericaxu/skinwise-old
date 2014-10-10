@@ -3,7 +3,7 @@ package src.controllers;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.API;
+import src.api.Api;
 import src.api.IngredientApi;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
@@ -14,7 +14,7 @@ public class IngredientController extends Controller {
 	public static Result api_info(long ingredient_id) {
 		Ingredient ingredient = Ingredient.byId(ingredient_id);
 		if (ingredient == null) {
-			return API.write(new Response(Response.NOT_FOUND)
+			return Api.write(new Response(Response.NOT_FOUND)
 					.addMessage(ResponseMessage.error("Ingredient not found")));
 		}
 
@@ -24,6 +24,6 @@ public class IngredientController extends Controller {
 				ingredient.getDescription()
 		);
 
-		return API.write(response);
+		return Api.write(response);
 	}
 }

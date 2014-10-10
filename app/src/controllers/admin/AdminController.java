@@ -2,7 +2,7 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.API;
+import src.api.Api;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.InfoResponse;
@@ -54,10 +54,10 @@ public class AdminController extends Controller {
 
 			System.gc();
 
-			return API.write(new InfoResponse("Import success"));
+			return Api.write(new InfoResponse("Import success"));
 		}
 		catch (BadRequestException e) {
-			return API.write(new ErrorResponse(e));
+			return Api.write(new ErrorResponse(e));
 		}
 	}
 }

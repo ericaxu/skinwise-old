@@ -2,7 +2,7 @@ package src.controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.API;
+import src.api.Api;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
 import src.views.ResponseState;
@@ -17,6 +17,6 @@ public class ErrorController extends Controller {
 	public static Result api_notfound(String route) {
 		Response response = new Response(Response.NOT_FOUND)
 				.addMessage(ResponseMessage.error("API Endpoint " + route + " not found"));
-		return API.write(response);
+		return Api.write(response);
 	}
 }

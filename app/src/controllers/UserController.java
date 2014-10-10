@@ -2,7 +2,7 @@ package src.controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.API;
+import src.api.Api;
 import src.api.UserApi;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
@@ -13,7 +13,7 @@ import src.models.User;
 public class UserController extends Controller {
 	public static Result api_login() {
 		try {
-			UserApi.RequestLogin request = API.read(ctx(), UserApi.RequestLogin.class);
+			UserApi.RequestLogin request = Api.read(ctx(), UserApi.RequestLogin.class);
 
 			User user = User.byEmail(request.email);
 
@@ -23,16 +23,16 @@ public class UserController extends Controller {
 
 			SessionHelper.setUser(session(), user);
 
-			return API.write();
+			return Api.write();
 		}
 		catch (BadRequestException e) {
-			return API.write(new ErrorResponse(e));
+			return Api.write(new ErrorResponse(e));
 		}
 	}
 
 	public static Result api_signup() {
 		try {
-			UserApi.RequestSignup request = API.read(ctx(), UserApi.RequestSignup.class);
+			UserApi.RequestSignup request = Api.read(ctx(), UserApi.RequestSignup.class);
 
 			User user = User.byEmail(request.email);
 
@@ -45,16 +45,16 @@ public class UserController extends Controller {
 
 			SessionHelper.setUser(session(), user);
 
-			return API.write();
+			return Api.write();
 		}
 		catch (BadRequestException e) {
-			return API.write(new ErrorResponse(e));
+			return Api.write(new ErrorResponse(e));
 		}
 	}
 
 	public static Result api_logout() {
 		SessionHelper.setUser(session(), null);
 
-		return API.write();
+		return Api.write();
 	}
 }

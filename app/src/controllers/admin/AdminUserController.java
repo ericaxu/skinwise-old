@@ -2,7 +2,7 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.API;
+import src.api.Api;
 import src.api.AdminUserApi;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
@@ -23,17 +23,17 @@ public class AdminUserController extends Controller {
 			}
 
 			AdminUserApi.RequestGetUserById request =
-					API.read(ctx(), AdminUserApi.RequestGetUserById.class);
+					Api.read(ctx(), AdminUserApi.RequestGetUserById.class);
 
 			User user = User.byId(request.id);
 			if (user == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "User id " + request.id + " not found");
 			}
 
-			return API.write(getUserResponse(user));
+			return Api.write(getUserResponse(user));
 		}
 		catch (BadRequestException e) {
-			return API.write(new ErrorResponse(e));
+			return Api.write(new ErrorResponse(e));
 		}
 	}
 
@@ -46,17 +46,17 @@ public class AdminUserController extends Controller {
 			}
 
 			AdminUserApi.RequestGetUserByEmail request =
-					API.read(ctx(), AdminUserApi.RequestGetUserByEmail.class);
+					Api.read(ctx(), AdminUserApi.RequestGetUserByEmail.class);
 
 			User user = User.byEmail(request.email);
 			if (user == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "User email " + request.email + " not found");
 			}
 
-			return API.write(getUserResponse(user));
+			return Api.write(getUserResponse(user));
 		}
 		catch (BadRequestException e) {
-			return API.write(new ErrorResponse(e));
+			return Api.write(new ErrorResponse(e));
 		}
 	}
 
