@@ -16,8 +16,10 @@ public class User extends Model implements Permissible {
 
 	@Column(length = 512, unique = true)
 	private String email;
+
 	@Column(length = 256)
 	private String password_hash;
+
 	@Column(length = 512)
 	private String name;
 
@@ -36,30 +38,42 @@ public class User extends Model implements Permissible {
 		setPassword(password);
 	}
 
-	public void setPassword(String password) {
-		this.password_hash = BCrypt.hashpw(password, BCrypt.gensalt());
-	}
-
-	public boolean checkPassword(String password) {
-		return BCrypt.checkpw(password, password_hash);
-	}
+	//Getters
 
 	public long getId() {
 		return id;
 	}
 
-	public String getName() { return name; }
+	public String getEmail() {
+		return email;
+	}
+
+	public String getName() {
+		return name;
+	}
 
 	public Usergroup getGroup() {
 		return group;
 	}
 
-	public void setGroup(Usergroup group) {
-		this.group = group;
-	}
+	//Setters
 
 	public void setPermissions(String permissions) {
 		this.permissions = permissions;
+	}
+
+	public void setPassword(String password) {
+		this.password_hash = BCrypt.hashpw(password, BCrypt.gensalt());
+	}
+
+	//Others
+
+	public boolean checkPassword(String password) {
+		return BCrypt.checkpw(password, password_hash);
+	}
+
+	public void setGroup(Usergroup group) {
+		this.group = group;
 	}
 
 	public Set<String> getPermissions_set() {

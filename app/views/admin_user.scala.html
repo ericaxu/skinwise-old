@@ -1,0 +1,25 @@
+@(state: src.views.ResponseState, user: src.models.User, usergroup: src.models.Usergroup)
+
+@template("Admin Console - User Manager", state) {
+
+} {
+
+    <div class="section">
+        <h1>Manage Users</h1>
+    </div>
+
+    <div class="section">
+        <h1>User</h1>
+        <div class="field">
+            <p>By ID: <input type="text"/></p>
+        </div>
+        @if(user != null) {
+            <div class="field">
+                <p>@user.getName</p>
+            </div>
+        }
+    </div>
+
+} {
+
+}

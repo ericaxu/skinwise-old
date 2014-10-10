@@ -5,9 +5,9 @@ import play.mvc.Result;
 import src.controllers.ErrorController;
 import src.user.Permission;
 import src.views.ResponseState;
-import views.html.admin_home;
+import views.html.admin_user;
 
-public class UserAdminController extends Controller {
+public class AdminUserController extends Controller {
 	private static final String TAG = "UserAdminController";
 
 	public static Result home() {
@@ -17,6 +17,6 @@ public class UserAdminController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(admin_home.render(null));
+		return ok(admin_user.render(state, null, null));
 	}
 }

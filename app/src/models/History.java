@@ -88,7 +88,7 @@ public class History<T extends BaseModel> {
 	}
 
 	public static long getTargetId(BaseModel object) {
-		if(object == null) {
+		if (object == null) {
 			return TARGET_ID_NEW;
 		}
 		return object.getId();
