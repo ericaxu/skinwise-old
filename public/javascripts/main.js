@@ -34,6 +34,15 @@ function setupPopups() {
 
     setupLoginPopup();
     setupSignupPopup();
+    setupForgotPasswordPopup();
+}
+
+function setupForgotPasswordPopup() {
+    $('#forget_password_link').on('click', function(e) {
+        e.preventDefault();
+        $('.popup').hide();
+        $('.forgot_password.popup').show();
+    })
 }
 
 function setupLoginPopup() {
