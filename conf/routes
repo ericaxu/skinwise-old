@@ -24,8 +24,8 @@ POST        /api/user/login            src.controllers.UserController.api_login(
 POST        /api/user/logout           src.controllers.UserController.api_logout()
 
 # Admin console
-GET         /admin                     src.controllers.AdminController.home()
-POST        /api/admin/import          src.controllers.AdminController.api_auto_import()
+GET         /admin                     src.controllers.admin.AdminController.home()
+POST        /api/admin/import          src.controllers.admin.AdminController.api_auto_import()
 
 # API 404
 POST        /api/*route                src.controllers.ErrorController.api_notfound(route)

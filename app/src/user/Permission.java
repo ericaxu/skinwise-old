@@ -1,13 +1,12 @@
 package src.user;
 
-import src.util.Logger;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Permission {
 	public static final String ADMIN_ALL = "ADMIN.*";
+	public static final String ADMIN_VIEW = "ADMIN.VIEW";
 	public static final String ADMIN_IMPORT = "ADMIN.IMPORT";
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {

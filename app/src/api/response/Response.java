@@ -33,6 +33,11 @@ public class Response {
 		this.code = code;
 	}
 
+	public Response setCode(String code) {
+		this.code = code;
+		return this;
+	}
+
 	public String getCode() {
 		return code;
 	}

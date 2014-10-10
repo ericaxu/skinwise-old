@@ -5,12 +5,12 @@ import play.mvc.Result;
 import src.api.API;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
-import src.views.RenderState;
+import src.views.ResponseState;
 import views.html.error404;
 
 public class ErrorController extends Controller {
 	public static Result notfound() {
-		RenderState state = new RenderState(session());
+		ResponseState state = new ResponseState(session());
 		return ok(error404.render(state));
 	}
 

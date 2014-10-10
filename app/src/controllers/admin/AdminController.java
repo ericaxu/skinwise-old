@@ -1,16 +1,15 @@
-package src.controllers;
+package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
-import src.controllers.session.SessionHelper;
-import src.models.User;
+import src.controllers.ErrorController;
 import src.user.Permission;
 import src.util.Logger;
 import src.util.dbimport.ImportIngredients;
-import src.views.RenderState;
+import src.views.ResponseState;
 import views.html.admin_home;
 
 import java.io.IOException;
@@ -21,9 +20,9 @@ public class AdminController extends Controller {
 	private static final String TAG = "AdminController";
 
 	public static Result home() {
-		RenderState state = new RenderState(session());
+		ResponseState state = new ResponseState(session());
 
-		if (state.getUser() == null || !state.getUser().hasPermission(Permission.ADMIN_ALL)) {
+		if (!state.userHasPermission(Permission.ADMIN_VIEW)) {
 			return ErrorController.notfound();
 		}
 
@@ -31,10 +30,11 @@ public class AdminController extends Controller {
 	}
 
 	public static Result api_auto_import() {
-		User user = SessionHelper.getUser(session());
+		ResponseState state = new ResponseState(session());
 
-		if (user == null || !user.hasPermission(Permission.ADMIN_IMPORT)) {
-			return API.writeResponse(new Response(Response.UNAUTHORIZED)
+		if (!state.userHasPermission(Permission.ADMIN_IMPORT)) {
+			return API.writeResponse(state.getResponse()
+					.setCode(Response.UNAUTHORIZED)
 					.addMessage(ResponseMessage.error("You are not allowed to do that!")));
 		}
 
