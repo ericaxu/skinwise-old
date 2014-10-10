@@ -3,8 +3,8 @@ package src.controllers
 import play.api.mvc._
 import src.models.Ingredient
 
-import scala.collection.mutable._
 import scala.collection.JavaConversions._
+import scala.collection.mutable._
 import scala.math._
 
 /**

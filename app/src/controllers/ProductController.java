@@ -14,7 +14,7 @@ public class ProductController extends Controller {
 	public static Result api_info(long product_id) {
 		Product product = Product.byId(product_id);
 		if (product == null) {
-			return API.writeResponse(new Response(Response.NOT_FOUND)
+			return API.write(new Response(Response.NOT_FOUND)
 					.addMessage(ResponseMessage.error("Product not found")));
 		}
 
@@ -24,6 +24,6 @@ public class ProductController extends Controller {
 				product.getDescription()
 		);
 
-		return API.writeResponse(response);
+		return API.write(response);
 	}
 }

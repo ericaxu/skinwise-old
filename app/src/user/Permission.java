@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Permission {
-	public static final String ADMIN_ALL = "ADMIN.*";
-	public static final String ADMIN_VIEW = "ADMIN.VIEW";
-	public static final String ADMIN_IMPORT = "ADMIN.IMPORT";
+	public static class ADMIN {
+		public static final String ALL = "ADMIN.*";
+		public static final String VIEW = "ADMIN.VIEW";
+		public static final String IMPORT = "ADMIN.IMPORT";
+		public static final String USER = "ADMIN.USER";
+	}
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {
 		String[] parts = permission.split("\\.");

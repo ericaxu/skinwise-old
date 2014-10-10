@@ -16,7 +16,7 @@ public class Global extends GlobalSettings {
 		Usergroup admin_group = Usergroup.byName(ADMIN_USER_GROUP);
 		if (admin_group == null) {
 			admin_group = new Usergroup(ADMIN_USER_GROUP);
-			admin_group.addPermission(Permission.ADMIN_ALL);
+			admin_group.addPermission(Permission.ADMIN.ALL);
 			admin_group.save();
 		}
 

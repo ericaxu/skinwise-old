@@ -14,7 +14,7 @@ public class IngredientController extends Controller {
 	public static Result api_info(long ingredient_id) {
 		Ingredient ingredient = Ingredient.byId(ingredient_id);
 		if (ingredient == null) {
-			return API.writeResponse(new Response(Response.NOT_FOUND)
+			return API.write(new Response(Response.NOT_FOUND)
 					.addMessage(ResponseMessage.error("Ingredient not found")));
 		}
 
@@ -24,6 +24,6 @@ public class IngredientController extends Controller {
 				ingredient.getDescription()
 		);
 
-		return API.writeResponse(response);
+		return API.write(response);
 	}
 }

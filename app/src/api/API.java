@@ -8,18 +8,29 @@ import src.api.request.NotEmpty;
 import src.api.request.NotNull;
 import src.api.request.Request;
 import src.api.response.Response;
+import src.api.response.ResponseMessage;
+import src.util.Json;
+import src.util.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class API {
-	public static <T extends Request> T readRequest(Http.Context context,
-	                                                Class<? extends T> clazz)
-			throws BadRequestException {
-		T request = JsonAPI.readRequest(context.request().body().asText(), clazz);
+	private static final String TAG = "API";
 
-		//Check fields satisfy request specifications
-		validateFields(request);
-		return request;
+	public static <T extends Request> T read(Http.Context context, Class<? extends T> clazz)
+			throws BadRequestException {
+		try {
+			T request = Json.deserialize(context.request().body().asText(), clazz);
+
+			//Check fields satisfy request specifications
+			validateFields(request);
+
+			return request;
+		}
+		catch (IOException e) {
+			throw new BadRequestException(Response.BAD_JSON);
+		}
 	}
 
 	private static void validateFields(Request request) throws BadRequestException {
@@ -32,8 +43,7 @@ public class API {
 				data = field.get(request);
 			}
 			catch (IllegalAccessException e) {
-				//TODO: Log this
-				e.printStackTrace();
+				Logger.fatal(TAG, "Field not accessible!", e);
 			}
 
 			if (field.isAnnotationPresent(NotNull.class) || field.isAnnotationPresent(NotEmpty.class)) {
@@ -50,8 +60,12 @@ public class API {
 		}
 	}
 
-	public static Results.Status writeResponse(Response response) {
-		String data = JsonAPI.writeResponse(response);
+	public static Results.Status write() {
+		return write(new Response());
+	}
+
+	public static Results.Status write(Response response) {
+		String data = Json.serialize(response);
 		return Controller.ok(data);
 	}
 }

@@ -17,6 +17,6 @@ public class ErrorController extends Controller {
 	public static Result api_notfound(String route) {
 		Response response = new Response(Response.NOT_FOUND)
 				.addMessage(ResponseMessage.error("API Endpoint " + route + " not found"));
-		return API.writeResponse(response);
+		return API.write(response);
 	}
 }

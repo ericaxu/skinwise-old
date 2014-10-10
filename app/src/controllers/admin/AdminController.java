@@ -3,8 +3,10 @@ package src.controllers.admin;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
+import src.api.request.BadRequestException;
+import src.api.response.ErrorResponse;
+import src.api.response.InfoResponse;
 import src.api.response.Response;
-import src.api.response.ResponseMessage;
 import src.controllers.ErrorController;
 import src.user.Permission;
 import src.util.Logger;
@@ -22,7 +24,7 @@ public class AdminController extends Controller {
 	public static Result home() {
 		ResponseState state = new ResponseState(session());
 
-		if (!state.userHasPermission(Permission.ADMIN_VIEW)) {
+		if (!state.userHasPermission(Permission.ADMIN.VIEW)) {
 			return ErrorController.notfound();
 		}
 
@@ -32,27 +34,30 @@ public class AdminController extends Controller {
 	public static Result api_auto_import() {
 		ResponseState state = new ResponseState(session());
 
-		if (!state.userHasPermission(Permission.ADMIN_IMPORT)) {
-			return API.writeResponse(state.getResponse()
-					.setCode(Response.UNAUTHORIZED)
-					.addMessage(ResponseMessage.error("You are not allowed to do that!")));
-		}
-
-		Logger.info(TAG, "DB import started");
-
 		try {
-			byte[] data = Files.readAllBytes(Paths.get("php/data/specialchem-ingredients.json.txt"));
-			String inci = new String(data);
-			ImportIngredients.importDB(inci);
+			if (!state.userHasPermission(Permission.ADMIN.IMPORT)) {
+				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+			}
+
+			Logger.info(TAG, "DB import started");
+
+			try {
+				byte[] data = Files.readAllBytes(Paths.get("php/data/specialchem-ingredients.json.txt"));
+				String inci = new String(data);
+				ImportIngredients.importDB(inci);
+			}
+			catch (IOException e) {
+				Logger.error(TAG, e);
+			}
+
+			Logger.info(TAG, "DB import finished");
+
+			System.gc();
+
+			return API.write(new InfoResponse("Import success"));
 		}
-		catch (IOException e) {
-			Logger.error(TAG, e);
+		catch (BadRequestException e) {
+			return API.write(new ErrorResponse(e));
 		}
-
-		Logger.info(TAG, "DB import finished");
-
-		System.gc();
-
-		return API.writeResponse(new Response().addMessage(ResponseMessage.info("Import success")));
 	}
 }

@@ -13,7 +13,6 @@ public class HtmlController extends Controller {
 	}
 
 	public static Result product() {
-
 		ResponseState state = new ResponseState(session());
 		return ok(product.render(state));
 	}

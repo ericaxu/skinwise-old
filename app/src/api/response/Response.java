@@ -20,20 +20,15 @@ public class Response {
 		this(OK);
 	}
 
-	public Response(BadRequestException exception) {
-		this(exception.getCode());
-		this.addMessage(ResponseMessage.error(exception.getError()));
+	public Response(String code) {
+		setCode(code);
 	}
 
-	public Response(String code) {
+	public Response setCode(String code) {
 		if (code == null) {
 			code = "";
 		}
 
-		this.code = code;
-	}
-
-	public Response setCode(String code) {
 		this.code = code;
 		return this;
 	}
