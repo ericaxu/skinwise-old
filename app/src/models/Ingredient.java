@@ -1,80 +1,89 @@
 package src.models;
 
-import play.db.ebean.Model;
-
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Ingredient extends Model {
-	@Id
-	private long id;
+public class Ingredient extends BaseModel {
 
-	@Column(length = 1024, unique = true)
+	@Column(length = 1024)
 	private String name;
 
 	@Column(length = 128)
 	private String cas_number;
 
-	@Column(length = 1024)
+	@Column(length = 4096)
 	private String description;
 
 	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER)
 	private Set<IngredientName> names = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<IngredientFunction> functions = new HashSet<>();
+	private Set<Function> functions = new HashSet<>();
 
-	public Ingredient(String name,
-	                  String cas_number,
-	                  String description) {
-		this.name = name;
-		this.cas_number = cas_number;
-		this.description = description;
-	}
+	//Getters
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public boolean addNames(Collection<IngredientName> c) {
-		return names.addAll(c);
-	}
-
-	public boolean addFunctions(Collection<IngredientFunction> c) {
-		return functions.addAll(c);
-	}
-
-	public Set<IngredientFunction> getFunctions() {
-		return functions;
-	}
-
-	public List<String> getFunctionNames() {
-		List<String> functionNames = new ArrayList<>();
-		for (IngredientFunction function : functions) {
-			functionNames.add(function.getName());
-		}
-		return functionNames;
-	}
-
-	public Set<IngredientName> getNames() {
-		return names;
-	}
-
-	public String getDescription() {
-		return description;
+	public String getName() {
+		return name;
 	}
 
 	public String getCas_number() {
 		return cas_number;
 	}
 
-	public String getName() {
-		return name;
+	public String getDescription() {
+		return description;
 	}
 
-	public long getId() {
-		return id;
+	public Set<IngredientName> getNames() {
+		return names;
+	}
+
+	public Set<Function> getFunctions() {
+		return functions;
+	}
+
+	//Setters
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setCas_number(String cas_number) {
+		this.cas_number = cas_number;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setNames(Set<IngredientName> names) {
+		this.names = names;
+	}
+
+	public void setFunctions(Set<Function> functions) {
+		this.functions = functions;
+	}
+
+	//Others
+
+	public void loadFrom(Ingredient other) {
+		setName(other.getName());
+		setCas_number(other.getCas_number());
+		setDescription(other.getDescription());
+		setNames(other.getNames());
+		setFunctions(other.getFunctions());
+	}
+
+	public List<String> getFunctionNames() {
+		List<String> functionNames = new ArrayList<>();
+		for (Function function : functions) {
+			functionNames.add(function.getName());
+		}
+		return functionNames;
 	}
 
 	//Static

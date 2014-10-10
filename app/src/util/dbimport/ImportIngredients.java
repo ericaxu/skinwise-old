@@ -1,7 +1,6 @@
 package src.util.dbimport;
 
-import src.models.Ingredient;
-import src.models.IngredientFunction;
+import src.models.*;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
@@ -12,71 +11,58 @@ import java.util.Set;
 public class ImportIngredients {
 	private static final String TAG = "ImportIngredients";
 
-	public static void importDB(String json) throws IOException {
+	public static synchronized void importDB(String json) throws IOException {
 		IngredientFormat result = Json.deserialize(json, IngredientFormat.class);
 
 		//Import functions
 		for (IngredientFunctionObject object : result.ingredient_functions) {
-			createOrUpdate(object);
+			create(object);
 		}
 
 		//Import ingredients
 		for (IngredientObject object : result.ingredients) {
-			createOrUpdate(object);
+			create(object);
 		}
 	}
 
-	private static void createOrUpdate(IngredientFunctionObject object) {
-		object.description = Util.notNull(object.description);
+	private static void create(IngredientFunctionObject object) {
 		object.name = Util.notNull(object.name).toLowerCase();
-		IngredientFunction function = IngredientFunction.byName(object.name);
-		if (function == null) {
-			function = new IngredientFunction(object.name, object.description);
-		}
+		object.description = Util.notNull(object.description);
 
-		String oldDescription = function.getDescription();
-		if (oldDescription == null || oldDescription.isEmpty()) {
-			function.setDescription(object.description);
-		}
-		else if (!oldDescription.equals(object.description)) {
-			Logger.error(TAG, "Function description not matching! " +
-					oldDescription + "|" + object.description);
-		}
+		Function target = Function.byName(object.name);
+		long target_id = History.getTargetId(target);
 
-		function.save();
+		AllFunction result = new AllFunction(target_id, History.SUBMITTED_BY_SYSTEM);
+		result.setName(object.name);
+		result.setDescription(object.description);
+
+		result.save();
+		result.approve();
 	}
 
-	private static void createOrUpdate(IngredientObject object) {
+	private static void create(IngredientObject object) {
 		object.inci_name = Util.notNull(object.inci_name).toLowerCase();
 		object.description = Util.notNull(object.description);
 		object.cas_no = Util.notNull(object.cas_no);
 		object.restriction = Util.notNull(object.restriction);
+		object.functions = Util.notNull(object.functions);
 
-		Ingredient ingredient = Ingredient.byINCIName(object.inci_name);
-		if (ingredient == null) {
-			ingredient = new Ingredient(object.inci_name,
-					object.cas_no,
-					object.description
-			);
-		}
+		Ingredient target = Ingredient.byINCIName(object.inci_name);
+		long target_id = History.getTargetId(target);
 
-		String oldDescription = ingredient.getDescription();
-		if (oldDescription == null || oldDescription.isEmpty()) {
-			ingredient.setDescription(object.description);
-		}
-		else if (!oldDescription.equals(object.description)) {
-			Logger.error(TAG, "Ingredient description not matching! " +
-					oldDescription + "|" + object.description);
-		}
+		AllIngredient result = new AllIngredient(target_id, History.SUBMITTED_BY_SYSTEM);
+		result.setName(object.inci_name);
+		result.setCas_number(object.cas_no);
+		result.setDescription(object.description);
 
-		Set<IngredientFunction> functionList = ingredient.getFunctions();
+		Set<Function> functionList = result.getFunctions();
 		String[] functions = object.functions.split(",");
 		for (String function : functions) {
 			function = function.trim();
 			if (function.isEmpty()) {
 				continue;
 			}
-			IngredientFunction function1 = IngredientFunction.byName(function.toLowerCase());
+			Function function1 = Function.byName(function.toLowerCase());
 			if (function1 == null) {
 				Logger.debug(TAG, object.functions);
 			}
@@ -84,9 +70,10 @@ public class ImportIngredients {
 				functionList.add(function1);
 			}
 		}
-		ingredient.addFunctions(functionList);
+		result.setFunctions(functionList);
 
-		ingredient.save();
+		result.save();
+		result.approve();
 	}
 
 	public static class IngredientFormat {

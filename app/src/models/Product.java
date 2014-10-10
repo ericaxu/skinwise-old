@@ -2,7 +2,9 @@ package src.models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -40,7 +42,9 @@ public class Product extends Model {
 		return name;
 	}
 
-	public String getDescription() { return description; }
+	public String getDescription() {
+		return description;
+	}
 
 	public long getId() {
 		return id;

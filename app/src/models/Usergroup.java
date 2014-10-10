@@ -3,7 +3,10 @@ package src.models;
 import play.db.ebean.Model;
 import src.user.Permission;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

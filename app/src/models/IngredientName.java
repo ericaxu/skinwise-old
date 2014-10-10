@@ -1,25 +1,19 @@
 package src.models;
 
-import play.db.ebean.Model;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class IngredientName extends Model {
-	@Id
-	private long id;
+public class IngredientName extends BaseModel {
 
-	@Column(length = 1024, unique = true)
+	@Column(length = 1024)
 	private String name;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
 	private Ingredient ingredient;
 
-	public long getId() {
-		return id;
-	}
+	//Getters
 
 	public String getName() {
 		return name;
@@ -27,6 +21,23 @@ public class IngredientName extends Model {
 
 	public Ingredient getIngredient() {
 		return ingredient;
+	}
+
+	//Setters
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setIngredient(Ingredient ingredient) {
+		this.ingredient = ingredient;
+	}
+
+	//Others
+
+	public void loadFrom(IngredientName other) {
+		setName(other.getName());
+		setIngredient(other.getIngredient());
 	}
 
 	//Static
