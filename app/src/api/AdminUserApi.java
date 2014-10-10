@@ -1,6 +1,7 @@
 package src.api;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import src.api.request.NotNull;
 import src.api.request.Request;
 import src.api.response.Response;
 
@@ -48,5 +49,23 @@ public class AdminUserApi {
 			this.name = name;
 			this.permissions = permissions;
 		}
+	}
+
+	public static class RequestEditUser extends Request {
+		public long id;
+		@NotEmpty
+		public String email;
+		@NotEmpty
+		public String name;
+		@NotNull
+		public String group;
+		public Set<String> permissions;
+	}
+
+	public static class RequestEditGroup extends Request {
+		public long id;
+		@NotEmpty
+		public String name;
+		public Set<String> permissions;
 	}
 }

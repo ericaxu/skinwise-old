@@ -32,6 +32,12 @@ POST        /api/admin/userbyemail         src.controllers.admin.AdminUserContro
 POST        /api/admin/groupbyid           src.controllers.admin.AdminUserController.api_get_group_by_id()
 POST        /api/admin/groupbyname         src.controllers.admin.AdminUserController.api_get_group_by_name()
 
+POST        /api/admin/edituser            src.controllers.admin.AdminUserController.api_edit_user()
+POST        /api/admin/editgroup           src.controllers.admin.AdminUserController.api_edit_group()
+
+POST        /api/admin/deleteuser          src.controllers.admin.AdminUserController.api_delete_user()
+POST        /api/admin/deletegroup         src.controllers.admin.AdminUserController.api_delete_group()
+
 # API 404
 POST        /api/*route                    src.controllers.ErrorController.api_notfound(route)
 

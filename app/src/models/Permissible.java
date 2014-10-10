@@ -51,6 +51,11 @@ public abstract class Permissible extends BaseModel {
 		return permissions_set;
 	}
 
+	public void setPermissions_set(Set<String> permissions) {
+		this.permissions_set = permissions;
+		savePermissions();
+	}
+
 	public boolean hasPermission(String permission) {
 		Permissible parent = getParent();
 		if (parent != null) {

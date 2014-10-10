@@ -5,6 +5,7 @@ import play.mvc.Result;
 import src.api.AdminUserApi;
 import src.api.Api;
 import src.api.request.BadRequestException;
+import src.api.request.UnauthorizedException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
 import src.controllers.util.ResponseState;
@@ -20,7 +21,7 @@ public class AdminUserController extends Controller {
 
 		try {
 			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+				throw new UnauthorizedException("You are not allowed to do that!");
 			}
 
 			AdminUserApi.RequestGetById request =
@@ -43,7 +44,7 @@ public class AdminUserController extends Controller {
 
 		try {
 			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+				throw new UnauthorizedException("You are not allowed to do that!");
 			}
 
 			AdminUserApi.RequestGetUserByEmail request =
@@ -66,7 +67,7 @@ public class AdminUserController extends Controller {
 
 		try {
 			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+				throw new UnauthorizedException("You are not allowed to do that!");
 			}
 
 			AdminUserApi.RequestGetById request =
@@ -89,7 +90,7 @@ public class AdminUserController extends Controller {
 
 		try {
 			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+				throw new UnauthorizedException("You are not allowed to do that!");
 			}
 
 			AdminUserApi.RequestGetGroupByName request =
@@ -101,6 +102,116 @@ public class AdminUserController extends Controller {
 			}
 
 			return Api.write(getGroupResponse(result));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_edit_user() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
+				throw new UnauthorizedException("You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestEditUser request =
+					Api.read(ctx(), AdminUserApi.RequestEditUser.class);
+
+			User result = User.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "User id " + request.id + " not found");
+			}
+
+			Usergroup group = Usergroup.byName(request.group);
+
+			result.setName(request.name);
+			result.setEmail(request.email);
+			result.setGroup(group);
+			result.setPermissions_set(request.permissions);
+
+			result.save();
+
+			return Api.write();
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_edit_group() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
+				throw new UnauthorizedException("You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestEditGroup request =
+					Api.read(ctx(), AdminUserApi.RequestEditGroup.class);
+
+			Usergroup result = Usergroup.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Group id " + request.id + " not found");
+			}
+
+			result.setName(request.name);
+			result.setPermissions_set(request.permissions);
+
+			result.save();
+
+			return Api.write();
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_delete_user() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
+				throw new UnauthorizedException("You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestGetById request =
+					Api.read(ctx(), AdminUserApi.RequestGetById.class);
+
+			User result = User.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "User id " + request.id + " not found");
+			}
+
+			result.delete();
+
+			return Api.write();
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_delete_group() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
+				throw new UnauthorizedException("You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestGetById request =
+					Api.read(ctx(), AdminUserApi.RequestGetById.class);
+
+			Usergroup result = Usergroup.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Group id " + request.id + " not found");
+			}
+
+			result.delete();
+
+			return Api.write();
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
