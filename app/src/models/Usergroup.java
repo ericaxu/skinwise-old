@@ -1,20 +1,16 @@
 package src.models;
 
-import play.db.ebean.Model;
 import src.user.Permission;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Lob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Usergroup extends Model {
-	@Id
-	private long id;
+public class Usergroup extends BaseModel {
 
 	@Column(length = 512, unique = true)
 	private String name;
@@ -28,6 +24,24 @@ public class Usergroup extends Model {
 	private transient String permissions_cache = "";
 	private transient Set<String> permissions_set = new HashSet<>();
 
+	//Getters
+
+	public String getName() {
+		return name;
+	}
+
+	//Setters
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPermissions(String permissions) {
+		this.permissions = permissions;
+	}
+
+	//Others
+
 	public Set<String> getPermissions_set() {
 		// permission set and string out of sync
 		if (permissions_set == null || !permissions_cache.equals(permissions)) {
@@ -38,7 +52,7 @@ public class Usergroup extends Model {
 	}
 
 	public void savePermissions() {
-		permissions = Permission.writePermissions(permissions_set);
+		setPermissions(Permission.writePermissions(permissions_set));
 		permissions_cache = permissions;
 	}
 

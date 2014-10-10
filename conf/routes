@@ -3,32 +3,37 @@
 # ~~~~
 
 # Home page
-GET         /                          src.controllers.HtmlController.index()
-GET         /product/1                 src.controllers.HtmlController.product()
-GET         /ingredient/1              src.controllers.HtmlController.ingredient()
-GET         /products                  src.controllers.HtmlController.products()
-GET         /ingredients               src.controllers.HtmlController.ingredients()
-GET         /profile                   src.controllers.HtmlController.profile()
+GET         /                              src.controllers.HtmlController.index()
+GET         /product/1                     src.controllers.HtmlController.product()
+GET         /ingredient/1                  src.controllers.HtmlController.ingredient()
+GET         /products                      src.controllers.HtmlController.products()
+GET         /ingredients                   src.controllers.HtmlController.ingredients()
+GET         /profile                       src.controllers.HtmlController.profile()
 
 # Ingredient API
-GET         /api/ingredient/:id        src.controllers.IngredientController.api_info(id: Long)
-GET         /api/quicksearch/:query    src.controllers.IngredientSearch.partialSearch(query)
-GET         /api/search/:query         src.controllers.IngredientSearch.fullSearch(query)
+GET         /api/ingredient/:id            src.controllers.IngredientController.api_info(id: Long)
+GET         /api/quicksearch/:query        src.controllers.IngredientSearch.partialSearch(query)
+GET         /api/search/:query             src.controllers.IngredientSearch.fullSearch(query)
 
 # Product API
-GET         /api/product/:id           src.controllers.ProductController.api_info(id: Long)
+GET         /api/product/:id               src.controllers.ProductController.api_info(id: Long)
 
 # User API
-POST        /api/user/signup           src.controllers.UserController.api_signup()
-POST        /api/user/login            src.controllers.UserController.api_login()
-POST        /api/user/logout           src.controllers.UserController.api_logout()
+POST        /api/user/signup               src.controllers.UserController.api_signup()
+POST        /api/user/login                src.controllers.UserController.api_login()
+POST        /api/user/logout               src.controllers.UserController.api_logout()
 
 # Admin console
-GET         /admin                     src.controllers.admin.AdminController.home()
-POST        /api/admin/import          src.controllers.admin.AdminController.api_auto_import()
+GET         /admin                         src.controllers.admin.AdminController.home()
+POST        /api/admin/import              src.controllers.admin.AdminController.api_auto_import()
+
+POST        /api/admin/userbyid            src.controllers.admin.AdminUserController.api_get_user_by_id()
+POST        /api/admin/userbyemail         src.controllers.admin.AdminUserController.api_get_user_by_email()
+POST        /api/admin/groupbyid           src.controllers.admin.AdminUserController.api_get_group_by_id()
+POST        /api/admin/groupbyname         src.controllers.admin.AdminUserController.api_get_group_by_name()
 
 # API 404
-POST        /api/*route                src.controllers.ErrorController.api_notfound(route)
+POST        /api/*route                    src.controllers.ErrorController.api_notfound(route)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file              controllers.Assets.at(path="/public", file)
+GET         /assets/*file                  controllers.Assets.at(path="/public", file)

@@ -2,12 +2,13 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.Api;
 import src.api.AdminUserApi;
+import src.api.Api;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
 import src.models.User;
+import src.models.Usergroup;
 import src.user.Permission;
 import src.views.ResponseState;
 
@@ -22,15 +23,15 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
-			AdminUserApi.RequestGetUserById request =
-					Api.read(ctx(), AdminUserApi.RequestGetUserById.class);
+			AdminUserApi.RequestGetById request =
+					Api.read(ctx(), AdminUserApi.RequestGetById.class);
 
-			User user = User.byId(request.id);
-			if (user == null) {
+			User result = User.byId(request.id);
+			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "User id " + request.id + " not found");
 			}
 
-			return Api.write(getUserResponse(user));
+			return Api.write(getUserResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -48,12 +49,58 @@ public class AdminUserController extends Controller {
 			AdminUserApi.RequestGetUserByEmail request =
 					Api.read(ctx(), AdminUserApi.RequestGetUserByEmail.class);
 
-			User user = User.byEmail(request.email);
-			if (user == null) {
+			User result = User.byEmail(request.email);
+			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "User email " + request.email + " not found");
 			}
 
-			return Api.write(getUserResponse(user));
+			return Api.write(getUserResponse(result));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_get_group_by_id() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestGetById request =
+					Api.read(ctx(), AdminUserApi.RequestGetById.class);
+
+			Usergroup result = Usergroup.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Group id " + request.id + " not found");
+			}
+
+			return Api.write(getGroupResponse(result));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_get_group_by_name() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
+			}
+
+			AdminUserApi.RequestGetGroupByName request =
+					Api.read(ctx(), AdminUserApi.RequestGetGroupByName.class);
+
+			Usergroup result = Usergroup.byName(request.name);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Group name " + request.name + " not found");
+			}
+
+			return Api.write(getGroupResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -64,7 +111,17 @@ public class AdminUserController extends Controller {
 		return new AdminUserApi.ResponseUser(
 				user.getId(),
 				user.getEmail(),
-				user.getName());
+				user.getName(),
+				user.getPermissions_set()
+		);
+	}
+
+	private static Response getGroupResponse(Usergroup group) {
+		return new AdminUserApi.ResponseGroup(
+				group.getId(),
+				group.getName(),
+				group.getPermissions_set()
+		);
 	}
 
 }

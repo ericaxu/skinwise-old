@@ -8,7 +8,6 @@ import src.api.request.NotEmpty;
 import src.api.request.NotNull;
 import src.api.request.Request;
 import src.api.response.Response;
-import src.api.response.ResponseMessage;
 import src.util.Json;
 import src.util.Logger;
 

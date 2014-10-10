@@ -1,7 +1,5 @@
 package src.api.response;
 
-import src.api.request.BadRequestException;
-
 import java.util.ArrayList;
 import java.util.List;
 

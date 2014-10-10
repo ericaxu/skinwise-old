@@ -13,6 +13,7 @@ public class ResponseState {
 		this.user = SessionHelper.getUser(session);
 		this.response = new Response();
 	}
+
 	public User getUser() {
 		return user;
 	}

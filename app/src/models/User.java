@@ -1,6 +1,5 @@
 package src.models;
 
-import play.db.ebean.Model;
 import src.user.Permissible;
 import src.user.Permission;
 import src.util.BCrypt;
@@ -10,9 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class User extends Model implements Permissible {
-	@Id
-	private long id;
+public class User extends BaseModel implements Permissible {
 
 	@Column(length = 512, unique = true)
 	private String email;
@@ -39,10 +36,6 @@ public class User extends Model implements Permissible {
 	}
 
 	//Getters
-
-	public long getId() {
-		return id;
-	}
 
 	public String getEmail() {
 		return email;
