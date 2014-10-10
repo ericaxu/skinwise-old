@@ -117,7 +117,7 @@ function setupExpandableSearchbar() {
         SW.SEARCHBAR_EXPAND_TIMEOUT = setTimeout($.proxy(function() {
             $(this).hide();
             $('#nav_searchbar').addClass('activated');
-        }, this), 400);
+        }, this), SW.CONFIG.SEARCHBAR_EXPAND_TIMEOUT);
     }).on('mouseleave', function() {
         clearTimeout(SW.SEARCHBAR_EXPAND_TIMEOUT);
     });
@@ -126,7 +126,6 @@ function setupExpandableSearchbar() {
 $(document).ready(function() {
     setupPopups();
     setupLogoutCall();
-
     setupExpandableSearchbar();
 
     $('.notice_container .close_btn').on('click', function() {
