@@ -6,14 +6,113 @@
 
     <div class="section">
         <h1>Import to Database</h1>
+        <p>Choose database to import to:</p>
         <div class="field">
-            <p>Choose database to import to:</p>
             <p>
                 <input id="import_ingredient_btn" class="primary" type="button" value="Ingredient DB"/>
                 <input id="import_product_btn" class="primary" type="button" value="Product DB"/>
             </p>
         </div>
     </div>
+
+    <div class="section">
+        <h1>User Manager</h1>
+        <div class="field">
+            <div class="labels">
+                <label for="user_by_name">By ID:</label>
+                <label for="user_by_email">By email:</label>
+            </div>
+
+            <div class="inputs">
+                <input type="text" id="user_by_name"/>
+                <input type="button" value="Search"/>
+                <br>
+                <input type="email" id="user_by_email"/>
+                <input type="button" value="Search"/>
+            </div>
+        </div>
+        <p>
+            <input id="create_user_btn" class="primary" type="button" value="Create user"/>
+        </p>
+
+        <div class="edit_user_container">
+            <h2>Edit User</h2>
+            <div class="field">
+                <div class="labels">
+                    <label for="edit_user_id">ID:</label>
+                    <label for="edit_user_name">Name:</label>
+                    <label for="edit_user_email">Email:</label>
+                    <label for="edit_user_group">Group:</label>
+                    <label for="edit_user_permissions">Permissions:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="edit_user_id" readonly/>
+                    <br>
+                    <input type="text" id="edit_user_name"/>
+                    <br>
+                    <input type="email" id="edit_user_email"/>
+                    <br>
+                    <input type="text" id="edit_user_group"/>
+                    <br>
+                    <input type="text" id="edit_user_permissions"/>
+                </div>
+                <div class="field">
+                    <p>
+                        <input id="save_user_btn" class="primary" type="button" value="Save"/>
+                        <input id="delete_user_btn" class="primary" type="button" value="Delete"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<div class="section">
+    <h1>Group Manager</h1>
+    <div class="field">
+        <div class="labels">
+            <label for="group_by_id">By ID:</label>
+            <label for="group_by_name">By name:</label>
+        </div>
+
+        <div class="inputs">
+            <input type="text" id="group_by_id"/>
+            <input type="button" value="Search"/>
+            <br>
+            <input type="text" id="group_by_name"/>
+            <input type="button" value="Search"/>
+        </div>
+    </div>
+    <p>
+        <input id="create_group_btn" class="primary" type="button" value="Create group"/>
+    </p>
+
+    <div class="edit_group_container">
+        <h2>Edit Group</h2>
+        <div class="field">
+            <div class="labels">
+                <label for="edit_group_id">ID:</label>
+                <label for="edit_group_name">Name:</label>
+                <label for="edit_group_permissions">Permissions:</label>
+            </div>
+
+            <div class="inputs">
+                <input type="text" id="edit_group_id" readonly/>
+                <br>
+                <input type="text" id="edit_group_name"/>
+                <br>
+                <input type="text" id="edit_group_permissions"/>
+            </div>
+            <div class="field">
+                <p>
+                    <input id="save_group_btn" class="primary" type="button" value="Save"/>
+                    <input id="delete_group_btn" class="primary" type="button" value="Delete"/>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
 } {
 
