@@ -57,6 +57,22 @@ function setupLoginCall() {
     });
 }
 
+function setupSignupCall() {
+    $('#signup_btn').on('click', function(e) {
+        cleanupErrors();
+        $(this).val('Signing you up...');
+        postToAPI('/api/user/signup', {
+            name: $('#signup_name').val(),
+            email: $('#signup_email').val(),
+            password: $('#signup_password').val()
+        }, signupSuccess);
+    });
+}
+
+function signupSuccess() {
+    location.reload();
+}
+
 function loginSuccess() {
     location.reload();
 }
@@ -78,6 +94,8 @@ function setupSignupPopup() {
         $('.signup.popup').show();
         e.preventDefault();
     });
+
+    setupSignupCall();
 }
 
 function setupExpandableSearchbar() {

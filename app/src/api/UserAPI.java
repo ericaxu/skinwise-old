@@ -17,4 +17,21 @@ public class UserAPI {
 			this.password = password;
 		}
 	}
+
+	public static class RequestSignup extends Request {
+		@NotEmpty
+		public String name;
+		@NotEmpty
+		public String email;
+		@NotEmpty
+		public String password;
+
+		public RequestSignup(@JsonProperty("name") String name,
+		                     @JsonProperty("email") String email,
+		                     @JsonProperty("password") String password) {
+			this.name = name;
+			this.email = email;
+			this.password = password;
+		}
+	}
 }

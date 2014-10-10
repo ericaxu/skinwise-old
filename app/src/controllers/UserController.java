@@ -1,5 +1,7 @@
 package src.controllers;
 
+import play.mvc.Controller;
+import play.mvc.Result;
 import src.api.API;
 import src.api.UserAPI;
 import src.api.request.BadRequestException;
@@ -7,8 +9,6 @@ import src.api.response.Response;
 import src.api.response.ResponseMessage;
 import src.controllers.session.SessionHelper;
 import src.models.User;
-import play.mvc.Controller;
-import play.mvc.Result;
 
 public class UserController extends Controller {
 	public static Result api_login() {
@@ -32,6 +32,34 @@ public class UserController extends Controller {
 					.addMessage(ResponseMessage.error("Login failed"));
 		}
 		else {
+			SessionHelper.setUser(session(), user);
+			return new Response(Response.OK);
+		}
+	}
+
+	public static Result api_signup() {
+		Response response;
+		try {
+			UserAPI.RequestSignup request = API.readRequest(ctx(), UserAPI.RequestSignup.class);
+
+			response = api_signup(request);
+		}
+		catch (BadRequestException e) {
+			response = new Response(e);
+		}
+		return API.writeResponse(response);
+	}
+
+	public static Response api_signup(UserAPI.RequestSignup request) {
+		User user =  User.byEmail(request.email);
+
+		if (user != null) {
+			return new Response().addMessage(ResponseMessage.error("Email already taken"));
+		}
+
+		else {
+			user = new User(request.email, request.password, request.name);
+			user.save();
 			SessionHelper.setUser(session(), user);
 			return new Response(Response.OK);
 		}

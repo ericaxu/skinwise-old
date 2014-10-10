@@ -6,16 +6,17 @@ function postToAPI(url, params, successCallback, errorCallback) {
         data: JSON.stringify(params),
         dataType: 'json',
         success: function(response, status, jqxhr) {
+            console.log(response);
+
             for (var i = 0; i < response.messages.length; i++) {
                 var message = response.messages[i];
                 var $notice_box = $(getNoticeHTML(message.type, message.message));
                 $('.notice_container').append($notice_box);
                 $notice_box.fadeIn(200);
+                setTimeout(function() {
+                    $notice_box.fadeOut(200);
+                }, message.timeout);
             }
-
-            setTimeout(function() {
-                $('.info, .error').fadeOut(200);
-            }, 5000);
 
             if (response.code == "Ok") {
                 successCallback && successCallback(response);
