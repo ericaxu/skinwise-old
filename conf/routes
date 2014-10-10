@@ -21,6 +21,7 @@ GET         /api/product/:id           src.controllers.ProductController.api_inf
 # User API
 POST        /api/user/signup           src.controllers.UserController.api_signup()
 POST        /api/user/login            src.controllers.UserController.api_login()
+POST        /api/user/logout           src.controllers.UserController.api_logout()
 
 # Admin console
 GET         /admin                     src.controllers.AdminController.home()

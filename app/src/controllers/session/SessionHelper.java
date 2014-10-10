@@ -23,7 +23,12 @@ public class SessionHelper {
 	}
 
 	public static void setUser(Http.Session session, User user) {
-		String user_id = Long.toString(user.getId());
-		session.put(USER_ID, user_id);
+		if (user == null) {
+			session.remove(USER_ID);
+		}
+		else {
+			String user_id = Long.toString(user.getId());
+			session.put(USER_ID, user_id);
+		}
 	}
 }

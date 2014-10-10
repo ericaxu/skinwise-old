@@ -69,12 +69,23 @@ function setupSignupCall() {
     });
 }
 
+function setupLogoutCall() {
+    $('#logout_link').on('click', function(e) {
+        e.preventDefault();
+        postToAPI('/api/user/logout', {}, logoutSuccesss);
+    });
+}
+
+function logoutSuccesss() {
+    location.reload();
+}
+
 function signupSuccess() {
     location.reload();
 }
 
 function signupError() {
-    $('#signup_btn').val('Sign up...');
+    $('#signup_btn').val('Sign up');
 }
 
 function loginSuccess() {
@@ -159,6 +170,7 @@ function setupIngredientInfobox() {
 
 $(document).ready(function() {
     setupPopups();
+    setupLogoutCall();
 
     setupIngredientInfobox();
 

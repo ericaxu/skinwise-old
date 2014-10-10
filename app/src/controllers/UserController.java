@@ -64,4 +64,10 @@ public class UserController extends Controller {
 			return new Response(Response.OK);
 		}
 	}
+
+	public static Result api_logout() {
+		SessionHelper.setUser(session(), null);
+
+		return API.writeResponse(new Response(Response.OK));
+	}
 }
