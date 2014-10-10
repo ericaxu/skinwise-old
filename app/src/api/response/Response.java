@@ -37,6 +37,10 @@ public class Response {
 		return code;
 	}
 
+	public List<ResponseMessage> getMessages() {
+		return messages;
+	}
+
 	public Response addMessage(ResponseMessage message) {
 		this.messages.add(message);
 		return this;
