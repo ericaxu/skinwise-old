@@ -4,7 +4,13 @@
 
 } {
 
-    <div class="section">
+<div class="tab_container">
+    <div class="tab_headers">
+        <a href="#" class="tab_title current" data-tab-name="import_tab">Import</a><a href="#" class="tab_title" data-tab-name="user_tab">User</a><a href="#" class="tab_title" data-tab-name="group_tab">Group</a>
+    </div>
+
+
+    <div class="tab" id="import_tab">
         <h1>Import to Database</h1>
         <p>Choose database to import to:</p>
         <div class="field">
@@ -15,7 +21,7 @@
         </div>
     </div>
 
-    <div class="section">
+    <div class="tab" id="user_tab">
         <h1>User Manager</h1>
         <div class="field">
             <div class="labels">
@@ -68,50 +74,51 @@
 
     </div>
 
-<div class="section">
-    <h1>Group Manager</h1>
-    <div class="field">
-        <div class="labels">
-            <label for="group_by_id">By ID:</label>
-            <label for="group_by_name">By name:</label>
-        </div>
-
-        <div class="inputs">
-            <input type="text" id="group_by_id"/>
-            <input type="button" value="Search"/>
-            <br>
-            <input type="text" id="group_by_name"/>
-            <input type="button" value="Search"/>
-        </div>
-    </div>
-    <p>
-        <input id="create_group_btn" class="primary" type="button" value="Create group"/>
-    </p>
-
-    <div class="edit_group_container">
-        <h2>Edit Group</h2>
+    <div class="tab" id="group_tab">
+        <h1>Group Manager</h1>
         <div class="field">
             <div class="labels">
-                <label for="edit_group_id">ID:</label>
-                <label for="edit_group_name">Name:</label>
-                <label for="edit_group_permissions">Permissions:</label>
+                <label for="group_by_id">By ID:</label>
+                <label for="group_by_name">By name:</label>
             </div>
 
             <div class="inputs">
-                <input type="text" id="edit_group_id" readonly/>
+                <input type="text" id="group_by_id"/>
+                <input type="button" value="Search"/>
                 <br>
-                <input type="text" id="edit_group_name"/>
-                <br>
-                <input type="text" id="edit_group_permissions"/>
-            </div>
-            <div class="field">
-                <p>
-                    <input id="save_group_btn" class="primary" type="button" value="Save"/>
-                    <input id="delete_group_btn" class="primary" type="button" value="Delete"/>
-                </p>
+                <input type="text" id="group_by_name"/>
+                <input type="button" value="Search"/>
             </div>
         </div>
-    </div>
+        <p>
+            <input id="create_group_btn" class="primary" type="button" value="Create group"/>
+        </p>
+
+        <div class="edit_group_container">
+            <h2>Edit Group</h2>
+            <div class="field">
+                <div class="labels">
+                    <label for="edit_group_id">ID:</label>
+                    <label for="edit_group_name">Name:</label>
+                    <label for="edit_group_permissions">Permissions:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="edit_group_id" readonly/>
+                    <br>
+                    <input type="text" id="edit_group_name"/>
+                    <br>
+                    <input type="text" id="edit_group_permissions"/>
+                </div>
+                <div class="field">
+                    <p>
+                        <input id="save_group_btn" class="primary" type="button" value="Save"/>
+                        <input id="delete_group_btn" class="primary" type="button" value="Delete"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+</div>
 </div>
 
 } {
