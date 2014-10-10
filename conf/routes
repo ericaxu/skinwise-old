@@ -12,6 +12,8 @@ GET         /profile                   src.controllers.HtmlController.profile()
 
 # Ingredient API
 GET         /api/ingredient/:id        src.controllers.IngredientController.api_info(id: Long)
+GET         /api/quicksearch/:query    src.controllers.IngredientSearch.partialSearch(query)
+GET         /api/search/:query         src.controllers.IngredientSearch.fullSearch(query)
 
 # Product API
 GET         /api/product/:id           src.controllers.ProductController.api_info(id: Long)

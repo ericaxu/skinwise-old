@@ -96,4 +96,8 @@ public class Ingredient extends Model {
 				.like("name", name)
 				.findList();
 	}
+
+	public static List<Ingredient> getAll() {
+		return find.all();
+	}
 }
