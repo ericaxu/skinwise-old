@@ -73,6 +73,10 @@ function signupSuccess() {
     location.reload();
 }
 
+function signupError() {
+    $('#signup_btn').val('Sign up...');
+}
+
 function loginSuccess() {
     location.reload();
 }

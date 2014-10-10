@@ -51,10 +51,10 @@ public class UserController extends Controller {
 	}
 
 	public static Response api_signup(UserAPI.RequestSignup request) {
-		User user =  User.byEmail(request.email);
+		User user = User.byEmail(request.email);
 
 		if (user != null) {
-			return new Response().addMessage(ResponseMessage.error("Email already taken"));
+			return new Response(UserAPI.EMAIL_TAKEN).addMessage(ResponseMessage.error("Email already taken"));
 		}
 
 		else {

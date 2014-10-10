@@ -5,6 +5,8 @@ import src.api.request.Request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserAPI {
+	public transient static final String EMAIL_TAKEN = "EmailTaken";
+
 	public static class RequestLogin extends Request {
 		@NotEmpty
 		public String email;
