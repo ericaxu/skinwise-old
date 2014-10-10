@@ -1,5 +1,10 @@
-function postToAPI(url, params, successCallback, errorCallback) {
+function postToAPI(url, params, successCallback, errorCallback, message) {
     console.log(url, params);
+    if (message) {
+        var $message_box = $(getNoticeHTML('info', message));
+        $('.notice_container').append($message_box);
+        $message_box.fadeIn(200);
+    }
     $.ajax(url, {
         contentType: 'text/plain',
         type: 'POST',
@@ -7,6 +12,10 @@ function postToAPI(url, params, successCallback, errorCallback) {
         dataType: 'json',
         success: function(response, status, jqxhr) {
             console.log(response);
+
+            if (message) {
+                $message_box.fadeOut(200);
+            }
 
             showMessages(response.messages);
 

@@ -186,7 +186,7 @@ $(document).ready(function() {
     setupExpandableSearchbar();
 
     $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/api/admin/import', {});
+        postToAPI('/api/admin/import', {}, null, null, 'Importing ingredent database...');
     });
 
     $('.notice_container .close_btn').on('click', function() {
