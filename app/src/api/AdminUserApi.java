@@ -25,12 +25,15 @@ public class AdminUserApi {
 		public long id;
 		public String email;
 		public String name;
+		public String group;
 		public Set<String> permissions;
 
-		public ResponseUser(long id, String email, String name, Set<String> permissions) {
+		public ResponseUser(long id, String email, String name,
+		                    String group, Set<String> permissions) {
 			this.id = id;
 			this.email = email;
 			this.name = name;
+			this.group = group;
 			this.permissions = permissions;
 		}
 	}

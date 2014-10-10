@@ -1,6 +1,6 @@
 package src.util.dbimport;
 
-import src.models.*;
+import src.models.History;
 import src.models.ingredient.AllFunction;
 import src.models.ingredient.AllIngredient;
 import src.models.ingredient.Function;

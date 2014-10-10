@@ -112,6 +112,7 @@ public class AdminUserController extends Controller {
 				user.getId(),
 				user.getEmail(),
 				user.getName(),
+				user.getGroup().getName(),
 				user.getPermissions_set()
 		);
 	}
