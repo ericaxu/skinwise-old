@@ -20,11 +20,5 @@ public class UserApi {
 		public String email;
 		@NotEmpty
 		public String password;
-
-		public RequestSignup(String name, String email, String password) {
-			this.name = name;
-			this.email = email;
-			this.password = password;
-		}
 	}
 }

@@ -235,5 +235,4 @@ public class AdminUserController extends Controller {
 				group.getPermissions_set()
 		);
 	}
-
 }
