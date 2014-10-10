@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import src.api.request.Request;
 import src.api.response.Response;
 
-public class ProductAPI {
+public class ProductApi {
 	public static class RequestProductInfo extends Request {
 		@NotEmpty
 		public long product_id;

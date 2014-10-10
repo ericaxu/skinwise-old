@@ -3,7 +3,7 @@ package src.controllers.admin;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
-import src.api.AdminUserAPI;
+import src.api.AdminUserApi;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
@@ -22,8 +22,8 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
-			AdminUserAPI.RequestGetUserById request =
-					API.read(ctx(), AdminUserAPI.RequestGetUserById.class);
+			AdminUserApi.RequestGetUserById request =
+					API.read(ctx(), AdminUserApi.RequestGetUserById.class);
 
 			User user = User.byId(request.id);
 			if (user == null) {
@@ -45,8 +45,8 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
-			AdminUserAPI.RequestGetUserByEmail request =
-					API.read(ctx(), AdminUserAPI.RequestGetUserByEmail.class);
+			AdminUserApi.RequestGetUserByEmail request =
+					API.read(ctx(), AdminUserApi.RequestGetUserByEmail.class);
 
 			User user = User.byEmail(request.email);
 			if (user == null) {
@@ -61,7 +61,7 @@ public class AdminUserController extends Controller {
 	}
 
 	private static Response getUserResponse(User user) {
-		return new AdminUserAPI.ResponseUser(
+		return new AdminUserApi.ResponseUser(
 				user.getId(),
 				user.getEmail(),
 				user.getName());

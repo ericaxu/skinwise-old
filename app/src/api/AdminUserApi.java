@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import src.api.request.Request;
 import src.api.response.Response;
 
-public class AdminUserAPI {
+public class AdminUserApi {
 	public static class RequestGetUserById extends Request {
 		public long id;
 	}

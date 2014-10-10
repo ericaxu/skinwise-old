@@ -3,7 +3,7 @@ package src.api;
 import src.api.request.NotEmpty;
 import src.api.request.Request;
 
-public class UserAPI {
+public class UserApi {
 	public transient static final String EMAIL_TAKEN = "EmailTaken";
 
 	public static class RequestLogin extends Request {

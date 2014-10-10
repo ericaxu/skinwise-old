@@ -4,7 +4,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
-import src.api.IngredientAPI;
+import src.api.IngredientApi;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
 import src.models.Ingredient;
@@ -18,7 +18,7 @@ public class IngredientController extends Controller {
 					.addMessage(ResponseMessage.error("Ingredient not found")));
 		}
 
-		Response response = new IngredientAPI.ResponseIngredientInfo(
+		Response response = new IngredientApi.ResponseIngredientInfo(
 				ingredient.getName(),
 				ingredient.getFunctionNames(),
 				ingredient.getDescription()

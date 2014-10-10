@@ -4,7 +4,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.API;
-import src.api.ProductAPI;
+import src.api.ProductApi;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
 import src.models.Product;
@@ -18,7 +18,7 @@ public class ProductController extends Controller {
 					.addMessage(ResponseMessage.error("Product not found")));
 		}
 
-		Response response = new ProductAPI.ResponseProductInfo(
+		Response response = new ProductApi.ResponseProductInfo(
 				product.getName(),
 				product.getBrand(),
 				product.getDescription()
