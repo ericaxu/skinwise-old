@@ -6,14 +6,11 @@ function postToAPI(url, params, successCallback, errorCallback) {
         data: JSON.stringify(params),
         dataType: 'json',
         success: function(response, status, jqxhr) {
-            if (response.info) {
-                $('.notice_container .info .message').text(response.info);
-                $('.notice_container .info').fadeIn(200);
-            }
-
-            if (response.error) {
-                $('.notice_container .error .message').text(response.error);
-                $('.notice_container .error').fadeIn(200);
+            for (var i = 0; i < response.messages.length; i++) {
+                var message = response.messages[i];
+                var $notice_box = $(getNoticeHTML(message.type, message.message));
+                $('.notice_container').append($notice_box);
+                $notice_box.fadeIn(200);
             }
 
             setTimeout(function() {
@@ -33,4 +30,8 @@ function postToAPI(url, params, successCallback, errorCallback) {
             errorCallback && errorCallback(response);
         }
     });
+}
+
+function getNoticeHTML(type, message) {
+    return '<div class="' + type + '"><span class="close_btn"></span><p class="message">' + message + '</p></div>';
 }
