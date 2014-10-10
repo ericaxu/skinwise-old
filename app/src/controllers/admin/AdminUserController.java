@@ -7,9 +7,9 @@ import src.api.Api;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
+import src.models.Permissible;
 import src.models.User;
 import src.models.Usergroup;
-import src.user.Permission;
 import src.views.ResponseState;
 
 public class AdminUserController extends Controller {
@@ -19,7 +19,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
@@ -42,7 +42,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
@@ -65,7 +65,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 
@@ -88,7 +88,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permission.ADMIN.USER)) {
+			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 

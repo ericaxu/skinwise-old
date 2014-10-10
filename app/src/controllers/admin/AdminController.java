@@ -8,7 +8,7 @@ import src.api.response.ErrorResponse;
 import src.api.response.InfoResponse;
 import src.api.response.Response;
 import src.controllers.ErrorController;
-import src.user.Permission;
+import src.models.Permissible;
 import src.util.Logger;
 import src.util.dbimport.ImportIngredients;
 import src.views.ResponseState;
@@ -24,7 +24,7 @@ public class AdminController extends Controller {
 	public static Result home() {
 		ResponseState state = new ResponseState(session());
 
-		if (!state.userHasPermission(Permission.ADMIN.VIEW)) {
+		if (!state.userHasPermission(Permissible.ADMIN.VIEW)) {
 			return ErrorController.notfound();
 		}
 
@@ -35,7 +35,7 @@ public class AdminController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permission.ADMIN.IMPORT)) {
+			if (!state.userHasPermission(Permissible.ADMIN.IMPORT)) {
 				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
 			}
 

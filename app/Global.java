@@ -4,9 +4,9 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import src.controllers.ErrorController;
+import src.models.Permissible;
 import src.models.User;
 import src.models.Usergroup;
-import src.user.Permission;
 
 public class Global extends GlobalSettings {
 	public static final String ADMIN_USER_GROUP = "Administrators";
@@ -16,7 +16,7 @@ public class Global extends GlobalSettings {
 		Usergroup admin_group = Usergroup.byName(ADMIN_USER_GROUP);
 		if (admin_group == null) {
 			admin_group = new Usergroup(ADMIN_USER_GROUP);
-			admin_group.addPermission(Permission.ADMIN.ALL);
+			admin_group.addPermission(Permissible.ADMIN.ALL);
 			admin_group.save();
 		}
 
