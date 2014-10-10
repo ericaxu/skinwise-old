@@ -1,5 +1,7 @@
-package src.models;
+package src.models.user;
 
+import play.db.ebean.Model;
+import src.models.Permissible;
 import src.util.BCrypt;
 
 import javax.persistence.*;
@@ -71,7 +73,7 @@ public class User extends Permissible {
 
 	//Static
 
-	private static Finder<Long, User> find = new Finder<>(Long.class, User.class);
+	private static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
 
 	public static User byId(long id) {
 		return find.byId(id);

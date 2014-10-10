@@ -1,4 +1,6 @@
-package src.models;
+package src.models.ingredient;
+
+import src.models.History;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;

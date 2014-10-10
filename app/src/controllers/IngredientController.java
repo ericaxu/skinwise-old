@@ -7,7 +7,7 @@ import src.api.Api;
 import src.api.IngredientApi;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
-import src.models.Ingredient;
+import src.models.ingredient.Ingredient;
 
 public class IngredientController extends Controller {
 	@BodyParser.Of(BodyParser.TolerantText.class)

@@ -5,8 +5,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import src.controllers.ErrorController;
 import src.models.Permissible;
-import src.models.User;
-import src.models.Usergroup;
+import src.models.user.User;
+import src.models.user.Usergroup;
 
 public class Global extends GlobalSettings {
 	public static final String ADMIN_USER_GROUP = "Administrators";

@@ -1,7 +1,7 @@
 package src.controllers.session;
 
 import play.mvc.Http;
-import src.models.User;
+import src.models.user.User;
 
 public class SessionHelper {
 	private static final String USER_ID = "user_id";

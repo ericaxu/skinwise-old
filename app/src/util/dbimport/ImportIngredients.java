@@ -1,6 +1,10 @@
 package src.util.dbimport;
 
 import src.models.*;
+import src.models.ingredient.AllFunction;
+import src.models.ingredient.AllIngredient;
+import src.models.ingredient.Function;
+import src.models.ingredient.Ingredient;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;

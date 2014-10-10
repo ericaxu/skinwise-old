@@ -8,7 +8,7 @@ import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
 import src.controllers.session.SessionHelper;
-import src.models.User;
+import src.models.user.User;
 
 public class UserController extends Controller {
 	public static Result api_login() {

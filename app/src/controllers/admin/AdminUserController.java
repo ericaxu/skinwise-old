@@ -8,8 +8,8 @@ import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
 import src.models.Permissible;
-import src.models.User;
-import src.models.Usergroup;
+import src.models.user.User;
+import src.models.user.Usergroup;
 import src.views.ResponseState;
 
 public class AdminUserController extends Controller {

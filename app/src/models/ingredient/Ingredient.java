@@ -1,4 +1,6 @@
-package src.models;
+package src.models.ingredient;
+
+import src.models.BaseModel;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,4 +1,6 @@
-package src.models;
+package src.models.user;
+
+import src.models.Permissible;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

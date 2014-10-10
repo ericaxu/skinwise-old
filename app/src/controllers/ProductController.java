@@ -7,7 +7,7 @@ import src.api.Api;
 import src.api.ProductApi;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
-import src.models.Product;
+import src.models.product.Product;
 
 public class ProductController extends Controller {
 	@BodyParser.Of(BodyParser.TolerantText.class)
