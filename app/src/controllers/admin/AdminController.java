@@ -8,10 +8,10 @@ import src.api.response.ErrorResponse;
 import src.api.response.InfoResponse;
 import src.api.response.Response;
 import src.controllers.ErrorController;
+import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
 import src.util.dbimport.ImportIngredients;
-import src.views.ResponseState;
 import views.html.admin_home;
 
 import java.io.IOException;

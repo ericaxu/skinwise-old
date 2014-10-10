@@ -1,4 +1,4 @@
-package src.controllers.session;
+package src.controllers.util;
 
 import play.mvc.Http;
 import src.models.user.User;

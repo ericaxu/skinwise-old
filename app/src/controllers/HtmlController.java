@@ -2,7 +2,7 @@ package src.controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.views.ResponseState;
+import src.controllers.util.ResponseState;
 import views.html.*;
 
 public class HtmlController extends Controller {

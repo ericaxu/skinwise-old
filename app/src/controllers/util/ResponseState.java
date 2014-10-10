@@ -1,8 +1,7 @@
-package src.views;
+package src.controllers.util;
 
 import play.mvc.Http;
 import src.api.response.Response;
-import src.controllers.session.SessionHelper;
 import src.models.user.User;
 
 public class ResponseState {

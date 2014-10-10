@@ -5,7 +5,7 @@ import play.mvc.Result;
 import src.api.Api;
 import src.api.response.Response;
 import src.api.response.ResponseMessage;
-import src.views.ResponseState;
+import src.controllers.util.ResponseState;
 import views.html.error404;
 
 public class ErrorController extends Controller {
