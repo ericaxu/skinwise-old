@@ -10,6 +10,7 @@ import src.models.User;
 import src.user.Permission;
 import src.util.Logger;
 import src.util.dbimport.ImportIngredients;
+import src.views.RenderState;
 import views.html.admin_home;
 
 import java.io.IOException;
@@ -20,13 +21,13 @@ public class AdminController extends Controller {
 	private static final String TAG = "AdminController";
 
 	public static Result home() {
-		User user = SessionHelper.getUser(session());
+		RenderState state = new RenderState(session());
 
-		if (user == null || !user.hasPermission(Permission.ADMIN_ALL)) {
+		if (state.getUser() == null || !state.getUser().hasPermission(Permission.ADMIN_ALL)) {
 			return ErrorController.notfound();
 		}
 
-		return ok(admin_home.render(null));
+		return ok(admin_home.render(state));
 	}
 
 	public static Result api_auto_import() {

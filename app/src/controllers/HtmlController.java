@@ -2,31 +2,39 @@ package src.controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.views.RenderState;
 import views.html.*;
 
 public class HtmlController extends Controller {
 
 	public static Result index() {
-		return ok(index.render(null));
+		RenderState state = new RenderState(session());
+		return ok(index.render(state));
 	}
 
 	public static Result product() {
-		return ok(product.render(null));
+
+		RenderState state = new RenderState(session());
+		return ok(product.render(state));
 	}
 
 	public static Result ingredient() {
-		return ok(ingredient.render(null));
+		RenderState state = new RenderState(session());
+		return ok(ingredient.render(state));
 	}
 
 	public static Result products() {
-		return ok(products.render(null));
+		RenderState state = new RenderState(session());
+		return ok(products.render(state));
 	}
 
 	public static Result ingredients() {
-		return ok(ingredients.render(null));
+		RenderState state = new RenderState(session());
+		return ok(ingredients.render(state));
 	}
 
 	public static Result profile() {
-		return ok(profile.render(null));
+		RenderState state = new RenderState(session());
+		return ok(profile.render(state));
 	}
 }

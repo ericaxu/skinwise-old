@@ -1,5 +1,6 @@
 package src.controllers.session;
 
+import src.api.response.Response;
 import src.models.User;
 import play.mvc.Http;
 

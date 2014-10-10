@@ -1,4 +1,5 @@
-@(title: String, response: src.api.response.Response = null)(head: => Html)(body: => Html)(scripts: => Html)
+@(title: String, state: src.views.RenderState)(head: => Html)(body: => Html)(scripts: => Html)
+
 
 <!DOCTYPE html>
 
@@ -23,11 +24,17 @@
             </li>
         </ul>
         <ul class="user_nav horizontal">
-            <li id="signup_link"><a href="#">Sign up</a></li>
-            <li id="login_link"><a href="#">Sign in</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="#">Favorites</a></li>
-            <li id="logout_link"><a href="#">Logout</a></li>
+            @if(state.getUser() == null) {
+                <li id="signup_link"><a href="#">Sign up</a></li>
+                <li id="login_link"><a href="#">Sign in</a></li>
+            } else {
+                <li><a href="#">@state.getUser().getName()</a></li>
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="#">Favorites</a></li>
+            }
+            @if(state.getUser() != null) {
+                <li id="logout_link"><a href="#">Logout</a></li>
+            }
         </ul>
     </nav>
     <div id="logo">

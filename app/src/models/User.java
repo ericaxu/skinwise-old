@@ -48,6 +48,8 @@ public class User extends Model implements Permissible {
 		return id;
 	}
 
+	public String getName() { return name; }
+
 	public Usergroup getGroup() {
 		return group;
 	}
