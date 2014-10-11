@@ -12,7 +12,7 @@ import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
 import src.util.dbimport.ImportIngredients;
-import views.html.admin_home;
+import views.html.admin;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +28,7 @@ public class AdminController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(admin_home.render(state));
+		return ok(admin.render(state));
 	}
 
 	public static Result api_auto_import() {
