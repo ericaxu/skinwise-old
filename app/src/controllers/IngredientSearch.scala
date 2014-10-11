@@ -76,7 +76,7 @@ object Levenshtein {
                  results: PriorityQueue[(String, Double)],
                  currentChars: List[Char],
                  dynamicTable: List[Array[Double]]) : Unit = dynamicTable match {
-    case previousRow :: rest => {
+    case previousRow :: remainingRows => {
       if (dict.terminal) {
         // The Levenshtein distance is always the last value of the last row.
         results += ((currentChars.reverse.mkString, previousRow(query.length)))
@@ -87,10 +87,12 @@ object Levenshtein {
         val nextRow : Array[Double] = Array.ofDim(query.length + 1)
         nextRow(0) = currentChars.length
 
-        rest match {
+        remainingRows match {
           case Nil => {
             for (i <- 1 to query.length) {
               nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
+                // Favor first-letter matches.
+              else if (i == 1) min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 2
               else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
             }
           }
