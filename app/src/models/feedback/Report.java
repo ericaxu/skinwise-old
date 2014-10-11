@@ -12,6 +12,9 @@ public class Report extends BaseModel {
 	@Column(length = 1024)
 	private String path;
 
+	@Column(length = 256)
+	private String type;
+
 	@Column(length = 1024)
 	private String title;
 
@@ -29,6 +32,10 @@ public class Report extends BaseModel {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public String getTitle() {
@@ -51,6 +58,10 @@ public class Report extends BaseModel {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public void setTitle(String title) {

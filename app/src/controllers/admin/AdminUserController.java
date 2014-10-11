@@ -148,7 +148,8 @@ public class AdminUserController extends Controller {
 			result.save();
 
 			state.setResponse(getUserResponse(result));
-			state.getResponse().addMessage(ResponseMessage.info("Successfully updated user " + request.id));
+			state.getResponse().addMessage(
+					ResponseMessage.info("Successfully updated user " + result.getEmail()));
 
 			return Api.write(state.getResponse());
 		}
@@ -175,7 +176,8 @@ public class AdminUserController extends Controller {
 			result.save();
 
 			state.setResponse(getUserResponse(result));
-			state.getResponse().addMessage(ResponseMessage.info("Successfully changed password for user " + request.id));
+			state.getResponse().addMessage(
+					ResponseMessage.info("Successfully changed password for user " + result.getEmail()));
 
 			return Api.write(state.getResponse());
 		}
@@ -199,7 +201,7 @@ public class AdminUserController extends Controller {
 
 			result.delete();
 
-			return Api.write(new InfoResponse("Successfully deleted user " + request.id));
+			return Api.write(new InfoResponse("Successfully deleted user " + result.getEmail()));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -270,7 +272,7 @@ public class AdminUserController extends Controller {
 			result.save();
 
 			state.setResponse(getGroupResponse(result));
-			state.getResponse().addMessage(ResponseMessage.info("Successfully updated group " + request.id));
+			state.getResponse().addMessage(ResponseMessage.info("Successfully updated group " + result.getName()));
 
 			return Api.write(state.getResponse());
 		}
@@ -294,7 +296,7 @@ public class AdminUserController extends Controller {
 
 			result.delete();
 
-			return Api.write(new InfoResponse("Successfully deleted group " + request.id));
+			return Api.write(new InfoResponse("Successfully deleted group " + result.getName()));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

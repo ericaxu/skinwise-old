@@ -86,6 +86,11 @@ public abstract class Permissible extends BaseModel {
 		public static final String APPROVE = "INGREDIENT.APPROVE";
 	}
 
+	public static class USER {
+		public static final String ALL = "USER.*";
+		public static final String FEEDBACK = "USER.FEEDBACK";
+	}
+
 	public static boolean hasPermission(Set<String> permissions, String permission) {
 		String[] parts = permission.split("\\.");
 		for (int i = 0; i < parts.length; i++) {
