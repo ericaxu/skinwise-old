@@ -133,7 +133,6 @@ function confirmAction(action, callback) {
     $('.confirm.popup').show();
 }
 
-
 $(document).ready(function() {
     setupPopups();
     setupLogoutCall();
