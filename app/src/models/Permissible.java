@@ -76,6 +76,7 @@ public abstract class Permissible extends BaseModel {
 		public static final String VIEW = "ADMIN.VIEW";
 		public static final String IMPORT = "ADMIN.IMPORT";
 		public static final String USER = "ADMIN.USER";
+		public static final String DATA = "ADMIN.DATA";
 	}
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {

@@ -1,6 +1,7 @@
 package src.controllers.util;
 
 import play.mvc.Http;
+import src.api.request.UnauthorizedException;
 import src.api.response.Response;
 import src.models.user.User;
 
@@ -36,5 +37,11 @@ public class ResponseState {
 		}
 
 		return user.hasPermission(permission);
+	}
+
+	public void requirePermission(String permission) throws UnauthorizedException {
+		if (!userHasPermission(permission)) {
+			throw new UnauthorizedException("You are not allowed to do that!");
+		}
 	}
 }

@@ -42,6 +42,14 @@ public class User extends Permissible {
 		return group;
 	}
 
+	public String getGroupName() {
+		Usergroup group = getGroup();
+		if (group != null) {
+			return group.getName();
+		}
+		return "";
+	}
+
 	//Setters
 
 	public void setEmail(String email) {
@@ -52,6 +60,10 @@ public class User extends Permissible {
 		this.name = name;
 	}
 
+	public void setGroup(Usergroup group) {
+		this.group = group;
+	}
+
 	public void setPassword(String password) {
 		this.password_hash = BCrypt.hashpw(password, BCrypt.gensalt());
 	}
@@ -60,10 +72,6 @@ public class User extends Permissible {
 
 	public boolean checkPassword(String password) {
 		return BCrypt.checkpw(password, password_hash);
-	}
-
-	public void setGroup(Usergroup group) {
-		this.group = group;
 	}
 
 	@Override

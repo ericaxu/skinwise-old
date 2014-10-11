@@ -5,7 +5,6 @@ import play.mvc.Result;
 import src.api.AdminUserApi;
 import src.api.Api;
 import src.api.request.BadRequestException;
-import src.api.request.UnauthorizedException;
 import src.api.response.ErrorResponse;
 import src.api.response.Response;
 import src.controllers.util.ResponseState;
@@ -20,9 +19,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetById request =
 					Api.read(ctx(), AdminUserApi.RequestGetById.class);
@@ -43,9 +40,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetUserByEmail request =
 					Api.read(ctx(), AdminUserApi.RequestGetUserByEmail.class);
@@ -66,9 +61,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetById request =
 					Api.read(ctx(), AdminUserApi.RequestGetById.class);
@@ -89,9 +82,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetGroupByName request =
 					Api.read(ctx(), AdminUserApi.RequestGetGroupByName.class);
@@ -112,9 +103,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestEditUser request =
 					Api.read(ctx(), AdminUserApi.RequestEditUser.class);
@@ -144,9 +133,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestEditGroup request =
 					Api.read(ctx(), AdminUserApi.RequestEditGroup.class);
@@ -172,9 +159,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetById request =
 					Api.read(ctx(), AdminUserApi.RequestGetById.class);
@@ -197,9 +182,7 @@ public class AdminUserController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.USER)) {
-				throw new UnauthorizedException("You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.USER);
 
 			AdminUserApi.RequestGetById request =
 					Api.read(ctx(), AdminUserApi.RequestGetById.class);
@@ -223,7 +206,7 @@ public class AdminUserController extends Controller {
 				user.getId(),
 				user.getEmail(),
 				user.getName(),
-				user.getGroup().getName(),
+				user.getGroupName(),
 				user.getPermissions_set()
 		);
 	}

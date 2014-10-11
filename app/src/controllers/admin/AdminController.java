@@ -6,7 +6,6 @@ import src.api.Api;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.InfoResponse;
-import src.api.response.Response;
 import src.controllers.ErrorController;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
@@ -35,9 +34,7 @@ public class AdminController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			if (!state.userHasPermission(Permissible.ADMIN.IMPORT)) {
-				throw new BadRequestException(Response.UNAUTHORIZED, "You are not allowed to do that!");
-			}
+			state.requirePermission(Permissible.ADMIN.IMPORT);
 
 			Logger.info(TAG, "DB import started");
 
