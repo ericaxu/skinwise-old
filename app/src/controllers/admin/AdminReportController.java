@@ -47,7 +47,7 @@ public class AdminReportController extends Controller {
 		try {
 			state.requirePermission(Permissible.REPORT.VIEW);
 
-			Api.RequestGetAll request = Api.read(ctx(), Api.RequestGetAll.class);
+			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
 
 			List<Report> reports = Report.all(request.page, 20);
 
@@ -130,7 +130,7 @@ public class AdminReportController extends Controller {
 				object.getType(),
 				object.getTitle(),
 				object.getContent(),
-				object.getReportedByUserName(),
+				object.getUserName(),
 				object.getTimestamp()
 		);
 	}

@@ -13,4 +13,11 @@ public abstract class BaseModel extends Model {
 	public long getId() {
 		return id;
 	}
+
+	public static long getIdIfExists(BaseModel object) {
+		if (object == null) {
+			return -1;
+		}
+		return object.getId();
+	}
 }

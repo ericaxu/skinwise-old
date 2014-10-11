@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 public class Api {
 	private static final String TAG = "API";
 
-	public static class RequestGetAll extends Request {
+	public static class RequestGetAllByPage extends Request {
 		public int page;
 	}
 
@@ -27,6 +27,10 @@ public class Api {
 
 	public static class RequestGetByIdAll extends RequestGetById {
 		public boolean all;
+	}
+
+	public static class RequestGetByIdAndPage extends RequestGetById {
+		public int page;
 	}
 
 	public static <T extends Request> T read(Http.Context context, Class<? extends T> clazz)

@@ -9,19 +9,15 @@ import javax.persistence.Lob;
 import java.util.List;
 
 @Entity
-public class Report extends BaseModel {
-
-	@Column(length = 1024)
-	private String path;
-
+public class Analytics extends BaseModel {
 	@Column(length = 256)
-	private String type;
+	private String event;
 
 	@Column(length = 1024)
-	private String title;
+	private String summary;
 
 	@Lob
-	private String content;
+	private String data;
 
 	@Column
 	private long user_id;
@@ -31,20 +27,16 @@ public class Report extends BaseModel {
 
 	//Getters
 
-	public String getPath() {
-		return path;
+	public String getEvent() {
+		return event;
 	}
 
-	public String getType() {
-		return type;
+	public String getSummary() {
+		return summary;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public String getContent() {
-		return content;
+	public String getData() {
+		return data;
 	}
 
 	public long getUser_id() {
@@ -57,20 +49,16 @@ public class Report extends BaseModel {
 
 	//Setters
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setEvent(String event) {
+		this.event = event;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
+	public void setData(String data) {
+		this.data = data;
 	}
 
 	public void setUser_id(long user_id) {
@@ -101,14 +89,15 @@ public class Report extends BaseModel {
 
 	//Static
 
-	public static Finder<Long, Report> find = new Finder<>(Long.class, Report.class);
+	public static Finder<Long, Analytics> find = new Finder<>(Long.class, Analytics.class);
 
-	public static Report byId(long id) {
+	public static Analytics byId(long id) {
 		return find.byId(id);
 	}
 
-	public static List<Report> all(int page, int size) {
-		return find.findPagingList(size)
+	public static List<Analytics> byUser(long user_id, int page, int size) {
+		return find.where().eq("user_id", user_id)
+				.findPagingList(size)
 				.getPage(page)
 				.getList();
 	}

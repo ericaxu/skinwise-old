@@ -2,6 +2,7 @@ package src.models.data;
 
 import com.avaje.ebean.Ebean;
 import src.models.BaseModel;
+import src.models.user.User;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -73,6 +74,22 @@ public class History<T extends BaseModel> {
 	}
 
 	//Others
+
+	public User getUser() {
+		return User.byId(submitted_by);
+	}
+
+	public void setUser(User user) {
+		setSubmitted_by(BaseModel.getIdIfExists(user));
+	}
+
+	public String getUserName() {
+		User user = getUser();
+		if (user == null) {
+			return "";
+		}
+		return user.getName();
+	}
 
 	public void approve(T owner, T other) {
 		setApproved(true);

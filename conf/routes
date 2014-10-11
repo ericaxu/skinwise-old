@@ -25,7 +25,7 @@ POST        /api/user/logout                     src.controllers.UserController.
 
 # Feedback
 POST        /api/feedback/report                 src.controllers.feedback.ReportController.api_report_create()
-POST        /api/feedback/analytics              src.controllers.feedback.ReportController.api_analytics()
+POST        /api/feedback/analytics              src.controllers.feedback.AnalyticsController.api_analytics()
 
 # Admin console
 GET         /admin                               src.controllers.admin.AdminController.home()
