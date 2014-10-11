@@ -7,8 +7,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class History<T extends BaseModel> {
-	public static final long TARGET_ID_NEW = -1L;
-	public static final long SUBMITTED_BY_SYSTEM = -1L;
+	public transient static final long TARGET_ID_NEW = -1L;
+	public transient static final long SUBMITTED_BY_SYSTEM = -1L;
 
 	@Column
 	private long target_id;
@@ -26,6 +26,8 @@ public class History<T extends BaseModel> {
 		setSubmitted_by(submitted_by);
 		setSubmitted_time(System.currentTimeMillis());
 	}
+
+	//Getters
 
 	public long getTarget_id() {
 		return target_id;
@@ -47,6 +49,8 @@ public class History<T extends BaseModel> {
 		return approved_time;
 	}
 
+	//Setters
+
 	public void setTarget_id(long target_id) {
 		this.target_id = target_id;
 	}
@@ -67,6 +71,8 @@ public class History<T extends BaseModel> {
 		this.approved_time = approved_time;
 	}
 
+	//Others
+
 	public void approve(T owner, T other) {
 		setApproved(true);
 		setApproved_time(System.currentTimeMillis());
@@ -86,6 +92,8 @@ public class History<T extends BaseModel> {
 			Ebean.endTransaction();
 		}
 	}
+
+	//Static
 
 	public static long getTargetId(BaseModel object) {
 		if (object == null) {

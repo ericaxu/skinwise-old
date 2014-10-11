@@ -1,7 +1,6 @@
 package src.util.dbimport;
 
 import src.models.History;
-import src.models.ingredient.AllFunction;
 import src.models.ingredient.AllIngredient;
 import src.models.ingredient.Function;
 import src.models.ingredient.Ingredient;
@@ -33,15 +32,16 @@ public class ImportIngredients {
 		object.name = Util.notNull(object.name).toLowerCase();
 		object.description = Util.notNull(object.description);
 
-		Function target = Function.byName(object.name);
-		long target_id = History.getTargetId(target);
+		Function result = Function.byName(object.name);
 
-		AllFunction result = new AllFunction(target_id, History.SUBMITTED_BY_SYSTEM);
+		if (result == null) {
+			result = new Function();
+		}
+
 		result.setName(object.name);
 		result.setDescription(object.description);
 
 		result.save();
-		result.approve();
 	}
 
 	private static void create(IngredientObject object) {
@@ -70,9 +70,7 @@ public class ImportIngredients {
 			if (function1 == null) {
 				Logger.debug(TAG, object.functions);
 			}
-			else if (!functionList.contains(function1)) {
-				functionList.add(function1);
-			}
+			functionList.add(function1);
 		}
 		result.setFunctions(functionList);
 

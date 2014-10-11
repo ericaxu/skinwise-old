@@ -12,10 +12,6 @@ public class Usergroup extends Permissible {
 	@Column(length = 512, unique = true)
 	private String name;
 
-	public Usergroup(String name) {
-		this.name = name;
-	}
-
 	//Getters
 
 	public String getName() {

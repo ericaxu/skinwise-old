@@ -8,10 +8,6 @@ import src.api.response.Response;
 import java.util.Set;
 
 public class AdminUserApi {
-	public static class RequestGetById extends Request {
-		public long id;
-	}
-
 	public static class RequestGetUserByEmail extends Request {
 		@NotEmpty
 		public String email;
@@ -60,6 +56,12 @@ public class AdminUserApi {
 		@NotNull
 		public String group;
 		public Set<String> permissions;
+	}
+
+	public static class RequestSetUserPassword extends Request {
+		public long id;
+		@NotEmpty
+		public String password;
 	}
 
 	public static class RequestEditGroup extends Request {

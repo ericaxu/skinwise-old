@@ -31,16 +31,21 @@ public class ResponseState {
 		this.response = response;
 	}
 
-	public boolean userHasPermission(String permission) {
+	public boolean userHasPermission(String... permissions) {
 		if (user == null) {
 			return false;
 		}
 
-		return user.hasPermission(permission);
+		for (String permission : permissions) {
+			if (user.hasPermission(permission)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public void requirePermission(String permission) throws UnauthorizedException {
-		if (!userHasPermission(permission)) {
+	public void requirePermission(String... permissions) throws UnauthorizedException {
+		if (!userHasPermission(permissions)) {
 			throw new UnauthorizedException("You are not allowed to do that!");
 		}
 	}

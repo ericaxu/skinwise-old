@@ -4,6 +4,7 @@ import src.models.History;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import java.util.List;
 
 @Entity
 public class AllIngredient extends Ingredient {
@@ -25,5 +26,28 @@ public class AllIngredient extends Ingredient {
 		}
 		other.loadFrom(this);
 		history.approve(this, other);
+	}
+
+	//Static
+
+	public static Finder<Long, AllIngredient> find = new Finder<>(Long.class, AllIngredient.class);
+
+	public static AllIngredient byId(long id) {
+		return find.byId(id);
+	}
+
+	public static List<AllIngredient> byTargetId(long target_id) {
+		return find.where()
+				.eq("target_id", target_id)
+				.order().desc("submitted_time")
+				.findList();
+	}
+
+	public static List<AllIngredient> byApprovedTargetId(long target_id) {
+		return find.where()
+				.eq("target_id", target_id)
+				.eq("approved", true)
+				.order().desc("submitted_time")
+				.findList();
 	}
 }

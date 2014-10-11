@@ -7,11 +7,6 @@ import src.api.response.Response;
 import java.util.List;
 
 public class IngredientApi {
-	public static class RequestIngredientInfo extends Request {
-		@NotEmpty
-		public long ingredient_id;
-	}
-
 	public static class ResponseIngredientInfo extends Response {
 		public String ingredient_name;
 		public List<String> functions;

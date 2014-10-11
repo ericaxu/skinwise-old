@@ -5,11 +5,6 @@ import src.api.request.Request;
 import src.api.response.Response;
 
 public class ProductApi {
-	public static class RequestProductInfo extends Request {
-		@NotEmpty
-		public long product_id;
-	}
-
 	public static class ResponseProductInfo extends Response {
 		public String product_name;
 		public String product_brand;

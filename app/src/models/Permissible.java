@@ -70,13 +70,20 @@ public abstract class Permissible extends BaseModel {
 	protected abstract Permissible getParent();
 
 	//Static
+	public static final String ALL = "*";
 
 	public static class ADMIN {
 		public static final String ALL = "ADMIN.*";
 		public static final String VIEW = "ADMIN.VIEW";
 		public static final String IMPORT = "ADMIN.IMPORT";
 		public static final String USER = "ADMIN.USER";
-		public static final String DATA = "ADMIN.DATA";
+	}
+
+	public static class INGREDIENT {
+		public static final String ALL = "INGREDIENT.*";
+		public static final String VIEW = "INGREDIENT.VIEW";
+		public static final String EDIT = "INGREDIENT.EDIT";
+		public static final String APPROVE = "INGREDIENT.APPROVE";
 	}
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {

@@ -20,7 +20,7 @@ public class Ingredient extends BaseModel {
 	@Column(length = 4096)
 	private String description;
 
-	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	private Set<IngredientName> names = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -76,16 +76,23 @@ public class Ingredient extends BaseModel {
 		setName(other.getName());
 		setCas_number(other.getCas_number());
 		setDescription(other.getDescription());
-		setNames(other.getNames());
 		setFunctions(other.getFunctions());
 	}
 
-	public List<String> getFunctionNames() {
-		List<String> functionNames = new ArrayList<>();
-		for (Function function : functions) {
-			functionNames.add(function.getName());
+	public List<String> getFunctionsString() {
+		List<String> result = new ArrayList<>();
+		for (Function function : getFunctions()) {
+			result.add(function.getName());
 		}
-		return functionNames;
+		return result;
+	}
+
+	public List<String> getNamesString() {
+		List<String> result = new ArrayList<>();
+		for (IngredientName name : names) {
+			result.add(name.getName());
+		}
+		return result;
 	}
 
 	//Static

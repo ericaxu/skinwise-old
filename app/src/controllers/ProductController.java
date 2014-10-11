@@ -4,6 +4,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.Api;
+import src.api.GenericApi;
 import src.api.ProductApi;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
@@ -14,10 +15,10 @@ public class ProductController extends Controller {
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_info() {
 		try {
-			ProductApi.RequestProductInfo request =
-					Api.read(ctx(), ProductApi.RequestProductInfo.class);
+			GenericApi.RequestGetById request =
+					Api.read(ctx(), GenericApi.RequestGetById.class);
 
-			Product result = Product.byId(request.product_id);
+			Product result = Product.byId(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}

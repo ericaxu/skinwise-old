@@ -4,6 +4,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.Api;
+import src.api.GenericApi;
 import src.api.IngredientApi;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
@@ -14,17 +15,17 @@ public class IngredientController extends Controller {
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_info() {
 		try {
-			IngredientApi.RequestIngredientInfo request =
-					Api.read(ctx(), IngredientApi.RequestIngredientInfo.class);
+			GenericApi.RequestGetById request =
+					Api.read(ctx(), GenericApi.RequestGetById.class);
 
-			Ingredient result = Ingredient.byId(request.ingredient_id);
+			Ingredient result = Ingredient.byId(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}
 
 			Response response = new IngredientApi.ResponseIngredientInfo(
 					result.getName(),
-					result.getFunctionNames(),
+					result.getFunctionsString(),
 					result.getDescription()
 			);
 
