@@ -86,6 +86,28 @@ public class AdminReportController extends Controller {
 		}
 	}
 
+	public static Result api_report_delete() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.REPORT.DELETE);
+
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			Report result = Report.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			}
+
+			result.delete();
+
+			return Api.write(new InfoResponse("Successfully deleted report " + result.getTitle()));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
 	public static Result api_analytics() {
 		ResponseState state = new ResponseState(session());
 
