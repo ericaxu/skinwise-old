@@ -9,6 +9,7 @@ import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
 import src.api.response.InfoResponse;
 import src.api.response.Response;
+import src.api.response.ResponseMessage;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.models.user.User;
@@ -59,7 +60,7 @@ public class AdminUserController extends Controller {
 		}
 	}
 
-	public static Result api_user_edit() {
+	public static Result api_user_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
@@ -82,7 +83,10 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			return Api.write(getUserResponse(result));
+			state.setResponse(getUserResponse(result));
+			state.getResponse().addMessage(ResponseMessage.info("Successfully updated user " + request.id));
+
+			return Api.write(state.getResponse());
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -107,7 +111,10 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			return Api.write(getUserResponse(result));
+			state.setResponse(getUserResponse(result));
+			state.getResponse().addMessage(ResponseMessage.info("Successfully changed password for user " + request.id));
+
+			return Api.write(state.getResponse());
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -130,7 +137,7 @@ public class AdminUserController extends Controller {
 
 			result.delete();
 
-			return Api.write(new InfoResponse("Successfully updated user " + request.id));
+			return Api.write(new InfoResponse("Successfully deleted user " + request.id));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -179,7 +186,7 @@ public class AdminUserController extends Controller {
 		}
 	}
 
-	public static Result api_group_add_edit() {
+	public static Result api_group_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
@@ -203,7 +210,10 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			return Api.write(getGroupResponse(result));
+			state.setResponse(getGroupResponse(result));
+			state.getResponse().addMessage(ResponseMessage.info("Successfully updated group " + request.id));
+
+			return Api.write(state.getResponse());
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -226,7 +236,7 @@ public class AdminUserController extends Controller {
 
 			result.delete();
 
-			return Api.write();
+			return Api.write(new InfoResponse("Successfully deleted group " + request.id));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

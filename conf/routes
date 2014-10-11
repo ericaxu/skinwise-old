@@ -29,18 +29,19 @@ POST        /api/admin/import                    src.controllers.admin.AdminCont
 
 POST        /api/admin/user/byid                 src.controllers.admin.AdminUserController.api_user_by_id()
 POST        /api/admin/user/byemail              src.controllers.admin.AdminUserController.api_user_by_email()
-POST        /api/admin/user/edit                 src.controllers.admin.AdminUserController.api_user_edit()
+POST        /api/admin/user/update               src.controllers.admin.AdminUserController.api_user_update()
 POST        /api/admin/user/setpass              src.controllers.admin.AdminUserController.api_user_set_password()
 POST        /api/admin/user/delete               src.controllers.admin.AdminUserController.api_user_delete()
 
 POST        /api/admin/group/byid                src.controllers.admin.AdminUserController.api_group_by_id()
 POST        /api/admin/group/byname              src.controllers.admin.AdminUserController.api_group_by_name()
-
-POST        /api/admin/group/addedit             src.controllers.admin.AdminUserController.api_group_add_edit()
+POST        /api/admin/group/update              src.controllers.admin.AdminUserController.api_group_update()
 POST        /api/admin/group/delete              src.controllers.admin.AdminUserController.api_group_delete()
 
 POST        /api/admin/ingredient/byid           src.controllers.admin.AdminIngredientController.api_ingredient_by_id()
+POST        /api/admin/ingredient/update         src.controllers.admin.AdminIngredientController.api_ingredient_update()
 POST        /api/admin/ingredient/approve        src.controllers.admin.AdminIngredientController.api_ingredient_approve()
+POST        /api/admin/ingredient/delete         src.controllers.admin.AdminIngredientController.api_ingredient_delete()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                        controllers.Assets.at(path="/public", file)

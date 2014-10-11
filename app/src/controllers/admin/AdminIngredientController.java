@@ -1,5 +1,6 @@
 package src.controllers.admin;
 
+import com.avaje.ebean.Ebean;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.api.AdminIngredientApi;
@@ -72,32 +73,7 @@ public class AdminIngredientController extends Controller {
 		}
 	}
 
-	public static Result api_ingredient_approve() {
-		ResponseState state = new ResponseState(session());
-
-		try {
-			state.requirePermission(Permissible.INGREDIENT.APPROVE);
-
-			GenericApi.RequestGetById request =
-					Api.read(ctx(), GenericApi.RequestGetById.class);
-
-			AllIngredient result = AllIngredient.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
-
-			result.approve();
-
-			result.save();
-
-			return Api.write(new InfoResponse("Ingredient " + result.getName() + " edit approved"));
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
-	}
-
-	public static Result api_ingredient_add_edit() {
+	public static Result api_ingredient_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
@@ -135,7 +111,68 @@ public class AdminIngredientController extends Controller {
 
 			result.save();
 
-			return Api.write(new InfoResponse("Ingredient " + result.getName() + " edit saved"));
+			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated, pending approval"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_ingredient_approve() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.INGREDIENT.APPROVE);
+
+			GenericApi.RequestGetById request =
+					Api.read(ctx(), GenericApi.RequestGetById.class);
+
+			AllIngredient result = AllIngredient.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			}
+
+			result.approve();
+
+			result.save();
+
+			return Api.write(new InfoResponse("Ingredient " + result.getName() + " update approved"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_ingredient_delete() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.INGREDIENT.APPROVE);
+
+			GenericApi.RequestGetById request =
+					Api.read(ctx(), GenericApi.RequestGetById.class);
+
+			Ingredient result = Ingredient.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			}
+
+			List<AllIngredient> all = AllIngredient.byTargetId(request.id);
+
+			Ebean.beginTransaction();
+			try {
+				for (AllIngredient ingredient : all) {
+					ingredient.delete();
+				}
+
+				result.delete();
+				Ebean.commitTransaction();
+			}
+			finally {
+				Ebean.endTransaction();
+			}
+
+			return Api.write(new InfoResponse("Successfully deleted ingredient " + request.id));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
