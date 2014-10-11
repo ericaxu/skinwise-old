@@ -26,7 +26,6 @@ public class IngredientController extends Controller {
 		}
 	}
 
-	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result info(long ingredient_id) {
 		try {
 			ResponseState state = new ResponseState(session());
