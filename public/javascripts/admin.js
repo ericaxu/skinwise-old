@@ -23,6 +23,14 @@ function setupUserSearchCall() {
             id: user_id
         }, userSearchSuccess, null, 'Looking up user...');
     });
+
+    $('#user_by_email_btn').on('click', function() {
+        var user_email = $('#user_by_email').val();
+
+        postToAPI('/admin/user/byemail', {
+            email: user_email
+        }, userSearchSuccess, null, 'Looking up user...');
+    });
 }
 
 function userSearchSuccess(response) {
@@ -78,6 +86,14 @@ function setupGroupSearchCall() {
 
         postToAPI('/admin/group/byid', {
             id: group_id
+        }, groupSearchSuccess, null, 'Looking up group...');
+    });
+
+    $('#group_by_name_btn').on('click', function() {
+        var group_name = $('#group_by_name').val();
+
+        postToAPI('/admin/group/byname', {
+            name: group_name
         }, groupSearchSuccess, null, 'Looking up group...');
     });
 }
