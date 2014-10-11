@@ -21,7 +21,7 @@ function setupUserSearchCall() {
 
         postToAPI('/admin/user/byid', {
             id: user_id
-        }, userSearchSuccess, null, 'Looking up user...');
+        }, userLoadSuccess, null, 'Looking up user...');
     });
 
     $('#user_by_email_btn').on('click', function() {
@@ -33,10 +33,10 @@ function setupUserSearchCall() {
     });
 }
 
-function userSearchSuccess(response) {
+function userLoadSuccess(response) {
     $('#edit_user_id').val(response.id);
     $('#edit_user_name').val(response.name);
-    $('#edit_user_email').val(response.email);
+    $('#edit_user_email').val(response.email).data('original', response.email);
     $('#edit_user_group').val(response.group);
     $('#edit_user_permissions').val(response.permissions.join(SW.CONFIG.PERMISSION_DELIMITER));
     $('.edit_user_container').show();
@@ -44,15 +44,11 @@ function userSearchSuccess(response) {
 
 function setupUserDeleteCall() {
     $('#delete_user_btn').on('click', function() {
-        var user_id = $('#edit_user_id').val();
-        if (!isInteger(user_id)) {
-            showError('User ID must be an integer.');
-            return;
-        }
-        confirmAction('delete user ' + user_id, function() {
+        var user_email = $('#edit_user_email').data('original');
+        confirmAction('delete user ' + user_email, function() {
             postToAPI('/admin/user/delete', {
-                id: user_id
-            }, hideUserEdit, null, 'Deleting user ' + user_id);
+                id: $('#edit_user_id').val()
+            }, hideUserEdit, null, 'Deleting user ' + user_email);
         });
     });
 }
@@ -67,7 +63,7 @@ function setupUserEditSaveCall() {
             permissions: $('#edit_user_permissions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
         }
 
-        postToAPI('/admin/user/update', new_user_info, null, null, 'Updating user...');
+        postToAPI('/admin/user/update', new_user_info, userLoadSuccess, null, 'Updating user...');
     })
 }
 
@@ -86,7 +82,7 @@ function setupGroupSearchCall() {
 
         postToAPI('/admin/group/byid', {
             id: group_id
-        }, groupSearchSuccess, null, 'Looking up group...');
+        }, groupLoadSuccess, null, 'Looking up group...');
     });
 
     $('#group_by_name_btn').on('click', function() {
@@ -94,28 +90,24 @@ function setupGroupSearchCall() {
 
         postToAPI('/admin/group/byname', {
             name: group_name
-        }, groupSearchSuccess, null, 'Looking up group...');
+        }, groupLoadSuccess, null, 'Looking up group...');
     });
 }
 
-function groupSearchSuccess(response) {
+function groupLoadSuccess(response) {
     $('#edit_group_id').val(response.id);
-    $('#edit_group_name').val(response.name);
+    $('#edit_group_name').val(response.name).data('original', response.name);
     $('#edit_group_permissions').val(response.permissions.join(SW.CONFIG.PERMISSION_DELIMITER));
     $('.edit_group_container').show();
 }
 
 function setupGroupDeleteCall() {
     $('#delete_group_btn').on('click', function() {
-        var group_id = $('#edit_group_id').val();
-        if (!isInteger(group_id)) {
-            showError('Group ID must be an integer.');
-            return;
-        }
-        confirmAction('delete group ' + group_id, function() {
+        var group_name = $('#edit_group_name').data('original');
+        confirmAction('delete group ' + group_name, function() {
             postToAPI('/admin/group/delete', {
-                id: group_id
-            }, hideGroupEdit, null, 'Deleting group ' + group_id);
+                id: $('#edit_group_id').val()
+            }, hideGroupEdit, null, 'Deleting group ' + group_name);
         });
     });
 }
@@ -132,7 +124,7 @@ function setupGroupEditSaveCall() {
             permissions: $('#edit_group_permissions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
         }
 
-        postToAPI('/admin/group/update', new_group_info, null, null, 'Updating group...');
+        postToAPI('/admin/group/update', new_group_info, groupLoadSuccess, null, 'Updating group...');
     });
 }
 
@@ -142,7 +134,7 @@ function hideGroupEdit() {
 
 function setupCreateGroupCall() {
     $('#create_group_btn').on('click', function() {
-        groupSearchSuccess({
+        groupLoadSuccess({
             id: 'Not assigned yet',
             name: '',
             permissions: []
