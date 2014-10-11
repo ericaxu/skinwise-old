@@ -29,7 +29,7 @@ function setupUserSearchCall() {
 
         postToAPI('/admin/user/byemail', {
             email: user_email
-        }, userSearchSuccess, null, 'Looking up user...');
+        }, userLoadSuccess, null, 'Looking up user...');
     });
 }
 
@@ -128,6 +128,32 @@ function setupGroupEditSaveCall() {
     });
 }
 
+function listenForEnter() {
+    $("input").focus(function() {
+        $(this).addClass('focused');
+    }).blur(function() {
+        $(this).removeClass('focused');
+    });
+
+    $(document.body).on('keyup', function(e) {
+        // 13 is ENTER
+        if (e.which === 13 && $('.focused').length > 0) {
+            var btn_id = $('.focused').attr('id') + '_btn';
+            $('#' + btn_id).click();
+        }
+    });
+}
+
+function setupImport() {
+    $('#import_ingredient_btn').on('click', function() {
+        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
+    });
+
+    $('#import_product_btn').on('click', function() {
+        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
+    });
+}
+
 function hideGroupEdit() {
     $('.edit_group_container').hide();
 }
@@ -155,11 +181,7 @@ $(document).ready(function() {
     setupGroupDeleteCall();
     setupCreateGroupCall();
 
-    $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
-    });
+    setupImport();
 
-    $('#import_product_btn').on('click', function() {
-        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
-    });
+    listenForEnter();
 });
