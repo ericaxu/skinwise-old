@@ -1,0 +1,24 @@
+@()
+<div class="confirm popup">
+    <div class="popup_bg"></div>
+    <div class="wrapper">
+        <div class="popup_cell">
+            <div class="form_container">
+                <span class="close_btn"></span>
+
+                <form id="confirm_form" method="post" onsubmit="return false;">
+                    <h1>Please confirm</h1>
+
+                    <div class="message">
+                        <p>Are you sure you want to <span class="action"></span>?</p>
+                    </div>
+
+                    <div class="button_container">
+                        <input id="confirm_btn" class="primary" type="button" name="login_submit" value="Yes">
+                        <input id="cancel_btn" class="primary" type="button" name="login_submit" value="Nope">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

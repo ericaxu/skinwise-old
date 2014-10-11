@@ -1,3 +1,7 @@
+function isInteger(str) {
+    return /^\+?(0|[1-9]\d*)$/.test(str);
+}
+
 function postToAPI(url, params, successCallback, errorCallback, message) {
     console.log(url, params);
     if (message) {
@@ -8,7 +12,7 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
         $('.notice_container').append($message_box);
         $message_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
     }
-    $.ajax(url, {
+    $.ajax(SW.CONFIG.API_ROOT + url, {
         contentType: 'text/plain',
         type: 'POST',
         data: JSON.stringify(params),
@@ -20,7 +24,7 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
                 $message_box.fadeOut(SW.CONFIG.NOTICE_FADE_OUT);
             }
 
-            showMessages(response.messages);
+            _.forEach(response.messages, showMessage);
 
             if (response.code == "Ok") {
                 successCallback && successCallback(response);
@@ -37,17 +41,22 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
     });
 }
 
-function showMessages(messages) {
-    for (var i = 0; i < messages.length; i++) {
-        var message = messages[i];
-        var $notice_box = $(SW.TEMPALTES.NOTICE({
-            type: message.type,
-            message: message.message
-        }));
-        $('.notice_container').append($notice_box);
-        $notice_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
-        setTimeout(function() {
-            $notice_box.fadeOut(200);
-        }, message.timeout);
-    }
+function showMessage(message) {
+    var $notice_box = $(SW.TEMPALTES.NOTICE({
+        type: message.type,
+        message: message.message
+    }));
+    $('.notice_container').append($notice_box);
+    $notice_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
+    setTimeout(function() {
+        $notice_box.fadeOut(200);
+    }, message.timeout || SW.CONFIG.DEFAULT_NOTICE_TIMEOUT);
+}
+
+function showError(message) {
+    showMessage({ type: 'error', message: message });
+}
+
+function showInfo(message) {
+    showMessage({ type: 'info', message: message });
 }

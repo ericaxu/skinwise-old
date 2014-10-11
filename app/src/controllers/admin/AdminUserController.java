@@ -6,6 +6,7 @@ import src.api.AdminUserApi;
 import src.api.Api;
 import src.api.request.BadRequestException;
 import src.api.response.ErrorResponse;
+import src.api.response.InfoResponse;
 import src.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
@@ -122,7 +123,7 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			return Api.write();
+			return Api.write(new InfoResponse("Successfully updated user " + request.id));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

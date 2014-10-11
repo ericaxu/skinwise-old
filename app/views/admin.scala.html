@@ -25,21 +25,18 @@
         <h1>User Manager</h1>
         <div class="field">
             <div class="labels">
-                <label for="user_by_name">By ID:</label>
+                <label for="user_by_id">By ID:</label>
                 <label for="user_by_email">By email:</label>
             </div>
 
             <div class="inputs">
-                <input type="text" id="user_by_name"/>
-                <input type="button" value="Search"/>
+                <input type="text" id="user_by_id"/>
+                <input type="button" id="user_by_id_btn" value="Search"/>
                 <br>
                 <input type="email" id="user_by_email"/>
                 <input type="button" value="Search"/>
             </div>
         </div>
-        <p>
-            <input id="create_user_btn" class="primary" type="button" value="Create user"/>
-        </p>
 
         <div class="edit_user_container">
             <h2>Edit User</h2>
@@ -53,7 +50,7 @@
                 </div>
 
                 <div class="inputs">
-                    <input type="text" id="edit_user_id" readonly/>
+                    <input type="text" id="edit_user_id" disabled/>
                     <br>
                     <input type="text" id="edit_user_name"/>
                     <br>
@@ -104,7 +101,7 @@
                 </div>
 
                 <div class="inputs">
-                    <input type="text" id="edit_group_id" readonly/>
+                    <input type="text" id="edit_group_id" disabled/>
                     <br>
                     <input type="text" id="edit_group_name"/>
                     <br>
@@ -122,5 +119,7 @@
 </div>
 
 } {
+
+<script src='@routes.Assets.at("javascripts/admin.js")'></script>
 
 }

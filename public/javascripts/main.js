@@ -39,25 +39,10 @@ function setupIngredientInfobox() {
     });
 }
 
-function setupTabSystem() {
-    var current_tab = $('.current').data('tabName');
-    $('.tab').hide();
-    $('#' + current_tab).show();
-    $('.tab_title').on('click', function(e) {
-        e.preventDefault();
-        $('.tab').hide();
-        $('.tab_title').removeClass('current');
-        $(this).addClass('current');
-        $('#' + $(this).data('tabName')).show();
-    })
-}
-
 $(document).ready(function() {
     setupIngredientInfobox();
 
-    setupTabSystem();
-
     $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/api/admin/import', {}, null, null, 'Importing ingredent database...');
+        postToAPI('/admin/import', {}, null, null, 'Importing ingredent database...');
     });
 });

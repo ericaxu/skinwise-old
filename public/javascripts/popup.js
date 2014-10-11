@@ -4,7 +4,7 @@ function cleanupErrors() {
 
 function setupPopups() {
     // Closing popup
-    $('.wrapper, .close_btn').on('click', function(e) {
+    $('.wrapper, .close_btn, #cancel_btn').on('click', function(e) {
         $('.popup').hide();
     });
 
@@ -46,7 +46,7 @@ function setupLoginCall() {
     $('#login_btn').on('click', function(e) {
         cleanupErrors();
         $(this).val('Signing in...');
-        postToAPI('/api/user/login', {
+        postToAPI('/user/login', {
             email: $('#login_email').val(),
             password: $('#login_password').val()
         }, loginSuccess, loginError);
@@ -57,7 +57,7 @@ function setupSignupCall() {
     $('#signup_btn').on('click', function(e) {
         cleanupErrors();
         $(this).val('Signing you up...');
-        postToAPI('/api/user/signup', {
+        postToAPI('/user/signup', {
             name: $('#signup_name').val(),
             email: $('#signup_email').val(),
             password: $('#signup_password').val()
@@ -68,7 +68,7 @@ function setupSignupCall() {
 function setupLogoutCall() {
     $('#logout_link').on('click', function(e) {
         e.preventDefault();
-        postToAPI('/api/user/logout', {}, logoutSuccesss);
+        postToAPI('/user/logout', {}, logoutSuccesss);
     });
 }
 
@@ -123,12 +123,24 @@ function setupExpandableSearchbar() {
     });
 }
 
+function confirmAction(action, callback) {
+    $('.popup').hide();
+    $('.confirm.popup .action').text(action);
+    $('#confirm_btn').off('click').on('click', function() {
+        $('.popup').hide();
+        callback();
+    });
+    $('.confirm.popup').show();
+}
+
+
 $(document).ready(function() {
     setupPopups();
     setupLogoutCall();
     setupExpandableSearchbar();
 
-    $('.notice_container .close_btn').on('click', function() {
+    $('.notice_container').on('click', '.close_btn', function() {
+        console.log($(this).parent())
         $(this).parent().fadeOut(200);
     });
 });
