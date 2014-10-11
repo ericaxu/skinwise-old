@@ -1,4 +1,4 @@
-package src.api.response;
+package src.controllers.api.response;
 
 public class InfoResponse extends Response {
 	public InfoResponse(String info) {

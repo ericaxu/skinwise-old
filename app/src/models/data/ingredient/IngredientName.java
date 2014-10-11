@@ -1,4 +1,4 @@
-package src.models.ingredient;
+package src.models.data.ingredient;
 
 import src.models.BaseModel;
 
@@ -11,7 +11,7 @@ public class IngredientName extends BaseModel {
 	@Column(length = 1024)
 	private String name;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
 	private Ingredient ingredient;
 

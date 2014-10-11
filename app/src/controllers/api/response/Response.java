@@ -1,4 +1,4 @@
-package src.api.response;
+package src.controllers.api.response;
 
 import java.util.ArrayList;
 import java.util.List;

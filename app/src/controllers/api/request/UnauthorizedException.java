@@ -1,6 +1,6 @@
-package src.api.request;
+package src.controllers.api.request;
 
-import src.api.response.Response;
+import src.controllers.api.response.Response;
 
 public class UnauthorizedException extends BadRequestException {
 	public UnauthorizedException(String error) {

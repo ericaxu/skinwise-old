@@ -1,4 +1,4 @@
-package src.api.request;
+package src.controllers.api.request;
 
 public class BadRequestException extends Exception {
 	private String code;

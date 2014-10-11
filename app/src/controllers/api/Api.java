@@ -1,13 +1,13 @@
-package src.api;
+package src.controllers.api;
 
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Results;
-import src.api.request.BadRequestException;
-import src.api.request.NotEmpty;
-import src.api.request.NotNull;
-import src.api.request.Request;
-import src.api.response.Response;
+import src.controllers.api.request.BadRequestException;
+import src.controllers.api.request.NotEmpty;
+import src.controllers.api.request.NotNull;
+import src.controllers.api.request.Request;
+import src.controllers.api.response.Response;
 import src.util.Json;
 import src.util.Logger;
 
@@ -16,6 +16,14 @@ import java.lang.reflect.Field;
 
 public class Api {
 	private static final String TAG = "API";
+
+	public static class RequestGetById extends Request {
+		public long id;
+	}
+
+	public static class RequestGetByIdAll extends RequestGetById {
+		public boolean all;
+	}
 
 	public static <T extends Request> T read(Http.Context context, Class<? extends T> clazz)
 			throws BadRequestException {

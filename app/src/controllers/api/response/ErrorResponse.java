@@ -1,6 +1,6 @@
-package src.api.response;
+package src.controllers.api.response;
 
-import src.api.request.BadRequestException;
+import src.controllers.api.request.BadRequestException;
 
 public class ErrorResponse extends Response {
 	public ErrorResponse(BadRequestException e) {

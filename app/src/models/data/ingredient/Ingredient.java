@@ -1,4 +1,4 @@
-package src.models.ingredient;
+package src.models.data.ingredient;
 
 import src.models.BaseModel;
 
@@ -20,10 +20,10 @@ public class Ingredient extends BaseModel {
 	@Column(length = 4096)
 	private String description;
 
-	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<IngredientName> names = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	private Set<Function> functions = new HashSet<>();
 
 	//Getters

@@ -1,4 +1,4 @@
-package src.models.ingredient;
+package src.models.data.ingredient;
 
 import src.models.BaseModel;
 

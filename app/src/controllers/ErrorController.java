@@ -2,9 +2,9 @@ package src.controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.Api;
-import src.api.response.Response;
-import src.api.response.ResponseMessage;
+import src.controllers.api.Api;
+import src.controllers.api.response.Response;
+import src.controllers.api.response.ResponseMessage;
 import src.controllers.util.ResponseState;
 import views.html.error404;
 

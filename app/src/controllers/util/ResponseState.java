@@ -1,8 +1,8 @@
 package src.controllers.util;
 
 import play.mvc.Http;
-import src.api.request.UnauthorizedException;
-import src.api.response.Response;
+import src.controllers.api.request.UnauthorizedException;
+import src.controllers.api.response.Response;
 import src.models.user.User;
 
 public class ResponseState {

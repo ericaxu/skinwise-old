@@ -1,4 +1,4 @@
-package src.api.request;
+package src.controllers.api.request;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

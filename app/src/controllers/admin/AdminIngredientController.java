@@ -3,21 +3,23 @@ package src.controllers.admin;
 import com.avaje.ebean.Ebean;
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.AdminIngredientApi;
-import src.api.Api;
-import src.api.GenericApi;
-import src.api.request.BadRequestException;
-import src.api.response.ErrorResponse;
-import src.api.response.InfoResponse;
-import src.api.response.Response;
+import src.controllers.api.Api;
+import src.controllers.api.request.BadRequestException;
+import src.controllers.api.request.NotEmpty;
+import src.controllers.api.request.NotNull;
+import src.controllers.api.request.Request;
+import src.controllers.api.response.ErrorResponse;
+import src.controllers.api.response.InfoResponse;
+import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.History;
 import src.models.Permissible;
-import src.models.ingredient.AllIngredient;
-import src.models.ingredient.Function;
-import src.models.ingredient.Ingredient;
+import src.models.data.History;
+import src.models.data.ingredient.AllIngredient;
+import src.models.data.ingredient.Function;
+import src.models.data.ingredient.Ingredient;
 import src.models.user.User;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,14 +27,45 @@ import java.util.Set;
 public class AdminIngredientController extends Controller {
 	private static final String TAG = "AdminIngredientController";
 
+	public static class RequestAllIngredientAddEdit extends Request {
+		public long id;
+		@NotEmpty
+		public String name;
+		@NotEmpty
+		public String cas_number;
+		@NotEmpty
+		public String description;
+		@NotNull
+		public List<String> functions;
+	}
+
+	public static class ResponseAllIngredientObject {
+		public long id;
+		public String name;
+		public String cas_number;
+		public String description;
+		public List<String> functions;
+		public String submitted_by;
+		public long submitted_time;
+		public boolean approved;
+		public long approved_time;
+	}
+
+	public static class ResponseAllIngredient extends Response {
+		public List<ResponseAllIngredientObject> results;
+
+		public ResponseAllIngredient() {
+			this.results = new ArrayList<>();
+		}
+	}
+
 	public static Result api_ingredient_by_id() {
 		ResponseState state = new ResponseState(session());
 
 		try {
 			state.requirePermission(Permissible.INGREDIENT.VIEW);
 
-			GenericApi.RequestGetByIdAll request =
-					Api.read(ctx(), GenericApi.RequestGetByIdAll.class);
+			Api.RequestGetByIdAll request = Api.read(ctx(), Api.RequestGetByIdAll.class);
 
 			List<AllIngredient> result = null;
 			if (request.all) {
@@ -42,12 +75,10 @@ public class AdminIngredientController extends Controller {
 				result = AllIngredient.byApprovedTargetId(request.id);
 			}
 
-			AdminIngredientApi.ResponseAllIngredient response =
-					new AdminIngredientApi.ResponseAllIngredient();
+			ResponseAllIngredient response = new ResponseAllIngredient();
 
 			for (AllIngredient ingredient : result) {
-				AdminIngredientApi.ResponseAllIngredientObject object =
-						new AdminIngredientApi.ResponseAllIngredientObject();
+				ResponseAllIngredientObject object = new ResponseAllIngredientObject();
 
 				object.id = ingredient.getId();
 				object.name = ingredient.getName();
@@ -79,8 +110,7 @@ public class AdminIngredientController extends Controller {
 		try {
 			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
-			AdminIngredientApi.RequestAllIngredientAddEdit request =
-					Api.read(ctx(), AdminIngredientApi.RequestAllIngredientAddEdit.class);
+			RequestAllIngredientAddEdit request = Api.read(ctx(), RequestAllIngredientAddEdit.class);
 
 			long target_id = History.TARGET_ID_NEW;
 			if (request.id != target_id) {
@@ -124,8 +154,7 @@ public class AdminIngredientController extends Controller {
 		try {
 			state.requirePermission(Permissible.INGREDIENT.APPROVE);
 
-			GenericApi.RequestGetById request =
-					Api.read(ctx(), GenericApi.RequestGetById.class);
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			AllIngredient result = AllIngredient.byId(request.id);
 			if (result == null) {
@@ -149,8 +178,7 @@ public class AdminIngredientController extends Controller {
 		try {
 			state.requirePermission(Permissible.INGREDIENT.APPROVE);
 
-			GenericApi.RequestGetById request =
-					Api.read(ctx(), GenericApi.RequestGetById.class);
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Ingredient result = Ingredient.byId(request.id);
 			if (result == null) {

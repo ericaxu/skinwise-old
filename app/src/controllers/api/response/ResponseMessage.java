@@ -1,4 +1,4 @@
-package src.api.response;
+package src.controllers.api.response;
 
 public class ResponseMessage {
 	private static final String TYPE_INFO = "info";

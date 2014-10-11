@@ -1,7 +1,7 @@
 package src.controllers
 
 import play.api.mvc._
-import src.models.ingredient.Ingredient
+import src.models.data.ingredient.Ingredient
 
 import scala.Array._
 import scala.collection.JavaConversions._
@@ -46,7 +46,7 @@ object IngredientSearch extends Controller {
     val names: List[String] = ingredients map { _.getName() }
     val words: List[String] = names map { _.split("( |/)").toList } flatten
 
-//    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
+    //    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
 
     val trie = new Trie(words)
     val sorted_names = Levenshtein.getMatches(query, trie, 100).map { case (name, score) => name + " " + score }
@@ -59,12 +59,12 @@ object IngredientSearch extends Controller {
 
 object Levenshtein {
   def getMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
-    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value}))
+    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
-    val initialRow = List(range(0, query.length + 1).map({_.toDouble}))
+    val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
     getMatches(query, dict, maxResults, results, Nil, initialRow)
 
-    val resultList : List[(String, Double)] = results.dequeueAll
+    val resultList: List[(String, Double)] = results.dequeueAll
     resultList.reverse
   }
 
@@ -77,7 +77,7 @@ object Levenshtein {
                  maxResults: Int,
                  results: PriorityQueue[(String, Double)],
                  currentChars: List[Char],
-                 dynamicTable: List[Array[Double]]) : Unit = dynamicTable match {
+                 dynamicTable: List[Array[Double]]): Unit = dynamicTable match {
     case previousRow :: remainingRows => {
       // The Levenshtein distance for the string built so far traversing the trie
       // is always the last value of the lastest row.
@@ -96,14 +96,14 @@ object Levenshtein {
 
       // Traverse trie.
       dict.nodes foreach { case (char, node) =>
-        val nextRow : Array[Double] = Array.ofDim(query.length + 1)
+        val nextRow: Array[Double] = Array.ofDim(query.length + 1)
         nextRow(0) = currentChars.length
 
         remainingRows match {
           case Nil => {
             for (i <- 1 to query.length) {
               nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
-                // Favor first-letter matches.
+              // Favor first-letter matches.
               else if (i == 1) min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 2
               else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
             }
@@ -116,7 +116,7 @@ object Levenshtein {
               else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
               // Tranpose recursive case
               if (i > 1 && query(i - 1) == currentChars.head && query(i - 2) == char)
-                nextRow(i) = min(nextRow(i), transposeRow(i-2)) + 1
+                nextRow(i) = min(nextRow(i), transposeRow(i - 2)) + 1
             }
           }
         }

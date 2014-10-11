@@ -1,9 +1,9 @@
 package src.util.dbimport;
 
-import src.models.History;
-import src.models.ingredient.AllIngredient;
-import src.models.ingredient.Function;
-import src.models.ingredient.Ingredient;
+import src.models.data.History;
+import src.models.data.ingredient.AllIngredient;
+import src.models.data.ingredient.Function;
+import src.models.data.ingredient.Ingredient;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;

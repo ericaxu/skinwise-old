@@ -2,11 +2,11 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
-import src.api.Api;
-import src.api.request.BadRequestException;
-import src.api.response.ErrorResponse;
-import src.api.response.InfoResponse;
 import src.controllers.ErrorController;
+import src.controllers.api.Api;
+import src.controllers.api.request.BadRequestException;
+import src.controllers.api.response.ErrorResponse;
+import src.controllers.api.response.InfoResponse;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;

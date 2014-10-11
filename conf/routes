@@ -11,12 +11,12 @@ GET         /ingredients                         src.controllers.HtmlController.
 GET         /profile                             src.controllers.HtmlController.profile()
 
 # Ingredient API
-GET         /api/ingredient                      src.controllers.IngredientController.api_info()
+GET         /api/ingredient                      src.controllers.data.IngredientController.api_info()
 GET         /api/quicksearch/:query              src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                   src.controllers.IngredientSearch.fullSearch(query)
 
 # Product API
-GET         /api/product                         src.controllers.ProductController.api_info()
+GET         /api/product                         src.controllers.data.ProductController.api_info()
 
 # User API
 POST        /api/user/signup                     src.controllers.UserController.api_signup()

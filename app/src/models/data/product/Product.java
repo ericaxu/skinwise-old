@@ -1,4 +1,4 @@
-package src.models.product;
+package src.models.data.product;
 
 import play.db.ebean.Model;
 

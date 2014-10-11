@@ -14,4 +14,6 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+scalacOptions ++= Seq("-feature")
+
 includeFilter in (Assets, LessKeys.less) := "*.less"

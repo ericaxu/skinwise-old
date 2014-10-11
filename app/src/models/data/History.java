@@ -1,6 +1,7 @@
-package src.models;
+package src.models.data;
 
 import com.avaje.ebean.Ebean;
+import src.models.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
