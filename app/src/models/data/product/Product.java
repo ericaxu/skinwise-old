@@ -1,17 +1,13 @@
 package src.models.data.product;
 
-import play.db.ebean.Model;
+import src.models.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.List;
 
 @Entity
-public class Product extends Model {
-	@Id
-	private long id;
-
+public class Product extends BaseModel {
 	@Column(length = 1024)
 	private String brand;
 
@@ -24,11 +20,10 @@ public class Product extends Model {
 	@Column(length = 4096)
 	private String description;
 
-	public Product(String name, String brand, String description) {
-		this.name = name;
-		this.brand = brand;
-		this.description = description;
-	}
+	@Column(length = 8192)
+	private String ingredients;
+
+	//Getters
 
 	public String getBrand() {
 		return brand;
@@ -46,8 +41,40 @@ public class Product extends Model {
 		return description;
 	}
 
-	public long getId() {
-		return id;
+	public String getIngredients() {
+		return ingredients;
+	}
+
+	//Setters
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public void setLine(String line) {
+		this.line = line;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setIngredients(String ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	//Others
+
+	public void loadFrom(Product other) {
+		setBrand(other.getBrand());
+		setName(other.getName());
+		setName(other.getName());
+		setDescription(other.getDescription());
+		setIngredients(other.getIngredients());
 	}
 
 	//Static
@@ -56,6 +83,13 @@ public class Product extends Model {
 
 	public static Product byId(long id) {
 		return find.byId(id);
+	}
+
+	public static Product byBrandAndName(String brand, String name) {
+		return find.where()
+				.eq("brand", brand)
+				.eq("name", name)
+				.findUnique();
 	}
 
 	public static List<Product> byBrand(String brand) {

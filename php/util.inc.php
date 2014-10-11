@@ -215,4 +215,10 @@ function strallpos($haystack, $needle, $offset = 0){
 	return $result; 
 }
 
+//HTML
+
+function html_decode($input) {
+	return html_entity_decode($input, ENT_QUOTES);
+}
+
 ?>

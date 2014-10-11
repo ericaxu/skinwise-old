@@ -1,14 +1,18 @@
 package src.util.dbimport;
 
+import src.models.data.History;
+import src.models.data.product.AllProduct;
+import src.models.data.product.Product;
 import src.util.Json;
 import src.util.Util;
 
 import java.io.IOException;
 
 public class ImportProducts {
-	private static final String TAG = "ProductImport";
+	private static final String TAG = "ImportProducts";
 
-	public static void importDB(String json) throws IOException {
+	public static synchronized void importDB(String path) throws IOException {
+		String json = Util.readAll(path);
 		ProductFormat result = Json.deserialize(json, ProductFormat.class);
 
 		//Import products
@@ -23,11 +27,17 @@ public class ImportProducts {
 		object.claims = Util.notNull(object.claims);
 		object.ingredients = Util.notNull(object.ingredients);
 
-		/*Product product = Product.byNameAndBrand(object.name, object.brand);
-		if (product == null) {
-			product = new Product(object.name, object.brand, object.claims);
-		}
-*/
+		Product target = Product.byBrandAndName(object.brand, object.name);
+		long target_id = History.getTargetId(target);
+
+		AllProduct result = new AllProduct(target_id, History.SUBMITTED_BY_SYSTEM);
+		result.setName(object.name);
+		result.setBrand(object.brand);
+		result.setDescription(object.claims);
+		result.setIngredients(object.ingredients);
+
+		result.save();
+		result.approve();
 	}
 
 	public static class ProductFormat {

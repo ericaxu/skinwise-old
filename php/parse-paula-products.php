@@ -80,10 +80,10 @@ foreach($urls as $url) {
 	$product_ingredients = trim(strip_tags($product_ingredients[1]));
 
 	$product = array();
-	$product["name"] = $product_name;
-	$product["brand"] = $product_brand;
-	$product["claims"] = $product_claims;
-	$product["ingredients"] = $product_ingredients;
+	$product["name"] = html_decode($product_name);
+	$product["brand"] = html_decode($product_brand);
+	$product["claims"] = html_decode($product_claims);
+	$product["ingredients"] = html_decode($product_ingredients);
 	$products[] = $product;
 }
 
@@ -91,5 +91,7 @@ $result = array();
 $result["products"] = $products;
 
 util_json_write($file_products, $result);
+
+parser_echo_count($products, "Products");
 
 ?>

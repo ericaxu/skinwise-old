@@ -41,8 +41,4 @@ function setupIngredientInfobox() {
 
 $(document).ready(function() {
     setupIngredientInfobox();
-
-    $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/admin/import', {}, null, null, 'Importing ingredent database...');
-    });
 });

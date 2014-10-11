@@ -29,7 +29,8 @@ POST        /api/feedback/analytics              src.controllers.feedback.Analyt
 
 # Admin console
 GET         /admin                               src.controllers.admin.AdminController.home()
-POST        /api/admin/import                    src.controllers.admin.AdminController.api_auto_import()
+POST        /api/admin/import/ingredients        src.controllers.admin.AdminController.api_import_ingredients()
+POST        /api/admin/import/products           src.controllers.admin.AdminController.api_import_products()
 
 POST        /api/admin/user/byid                 src.controllers.admin.AdminUserController.api_user_by_id()
 POST        /api/admin/user/byemail              src.controllers.admin.AdminUserController.api_user_by_email()

@@ -14,7 +14,8 @@ import java.util.Set;
 public class ImportIngredients {
 	private static final String TAG = "ImportIngredients";
 
-	public static synchronized void importDB(String json) throws IOException {
+	public static synchronized void importDB(String path) throws IOException {
+		String json = Util.readAll(path);
 		IngredientFormat result = Json.deserialize(json, IngredientFormat.class);
 
 		//Import functions

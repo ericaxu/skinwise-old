@@ -162,4 +162,12 @@ $(document).ready(function() {
     setupGroupEditSaveCall();
     setupGroupDeleteCall();
     setupCreateGroupCall();
+
+    $('#import_ingredient_btn').on('click', function() {
+        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
+    });
+
+    $('#import_product_btn').on('click', function() {
+        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
+    });
 });
