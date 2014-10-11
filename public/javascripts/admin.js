@@ -122,9 +122,12 @@ function setupGroupDeleteCall() {
 
 function setupGroupEditSaveCall() {
     $('#save_group_btn').on('click', function() {
-        console.log('sfasd');
+        var group_id = $('#edit_group_id').val();
+        if (group_id === 'Not assigned yet') {
+            group_id = '-1';
+        }
         var new_group_info = {
-            id: $('#edit_group_id').val(),
+            id: group_id,
             name: $('#edit_group_name').val(),
             permissions: $('#edit_group_permissions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
         }
@@ -135,6 +138,16 @@ function setupGroupEditSaveCall() {
 
 function hideGroupEdit() {
     $('.edit_group_container').hide();
+}
+
+function setupCreateGroupCall() {
+    $('#create_group_btn').on('click', function() {
+        groupSearchSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            permissions: []
+        });
+    });
 }
 
 
@@ -148,4 +161,5 @@ $(document).ready(function() {
     setupGroupSearchCall();
     setupGroupEditSaveCall();
     setupGroupDeleteCall();
+    setupCreateGroupCall();
 });
