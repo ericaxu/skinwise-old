@@ -24,6 +24,16 @@ public class ReportController extends Controller {
 		public String content;
 	}
 
+	public static class RequestAnalyticsEvent {
+		public String event;
+		public String data;
+		public long timestamp;
+	}
+
+	public static class RequestAnalytics extends Request {
+		RequestAnalyticsEvent[] events;
+	}
+
 	public static Result api_report_create() {
 		ResponseState state = new ResponseState(session());
 
@@ -41,6 +51,21 @@ public class ReportController extends Controller {
 			report.save();
 
 			return Api.write(new InfoResponse("Feedback received. Thank you!"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_analytics() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			RequestAnalytics request = Api.read(ctx(), RequestAnalytics.class);
+
+			//TODO
+
+			return Api.write();
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

@@ -97,7 +97,7 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-			return Api.write(getUserResponse(result));
+			return Api.write(getResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -117,7 +117,7 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Email " + request.email + " not found");
 			}
 
-			return Api.write(getUserResponse(result));
+			return Api.write(getResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -147,7 +147,7 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			state.setResponse(getUserResponse(result));
+			state.setResponse(getResponse(result));
 			state.getResponse().addMessage(
 					ResponseMessage.info("Successfully updated user " + result.getEmail()));
 
@@ -175,7 +175,7 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			state.setResponse(getUserResponse(result));
+			state.setResponse(getResponse(result));
 			state.getResponse().addMessage(
 					ResponseMessage.info("Successfully changed password for user " + result.getEmail()));
 
@@ -221,7 +221,7 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-			return Api.write(getGroupResponse(result));
+			return Api.write(getResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -241,7 +241,7 @@ public class AdminUserController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Group " + request.name + " not found");
 			}
 
-			return Api.write(getGroupResponse(result));
+			return Api.write(getResponse(result));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -271,7 +271,7 @@ public class AdminUserController extends Controller {
 
 			result.save();
 
-			state.setResponse(getGroupResponse(result));
+			state.setResponse(getResponse(result));
 			state.getResponse().addMessage(ResponseMessage.info("Successfully updated group " + result.getName()));
 
 			return Api.write(state.getResponse());
@@ -303,21 +303,21 @@ public class AdminUserController extends Controller {
 		}
 	}
 
-	private static Response getUserResponse(User user) {
+	private static Response getResponse(User object) {
 		return new ResponseUser(
-				user.getId(),
-				user.getEmail(),
-				user.getName(),
-				user.getGroupName(),
-				user.getPermissions_set()
+				object.getId(),
+				object.getEmail(),
+				object.getName(),
+				object.getGroupName(),
+				object.getPermissions_set()
 		);
 	}
 
-	private static Response getGroupResponse(Usergroup group) {
+	private static Response getResponse(Usergroup object) {
 		return new ResponseGroup(
-				group.getId(),
-				group.getName(),
-				group.getPermissions_set()
+				object.getId(),
+				object.getName(),
+				object.getPermissions_set()
 		);
 	}
 }

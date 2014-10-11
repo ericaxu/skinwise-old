@@ -23,6 +23,10 @@ POST        /api/user/signup                     src.controllers.UserController.
 POST        /api/user/login                      src.controllers.UserController.api_login()
 POST        /api/user/logout                     src.controllers.UserController.api_logout()
 
+# Feedback
+POST        /api/feedback/report                 src.controllers.feedback.ReportController.api_report_create()
+POST        /api/feedback/analytics              src.controllers.feedback.ReportController.api_analytics()
+
 # Admin console
 GET         /admin                               src.controllers.admin.AdminController.home()
 POST        /api/admin/import                    src.controllers.admin.AdminController.api_auto_import()
@@ -42,6 +46,9 @@ POST        /api/admin/ingredient/byid           src.controllers.admin.AdminIngr
 POST        /api/admin/ingredient/update         src.controllers.admin.AdminIngredientController.api_ingredient_update()
 POST        /api/admin/ingredient/approve        src.controllers.admin.AdminIngredientController.api_ingredient_approve()
 POST        /api/admin/ingredient/delete         src.controllers.admin.AdminIngredientController.api_ingredient_delete()
+
+POST        /api/admin/report/byid                 src.controllers.admin.AdminReportController.api_report_byid()
+POST        /api/admin/report/list                 src.controllers.admin.AdminReportController.api_report_list()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                        controllers.Assets.at(path="/public", file)

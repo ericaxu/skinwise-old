@@ -50,6 +50,14 @@ public class Report extends BaseModel {
 		return reported_by;
 	}
 
+	public String getReportedByUserName() {
+		User user = getReported_by();
+		if (user == null) {
+			return "";
+		}
+		return user.getName();
+	}
+
 	public long getTimestamp() {
 		return timestamp;
 	}

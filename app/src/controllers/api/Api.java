@@ -17,6 +17,10 @@ import java.lang.reflect.Field;
 public class Api {
 	private static final String TAG = "API";
 
+	public static class RequestGetAll extends Request {
+		public int page;
+	}
+
 	public static class RequestGetById extends Request {
 		public long id;
 	}

@@ -86,6 +86,11 @@ public abstract class Permissible extends BaseModel {
 		public static final String APPROVE = "INGREDIENT.APPROVE";
 	}
 
+	public static class REPORT {
+		public static final String ALL = "REPORT.*";
+		public static final String VIEW = "REPORT.VIEW";
+	}
+
 	public static class USER {
 		public static final String ALL = "USER.*";
 		public static final String FEEDBACK = "USER.FEEDBACK";
