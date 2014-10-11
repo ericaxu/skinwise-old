@@ -3,6 +3,7 @@ package src.controllers
 import play.api.mvc._
 import src.models.ingredient.Ingredient
 
+import scala.Array._
 import scala.collection.JavaConversions._
 import scala.collection.mutable._
 import scala.math._
@@ -38,16 +39,17 @@ object IngredientSearch extends Controller {
     Ok("Not implemented yet.")
   }
 
-  def fullSearch(name: String) = Action {
+  def fullSearch(query: String) = Action {
     val start = System.nanoTime()
 
     val ingredients = Ingredient.getAll().toList
     val names: List[String] = ingredients map { _.getName() }
+    val words: List[String] = names map { _.split("( |/)").toList } flatten
 
-    val trie = new Trie(names)
+//    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
 
-    val ranked_names = names map { n => (Levenshtein.distance(name, n), n) }
-    val sorted_names = ranked_names sortBy { _._1 } map { case (score, n) => n + " " + score.toString }
+    val trie = new Trie(words)
+    val sorted_names = Levenshtein.getMatches(query, trie).map { case (name, score) => name + " " + score }
 
     val end = System.nanoTime()
 
@@ -56,21 +58,62 @@ object IngredientSearch extends Controller {
 }
 
 object Levenshtein {
-  def getMatches(query: String, dict: Trie, previous: List[Array[Float]] = Nil): Unit = {
+  def getMatches(query: String, dict: Trie): List[(String, Double)] = {
+    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => -value}))
 
+    val initialRow = List(range(0, query.length + 1).map({_.toDouble}))
+    getMatches(query, dict, results, Nil, initialRow)
+
+    results.dequeueAll
   }
 
-  def minimum(i1: Int, i2: Int, i3: Int) = min(min(i1, i2), i3)
+  // Matches all words in the dictionary (stored in a trie) against the
+  // query by computing the Damereau-Levenshtein distance. This is computed
+  // efficiently by having each node in the trie correspond to a row in the
+  // dynamic table.
+  def getMatches(query: String,
+                 dict: Trie,
+                 results: PriorityQueue[(String, Double)],
+                 currentChars: List[Char],
+                 dynamicTable: List[Array[Double]]) : Unit = dynamicTable match {
+    case previousRow :: rest => {
+      if (dict.terminal) {
+        // The Levenshtein distance is always the last value of the last row.
+        results += ((currentChars.reverse.mkString, previousRow(query.length)))
+      }
 
-  def distance(s1: String, s2: String) = {
-    val dist = Array.tabulate(s2.length + 1, s1.length + 1) { (j, i) => if (j == 0) i else if (i == 0) j else 0 }
+      // Traverse trie.
+      dict.nodes foreach { case (char, node) =>
+        val nextRow : Array[Double] = Array.ofDim(query.length + 1)
+        nextRow(0) = currentChars.length
 
-    for (j <- 1 to s2.length; i <- 1 to s1.length)
-      dist(j)(i) = if (s2(j - 1) == s1(i - 1)) dist(j - 1)(i - 1)
-      else minimum(dist(j - 1)(i) + 1, dist(j)(i - 1) + 1, dist(j - 1)(i - 1) + 1)
+        rest match {
+          case Nil => {
+            for (i <- 1 to query.length) {
+              nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
+              else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
+            }
+          }
+          case transposeRow :: _ => {
+            // If we've already built a row (other than the default row), we can
+            // look for adjacent character transposition.
+            for (i <- 1 to query.length) {
+              nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
+              else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
+              // Tranpose recursive case
+              if (i > 1 && query(i - 1) == currentChars.head && query(i - 2) == char)
+                nextRow(i) = min(nextRow(i), transposeRow(i-2)) + 1
+            }
+          }
+        }
 
-    dist(s2.length)(s1.length)
+        getMatches(query, node, results, char :: currentChars, nextRow :: dynamicTable)
+      }
+    }
+    case Nil => Unit
   }
+
+  def min3(f1: Double, f2: Double, f3: Double) = min(min(f1, f2), f3)
 }
 
 class Trie {
