@@ -23,6 +23,9 @@ public class Product extends BaseModel {
 	@Column(length = 8192)
 	private String ingredients;
 
+	@Column(length = 8192)
+	private String key_ingredients;
+
 	//Getters
 
 	public String getBrand() {
@@ -45,6 +48,9 @@ public class Product extends BaseModel {
 		return ingredients;
 	}
 
+	public String getKey_ingredients() {
+		return key_ingredients;
+	}
 	//Setters
 
 	public void setBrand(String brand) {
@@ -67,6 +73,9 @@ public class Product extends BaseModel {
 		this.ingredients = ingredients;
 	}
 
+	public void setKey_ingredients(String key_ingredients) {
+		this.key_ingredients = key_ingredients;
+	}
 	//Others
 
 	public void loadFrom(Product other) {
@@ -75,6 +84,7 @@ public class Product extends BaseModel {
 		setName(other.getName());
 		setDescription(other.getDescription());
 		setIngredients(other.getIngredients());
+		setKey_ingredients(other.getKey_ingredients());
 	}
 
 	//Static

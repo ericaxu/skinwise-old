@@ -77,13 +77,21 @@ foreach($urls as $url) {
 	$product_claims = trim(strip_tags($product_claims[1]));
 
 	$product_ingredients = parser_match("<div id=\"[^\"]*pnlTabBodyIngredients\"[^>]*>(.*?)<\\/div>", $page_html);
-	$product_ingredients = trim(strip_tags($product_ingredients[1]));
+	$product_ingredients = $product_ingredients[1];
+
+	$product_key_ingredients = parser_match("<dd[^>]*>(.*?)<\\/dd>", $product_ingredients);
+	$product_other_ingredients = parser_match("<p[^>]*>(.*?)<\\/p>", $product_ingredients);
+
+	$product_key_ingredients = trim(strip_tags($product_key_ingredients[1]));
+	$product_other_ingredients = trim(strip_tags($product_other_ingredients[1]));
+
 
 	$product = array();
 	$product["name"] = html_decode($product_name);
 	$product["brand"] = html_decode($product_brand);
 	$product["claims"] = html_decode($product_claims);
-	$product["ingredients"] = html_decode($product_ingredients);
+	$product["key_ingredients"] = html_decode($product_key_ingredients);
+	$product["ingredients"] = html_decode($product_other_ingredients);
 	$products[] = $product;
 }
 

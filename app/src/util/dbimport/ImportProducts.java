@@ -22,7 +22,7 @@ public class ImportProducts {
 	}
 
 	private static void createOrUpdate(ProductObject object) {
-		object.name = Util.notNull(object.name).toLowerCase();
+		object.name = Util.notNull(object.name);
 		object.brand = Util.notNull(object.brand);
 		object.claims = Util.notNull(object.claims);
 		object.ingredients = Util.notNull(object.ingredients);
@@ -35,6 +35,7 @@ public class ImportProducts {
 		result.setBrand(object.brand);
 		result.setDescription(object.claims);
 		result.setIngredients(object.ingredients);
+		result.setKey_ingredients(object.key_ingredients);
 
 		result.save();
 		result.approve();
@@ -48,6 +49,7 @@ public class ImportProducts {
 		public String name;
 		public String brand;
 		public String claims;
+		public String key_ingredients;
 		public String ingredients;
 	}
 }
