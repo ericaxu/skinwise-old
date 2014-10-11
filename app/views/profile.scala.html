@@ -12,37 +12,41 @@
 
         <div class="section">
             <h2>Basic info</h2>
-            <div class="field">
+            <div class="labels">
                 <label for="profile_first_name">First name:</label>
-                <input type="text" id="profile_first_name"/>
-            </div>
-
-            <div class="field">
-
                 <label for="profile_last_name">Last name:</label>
-                <input type="text" id="profile_last_name"/>
+                <label for="profile_birth_year">Yearh of birth:</label>
             </div>
 
-            <div class="field">
-                <label for="profile_birth_year">Yearh of birth:</label>
+            <div class="inputs">
+                <input type="text" id="profile_first_name"/>
+                <br>
+                <input type="text" id="profile_last_name"/>
+                <br>
                 <input type="text" id="profile_birth_year"/>
             </div>
+
         </div>
 
         <div class="section">
             <h2>Skin profile</h2>
-            <div class="field">
+
+            <div class="labels">
                 <label for="profile_skin_type">Skin type:</label>
+                <label for="profile_primary_conern">Primary concern:</label>
+                <label for="profile_additional_concern">Additional concern:</label>
+                <label for="profile_allergic_to">Allergic to:</label>
+                <label for="profile_sensitive_to">Sensitive to:</label>
+            </div>
+
+            <div class="inputs">
                 <select id="profile_skin_type">
                     <option value="normal">Normal</option>
                     <option value="oily">Oily</option>
                     <option value="dry">Dry</option>
                     <option value="combination">Combination</option>
                 </select>
-            </div>
-
-            <div class="field">
-                <label for="profile_primary_conern">Primary concern:</label>
+                <br>
                 <select id="profile_primary_conern">
                     <option value="none">None</option>
                     <option value="acne">Acne</option>
@@ -51,10 +55,7 @@
                     <option value="dark_spots">Dark Spots</option>
                     <option value="enlarged_pores">Enlarged Pores</option>
                 </select>
-            </div>
-
-            <div class="field">
-                <label for="profile_additional_concern">Additional concern:</label>
+                <br>
                 <select id="profile_additional_concern">
                     <option value="none">None</option>
                     <option value="acne">Acne</option>
@@ -63,20 +64,15 @@
                     <option value="dark_spots">Dark Spots</option>
                     <option value="enlarged_pores">Enlarged Pores</option>
                 </select>
-            </div>
-
-            <div class="field">
-                <label for="profile_allergic_to">Allergic to:</label>
+                <br>
                 <input type="text" id="profile_allergic_to"/>
-            </div>
-
-            <div class="field">
-                <label for="profile_sensitive_to">Sensitive to:</label>
+                <br>
                 <input type="text" id="profile_sensitive_to"/>
             </div>
+            <div class="field">
         </div>
 
-        <button class="primary">Save</button>
+        <input type="button" class="primary" value="Save">
     </div>
 
 </div>
