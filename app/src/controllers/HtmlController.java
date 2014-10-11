@@ -17,11 +17,6 @@ public class HtmlController extends Controller {
 		return ok(product.render(state));
 	}
 
-	public static Result ingredient() {
-		ResponseState state = new ResponseState(session());
-		return ok(ingredient.render(state));
-	}
-
 	public static Result products() {
 		ResponseState state = new ResponseState(session());
 		return ok(products.render(state));

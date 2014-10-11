@@ -1,4 +1,4 @@
-@(state: src.controllers.util.ResponseState)
+@(state: src.controllers.util.ResponseState, ingredient: src.models.data.ingredient.Ingredient)
 
 @template("Mandelic Acid - Skin Wise", state) {
 
@@ -8,45 +8,25 @@
     <div class="ingredient_detail">
 
         <div class="section">
-            <div class="name">Mandelic Acid</div>
-            <div class="classification">Alpha Hydroxy Acid (AHA)</div>
+            <div class="name">@ingredient.getName</div>
+            <div class="classification"></div>
         </div>
 
         <div class="functions section">
             <h3>What It Does</h3>
-            <p>Exfoliates</p>
+            <p>@for(f <- ingredient.getFunctionsString) {
+                <a class="function neutral">@f</a>
+            }
+            </p>
         </div>
 
         <div class="description section">
             <h3>What It Is</h3>
-            <p>Mandelic acid is one of the largest alpha hydroxy acids (AHAs), and derived from bitter almonds. In other
-                areas of healthcare it is used as an antibacterial, but for skincare, it's useful for treating irregular
-                pigmentation, acne, photoaging and mature dry skin.</p>
-
-            <p>Like other AHAs, mandelic acid can be used as a leave-on treatment at lower concentrations (typically
-                2-10%) or a peel at higher concentrations. However, mandelic acid stands out because it's quite mild, and is
-                suitable for sensitive skin and darker skin prone to postinflammatory hyperpigmentation than the more
-                common glycolic acid. It also works well in peels for acne in combination with salicylic acid.</p>
-        </div>
-
-        <div class="sources section">
-            <h3>Sources</h3>
-            <p><a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3560164/">Chemical Peels for Melasma in Dark-Skinned Patients</a></p>
-            <p><a href="http://www.dermage.com.br/dermage/paginas/article.pdf">Summary of Mandelic Acid for the Improvement of Skin Conditions</a></p>
-            <p><a href="http://www.ncbi.nlm.nih.gov/pubmed/24278065">Influence of azelaic and mandelic acid peels on sebum secretion in ageing women</a></p>
-        </div>
-
-        <div class="similar_ingredients section">
-            <h3>Similar Ingredients</h3>
-            <ul>
-                <li><a href="#">Glycolic Acid</a></li>
-                <li><a href="#">Lactic Acid</a></li>
-                <li><a href="#">Citric Acid</a></li>
-            </ul>
+            <p>@ingredient.getDescription</p>
         </div>
 
         <div class="contained_products section">
-            <h3>More Products with Mandelic Acid</h3>
+            <h3>More Products with @ingredient.getName</h3>
             <ul>
                 <li>
                     <div class="product">

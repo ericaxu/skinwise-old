@@ -5,7 +5,7 @@
 # Home page
 GET         /                                    src.controllers.HtmlController.index()
 GET         /product/1                           src.controllers.HtmlController.product()
-GET         /ingredient/1                        src.controllers.HtmlController.ingredient()
+GET         /ingredient/:ingredient_id           src.controllers.data.IngredientController.info(ingredient_id : Long)
 GET         /products                            src.controllers.HtmlController.products()
 GET         /ingredients                         src.controllers.HtmlController.ingredients()
 GET         /profile                             src.controllers.HtmlController.profile()
