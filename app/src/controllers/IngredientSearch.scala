@@ -49,7 +49,7 @@ object IngredientSearch extends Controller {
 //    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
 
     val trie = new Trie(words)
-    val sorted_names = Levenshtein.getMatches(query, trie).map { case (name, score) => name + " " + score }
+    val sorted_names = Levenshtein.getMatches(query, trie, 100).map { case (name, score) => name + " " + score }
 
     val end = System.nanoTime()
 
@@ -58,13 +58,14 @@ object IngredientSearch extends Controller {
 }
 
 object Levenshtein {
-  def getMatches(query: String, dict: Trie): List[(String, Double)] = {
-    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => -value}))
+  def getMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
+    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value}))
 
     val initialRow = List(range(0, query.length + 1).map({_.toDouble}))
-    getMatches(query, dict, results, Nil, initialRow)
+    getMatches(query, dict, maxResults, results, Nil, initialRow)
 
-    results.dequeueAll
+    val resultList : List[(String, Double)] = results.dequeueAll
+    resultList.reverse
   }
 
   // Matches all words in the dictionary (stored in a trie) against the
@@ -73,13 +74,24 @@ object Levenshtein {
   // dynamic table.
   def getMatches(query: String,
                  dict: Trie,
+                 maxResults: Int,
                  results: PriorityQueue[(String, Double)],
                  currentChars: List[Char],
                  dynamicTable: List[Array[Double]]) : Unit = dynamicTable match {
     case previousRow :: remainingRows => {
+      // The Levenshtein distance for the string built so far traversing the trie
+      // is always the last value of the lastest row.
+      val distance = previousRow(query.length)
+
+      // Early termination optimization.
+      if (results.length >= maxResults && distance > results.head._2) {
+        return
+      }
+
       if (dict.terminal) {
-        // The Levenshtein distance is always the last value of the last row.
-        results += ((currentChars.reverse.mkString, previousRow(query.length)))
+        if (results.length >= maxResults)
+          results.dequeue()
+        results += ((currentChars.reverse.mkString, distance))
       }
 
       // Traverse trie.
@@ -109,7 +121,7 @@ object Levenshtein {
           }
         }
 
-        getMatches(query, node, results, char :: currentChars, nextRow :: dynamicTable)
+        getMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
       }
     }
     case Nil => Unit
