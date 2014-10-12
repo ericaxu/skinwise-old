@@ -10,6 +10,8 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
+import src.util.Util;
+import src.util.dbimport.Import;
 import src.util.dbimport.ImportIngredients;
 import src.util.dbimport.ImportProducts;
 import views.html.admin;
@@ -64,7 +66,11 @@ public class AdminController extends Controller {
 			Logger.info(TAG, "DB import started");
 
 			try {
-				ImportProducts.importDB("php/data/paula-products.json.txt");
+				String input = Util.readAll("data/products.json.txt");
+				Import.ImportResult result = ImportProducts.importDB(input);
+				Util.writeAll("data/products.valid.json.txt", result.valid);
+				Util.writeAll("data/products.invalid.json.txt", result.invalid);
+				Util.writeAll("data/products.failed.json.txt", result.failedReasons.replace("\", \"", "\",\n\""));
 			}
 			catch (IOException e) {
 				Logger.error(TAG, e);

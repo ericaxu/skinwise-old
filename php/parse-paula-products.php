@@ -8,6 +8,21 @@ $source_product_list = "http://www.paulaschoice.com/beautypedia-skin-care-review
 $file_product_urls = "data/paula-product-urls.json.txt";
 $file_products = "data/paula-products.json.txt";
 
+$replace_rules_str = array(
+	"aqua (water) eau)" => "aqua (water) eau",
+	", iron oxides)." => ", iron oxides.",
+	"active ingredients:" => ",",
+	"other ingredients:" => ",",
+	"active:" => ",",
+	"other:" => ",",
+	"(and)" => ",",
+	";" => ","
+);
+
+$replace_rules_preg = array(
+	"\\(\\s*\\)" => ""
+);
+
 util_create_dir("data");
 
 function clean_paula_page($html) {
@@ -84,6 +99,12 @@ foreach($urls as $url) {
 
 	$product_key_ingredients = trim(strip_tags($product_key_ingredients[1]));
 	$product_other_ingredients = trim(strip_tags($product_other_ingredients[1]));
+
+	$product_key_ingredients = parser_str_replace_dict($replace_rules_str, $product_key_ingredients);
+	$product_key_ingredients = parser_preg_replace_dict($replace_rules_preg, $product_key_ingredients);
+	
+	$product_other_ingredients = parser_str_replace_dict($replace_rules_str, $product_other_ingredients);
+	$product_other_ingredients = parser_preg_replace_dict($replace_rules_preg, $product_other_ingredients);
 
 
 	$product = array();

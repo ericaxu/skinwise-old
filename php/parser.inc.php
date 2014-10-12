@@ -41,7 +41,7 @@ function parser_preg_replace_dict($dict, $input) {
 
 function parser_str_replace_dict($dict, $input) {
 	foreach($dict as $key => $value) {
-		$input = str_replace($key, $value, $input);
+		$input = str_ireplace($key, $value, $input);
 	}
 	return $input;
 }

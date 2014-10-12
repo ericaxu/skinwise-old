@@ -34,6 +34,17 @@ import scala.math._
  * - Sort words and start with those most likely to have small distance (e.g. first letter matches)
  *
  */
+class IngredientSearch(names: java.util.List[String]) extends Controller {
+  val words: List[String] = names.toList.map { _.split("( |/)").toList }.flatten
+  //    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
+  val trie = new Trie(words)
+
+  def fullSearch(query: String) : List[(String, Double)] = {
+
+    Levenshtein.getMatches(query, trie, 100)
+  }
+}
+
 object IngredientSearch extends Controller {
   def partialSearch(query: String) = Action {
     Ok("Not implemented yet.")
@@ -42,14 +53,11 @@ object IngredientSearch extends Controller {
   def fullSearch(query: String) = Action {
     val start = System.nanoTime()
 
-    val ingredients = Ingredient.getAll().toList
-    val names: List[String] = ingredients map { _.getName() }
-    val words: List[String] = names map { _.split("( |/)").toList } flatten
+    val ingredients = Ingredient.getAll.toList
+    val names: List[String] = ingredients map { _.getName }
+    val instance = new IngredientSearch(names)
 
-    //    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
-
-    val trie = new Trie(words)
-    val sorted_names = Levenshtein.getMatches(query, trie, 100).map { case (name, score) => name + " " + score }
+    val sorted_names = instance.fullSearch(query).map { case (name, score) => name + " " + score }
 
     val end = System.nanoTime()
 

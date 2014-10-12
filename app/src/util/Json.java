@@ -15,6 +15,8 @@ public class Json {
 		objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 	}
 
 	public static ObjectMapper mapper() {
@@ -23,7 +25,7 @@ public class Json {
 
 	public static String serialize(Object object) {
 		try {
-			return mapper().writeValueAsString(object);
+			return mapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
 		}
 		catch (JsonProcessingException e) {
 			Logger.fatal(TAG, "Json serialization error", e);
