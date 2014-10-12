@@ -27,9 +27,14 @@
                 <li id="signup_link"><a href="#">Sign up</a></li>
                 <li id="login_link"><a href="#">Sign in</a></li>
             } else {
-                <li><a href="#">@state.getUser().getName()</a></li>
-                <li><a href="/profile">Profile</a></li>
-                <li><a href="#">Favorites</a></li>
+                <li class="expand_subnav">
+                    <a href="#">@state.getUser().getName()<span class="down_arrow"></span></a>
+                    <ul class="sub_navbar">
+                        <li><a href="/profile">Profile</a></li>
+                        <li><a href="#">Favorites</a></li>
+                    </ul>
+                </li>
+
             }
             @if(state.getUser() != null) {
                 <li id="logout_link"><a href="#">Logout</a></li>

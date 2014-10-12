@@ -16,6 +16,7 @@
         font-weight: 100;
         letter-spacing: 7px;
         text-align: center;
+        .no_select;
 
         a {
             text-decoration: none;
@@ -36,9 +37,11 @@ nav {
     height: 50px;
 
     background: @nav_bg;
+    font-family: "Proxima Nova Light";
     color: @light_text;
 
     li {
+        position: relative;
         font-weight: bold;
         cursor: pointer;
 
@@ -55,6 +58,26 @@ nav {
                 text-decoration: none;
                 color: darken(@light_text, 15);
             }
+        }
+    }
+
+    .sub_navbar {
+        display: none;
+        position: absolute;
+        left: -5px;
+        background: @nav_bg;
+
+        li {
+            display: block;
+            margin: 0;
+            padding: 12px 15px;
+            border-top: 1px solid @light_text;
+            text-align: center;
+
+            a {
+                padding: 0;
+            }
+
         }
     }
 }
@@ -87,4 +110,26 @@ nav {
 #content_wrapper {
     width: 70%;
     margin: 0 auto;
+}
+
+input[type="button"].primary {
+    height: 50px;
+    line-height: 1.5em;
+    padding: 0 20px;
+    border: none;
+
+    background: @nav_bg;
+    color: @light_text;
+
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    outline: 0;
+
+    &:hover {
+        color: darken(@light_text, 15);
+    }
 }
