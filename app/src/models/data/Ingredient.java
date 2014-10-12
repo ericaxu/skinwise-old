@@ -1,4 +1,4 @@
-package src.models.data.ingredient;
+package src.models.data;
 
 import src.models.BaseModel;
 
@@ -20,11 +20,15 @@ public class Ingredient extends BaseModel {
 	@Column(length = 4096)
 	private String description;
 
-	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-	private Set<IngredientName> names = new HashSet<>();
+	//Relation table
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	private Set<Function> functions = new HashSet<>();
+
+	// Non-columns
+
+	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	private Set<IngredientName> names = new HashSet<>();
 
 	//Getters
 
@@ -71,13 +75,6 @@ public class Ingredient extends BaseModel {
 	}
 
 	//Others
-
-	public void loadFrom(Ingredient other) {
-		setName(other.getName());
-		setCas_number(other.getCas_number());
-		setDescription(other.getDescription());
-		setFunctions(other.getFunctions());
-	}
 
 	public List<String> getFunctionsString() {
 		List<String> result = new ArrayList<>();

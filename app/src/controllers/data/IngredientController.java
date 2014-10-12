@@ -8,7 +8,7 @@ import src.controllers.api.request.BadRequestException;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.data.ingredient.Ingredient;
+import src.models.data.Ingredient;
 import views.html.*;
 
 import java.util.List;

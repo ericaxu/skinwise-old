@@ -8,7 +8,7 @@ import src.controllers.api.request.BadRequestException;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.data.product.Product;
+import src.models.data.Product;
 import views.html.*;
 
 public class ProductController extends Controller {

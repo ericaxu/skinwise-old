@@ -1,4 +1,4 @@
-package src.models.data.ingredient;
+package src.models.data;
 
 import src.models.BaseModel;
 
@@ -32,13 +32,6 @@ public class Function extends BaseModel {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	//Others
-
-	public void loadFrom(Function other) {
-		setName(other.getName());
-		setDescription(other.getDescription());
 	}
 
 	//Static

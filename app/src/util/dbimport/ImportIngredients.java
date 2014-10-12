@@ -1,9 +1,7 @@
 package src.util.dbimport;
 
-import src.models.data.History;
-import src.models.data.ingredient.AllIngredient;
-import src.models.data.ingredient.Function;
-import src.models.data.ingredient.Ingredient;
+import src.models.data.Function;
+import src.models.data.Ingredient;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
@@ -52,10 +50,12 @@ public class ImportIngredients {
 		object.restriction = Util.notNull(object.restriction);
 		object.functions = Util.notNull(object.functions);
 
-		Ingredient target = Ingredient.byINCIName(object.inci_name);
-		long target_id = History.getTargetId(target);
+		Ingredient result = Ingredient.byINCIName(object.inci_name);
 
-		AllIngredient result = new AllIngredient(target_id, History.SUBMITTED_BY_SYSTEM);
+		if (result == null) {
+			result = new Ingredient();
+		}
+
 		result.setName(object.inci_name);
 		result.setCas_number(object.cas_no);
 		result.setDescription(object.description);
@@ -76,7 +76,6 @@ public class ImportIngredients {
 		result.setFunctions(functionList);
 
 		result.save();
-		result.approve();
 	}
 
 	public static class IngredientFormat {

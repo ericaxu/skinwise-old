@@ -1,10 +1,12 @@
 package src.models.user;
 
 import play.db.ebean.Model;
+import src.models.Page;
 import src.models.Permissible;
 import src.util.BCrypt;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User extends Permissible {
@@ -91,5 +93,9 @@ public class User extends Permissible {
 		return find.where()
 				.eq("email", email.toLowerCase())
 				.findUnique();
+	}
+
+	public static List<User> all(Page page) {
+		return page.apply(find).findList();
 	}
 }

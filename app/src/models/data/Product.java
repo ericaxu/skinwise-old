@@ -1,9 +1,9 @@
-package src.models.data.product;
+package src.models.data;
 
 import src.models.BaseModel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,11 +20,13 @@ public class Product extends BaseModel {
 	@Column(length = 4096)
 	private String description;
 
-	@Column(length = 8192)
-	private String ingredients;
+	//Relation table
 
-	@Column(length = 8192)
-	private String key_ingredients;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	private List<IngredientName> key_ingredients = new ArrayList<>();
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	private List<IngredientName> ingredients = new ArrayList<>();
 
 	//Getters
 
@@ -44,12 +46,12 @@ public class Product extends BaseModel {
 		return description;
 	}
 
-	public String getIngredients() {
-		return ingredients;
+	public List<IngredientName> getKey_ingredients() {
+		return key_ingredients;
 	}
 
-	public String getKey_ingredients() {
-		return key_ingredients;
+	public List<IngredientName> getIngredients() {
+		return ingredients;
 	}
 	//Setters
 
@@ -69,23 +71,15 @@ public class Product extends BaseModel {
 		this.description = description;
 	}
 
-	public void setIngredients(String ingredients) {
+	public void setKey_ingredients(List<IngredientName> key_ingredients) {
+		this.key_ingredients = key_ingredients;
+	}
+
+	public void setIngredients(List<IngredientName> ingredients) {
 		this.ingredients = ingredients;
 	}
 
-	public void setKey_ingredients(String key_ingredients) {
-		this.key_ingredients = key_ingredients;
-	}
 	//Others
-
-	public void loadFrom(Product other) {
-		setBrand(other.getBrand());
-		setName(other.getName());
-		setName(other.getName());
-		setDescription(other.getDescription());
-		setIngredients(other.getIngredients());
-		setKey_ingredients(other.getKey_ingredients());
-	}
 
 	//Static
 

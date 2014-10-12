@@ -7,6 +7,8 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class BaseModel extends Model {
+	public static final long NEW_ID = -1;
+
 	@Id
 	private long id;
 

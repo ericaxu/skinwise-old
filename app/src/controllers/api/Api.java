@@ -25,10 +25,6 @@ public class Api {
 		public long id;
 	}
 
-	public static class RequestGetByIdAll extends RequestGetById {
-		public boolean all;
-	}
-
 	public static class RequestGetByIdAndPage extends RequestGetById {
 		public int page;
 	}

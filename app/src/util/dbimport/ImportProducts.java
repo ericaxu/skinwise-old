@@ -1,11 +1,8 @@
 package src.util.dbimport;
 
-import src.models.data.History;
-import src.models.data.ingredient.Ingredient;
-import src.models.data.product.AllProduct;
-import src.models.data.product.Product;
+import src.models.data.Ingredient;
+import src.models.data.Product;
 import src.util.Json;
-import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
@@ -54,18 +51,17 @@ public class ImportProducts {
 			}
 		}
 
-		Product target = Product.byBrandAndName(object.brand, object.name);
-		long target_id = History.getTargetId(target);
-
-		AllProduct result = new AllProduct(target_id, History.SUBMITTED_BY_SYSTEM);
+		Product result = Product.byBrandAndName(object.brand, object.name);
+		if (result == null) {
+			result = new Product();
+		}
 		result.setName(object.name);
 		result.setBrand(object.brand);
 		result.setDescription(object.claims);
-		result.setIngredients(object.ingredients);
-		result.setKey_ingredients(object.key_ingredients);
+		//result.setIngredients(object.ingredients);
+		//result.setKey_ingredients(object.key_ingredients);
 
 		result.save();
-		result.approve();
 
 		return true;
 	}

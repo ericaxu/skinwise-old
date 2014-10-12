@@ -1,7 +1,7 @@
 package src.controllers
 
 import play.api.mvc._
-import src.models.data.ingredient.Ingredient
+import src.models.data.Ingredient
 
 import scala.Array._
 import scala.collection.JavaConversions._

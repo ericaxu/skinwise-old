@@ -46,9 +46,7 @@ POST        /api/admin/group/byname              src.controllers.admin.AdminUser
 POST        /api/admin/group/update              src.controllers.admin.AdminUserController.api_group_update()
 POST        /api/admin/group/delete              src.controllers.admin.AdminUserController.api_group_delete()
 
-POST        /api/admin/ingredient/byid           src.controllers.admin.AdminIngredientController.api_ingredient_by_id()
 POST        /api/admin/ingredient/update         src.controllers.admin.AdminIngredientController.api_ingredient_update()
-POST        /api/admin/ingredient/approve        src.controllers.admin.AdminIngredientController.api_ingredient_approve()
 POST        /api/admin/ingredient/delete         src.controllers.admin.AdminIngredientController.api_ingredient_delete()
 
 POST        /api/admin/report/byid               src.controllers.admin.AdminReportController.api_report_byid()
