@@ -39,6 +39,10 @@ public class IngredientName extends BaseModel {
 
 	public static Finder<Long, IngredientName> find = new Finder<>(Long.class, IngredientName.class);
 
+	public static List<IngredientName> all() {
+		return find.all();
+	}
+
 	public static IngredientName byId(long id) {
 		return find.byId(id);
 	}

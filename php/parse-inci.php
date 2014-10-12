@@ -32,12 +32,12 @@ foreach($index_rows[1] as $index_row) {
 	}
 
 	$ingredient = array();
-	$ingredient["inci_name"] = $index_cells[0];
-	$ingredient["inn_name"] = $index_cells[1];
-	$ingredient["ph_eur_name"] = $index_cells[2];
+	$ingredient["name"] = $index_cells[0];
+	//$ingredient["inn_name"] = $index_cells[1];
+	//$ingredient["ph_eur_name"] = $index_cells[2];
 	$ingredient["cas_no"] = $index_cells[3];
 	$ingredient["ec_no"] = $index_cells[4];
-	$ingredient["iupac_name"] = $index_cells[5];
+	//$ingredient["iupac_name"] = $index_cells[5];
 	$ingredient["restriction"] = $index_cells[6];
 	$ingredient["functions"] = $index_cells[7];
 
@@ -50,6 +50,8 @@ foreach($index_rows[1] as $index_row) {
 	$ingredient["functions"] = str_replace("foaming cleansing", "foaming, cleansing", $ingredient["functions"]);
 	$ingredient["functions"] = str_replace("Hair waving", "hair waving or straightening", $ingredient["functions"]);
 	$ingredient["functions"] = str_replace("hair waving or straightening or straightening", "hair waving or straightening", $ingredient["functions"]);
+
+	$ingredient["functions"] = util_trim_array(explode(",", $ingredient["functions"]));
 
 	$ingredients[] = $ingredient;
 }

@@ -52,9 +52,9 @@ if(!$inci["ingredients"]) {
 }
 
 foreach($inci["ingredients"] as $ingredient) {
-	$cosdna_page = getIngredientPageFromSearch($ingredient["inci_name"]);
+	$cosdna_page = getIngredientPageFromSearch($ingredient["name"]);
 	if(!$cosdna_page) {
-		echo "Cosdna not found " . $ingredient["inci_name"] . "<br>\n";
+		echo "Cosdna not found " . $ingredient["name"] . "<br>\n";
 	}
 }
 
@@ -81,12 +81,13 @@ function getCosdnaDataFromCosdnaId($cosdna_id) {
 	}
 	$ingredient = array();
 	$ingredient["cosdna_id"] = $cosdna_id;
-	$ingredient["cosdna_name"] = $ingredient_data["Stuff_DetailE"];
+	$ingredient["name"] = $ingredient_data["Stuff_DetailE"];
 	if($ingredient_data["Stuff_DetailK"]) {
-		$ingredient["cosdna_aka"] = $ingredient_data["Stuff_DetailK"];
+		$ingredient_names = parser_match("^\\((.*)\\)$", $ingredient_data["Stuff_DetailK"]);
+		$ingredient["names"] = util_trim_array(explode(",", $ingredient_names[1]));
 	}
 	if(count($ingredient_function)) {
-		$ingredient["cosdna_function"] = $ingredient_function[1][0];
+		$ingredient["function"] = $ingredient_function[1][0];
 		if(count($ingredient_function[1]) > 1) {
 			array_shift($ingredient_function[1]);
 			$ingredient["cosdna_info"] = implode(",", $ingredient_function[1]);
@@ -129,6 +130,14 @@ while(count($related_search) > 0) {
 		}
 		$related[$cosdna_id] = getCosdnaDataFromCosdnaId($cosdna_id);
 	}
+}
+
+//Convert to standard ingredient format
+$ingredients_cosdna = $ingredients;
+$ingredients = array();
+foreach($ingredients_cosdna as $key => $value) {
+	unset($value["cosdna_id"]);
+	$ingredients[] = $value;
 }
 
 $result = array();

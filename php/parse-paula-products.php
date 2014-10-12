@@ -6,7 +6,7 @@ parser_no_timeout();
 $source_root = "http://www.paulaschoice.com";
 $source_product_list = "http://www.paulaschoice.com/beautypedia-skin-care-reviews?sort=product&direction=asc&pageSize=100&pageNumber=";
 $file_product_urls = "data/paula-product-urls.json.txt";
-$file_products = "data/paula-products.json.txt";
+$file_paula_products_json = "data/paula-products.json.txt";
 
 $replace_rules_str = array(
 	"aqua (water) eau)" => "aqua (water) eau",
@@ -119,7 +119,7 @@ foreach($urls as $url) {
 $result = array();
 $result["products"] = $products;
 
-util_json_write($file_products, $result);
+util_json_write($file_paula_products_json, $result);
 
 parser_echo_count($products, "Products");
 

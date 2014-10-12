@@ -23,7 +23,7 @@ function getIngredientFromId($id) {
 	$ingredient_data = $ingredient_data[1];
 
 	$ingredient = array();
-	$ingredient["inci_name"] = trim(strip_tags($ingredient_data[0]));
+	$ingredient["name"] = trim(strip_tags($ingredient_data[0]));
 
 	$ingredient_data = parser_match_all("<td id=\"([^\"]*)\"[^>]*>(.*?)<\\/td>", $result_html);
 	$ingredient_data = util_rotate_array($ingredient_data, 1, 2);
@@ -37,7 +37,7 @@ function getIngredientFromId($id) {
 	$ingredient["restriction"] = parser_preg_remove("no restriction", $ingredient["restriction"]);
 
 	$ingredient_functions = parser_match_all("<a[^>]*>(.*?)<\\/a>", $ingredient_data["inci_Functions"]);
-	$ingredient["functions"] = implode(",", $ingredient_functions[1]);
+	$ingredient["functions"] = $ingredient_functions[1];
 
 	return $ingredient;
 }
@@ -64,7 +64,7 @@ $ingredient_functions = array();
 foreach($search_ids as $id) {
 	$ingredient = getIngredientFromId($id);
 	$ingredients[] = $ingredient;
-	foreach(explode(",", $ingredient["functions"]) as $function) {
+	foreach($ingredient["functions"] as $function) {
 		$function = trim($function);
 		$functions[$function] = $function;
 	}
