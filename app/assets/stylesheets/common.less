@@ -6,7 +6,10 @@
 /* the styles that are common among all pages */
 
 #logo {
+    text-align: center;
+
     h1 {
+        display: inline-block;
         margin-bottom: 40px;
 
         color: @dark_text;
@@ -15,7 +18,7 @@
         font-size: 80px;
         font-weight: 100;
         letter-spacing: 7px;
-        text-align: center;
+        text-transform: uppercase;
         .no_select;
 
         a {
@@ -24,6 +27,19 @@
                 color: @dark_text;
             }
         }
+    }
+
+    .version {
+        position: relative;
+        left: 5px;
+        font-size: 20px;
+        letter-spacing: 3px;
+        bottom: 50px;
+        font-family: "Proxima Nova Light";
+        background: black;
+        border-radius: 20px;
+        color: white;
+        padding: 5px 10px;
     }
 }
 
