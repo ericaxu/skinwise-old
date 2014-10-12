@@ -26,4 +26,9 @@ public class HtmlController extends Controller {
 		ResponseState state = new ResponseState(session());
 		return ok(profile.render(state));
 	}
+
+	public static Result routine() {
+		ResponseState state = new ResponseState(session());
+		return ok(routine.render(state));
+	}
 }

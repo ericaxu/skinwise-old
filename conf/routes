@@ -2,16 +2,19 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Static page
 GET         /                                    src.controllers.HtmlController.index()
-GET         /product/:product_id                 src.controllers.data.ProductController.info(product_id : Long)
-GET         /ingredient/:ingredient_id           src.controllers.data.IngredientController.info(ingredient_id : Long)
 GET         /products                            src.controllers.HtmlController.products()
 GET         /ingredients                         src.controllers.HtmlController.ingredients()
 GET         /profile                             src.controllers.HtmlController.profile()
+GET         /routine                             src.controllers.HtmlController.routine()
+
+# Dynamic pages
+GET         /product/:product_id                 src.controllers.data.ProductController.info(product_id : Long)
+GET         /ingredient/:ingredient_id           src.controllers.data.IngredientController.info(ingredient_id : Long)
 
 # Ingredient API
-POST         /api/ingredient                     src.controllers.data.IngredientController.api_info()
+POST        /api/ingredient                      src.controllers.data.IngredientController.api_info()
 GET         /api/quicksearch/:query              src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                   src.controllers.IngredientSearch.fullSearch(query)
 
