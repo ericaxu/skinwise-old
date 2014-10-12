@@ -36,6 +36,11 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
 
         error: function(jqxhr, status, err) {
             console.error("Network error occurred when trying to post to " + url + ": " + status);
+
+            if (message) {
+                $message_box.fadeOut(SW.CONFIG.NOTICE_FADE_OUT);
+            }
+
             errorCallback && errorCallback(response);
         }
     });
