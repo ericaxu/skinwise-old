@@ -4,7 +4,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
-import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;

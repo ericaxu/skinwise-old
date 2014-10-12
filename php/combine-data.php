@@ -6,7 +6,7 @@ parser_no_timeout();
 $file_specialchem_json = "data/specialchem-ingredients.json.txt";
 $file_paula_products_json = "data/paula-products.json.txt";
 $file_inci_json = "data/inci.json.txt";
-$data_json = "../data/data.json.txt";
+$data_json = "data/data.json.txt";
 
 $specialchem_ingredients = util_json_read($file_specialchem_json);
 $inci_ingredients = util_json_read($file_inci_json);

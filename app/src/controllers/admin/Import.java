@@ -83,7 +83,9 @@ public class Import {
 			if (function1 == null) {
 				Logger.debug(TAG, "Function not found! " + function);
 			}
-			functionList.add(function1);
+			else {
+				functionList.add(function1);
+			}
 		}
 
 		Ingredient result = Ingredient.byINCIName(object.name);
@@ -159,15 +161,22 @@ public class Import {
 
 		public List<IngredientName> matchAll(String input) {
 			List<IngredientName> matches = new ArrayList<>();
+			Set<IngredientName> matchSet = new HashSet<>();
 			List<String> ingredients = splitIngredients(input);
 			for (String ingredient : ingredients) {
-				matches.add(match(ingredient));
+				IngredientName name = match(ingredient);
+				if (!matchSet.contains(name)) {
+					matches.add(name);
+					matchSet.add(name);
+				}
 			}
 			return matches;
 		}
 
 		public IngredientName match(String input) {
 			String[] words = input.split("[^a-zA-Z0-9]");
+			IngredientName name = null;
+
 			for (Map.Entry<IngredientName, Set<String>> entry : map.entrySet()) {
 				boolean allmatch = true;
 				for (String word : words) {
@@ -180,11 +189,22 @@ public class Import {
 					}
 				}
 				if (allmatch) {
-					return entry.getKey();
+					name = entry.getKey();
+					break;
 				}
 			}
 
-			IngredientName name = new IngredientName();
+			if (name == null) {
+				name = new IngredientName();
+			}
+			else if (!name.getName().equalsIgnoreCase(input)) {
+				Ingredient ingredient = name.getIngredient();
+				name = new IngredientName();
+				name.setIngredient(ingredient);
+			}
+			else {
+				return name;
+			}
 			name.setName(input);
 			name.save();
 			addIngredientName(name);
@@ -211,19 +231,21 @@ public class Import {
 		public Set<String> names;
 
 		public void sanitize() {
-			name = Util.notNull(name);
-			cas_no = Util.notNull(cas_no);
-			ec_no = Util.notNull(ec_no);
-			description = Util.notNull(description);
-			restriction = Util.notNull(restriction);
-			if(functions == null) {
+			name = Util.notNull(name).trim();
+			cas_no = Util.notNull(cas_no).trim();
+			ec_no = Util.notNull(ec_no).trim();
+			description = Util.notNull(description).trim();
+			restriction = Util.notNull(restriction).trim();
+			if (functions == null) {
 				functions = new HashSet<>();
 			}
-			if(names == null) {
+			if (names == null) {
 				names = new HashSet<>();
 			}
 			functions.remove("");
+			functions.remove(null);
 			names.remove("");
+			names.remove(null);
 		}
 	}
 
@@ -232,8 +254,8 @@ public class Import {
 		public String description;
 
 		public void sanitize() {
-			name = Util.notNull(name);
-			description = Util.notNull(description);
+			name = Util.notNull(name).trim().toLowerCase();
+			description = Util.notNull(description).trim();
 		}
 	}
 
@@ -255,11 +277,11 @@ public class Import {
 		public String ingredients;
 
 		public void sanitize() {
-			name = Util.notNull(name);
-			brand = Util.notNull(brand);
-			claims = Util.notNull(claims);
-			ingredients = Util.notNull(ingredients);
-			key_ingredients = Util.notNull(key_ingredients);
+			name = Util.notNull(name).trim();
+			brand = Util.notNull(brand).trim();
+			claims = Util.notNull(claims).trim();
+			ingredients = Util.notNull(ingredients).trim();
+			key_ingredients = Util.notNull(key_ingredients).trim();
 		}
 	}
 }

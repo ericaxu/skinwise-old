@@ -12,8 +12,6 @@ import src.models.Permissible;
 import src.util.Logger;
 import views.html.admin;
 
-import java.io.IOException;
-
 public class AdminController extends Controller {
 	private static final String TAG = "AdminController";
 
@@ -38,7 +36,7 @@ public class AdminController extends Controller {
 			try {
 				Import.importDB("php/data/data.json.txt");
 			}
-			catch (IOException e) {
+			catch (Exception e) {
 				Logger.error(TAG, e);
 			}
 

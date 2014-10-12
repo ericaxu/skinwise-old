@@ -53,6 +53,7 @@ public class Product extends BaseModel {
 	public List<IngredientName> getIngredients() {
 		return ingredients;
 	}
+
 	//Setters
 
 	public void setBrand(String brand) {

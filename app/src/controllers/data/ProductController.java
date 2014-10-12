@@ -9,7 +9,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.data.Product;
-import views.html.*;
+import views.html.product;
 
 public class ProductController extends Controller {
 	public static class ResponseProductInfo extends Response {

@@ -9,7 +9,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.data.Ingredient;
-import views.html.*;
+import views.html.ingredient;
 
 import java.util.List;
 
