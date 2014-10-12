@@ -211,12 +211,8 @@ function setupCreateIngredientCall() {
 }
 
 function setupImport() {
-    $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
-    });
-
-    $('#import_product_btn').on('click', function() {
-        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
+    $('#import_btn').on('click', function() {
+        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
     });
 }
 
