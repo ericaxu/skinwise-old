@@ -128,6 +128,98 @@ function setupGroupEditSaveCall() {
     });
 }
 
+function hideGroupEdit() {
+    $('.edit_group_container').hide();
+}
+
+function setupCreateGroupCall() {
+    $('#create_group_btn').on('click', function() {
+        groupLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            permissions: []
+        });
+    });
+}
+
+function setupIngredientSearchCall() {
+    $('#ingredient_by_id_btn').on('click', function() {
+        var ingredient_id = $('#ingredient_by_id').val();
+        if (!isInteger(ingredient_id)) {
+            showError('Ingredient ID must be an integer.');
+            return;
+        }
+
+        postToAPI('/ingredient', {
+            id: ingredient_id
+        }, ingredientLoadSuccess, null, 'Looking up ingredient...');
+    });
+}
+
+function ingredientLoadSuccess(response) {
+    $('#edit_ingredient_id').val(response.id);
+    $('#edit_ingredient_name').val(response.name).data('original', response.name);
+    $('#edit_ingredient_cas_number').val(response.cas_number);
+    $('#edit_ingredient_description').val(response.description);
+    $('#edit_ingredient_functions').val(response.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
+    $('.edit_ingredient_container').show();
+}
+
+function setupIngredientDeleteCall() {
+    $('#delete_ingredient_btn').on('click', function() {
+        var ingredient_name = $('#edit_ingredient_name').data('original');
+        confirmAction('delete ingredient ' + ingredient_name, function() {
+            postToAPI('/admin/ingredient/delete', {
+                id: $('#edit_ingredient_id').val()
+            }, hideIngredientEdit, null, 'Deleting ingredient ' + ingredient_name);
+        });
+    });
+}
+
+function setupIngredientEditSaveCall() {
+    $('#save_ingredient_btn').on('click', function() {
+        var ingredient_id = $('#edit_ingredient_id').val();
+        if (ingredient_id === 'Not assigned yet') {
+            ingredient_id = '-1';
+        }
+        var new_ingredient_info = {
+            id: ingredient_id,
+            name: $('#edit_ingredient_name').val(),
+            cas_number: $('#edit_ingredient_cas_number').val(),
+            description: $('#edit_ingredient_description').val(),
+            functions: $('#edit_ingredient_functions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
+        };
+
+        postToAPI('/admin/ingredient/update', new_ingredient_info, null, null, 'Updating ingredient...');
+    });
+}
+
+function hideIngredientEdit() {
+    $('.edit_ingredient_container').hide();
+}
+
+function setupCreateIngredientCall() {
+    $('#create_ingredient_btn').on('click', function() {
+        ingredientLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            cas_name: '',
+            description: '',
+            functions: []
+        });
+    });
+}
+
+function setupImport() {
+    $('#import_ingredient_btn').on('click', function() {
+        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
+    });
+
+    $('#import_product_btn').on('click', function() {
+        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
+    });
+}
+
 function listenForEnter() {
     $("input").focus(function() {
         $(this).addClass('focused');
@@ -144,30 +236,6 @@ function listenForEnter() {
     });
 }
 
-function setupImport() {
-    $('#import_ingredient_btn').on('click', function() {
-        postToAPI('/admin/import/ingredients', {}, null, null, 'Importing ingredent database...');
-    });
-
-    $('#import_product_btn').on('click', function() {
-        postToAPI('/admin/import/products', {}, null, null, 'Importing product database...');
-    });
-}
-
-function hideGroupEdit() {
-    $('.edit_group_container').hide();
-}
-
-function setupCreateGroupCall() {
-    $('#create_group_btn').on('click', function() {
-        groupLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            permissions: []
-        });
-    });
-}
-
 
 $(document).ready(function() {
     setupTabSystem();
@@ -180,6 +248,11 @@ $(document).ready(function() {
     setupGroupEditSaveCall();
     setupGroupDeleteCall();
     setupCreateGroupCall();
+
+    setupIngredientSearchCall();
+    setupIngredientEditSaveCall();
+    setupIngredientDeleteCall();
+    setupCreateIngredientCall();
 
     setupImport();
 

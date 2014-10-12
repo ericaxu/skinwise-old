@@ -139,7 +139,6 @@ $(document).ready(function() {
     setupExpandableSearchbar();
 
     $('.notice_container').on('click', '.close_btn', function() {
-        console.log($(this).parent())
         $(this).parent().fadeOut(200);
     });
 });

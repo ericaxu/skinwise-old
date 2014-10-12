@@ -15,12 +15,16 @@ import java.util.List;
 
 public class IngredientController extends Controller {
 	public static class ResponseIngredientInfo extends Response {
-		public String ingredient_name;
+		public long id;
+		public String name;
+		public String cas_number;
 		public List<String> functions;
 		public String description;
 
-		public ResponseIngredientInfo(String ingredient_name, List<String> functions, String description) {
-			this.ingredient_name = ingredient_name;
+		public ResponseIngredientInfo(long id, String name, String cas_number, List<String> functions, String description) {
+			this.id = id;
+			this.name = name;
+			this.cas_number = cas_number;
 			this.functions = functions;
 			this.description = description;
 		}
@@ -53,7 +57,9 @@ public class IngredientController extends Controller {
 			}
 
 			Response response = new ResponseIngredientInfo(
+					result.getId(),
 					result.getName(),
+					result.getCas_number(),
 					result.getFunctionsString(),
 					result.getDescription()
 			);

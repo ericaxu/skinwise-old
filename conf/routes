@@ -11,7 +11,7 @@ GET         /ingredients                         src.controllers.HtmlController.
 GET         /profile                             src.controllers.HtmlController.profile()
 
 # Ingredient API
-GET         /api/ingredient                      src.controllers.data.IngredientController.api_info()
+POST         /api/ingredient                     src.controllers.data.IngredientController.api_info()
 GET         /api/quicksearch/:query              src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                   src.controllers.IngredientSearch.fullSearch(query)
 

@@ -3,7 +3,7 @@ function isInteger(str) {
 }
 
 function postToAPI(url, params, successCallback, errorCallback, message) {
-    console.log(url, params);
+    console.log(SW.CONFIG.API_ROOT + url, params);
     if (message) {
         var $message_box = $(SW.TEMPALTES.NOTICE({
             type: 'info',
