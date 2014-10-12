@@ -41,4 +41,12 @@ function setupIngredientInfobox() {
 
 $(document).ready(function() {
     setupIngredientInfobox();
+
+    $('.profile_add_input').on('focus', function() {
+        $(this).next().show();
+    }).on('blur', function() {
+        if ($(this).val() === '') {
+            $(this).next().hide();
+        }
+    })
 });

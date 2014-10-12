@@ -394,3 +394,45 @@ a.tab_title {
         font-weight: bold;
     }
 }
+
+.preference_list {
+    margin-left: 45px;
+
+    li {
+        margin-bottom: 8px;
+        list-style: square;
+
+        &:last-of-type {
+            margin-bottom: 12px;
+        }
+    }
+}
+
+.delete_preference {
+    display: none;
+    position: relative;
+    top: 1px;
+    margin-left: 3px;
+    padding: 0 5px;
+
+    font-weight: bolder;
+    font-size: 22px;
+    color: @error;
+
+    cursor: pointer;
+
+    &::before {
+        content: "\D7";
+    }
+}
+
+.profile_add_btn {
+    display: none;
+}
+
+.user_profile {
+    .column {
+        min-width: 500px;
+        float: left;
+    }
+}
