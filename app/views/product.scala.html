@@ -39,8 +39,10 @@
                 }
             </div>
 
-            <div class="other_ingredients">
-                <h3>Other Ingredients</h3>
+            @if(!product.getIngredients.isEmpty) {
+                <div class="other_ingredients">
+                    <h3>Other Ingredients</h3>
+            }
         } else {
             @if(!product.getIngredients.isEmpty) {
                 <div class="ingredients">
