@@ -36,14 +36,17 @@ public class AdminUserController extends Controller {
 		public String email;
 		public String name;
 		public String group;
+		public long time_registered;
 		public Set<String> permissions;
 
 		public ResponseUser(long id, String email, String name,
-		                    String group, Set<String> permissions) {
+		                    String group, long time_registered,
+		                    Set<String> permissions) {
 			this.id = id;
 			this.email = email;
 			this.name = name;
 			this.group = group;
+			this.time_registered = time_registered;
 			this.permissions = permissions;
 		}
 	}
@@ -309,6 +312,7 @@ public class AdminUserController extends Controller {
 				object.getEmail(),
 				object.getName(),
 				object.getGroupName(),
+				object.getTime_registered(),
 				object.getPermissions_set()
 		);
 	}

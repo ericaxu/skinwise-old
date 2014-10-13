@@ -20,6 +20,8 @@ public class User extends Permissible {
 	@Column(length = 512)
 	private String name;
 
+	private long time_registered;
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "group_id", referencedColumnName = "id")
 	private Usergroup group;
@@ -27,6 +29,7 @@ public class User extends Permissible {
 	public User(String email, String password, String name) {
 		this.email = email.toLowerCase();
 		this.name = name;
+		this.time_registered = System.currentTimeMillis();
 		setPassword(password);
 	}
 
@@ -42,6 +45,10 @@ public class User extends Permissible {
 
 	public Usergroup getGroup() {
 		return group;
+	}
+
+	public long getTime_registered() {
+		return time_registered;
 	}
 
 	public String getGroupName() {
@@ -70,6 +77,10 @@ public class User extends Permissible {
 		this.password_hash = BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
+	public void setTime_registered(long time_registered) {
+		this.time_registered = time_registered;
+	}
+	
 	//Others
 
 	public boolean checkPassword(String password) {
