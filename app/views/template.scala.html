@@ -27,6 +27,9 @@
                 <li id="signup_link"><a href="#">Sign up</a></li>
                 <li id="login_link"><a href="#">Sign in</a></li>
             } else {
+                @if(state.userHasPermission(src.models.Permissible.ALL)) {
+                    <li><a href="/admin">Admin Console</a></li>
+                }
                 <li class="expand_subnav">
                     <a href="#">@state.getUser().getName()<span class="down_arrow"></span></a>
                     <ul class="sub_navbar">
