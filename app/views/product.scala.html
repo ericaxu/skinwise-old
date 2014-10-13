@@ -13,17 +13,69 @@
 
     <div class="ingredient">
         <div class="name">@product.getBrand @product.getName</div>
-        <div class="claim">
-            <h3>What It Does</h3>
-            <p>@product.getDescription</p>
-        </div>
-        <div class="active_ingredients">
-            <h3>Ingredients</h3>
-            <p>@product.getIngredients</p>
+        @if(product.hasDescription) {
+            <div class="claim">
+                <h3>What It Does</h3>
+                <p>@product.getDescription</p>
+            </div>
+        }
+
+        @if(!product.getKey_ingredients.isEmpty) {
+            <div class="active_ingredients">
+                <h3>Key Ingredients</h3>
+                @defining(product.getKey_ingredients) { key =>
+                    <p>@for(i <- 0 to key.length-2) {
+                        @if(key(i).getIngredient != null) {
+                            <span class="ingredient">@key(i).getDisplayName</span>,
+                        } else {
+                            <span class="ingredient unrecognized">@key(i).getDisplayName</span>,
+                        }
+                    }
+
+                    @if(key(key.length-1).getIngredient != null) {
+                        <span class="ingredient">@key(key.length-1).getDisplayName</span>
+                    } else {
+                        <span class="ingredient unrecognized">@key(key.length-1).getDisplayName</span>
+                    }
+                    </p>
+                }
+            </div>
+
+            <div class="other_ingredients">
+                <h3>Other Ingredients</h3>
+        } else {
+            @if(!product.getIngredients.isEmpty) {
+                <div class="ingredients">
+                    <h3>Ingredients</h3>
+            }
+        }
+
+        @if(!product.getIngredients.isEmpty) {
+            @defining(product.getIngredients) { ing =>
+                <p>@for(i <- 0 to ing.length-2) {
+                    @if(ing(i).getIngredient != null) {
+                        <span class="ingredient">@ing(i).getDisplayName</span>,
+                    } else {
+                        <span class="ingredient unrecognized">@ing(i).getDisplayName</span>,
+                    }
+                }
+
+                @if(ing(ing.length-1).getIngredient != null) {
+                    <span class="ingredient">@ing(ing.length-1).getDisplayName</span>
+                } else {
+                    <span class="ingredient unrecognized">@ing(ing.length-1).getDisplayName</span>
+                }
+                </p>
+            }
+        }
         </div>
     </div>
 </div>
 
 } {
+
+<script>
+    console.log("@Html(src.util.Json.serialize(product.getIngredients))");
+</script>
 
 }

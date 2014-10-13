@@ -10,8 +10,8 @@ function setupPopups() {
 
     // Allow user to close popup with ESC key
     $(document).keydown(function(e){
-        if(e.keyCode == 27){
-            $('.popup').hide();
+        if(e.keyCode == 27) {
+            $('.popup, .ingredient_infobox').hide();
         }
     });
 

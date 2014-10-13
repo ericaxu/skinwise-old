@@ -40,11 +40,6 @@
     }
 }
 
-.ingredient, .function {
-    border-radius: 5px;
-    padding: 3px 5px;
-}
-
 .fav {
     background: @fav;
 }
@@ -127,13 +122,24 @@
     }
 }
 
+.function {
+    border-radius: 5px;
+    padding: 1px 7px;
+    margin-right: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.18);
+    }
+}
+
 .ingredient_item, .ingredient_infobox {
     margin-bottom: 15px;
 
     .function {
+        display: inline-block;
         border-radius: 5px;
-        padding: 3px 5px;
-        margin-right: 10px;
+        margin-bottom: 10px;
     }
 }
 
@@ -449,5 +455,14 @@ a.tab_title {
 
     .edit_btns {
         display: block;
+    }
+}
+
+.unrecognized {
+    color: @border;
+    cursor: default;
+
+    &:hover {
+        text-decoration: none;
     }
 }

@@ -1,5 +1,6 @@
 package src.models.data;
 
+import org.apache.commons.lang3.text.WordUtils;
 import src.models.BaseModel;
 
 import javax.persistence.*;
@@ -19,6 +20,10 @@ public class IngredientName extends BaseModel {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(name);
 	}
 
 	public Ingredient getIngredient() {
