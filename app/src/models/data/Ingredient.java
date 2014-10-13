@@ -1,5 +1,6 @@
 package src.models.data;
 
+import org.apache.commons.lang3.StringUtils;
 import src.models.BaseModel;
 import src.models.Page;
 
@@ -80,7 +81,7 @@ public class Ingredient extends BaseModel {
 			function_list.add("[" + f.getId() + "]");
 		}
 		Collections.sort(function_list);
-		this.functions_string = String.join("", function_list);
+		this.functions_string = StringUtils.join("", function_list);
 	}
 
 	//Others
@@ -127,11 +128,12 @@ public class Ingredient extends BaseModel {
 			function_list.add("[" + id + "]");
 		}
 		Collections.sort(function_list);
-		String functions_string = "%" + String.join("%", function_list) + "%";
+		String functions_string = "%" + StringUtils.join("%", function_list) + "%";
 
 		return page.apply(find.where().ilike("functions_string", functions_string));
 	}
 
+	
 	public static List<Ingredient> getAll() {
 		return find.all();
 	}

@@ -37,6 +37,10 @@ public class Logger {
 		play.Logger.debug("[" + tag + "] " + message);
 	}
 
+	public static String getHtmlStackTrace(Throwable t) {
+		return getStackTrace(t).replace("\n", "\n<br>");
+	}
+
 	public static String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
