@@ -4,6 +4,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.response.ErrorResponse;
@@ -59,18 +60,14 @@ public class ProductController extends Controller {
 	}
 
 	public static Result info(long product_id) {
-		try {
-			ResponseState state = new ResponseState(session());
-			Product result = Product.byId(product_id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
-			}
+		ResponseState state = new ResponseState(session());
 
-			return ok(product.render(state, result));
+		Product result = Product.byId(product_id);
+		if (result == null) {
+			return ErrorController.notfound();
 		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
+
+		return ok(product.render(state, result));
 	}
 
 	public static Result api_ingredient_info() {
