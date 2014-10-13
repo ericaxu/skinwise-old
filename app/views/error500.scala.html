@@ -1,0 +1,16 @@
+@(state: src.controllers.util.ResponseState, error: Throwable)
+
+@template("Internal Server Error", state) {
+
+} {
+
+    <h1>Internal Server Error</h1>
+    <p>An error has occurred while showing this page.</p>
+    @if(error != null) {
+        <p>@error.getMessage</p>
+        <pre>@Html.apply(src.util.Logger.getHtmlStackTrace(error))</pre>
+    }
+
+} {
+
+}

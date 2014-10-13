@@ -9,6 +9,7 @@ import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
 import views.html.error404;
+import views.html.error500;
 
 public class ErrorController extends Controller {
 	public static Result notfound(String route) {
@@ -21,18 +22,19 @@ public class ErrorController extends Controller {
 	}
 
 	public static Result api_notfound(String route) {
-		ResponseState state = new ResponseState(session());
 		return Api.write(new ErrorResponse(Response.NOT_FOUND, "API Endpoint " + route + " not found"));
 	}
 
 	public static Result error(Throwable t) {
 		ResponseState state = new ResponseState(session());
+
+		Throwable result = null;
+
 		if (state.userHasPermission(Permissible.ADMIN.ALL)) {
-			//TODO
-			//return ok(error500.render(e));
+			result = t;
 		}
 
-		return ok(error404.render(state));
+		return ok(error500.render(state, result));
 	}
 
 	public static Result api_error(Throwable t) {
