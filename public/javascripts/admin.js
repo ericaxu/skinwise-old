@@ -150,7 +150,7 @@ function setupIngredientSearchCall() {
             return;
         }
 
-        postToAPI('/ingredient', {
+        postToAPI('/ingredient/byid', {
             id: ingredient_id
         }, ingredientLoadSuccess, null, 'Looking up ingredient...');
     });
