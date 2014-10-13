@@ -137,7 +137,7 @@ public class IngredientController extends Controller {
 			for (Ingredient ingredient : result) {
 				response.results.add(new ResponseIngredientObject(
 						ingredient.getId(),
-						ingredient.getName(),
+						ingredient.getDisplayName(),
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionsString(),

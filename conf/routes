@@ -10,7 +10,7 @@ GET         /profile                            src.controllers.HtmlController.p
 GET         /routine                            src.controllers.HtmlController.routine()
 
 # Dynamic pages
-GET         /product/:product_id                src.controllers.data.ProductController.info(product_id : Long)
+GET         /product/:id                        src.controllers.data.ProductController.info(id : Long)
 GET         /ingredient/:id                     src.controllers.data.IngredientController.ingredient(id : Long)
 
 # Ingredient API
