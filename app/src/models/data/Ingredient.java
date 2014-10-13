@@ -134,7 +134,6 @@ public class Ingredient extends BaseModel {
 		return page.apply(find.where().ilike("functions_string", functions_string));
 	}
 
-	
 	public static List<Ingredient> getAll() {
 		return find.all();
 	}

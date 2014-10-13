@@ -23,11 +23,11 @@ public class Product extends BaseModel {
 	//Relation table
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name="PRODUCT_KEY_INGREDIENTS")
+	@JoinTable(name = "product_key_ingredients")
 	private List<IngredientName> key_ingredients = new ArrayList<>();
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name="PRODUCT_INGREDIENTS")
+	@JoinTable(name = "product_ingredients")
 	private List<IngredientName> ingredients = new ArrayList<>();
 
 	//Getters
@@ -44,7 +44,9 @@ public class Product extends BaseModel {
 		return name;
 	}
 
-	public boolean hasDescription() { return description.length() > 0; }
+	public boolean hasDescription() {
+		return description.length() > 0;
+	}
 
 	public String getDescription() {
 		return description;
