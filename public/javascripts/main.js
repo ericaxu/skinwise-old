@@ -80,11 +80,4 @@ $(document).ready(function() {
             $(this).val('Save routine');
         }
     });
-
-    if (/\/product\/(\d+)/.test(location.pathname)) {
-        var product_id = location.pathname.match(/\/product\/(\d+)/)[1];
-        postToAPI('/product/ingredientinfo', {
-            id: product_id
-        }, getIngredientInfoSuccess);
-    }
 });

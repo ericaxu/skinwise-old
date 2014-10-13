@@ -73,5 +73,9 @@
 </div>
 
 } {
-
+<script>
+    postToAPI('/product/ingredientinfo', {
+        id: @product.getId
+    }, getIngredientInfoSuccess);
+</script>
 }
