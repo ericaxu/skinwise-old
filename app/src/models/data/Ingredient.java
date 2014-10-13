@@ -1,5 +1,6 @@
 package src.models.data;
 
+import org.apache.commons.lang3.text.WordUtils;
 import src.models.BaseModel;
 import src.models.Page;
 
@@ -88,7 +89,7 @@ public class Ingredient extends BaseModel {
 	public List<String> getFunctionsString() {
 		List<String> result = new ArrayList<>();
 		for (Function function : getFunctions()) {
-			result.add(function.getName());
+			result.add(WordUtils.capitalizeFully(function.getName()));
 		}
 		return result;
 	}

@@ -13,17 +13,49 @@
 
     <div class="ingredient">
         <div class="name">@product.getBrand @product.getName</div>
-        <div class="claim">
-            <h3>What It Does</h3>
-            <p>@product.getDescription</p>
+        @if(product.hasDescription) {
+            <div class="claim">
+                <h3>What It Does</h3>
+                <p>@product.getDescription</p>
+            </div>
+        }
+        @product.getKey_ingredients.size
+        @if(product.getKey_ingredients.size > 0) {
+            <div class="active_ingredients">
+                <h3>Key Ingredients</h3>
+                <p>@for(i <- product.getKey_ingredients) {
+                    @if(i.getIngredient != null) {
+                        <span class="ingredient">@i.getDisplayName</span>
+                    } else {
+                        <span class="ingredient unrecognized">@i.getDisplayName</span>
+                    }
+                    }
+                </p>
+            </div>
+
+            <div class="other_ingredients">
+                <h3>Other Ingredients</h3>
+        } else {
+            <div class="ingredients">
+                <h3>Ingredients</h3>
+        }
+            <p>@for(i <- product.getIngredients) {
+                @if(i.getIngredient != null) {
+                    <span class="ingredient">@i.getDisplayName</span>
+                } else {
+                    <span class="ingredient unrecognized">@i.getDisplayName</span>
+                }
+                }
+            </p>
         </div>
-        <div class="active_ingredients">
-            <h3>Ingredients</h3>
-            <p>@product.getIngredients</p>
-        </div>
+
     </div>
 </div>
 
 } {
+
+<script>
+    console.log("@Html(src.util.Json.serialize(product.getIngredients))");
+</script>
 
 }

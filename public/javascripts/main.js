@@ -4,9 +4,9 @@ function setupIngredientInfobox() {
     $ingredient.on('click', function(e) {
         var ingredient_name = $(this).text()
         $('.ingredient_infobox').remove();
-        if (SW.TEST_ING_LIST[ingredient_name.toLowerCase()]) {
+        if (SW.ING[ingredient_name]) {
 
-            var ingredient_data = SW.TEST_ING_LIST[ingredient_name.toLowerCase()];
+            var ingredient_data = SW.ING[ingredient_name];
             var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function(e) {
                 e.stopPropagation();
             });
@@ -39,6 +39,16 @@ function setupIngredientInfobox() {
     });
 }
 
+function getIngredientInfoSuccess(response) {
+    for (var i = 0; i < response.ingredient_info.length; i++) {
+        var ingredient = response.ingredient_info[i];
+        SW.ING[ingredient.name] = {
+            description: ingredient.description,
+            functions: ingredient.functions
+        };
+    }
+}
+
 $(document).ready(function() {
     setupIngredientInfobox();
 
@@ -68,5 +78,13 @@ $(document).ready(function() {
                 });
             $(this).parent().addClass('editing').append($cancel_btn);
             $(this).val('Save routine');
-        }});
+        }
+    });
+
+    if (/\/product\/(\d+)/.test(location.pathname)) {
+        var product_id = location.pathname.match(/\/product\/(\d+)/)[1];
+        postToAPI('/product/ingredientinfo', {
+            id: product_id
+        }, getIngredientInfoSuccess);
+    }
 });

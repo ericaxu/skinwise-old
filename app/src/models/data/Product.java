@@ -44,6 +44,8 @@ public class Product extends BaseModel {
 		return name;
 	}
 
+	public boolean hasDescription() { return description.length() > 0; }
+
 	public String getDescription() {
 		return description;
 	}
