@@ -34,14 +34,47 @@ import scala.math._
  * - Sort words and start with those most likely to have small distance (e.g. first letter matches)
  *
  */
-class IngredientSearch(names: java.util.List[String]) extends Controller {
-  val words: List[String] = names.toList.map { _.split("( |/)").toList }.flatten
-//  val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
-  val trie = new Trie(words)
+class IngredientSearch extends Controller {
+  val wordToName = new HashMap[String, Set[String]]()
+  var trie : Trie = _
+
+  def this(names: java.util.List[String]) = {
+    this()
+
+    names foreach { name =>
+      val words = name.split("( |/)").toList
+      words foreach { word =>
+        if (!wordToName.contains(word)) {
+          wordToName.put(word, new HashSet[String])
+        }
+        wordToName(word).add(name)
+      }
+    }
+
+    trie = new Trie(wordToName.keys)
+  }
 
   def fullSearch(query: String) : List[(String, Double)] = {
-    words.foreach(println)
-    Levenshtein.getMatches(query, trie, 100)
+    val queryWords = query.split(" ").toList
+    val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)).flatten
+    val scores = new HashMap[String, Double]()
+
+    matches foreach { case (result, score) =>
+        wordToName(result) foreach { name =>
+          if (!scores.contains(name)) {
+            scores.put(name, 3.0)
+          }
+          scores(name) -= (1.0 - score)
+        }
+    }
+
+    val weightedResults = scores.toList.sortBy { case (name, score) => score }
+
+    // TODO: Optimize by sorting with a priority queue with a max number of elements.
+    val slicedResults = weightedResults.slice(0, 50)
+    val names = slicedResults.map { _._1 }
+
+    slicedResults
   }
 }
 
@@ -54,9 +87,9 @@ object IngredientSearch extends Controller {
     val start = System.nanoTime()
 
     val ingredients = Ingredient.getAll.toList
+    ingredients.foreach(x => if (x.getNames.size > 1) println(x.getNames.size))
     val names: List[String] = ingredients map { _.getName }
     val instance = new IngredientSearch(names)
-
     val sorted_names = instance.fullSearch(query).map { case (name, score) => name + " " + score }
 
     val end = System.nanoTime()
@@ -142,7 +175,7 @@ class Trie {
   var terminal = false
   val nodes = new HashMap[Char, Trie]()
 
-  def this(words: List[String]) = {
+  def this(words: collection.Iterable[String]) = {
     this()
     words foreach insert
   }
@@ -158,7 +191,7 @@ class Trie {
       case char :: rest => {
         val uppercase = char.toUpper
         if (!nodes.contains(uppercase)) {
-          nodes += ((uppercase, new Trie))
+          nodes.put(uppercase, new Trie)
         }
         nodes(uppercase).insert(rest)
       }
