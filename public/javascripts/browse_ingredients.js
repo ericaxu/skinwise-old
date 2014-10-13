@@ -6,7 +6,7 @@ function loadFilterResults(response) {
         var functions = $('<p/>', { class: 'functions' });
 
         for (var j = 0; j < ing.functions.length; j++) {
-            functions.append('<span class="function neutral">' + ing.functions[i] + '</span>');
+            functions.append('<span class="function neutral">' + ing.functions[j] + '</span>');
         }
 
         $list_item.append(functions);
