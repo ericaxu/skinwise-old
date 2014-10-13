@@ -90,15 +90,26 @@ class IngredientSearch extends Controller {
 }
 
 object IngredientSearch extends Controller {
+  var instance: Option[IngredientSearch] = None
+
+  def getInstance(): IngredientSearch = instance match {
+    case Some(x) => x
+    case None => {
+      val ingredients = Ingredient.getAll.toList
+      val names: List[String] = ingredients map { _.getName }
+      instance = Some(new IngredientSearch(names))
+      instance.get
+    }
+  }
+
   def partialSearch(query: String) = TimerAction {
     Ok("Not implemented yet.")
   }
 
   def fullSearch(query: String) = TimerAction {
-    val ingredients = Ingredient.getAll.toList
-    val names: List[String] = ingredients map { _.getName }
-    val instance = new IngredientSearch(names)
-    val sorted_names = instance.fullSearch(query).map { case (name, score) => name + " " + score }
+    val sorted_names = getInstance()
+      .fullSearch(query)
+      .map { case (name, score) => name + " " + score }
 
     Ok(sorted_names mkString "\n")
   }
