@@ -1,9 +1,6 @@
 package src.controllers.admin;
 
-import src.models.data.Function;
-import src.models.data.Ingredient;
-import src.models.data.IngredientName;
-import src.models.data.Product;
+import src.models.data.*;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
@@ -125,8 +122,25 @@ public class Import {
 		result.setBrand(object.brand);
 		result.setDescription(object.claims);
 
-		result.setIngredients(ingredients);
-		result.setKey_ingredients(key_ingredients);
+		List<ProductIngredient> ingredient_links = new ArrayList<>();
+
+		for(IngredientName ingredient : ingredients) {
+			ProductIngredient item = new ProductIngredient();
+			item.setProduct(result);
+			item.setIngredient_name(ingredient);
+			item.setIs_key(false);
+			ingredient_links.add(item);
+		}
+
+		for(IngredientName ingredient : key_ingredients) {
+			ProductIngredient item = new ProductIngredient();
+			item.setProduct(result);
+			item.setIngredient_name(ingredient);
+			item.setIs_key(true);
+			ingredient_links.add(item);
+		}
+
+		result.setIngredientLinks(ingredient_links);
 
 		result.save();
 	}

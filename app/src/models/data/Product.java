@@ -22,13 +22,8 @@ public class Product extends BaseModel {
 
 	//Relation table
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = "product_key_ingredients")
-	private List<IngredientName> key_ingredients = new ArrayList<>();
-
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = "product_ingredients")
-	private List<IngredientName> ingredients = new ArrayList<>();
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "product")
+	private List<ProductIngredient> ingredient_links = new ArrayList<>();
 
 	//Getters
 
@@ -52,12 +47,8 @@ public class Product extends BaseModel {
 		return description;
 	}
 
-	public List<IngredientName> getKey_ingredients() {
-		return key_ingredients;
-	}
-
-	public List<IngredientName> getIngredients() {
-		return ingredients;
+	public List<ProductIngredient> getIngredientLinks() {
+		return ingredient_links;
 	}
 
 	//Setters
@@ -78,15 +69,48 @@ public class Product extends BaseModel {
 		this.description = description;
 	}
 
-	public void setKey_ingredients(List<IngredientName> key_ingredients) {
-		this.key_ingredients = key_ingredients;
-	}
-
-	public void setIngredients(List<IngredientName> ingredients) {
-		this.ingredients = ingredients;
+	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
+		this.ingredient_links = ingredient_links;
+		ingredients_cache = null;
+		key_ingredients_cache = null;
 	}
 
 	//Others
+
+	private transient List<IngredientName> ingredients_cache;
+	private transient List<IngredientName> key_ingredients_cache;
+
+	public List<IngredientName> getIngredients() {
+		if (ingredients_cache == null) {
+			ingredients_cache = new ArrayList<>();
+			for (ProductIngredient link : getIngredientLinks()) {
+				if (!link.isIs_key()) {
+					ingredients_cache.add(link.getIngredient_name());
+				}
+			}
+		}
+		return ingredients_cache;
+	}
+
+	public List<IngredientName> getKey_ingredients() {
+		if (key_ingredients_cache == null) {
+			key_ingredients_cache = new ArrayList<>();
+			for (ProductIngredient link : getIngredientLinks()) {
+				if (link.isIs_key()) {
+					key_ingredients_cache.add(link.getIngredient_name());
+				}
+
+			}
+		}
+		return key_ingredients_cache;
+	}
+
+	@Override
+	public void refresh() {
+		ingredients_cache = null;
+		key_ingredients_cache = null;
+		super.refresh();
+	}
 
 	//Static
 

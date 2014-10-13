@@ -10,8 +10,8 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
 import src.models.data.Product;
+import src.models.data.ProductIngredient;
 import views.html.product;
 
 import java.util.ArrayList;
@@ -81,15 +81,11 @@ public class ProductController extends Controller {
 
 			List<Ingredient> ingredients = new ArrayList<>();
 
-			for (IngredientName ingredient_name : result.getKey_ingredients()) {
-				if (ingredient_name.getIngredient() != null) {
-					ingredients.add(ingredient_name.getIngredient());
-				}
-			}
+			List<ProductIngredient> links = result.getIngredientLinks();
 
-			for (IngredientName ingredient_name : result.getIngredients()) {
-				if (ingredient_name.getIngredient() != null) {
-					ingredients.add(ingredient_name.getIngredient());
+			for (ProductIngredient link : links) {
+				if (link.getIngredient_name().getIngredient() != null) {
+					ingredients.add(link.getIngredient_name().getIngredient());
 				}
 			}
 
