@@ -36,11 +36,11 @@ import scala.math._
  */
 class IngredientSearch(names: java.util.List[String]) extends Controller {
   val words: List[String] = names.toList.map { _.split("( |/)").toList }.flatten
-  //    val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
+//  val words = "cat, dog, foo, table, foosball, banana, doggy, catacombs, april".split(", ").toList
   val trie = new Trie(words)
 
   def fullSearch(query: String) : List[(String, Double)] = {
-
+    words.foreach(println)
     Levenshtein.getMatches(query, trie, 100)
   }
 }
@@ -70,7 +70,7 @@ object Levenshtein {
     val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
     val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
-    getMatches(query, dict, maxResults, results, Nil, initialRow)
+    getMatches(query.toUpperCase, dict, maxResults, results, Nil, initialRow)
 
     val resultList: List[(String, Double)] = results.dequeueAll
     resultList.reverse
@@ -156,10 +156,11 @@ class Trie {
     // and imperative style in odd ways...
     word match {
       case char :: rest => {
-        if (!nodes.contains(char)) {
-          nodes += ((char, new Trie))
+        val uppercase = char.toUpper
+        if (!nodes.contains(uppercase)) {
+          nodes += ((uppercase, new Trie))
         }
-        nodes(char).insert(rest)
+        nodes(uppercase).insert(rest)
       }
       case Nil => terminal = true
     }
