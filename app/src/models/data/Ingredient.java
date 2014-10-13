@@ -39,7 +39,9 @@ public class Ingredient extends BaseModel {
 		return name;
 	}
 
-	public String getDisplayName() { return WordUtils.capitalizeFully(name); }
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(name);
+	}
 
 	public String getCas_number() {
 		return cas_number;
@@ -126,12 +128,16 @@ public class Ingredient extends BaseModel {
 	}
 
 	public static List<Ingredient> byFunctions(long[] functions, Page page) {
-		List<String> function_list = new ArrayList<>();
-		for (long id : functions) {
-			function_list.add("[" + id + "]");
+		String functions_string = "%";
+
+		if (functions.length > 0) {
+			List<String> function_list = new ArrayList<>();
+			for (long id : functions) {
+				function_list.add("[" + id + "]");
+			}
+			Collections.sort(function_list);
+			functions_string = "%" + StringUtils.join("%", function_list) + "%";
 		}
-		Collections.sort(function_list);
-		String functions_string = "%" + StringUtils.join("%", function_list) + "%";
 
 		return page.apply(find.where().ilike("functions_string", functions_string));
 	}

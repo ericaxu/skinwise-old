@@ -17,6 +17,8 @@ public class ProductIngredient extends BaseModel {
 
 	private boolean is_key;
 
+	//Getters
+
 	public Product getProduct() {
 		return product;
 	}
@@ -28,6 +30,8 @@ public class ProductIngredient extends BaseModel {
 	public boolean isIs_key() {
 		return is_key;
 	}
+
+	//Others
 
 	public void setProduct(Product product) {
 		this.product = product;

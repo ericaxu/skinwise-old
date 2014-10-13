@@ -38,8 +38,11 @@ public class Import {
 
 		//Import products
 		Set<String> allIngredients = new HashSet<>();
+		Set<String> brands = new HashSet<>();
 		for (ProductObject object : input.products) {
 			object.sanitize();
+
+			brands.add(object.brand);
 
 			List<String> ingredients = db.splitIngredients(object.ingredients);
 			List<String> key_ingredients = db.splitIngredients(object.key_ingredients);
@@ -47,8 +50,21 @@ public class Import {
 			allIngredients.addAll(key_ingredients);
 		}
 
+		brands.remove("");
+		brands.remove(null);
 		allIngredients.remove("");
 		allIngredients.remove(null);
+
+		//Create brands
+		for (String brand : brands) {
+			Brand b = Brand.byName(brand);
+			if (b == null) {
+				b = new Brand();
+			}
+			b.setName(brand);
+			b.setDescription("");
+			b.save();
+		}
 
 		for (String ingredient : allIngredients) {
 			db.matchIngredientName(ingredient);
@@ -114,17 +130,19 @@ public class Import {
 		List<IngredientName> ingredients = db.matchAllIngredientNames(object.ingredients);
 		List<IngredientName> key_ingredients = db.matchAllIngredientNames(object.key_ingredients);
 
-		Product result = Product.byBrandAndName(object.brand, object.name);
+		Brand brand = db.matchBrand(object.brand);
+
+		Product result = Product.byBrandAndName(brand, object.name);
 		if (result == null) {
 			result = new Product();
 		}
 		result.setName(object.name);
-		result.setBrand(object.brand);
+		result.setBrand(brand);
 		result.setDescription(object.claims);
 
 		List<ProductIngredient> ingredient_links = new ArrayList<>();
 
-		for(IngredientName ingredient : ingredients) {
+		for (IngredientName ingredient : ingredients) {
 			ProductIngredient item = new ProductIngredient();
 			item.setProduct(result);
 			item.setIngredient_name(ingredient);
@@ -132,7 +150,7 @@ public class Import {
 			ingredient_links.add(item);
 		}
 
-		for(IngredientName ingredient : key_ingredients) {
+		for (IngredientName ingredient : key_ingredients) {
 			ProductIngredient item = new ProductIngredient();
 			item.setProduct(result);
 			item.setIngredient_name(ingredient);
@@ -164,6 +182,15 @@ public class Import {
 		Map<IngredientName, Set<String>> ingredientNameWords = new HashMap<>();
 		Map<String, IngredientName> ingredientNameCache = new HashMap<>();
 		Map<String, Function> functionCache = new HashMap<>();
+		Map<String, Brand> brandCache = new HashMap<>();
+
+		public void cacheBrands() {
+			brandCache.clear();
+			List<Brand> brands = Brand.all();
+			for (Brand brand : brands) {
+				brandCache.put(brand.getName(), brand);
+			}
+		}
 
 		public void cacheFunctions() {
 			functionCache.clear();
@@ -269,6 +296,13 @@ public class Import {
 				return functionCache.get(input);
 			}
 			return Function.byName(input.toLowerCase());
+		}
+
+		public Brand matchBrand(String input) {
+			if (brandCache.containsKey(input)) {
+				return brandCache.get(input);
+			}
+			return Brand.byName(input);
 		}
 	}
 

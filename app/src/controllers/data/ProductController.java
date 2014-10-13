@@ -75,6 +75,9 @@ public class ProductController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Product result = Product.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
+			}
 
 			List<Ingredient> ingredients = new ArrayList<>();
 
@@ -108,7 +111,7 @@ public class ProductController extends Controller {
 
 			Response response = new ResponseProductInfo(
 					result.getName(),
-					result.getBrand(),
+					result.getBrandName(),
 					result.getDescription()
 			);
 

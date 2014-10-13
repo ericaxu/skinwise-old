@@ -8,8 +8,9 @@ import java.util.List;
 
 @Entity
 public class Product extends BaseModel {
-	@Column(length = 1024)
-	private String brand;
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "brand_id", referencedColumnName = "id")
+	private Brand brand;
 
 	@Column(length = 1024)
 	private String line;
@@ -27,7 +28,7 @@ public class Product extends BaseModel {
 
 	//Getters
 
-	public String getBrand() {
+	public Brand getBrand() {
 		return brand;
 	}
 
@@ -53,7 +54,7 @@ public class Product extends BaseModel {
 
 	//Setters
 
-	public void setBrand(String brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
 	}
 
@@ -76,6 +77,13 @@ public class Product extends BaseModel {
 	}
 
 	//Others
+
+	public String getBrandName() {
+		if (brand == null) {
+			return "";
+		}
+		return brand.getName();
+	}
 
 	private transient List<IngredientName> ingredients_cache;
 	private transient List<IngredientName> key_ingredients_cache;
@@ -120,14 +128,14 @@ public class Product extends BaseModel {
 		return find.byId(id);
 	}
 
-	public static Product byBrandAndName(String brand, String name) {
+	public static Product byBrandAndName(Brand brand, String name) {
 		return find.where()
 				.eq("brand", brand)
 				.eq("name", name)
 				.findUnique();
 	}
 
-	public static List<Product> byBrand(String brand) {
+	public static List<Product> byBrand(Brand brand) {
 		return find.where()
 				.eq("brand", brand)
 				.findList();
