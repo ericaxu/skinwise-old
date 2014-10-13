@@ -2,6 +2,7 @@ package src.controllers
 
 import play.api.mvc._
 import src.models.data.Ingredient
+import src.controllers.util.TimerAction
 
 import scala.Array._
 import scala.collection.JavaConversions._
@@ -89,22 +90,17 @@ class IngredientSearch extends Controller {
 }
 
 object IngredientSearch extends Controller {
-  def partialSearch(query: String) = Action {
+  def partialSearch(query: String) = TimerAction {
     Ok("Not implemented yet.")
   }
 
-  def fullSearch(query: String) = Action {
-    val start = System.nanoTime()
-
+  def fullSearch(query: String) = TimerAction {
     val ingredients = Ingredient.getAll.toList
-    ingredients.foreach(x => if (x.getNames.size > 1) println(x.getNames.size))
     val names: List[String] = ingredients map { _.getName }
     val instance = new IngredientSearch(names)
     val sorted_names = instance.fullSearch(query).map { case (name, score) => name + " " + score }
 
-    val end = System.nanoTime()
-
-    Ok("Query time : " + ((end - start) / 1000 / 1000) + "\n\n" + (sorted_names mkString "\n"))
+    Ok(sorted_names mkString "\n")
   }
 }
 
