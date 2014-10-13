@@ -12,10 +12,8 @@ import scala.math._
 /**
  * More ideas :
  * - Weight during DP by character distance on keyboard to guess typos.
- * - When traversing the trie, start with the matching character, which is likely
- *   to result in shorter distance matches found first and more early termination.
  * - Optimize by first doing a direct or substring search (via rolling hash) before
- *   traversing the trie and doing DP.
+ * traversing the trie and doing DP.
  *
  */
 
@@ -69,7 +67,7 @@ class IngredientSearch extends Controller {
     val slicedResults = weightedResults.slice(0, 50)
 
     // For debugging.
-//    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
+    //    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
 
     slicedResults.map { _._1 }
   }
@@ -100,6 +98,7 @@ object IngredientSearch extends Controller {
 }
 
 object Levenshtein {
+
   def getMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
     val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
@@ -136,8 +135,25 @@ object Levenshtein {
         results += ((currentChars.reverse.mkString, distance))
       }
 
+      // Make a list of the children of the current node.
+      // If one of the children correspond to the character in the query whose index
+      // is the same as the current depth of the search, we move that children
+      // to the front of the list so that it can be processed first.
+      //
+      // This is an optimization that should allow the algorithm to terminate earlier,
+      // since my processing that children first, we get matches with lower distances
+      // earlier.
+      val pulledNodes = if (currentChars.length >= query.length) dict.nodes.toList
+      else {
+        val char = query(currentChars.length)
+        dict.nodes.get(char) match {
+          case Some(node) => (char, node) :: dict.nodes.toList.filter(_ != char)
+          case None => dict.nodes.toList
+        }
+      }
+
       // Traverse trie.
-      dict.nodes foreach { case (char, node) =>
+      pulledNodes foreach { case (char, node) =>
         val nextRow: Array[Double] = Array.ofDim(query.length + 1)
         nextRow(0) = currentChars.length
 
