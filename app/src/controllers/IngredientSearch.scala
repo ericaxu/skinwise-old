@@ -62,7 +62,7 @@ class IngredientSearch extends Controller {
     case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
   }
 
-  def fullSearch(query: String): List[(String, Double)] = {
+  def fullSearch(query: String): List[String] = {
     val queryWords = query.split(" ").toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
       .map(normalizeDistance(queryWord.length)))
@@ -81,11 +81,13 @@ class IngredientSearch extends Controller {
     // Decreasing sort (for full name matches, the higher the score the better).
     val weightedResults = scores.toList.sortBy { case (name, score) => -score }
 
-    // TODO: Optimize by sorting with a priority queue with a max number of elements.
+    // Optimization idea : sorting with a priority queue with a max number of elements.
     val slicedResults = weightedResults.slice(0, 50)
-    val names = slicedResults.map { _._1 }
 
-    slicedResults
+    // For debugging.
+    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
+
+    slicedResults.map { _._1 }
   }
 }
 
@@ -107,9 +109,7 @@ object IngredientSearch extends Controller {
   }
 
   def fullSearch(query: String) = TimerAction {
-    val sorted_names = getInstance()
-      .fullSearch(query)
-      .map { case (name, score) => name + " " + score }
+    val sorted_names = getInstance().fullSearch(query)
 
     Ok(sorted_names mkString "\n")
   }
