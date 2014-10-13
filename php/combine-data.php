@@ -15,9 +15,11 @@ $paula_products = util_json_read($file_paula_products_json);
 //Remove paula's products without ingredient list
 foreach($paula_products["products"] as $key => $product) {
 	if($product["ingredients"] == "" && $product["key_ingredients"] == "") {
-		unset($paula_products[$key]);
+		unset($paula_products["products"][$key]);
 	}
 }
+
+$paula_products["products"] = array_values($paula_products["products"]);
 
 //Merge functions
 $ingredient_functions = array_merge($specialchem_ingredients["ingredient_functions"], $inci_ingredients["ingredient_functions"]);

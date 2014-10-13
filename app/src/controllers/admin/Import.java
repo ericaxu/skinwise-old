@@ -107,11 +107,10 @@ public class Import {
 		result.save();
 
 		create(result, object.name);
-/*
+
 		for (String name : object.names) {
 			create(result, name);
 		}
-*/
 	}
 
 	private static void create(ProductObject object, DBCache db) {
@@ -168,8 +167,9 @@ public class Import {
 		}
 
 		private void cacheIngredientName(IngredientName name) {
-			ingredientNameCache.put(name.getName(), name);
-			String[] words = name.getName().split("[^a-zA-Z0-9]");
+			String key = name.getName().toLowerCase();
+			ingredientNameCache.put(key, name);
+			String[] words = key.split("[^a-zA-Z0-9]");
 			Set<String> set = new HashSet<>(Arrays.asList(words));
 			set.remove("");
 			ingredientNameWords.put(name, set);
@@ -208,11 +208,12 @@ public class Import {
 		}
 
 		public IngredientName matchIngredientName(String input) {
-			if (ingredientNameCache.containsKey(input)) {
-				return ingredientNameCache.get(input);
+			String key = input.toLowerCase();
+			if (ingredientNameCache.containsKey(key)) {
+				return ingredientNameCache.get(key);
 			}
 
-			String[] words = input.split("[^a-zA-Z0-9]");
+			String[] words = key.split("[^a-zA-Z0-9]");
 			IngredientName name = null;
 
 			for (Map.Entry<IngredientName, Set<String>> entry : ingredientNameWords.entrySet()) {
