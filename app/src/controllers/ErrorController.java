@@ -3,9 +3,11 @@ package src.controllers;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.controllers.api.Api;
+import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
-import src.controllers.api.response.ResponseMessage;
 import src.controllers.util.ResponseState;
+import src.models.Permissible;
+import src.util.Logger;
 import views.html.error404;
 
 public class ErrorController extends Controller {
@@ -20,9 +22,28 @@ public class ErrorController extends Controller {
 
 	public static Result api_notfound(String route) {
 		ResponseState state = new ResponseState(session());
-		state.getResponse()
-				.setCode(Response.NOT_FOUND)
-				.addMessage(ResponseMessage.error("API Endpoint " + route + " not found"));
-		return Api.write(state.getResponse());
+		return Api.write(new ErrorResponse(Response.NOT_FOUND, "API Endpoint " + route + " not found"));
+	}
+
+	public static Result error(Throwable t) {
+		ResponseState state = new ResponseState(session());
+		if (state.userHasPermission(Permissible.ADMIN.ALL)) {
+			//TODO
+			//return ok(error500.render(e));
+		}
+
+		return ok(error404.render(state));
+	}
+
+	public static Result api_error(Throwable t) {
+		ResponseState state = new ResponseState(session());
+		if (state.userHasPermission(Permissible.ADMIN.ALL)) {
+			String stacktrace = Logger.getStackTrace(t).replace("\n", "\n<br>");
+
+			return Api.write(new ErrorResponse(Response.INTERNAL_ERROR,
+					"A server error occured: " + t.getMessage() + " " + stacktrace));
+		}
+
+		return Api.write(new ErrorResponse(Response.INTERNAL_ERROR, "A server error occured"));
 	}
 }

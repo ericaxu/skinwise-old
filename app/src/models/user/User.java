@@ -80,7 +80,7 @@ public class User extends Permissible {
 	public void setTime_registered(long time_registered) {
 		this.time_registered = time_registered;
 	}
-	
+
 	//Others
 
 	public boolean checkPassword(String password) {
@@ -107,6 +107,6 @@ public class User extends Permissible {
 	}
 
 	public static List<User> all(Page page) {
-		return page.apply(find).findList();
+		return page.apply(find);
 	}
 }

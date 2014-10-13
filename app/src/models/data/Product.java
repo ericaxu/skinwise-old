@@ -23,9 +23,11 @@ public class Product extends BaseModel {
 	//Relation table
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name="PRODUCT_KEY_INGREDIENTS")
 	private List<IngredientName> key_ingredients = new ArrayList<>();
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name="PRODUCT_INGREDIENTS")
 	private List<IngredientName> ingredients = new ArrayList<>();
 
 	//Getters

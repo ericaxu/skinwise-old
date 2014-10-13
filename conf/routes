@@ -11,10 +11,12 @@ GET         /routine                            src.controllers.HtmlController.r
 
 # Dynamic pages
 GET         /product/:product_id                src.controllers.data.ProductController.info(product_id : Long)
-GET         /ingredient/:ingredient_id          src.controllers.data.IngredientController.info(ingredient_id : Long)
+GET         /ingredient/:id                     src.controllers.data.IngredientController.ingredient(id : Long)
 
 # Ingredient API
-POST        /api/ingredient                     src.controllers.data.IngredientController.api_info()
+POST        /api/ingredient/functions           src.controllers.data.IngredientController.api_functions()
+POST        /api/ingredient/byid                src.controllers.data.IngredientController.api_ingredient()
+POST        /api/ingredient/filter              src.controllers.data.IngredientController.api_ingredient_filter()
 GET         /api/quicksearch/:query             src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                  src.controllers.IngredientSearch.fullSearch(query)
 

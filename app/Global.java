@@ -7,8 +7,10 @@ import src.controllers.ErrorController;
 import src.models.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
+import src.util.Logger;
 
 public class Global extends GlobalSettings {
+	private static final String TAG ="Global";
 	public static final String ADMIN_USER_GROUP = "Administrators";
 
 	@Override
@@ -41,7 +43,17 @@ public class Global extends GlobalSettings {
 	}
 
 	@Override
-	public F.Promise<Result> onError(Http.RequestHeader requestHeader, Throwable throwable) {
-		return super.onError(requestHeader, throwable);
+	public F.Promise<Result> onBadRequest(Http.RequestHeader requestHeader, String s) {
+		return F.Promise.pure(ErrorController.notfound());
+	}
+
+	@Override
+	public F.Promise<Result> onError(Http.RequestHeader requestHeader, Throwable e) {
+		Logger.error(TAG, e);
+
+		if(requestHeader.method().equalsIgnoreCase("POST") && requestHeader.path().startsWith("/api")) {
+			return F.Promise.pure(ErrorController.api_error(e));
+		}
+		return F.Promise.pure(ErrorController.error(e));
 	}
 }

@@ -1,12 +1,10 @@
 package src.models.data;
 
 import src.models.BaseModel;
+import src.models.Page;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Ingredient extends BaseModel {
@@ -19,6 +17,9 @@ public class Ingredient extends BaseModel {
 
 	@Column(length = 4096)
 	private String description;
+
+	@Column(length = 4096)
+	private String functions_string;
 
 	//Relation table
 
@@ -72,6 +73,14 @@ public class Ingredient extends BaseModel {
 
 	public void setFunctions(Set<Function> functions) {
 		this.functions = functions;
+
+		//This is used for search
+		List<String> function_list = new ArrayList<>();
+		for (Function f : functions) {
+			function_list.add("[" + f.getId() + "]");
+		}
+		Collections.sort(function_list);
+		this.functions_string = String.join("", function_list);
 	}
 
 	//Others
@@ -110,6 +119,17 @@ public class Ingredient extends BaseModel {
 		return find.where()
 				.like("name", name)
 				.findList();
+	}
+
+	public static List<Ingredient> byFunctions(long[] functions, Page page) {
+		List<String> function_list = new ArrayList<>();
+		for (long id : functions) {
+			function_list.add("[" + id + "]");
+		}
+		Collections.sort(function_list);
+		String functions_string = "%" + String.join("%", function_list) + "%";
+
+		return page.apply(find.where().ilike("functions_string", functions_string));
 	}
 
 	public static List<Ingredient> getAll() {
