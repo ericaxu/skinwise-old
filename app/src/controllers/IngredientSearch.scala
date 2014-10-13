@@ -10,31 +10,15 @@ import scala.collection.mutable._
 import scala.math._
 
 /**
- * Created by rudi on 10/7/14.
- *
- * Implementation ideas :
- * - Split names into words
- * - Weighted Damerau-Levenshtein on words (supports transpositions) but only the simple version (?)
- * ----- Weight table by character distance on keyboard
- * ----- Weight differences by character position
- * - Get results with at least one of the words.
- * - Weight result = sum (word-levenshtein-weight * another-coefficient)
- * - Return top k
- *
- * Optimizations :
- * - Precomputed word splitting and word -> name hash map
- * - Use trie http://stevehanov.ca/blog/index.php?id=114
- * ----- Or automata http://en.wikipedia.org/wiki/Levenshtein_automaton
- * - Substring search first (rolling hash for each word)
- * - Early termination
- * ----- Character histogram early prune
- * ----- Early prune if exact match exists, switch algorithm
- * ----- DL-distance exceeds current min value
- * ----- Word length
- * - Cache searches (priority queue for most frequent searches)
- * - Sort words and start with those most likely to have small distance (e.g. first letter matches)
+ * More ideas :
+ * - Weight during DP by character distance on keyboard to guess typos.
+ * - When traversing the trie, start with the matching character, which is likely
+ *   to result in shorter distance matches found first and more early termination.
+ * - Optimize by first doing a direct or substring search (via rolling hash) before
+ *   traversing the trie and doing DP.
  *
  */
+
 class IngredientSearch extends Controller {
   val wordToName = new HashMap[String, Set[String]]()
   var trie: Trie = _
@@ -85,7 +69,7 @@ class IngredientSearch extends Controller {
     val slicedResults = weightedResults.slice(0, 50)
 
     // For debugging.
-    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
+//    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
 
     slicedResults.map { _._1 }
   }
