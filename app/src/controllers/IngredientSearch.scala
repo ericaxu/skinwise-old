@@ -54,21 +54,31 @@ class IngredientSearch extends Controller {
     trie = new Trie(wordToName.keys)
   }
 
+  // Levenshtein gives the edit distance between two strings, but the longer the string, the
+  // less this distance should be considered an "error". This function changes the distance
+  // into a score. The lower the score the better the match.
+  def normalizeDistance(queryLength: Int)(matchResult: (String, Double)) = matchResult match {
+    case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
+  }
+
   def fullSearch(query: String) : List[(String, Double)] = {
     val queryWords = query.split(" ").toList
-    val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)).flatten
+    val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
+                                              .map(normalizeDistance (queryWord.length)) )
+                            .flatten
     val scores = new HashMap[String, Double]()
 
     matches foreach { case (result, score) =>
         wordToName(result) foreach { name =>
           if (!scores.contains(name)) {
-            scores.put(name, 3.0)
+            scores.put(name, 0.0)
           }
-          scores(name) -= (1.0 - score)
+          scores(name) += (1.0 - score)
         }
     }
 
-    val weightedResults = scores.toList.sortBy { case (name, score) => score }
+    // Decreasing sort (for full name matches, the higher the score the better).
+    val weightedResults = scores.toList.sortBy { case (name, score) => -score }
 
     // TODO: Optimize by sorting with a priority queue with a max number of elements.
     val slicedResults = weightedResults.slice(0, 50)
