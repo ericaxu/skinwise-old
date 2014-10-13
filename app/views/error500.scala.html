@@ -7,8 +7,8 @@
     <h1>Internal Server Error</h1>
     <p>An error has occurred while showing this page.</p>
     @if(error != null) {
-        <p>@error.getMessage</p>
-        <pre>@Html.apply(src.util.Logger.getHtmlStackTrace(error))</pre>
+        <pre>@error.getMessage</pre>
+        <pre>@Html.apply(src.util.Logger.getStackTrace(error))</pre>
     }
 
 } {

@@ -39,6 +39,8 @@ public class Ingredient extends BaseModel {
 		return name;
 	}
 
+	public String getDisplayName() { return WordUtils.capitalizeFully(name); }
+
 	public String getCas_number() {
 		return cas_number;
 	}
