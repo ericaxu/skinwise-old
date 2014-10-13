@@ -36,7 +36,7 @@ import scala.math._
  */
 class IngredientSearch extends Controller {
   val wordToName = new HashMap[String, Set[String]]()
-  var trie : Trie = _
+  var trie: Trie = _
 
   def this(names: java.util.List[String]) = {
     this()
@@ -61,20 +61,20 @@ class IngredientSearch extends Controller {
     case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
   }
 
-  def fullSearch(query: String) : List[(String, Double)] = {
+  def fullSearch(query: String): List[(String, Double)] = {
     val queryWords = query.split(" ").toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
-                                              .map(normalizeDistance (queryWord.length)) )
-                            .flatten
+      .map(normalizeDistance(queryWord.length)))
+      .flatten
     val scores = new HashMap[String, Double]()
 
     matches foreach { case (result, score) =>
-        wordToName(result) foreach { name =>
-          if (!scores.contains(name)) {
-            scores.put(name, 0.0)
-          }
-          scores(name) += (1.0 - score)
+      wordToName(result) foreach { name =>
+        if (!scores.contains(name)) {
+          scores.put(name, 0.0)
         }
+        scores(name) += (1.0 - score)
+      }
     }
 
     // Decreasing sort (for full name matches, the higher the score the better).
