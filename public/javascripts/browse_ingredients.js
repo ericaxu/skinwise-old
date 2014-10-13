@@ -1,42 +1,83 @@
+function ingredientResultHTML(ing) {
+    var $list_item = $('<li/>', { class: 'ingredient_item' });
+    $list_item.append('<h2 class="name"><a href="/ingredient/' + ing.id + '">' + ing.name + '</a></h2>');
+    var functions = $('<p/>', { class: 'functions' });
+
+    for (var j = 0; j < ing.functions.length; j++) {
+        functions.append('<span class="function neutral">' + ing.functions[j] + '</span>');
+    }
+
+    $list_item.append(functions);
+
+    if (ing.description) {
+        $list_item.append('<p class="ingredient_description">' + ing.description + '</p>');
+    }
+
+    return $list_item;
+}
+
 function loadFilterResults(response) {
     for (var i = 0; i < response.results.length; i++) {
-        var ing = response.results[i];
-        var $list_item = $('<li/>', { class: 'ingredient_item' });
-        $list_item.append('<h2 class="name"><a href="/ingredient/' + ing.id + '">' + ing.name + '</a></h2>');
-        var functions = $('<p/>', { class: 'functions' });
-
-        for (var j = 0; j < ing.functions.length; j++) {
-            functions.append('<span class="function neutral">' + ing.functions[j] + '</span>');
-        }
-
-        $list_item.append(functions);
-
-        if (ing.description) {
-            $list_item.append('<p class="ingredient_description">' + ing.description + '</p>');
-        }
-
-        $('.ingredients_list ul').append($list_item);
+        $('.ingredients_list ul').append(ingredientResultHTML(response.results[i]));
     }
+}
+
+function getSelectedFunctions() {
+    var functions = [];
+    $('.function_filter:checked').each(function() {
+        functions.push($(this).data('id'));
+    });
+
+    return functions;
+}
+
+function fetchNextPage() {
+    if (!SW.ING_FETCH.LOADING) {
+
+        SW.ING_FETCH.LOADING = true;
+        SW.ING_FETCH.SPINNER = new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
+
+        postToAPI('/ingredient/filter', {
+            functions: getSelectedFunctions(),
+            page: SW.ING_FETCH.CUR_PAGE + 1
+        }, function (response) {
+            SW.ING_FETCH.SPINNER.stop();
+            SW.ING_FETCH.LOADING = false;
+            SW.ING_FETCH.CUR_PAGE += 1;
+            loadFilterResults(response);
+        });
+    }
+}
+
+function refetch() {
+    $('.ingredients_list ul').empty();
+
+    SW.ING_FETCH.LOADING = true;
+    SW.ING_FETCH.SPINNER = new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
+
+    postToAPI('/ingredient/filter', {
+        functions: getSelectedFunctions(),
+        page: 0
+    }, function (response) {
+        SW.ING_FETCH.SPINNER.stop();
+        SW.ING_FETCH.LOADING = false;
+        SW.ING_FETCH.CUR_PAGE = 0;
+        loadFilterResults(response);
+    });
 }
 
 
 $(document).on('ready', function() {
-    postToAPI('/ingredient/filter', {
-        functions: [],
-        page: 0
-    }, loadFilterResults);
+    fetchNextPage();
 
     $('.function_filter').on('change', function() {
-        $('.ingredients_list ul').empty();
+        refetch();
+    });
 
-        var functions = [];
-        $('.function_filter:checked').each(function() {
-           functions.push($(this).data('id'));
-        });
-
-        postToAPI('/ingredient/filter', {
-            functions: functions,
-            page: 0
-        }, loadFilterResults);
+    $(window).on('scroll', function() {
+        // Check if we are at bottom of page
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+            fetchNextPage();
+        }
     });
 });

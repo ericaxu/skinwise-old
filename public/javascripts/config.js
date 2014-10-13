@@ -21,3 +21,23 @@ SW.TEMPALTES.NOTICE = _.template('<div class="<%= type %>"><span class="close_bt
 
 /* Product ingredient data */
 SW.ING = {};
+
+SW.SPINNER_CONFIG = {
+    lines: 11,
+    width: 4,
+    length: 14,
+    radius: 21,
+    color: "#222",
+    trail: 42,
+    shadow: false,
+    hwaccel: false,
+    top: "100",
+    left: "auto"
+};
+
+/* Ingredient filter fetching */
+SW.ING_FETCH = {
+    SPINNER: null,
+    LOADING: false,
+    CUR_PAGE: -1
+};
