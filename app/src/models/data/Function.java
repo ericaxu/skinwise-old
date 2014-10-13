@@ -4,6 +4,7 @@ import src.models.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.List;
 
 @Entity
 public class Function extends BaseModel {
@@ -37,6 +38,10 @@ public class Function extends BaseModel {
 	//Static
 
 	public static Finder<Long, Function> find = new Finder<>(Long.class, Function.class);
+
+	public static List<Function> all() {
+		return find.all();
+	}
 
 	public static Function byId(long id) {
 		return find.byId(id);

@@ -17,47 +17,54 @@ public class Import {
 	public static synchronized void importDB(String path) throws IOException {
 		String json = Util.readAll(path);
 		ImportFormat input = Json.deserialize(json, ImportFormat.class);
+		DBCache db = new DBCache();
+
+		Logger.debug(TAG, "Importing functions");
 
 		//Import functions
 		for (IngredientFunctionObject object : input.ingredient_functions) {
+			object.sanitize();
 			create(object);
 		}
+		db.cacheFunctions();
+
+		Logger.debug(TAG, "Importing ingredients");
 
 		//Import ingredients
 		for (IngredientObject object : input.ingredients) {
-			create(object);
+			object.sanitize();
+			create(object, db);
 		}
+		db.cacheIngredientNames();
+
+		Logger.debug(TAG, "Importing products");
 
 		//Import products
-		IngredientMatcher matcher = new IngredientMatcher();
+		Set<String> allIngredients = new HashSet<>();
 		for (ProductObject object : input.products) {
-			create(object, matcher);
+			object.sanitize();
+
+			List<String> ingredients = db.splitIngredients(object.ingredients);
+			List<String> key_ingredients = db.splitIngredients(object.key_ingredients);
+			allIngredients.addAll(ingredients);
+			allIngredients.addAll(key_ingredients);
 		}
-	}
 
-	private static void create(ProductObject object, IngredientMatcher matcher) {
-		object.sanitize();
+		allIngredients.remove("");
+		allIngredients.remove(null);
 
-		List<IngredientName> ingredients = matcher.matchAll(object.ingredients);
-		List<IngredientName> key_ingredients = matcher.matchAll(object.key_ingredients);
-
-		Product result = Product.byBrandAndName(object.brand, object.name);
-		if (result == null) {
-			result = new Product();
+		for (String ingredient : allIngredients) {
+			db.matchIngredientName(ingredient);
 		}
-		result.setName(object.name);
-		result.setBrand(object.brand);
-		result.setDescription(object.claims);
 
-		result.setIngredients(ingredients);
-		result.setKey_ingredients(key_ingredients);
+		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
 
-		result.save();
+		for (ProductObject object : input.products) {
+			create(object, db);
+		}
 	}
 
 	private static void create(IngredientFunctionObject object) {
-		object.sanitize();
-
 		Function result = Function.byName(object.name);
 
 		if (result == null) {
@@ -70,16 +77,14 @@ public class Import {
 		result.save();
 	}
 
-	private static void create(IngredientObject object) {
-		object.sanitize();
-
+	private static void create(IngredientObject object, DBCache db) {
 		Set<Function> functionList = new HashSet<>();
 		for (String function : object.functions) {
 			function = function.trim();
 			if (function.isEmpty()) {
 				continue;
 			}
-			Function function1 = Function.byName(function.toLowerCase());
+			Function function1 = db.matchFunction(function);
 			if (function1 == null) {
 				Logger.debug(TAG, "Function not found! " + function);
 			}
@@ -102,11 +107,29 @@ public class Import {
 		result.save();
 
 		create(result, object.name);
-
+/*
 		for (String name : object.names) {
 			create(result, name);
 		}
+*/
+	}
 
+	private static void create(ProductObject object, DBCache db) {
+		List<IngredientName> ingredients = db.matchAllIngredientNames(object.ingredients);
+		List<IngredientName> key_ingredients = db.matchAllIngredientNames(object.key_ingredients);
+
+		Product result = Product.byBrandAndName(object.brand, object.name);
+		if (result == null) {
+			result = new Product();
+		}
+		result.setName(object.name);
+		result.setBrand(object.brand);
+		result.setDescription(object.claims);
+
+		result.setIngredients(ingredients);
+		result.setKey_ingredients(key_ingredients);
+
+		result.save();
 	}
 
 	private static void create(Ingredient ingredient, String name) {
@@ -124,24 +147,35 @@ public class Import {
 		ingredientName.save();
 	}
 
-	private static class IngredientMatcher {
-		Map<IngredientName, Set<String>> map = new HashMap<>();
+	private static class DBCache {
+		Map<IngredientName, Set<String>> ingredientNameWords = new HashMap<>();
+		Map<String, IngredientName> ingredientNameCache = new HashMap<>();
+		Map<String, Function> functionCache = new HashMap<>();
 
-		public IngredientMatcher() {
-			List<IngredientName> names = IngredientName.all();
-			for (IngredientName name : names) {
-				addIngredientName(name);
+		public void cacheFunctions() {
+			functionCache.clear();
+			List<Function> functions = Function.all();
+			for (Function function : functions) {
+				functionCache.put(function.getName(), function);
 			}
 		}
 
-		private void addIngredientName(IngredientName name) {
+		public void cacheIngredientNames() {
+			List<IngredientName> names = IngredientName.all();
+			for (IngredientName name : names) {
+				cacheIngredientName(name);
+			}
+		}
+
+		private void cacheIngredientName(IngredientName name) {
+			ingredientNameCache.put(name.getName(), name);
 			String[] words = name.getName().split("[^a-zA-Z0-9]");
 			Set<String> set = new HashSet<>(Arrays.asList(words));
 			set.remove("");
-			map.put(name, set);
+			ingredientNameWords.put(name, set);
 		}
 
-		private List<String> splitIngredients(String ingredient_string) {
+		public List<String> splitIngredients(String ingredient_string) {
 			ingredient_string = ingredient_string
 					.replaceAll("[0-9\\.]+\\s*%", "")
 					.replaceAll("\\(\\s*\\)", "");
@@ -159,12 +193,12 @@ public class Import {
 			return result;
 		}
 
-		public List<IngredientName> matchAll(String input) {
+		public List<IngredientName> matchAllIngredientNames(String input) {
 			List<IngredientName> matches = new ArrayList<>();
 			Set<IngredientName> matchSet = new HashSet<>();
 			List<String> ingredients = splitIngredients(input);
 			for (String ingredient : ingredients) {
-				IngredientName name = match(ingredient);
+				IngredientName name = matchIngredientName(ingredient);
 				if (!matchSet.contains(name)) {
 					matches.add(name);
 					matchSet.add(name);
@@ -173,11 +207,15 @@ public class Import {
 			return matches;
 		}
 
-		public IngredientName match(String input) {
+		public IngredientName matchIngredientName(String input) {
+			if (ingredientNameCache.containsKey(input)) {
+				return ingredientNameCache.get(input);
+			}
+
 			String[] words = input.split("[^a-zA-Z0-9]");
 			IngredientName name = null;
 
-			for (Map.Entry<IngredientName, Set<String>> entry : map.entrySet()) {
+			for (Map.Entry<IngredientName, Set<String>> entry : ingredientNameWords.entrySet()) {
 				boolean allmatch = true;
 				for (String word : words) {
 					if (Objects.equals(word, "")) {
@@ -207,8 +245,15 @@ public class Import {
 			}
 			name.setName(input);
 			name.save();
-			addIngredientName(name);
+			cacheIngredientName(name);
 			return name;
+		}
+
+		public Function matchFunction(String input) {
+			if (functionCache.containsKey(input)) {
+				return functionCache.get(input);
+			}
+			return Function.byName(input.toLowerCase());
 		}
 	}
 
