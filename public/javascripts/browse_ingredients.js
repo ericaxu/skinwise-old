@@ -68,6 +68,8 @@ function refetch() {
 
 
 $(document).on('ready', function() {
+    var original_offset = $('.filter_area').offset().top;
+
     fetchNextPage();
 
     $('.function_filter').on('change', function() {
@@ -76,8 +78,14 @@ $(document).on('ready', function() {
 
     $(window).on('scroll', function() {
         // Check if we are at bottom of page
-        if ($(window).scrollTop() + $(window).height() > $(document).height() - 50) {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height()) {
             fetchNextPage();
+        }
+
+        if ($(window).scrollTop() >= original_offset - $('nav').height()) {
+            $('.filter_area').addClass('sticky');
+        } else {
+            $('.filter_area').removeClass('sticky');
         }
     });
 });
