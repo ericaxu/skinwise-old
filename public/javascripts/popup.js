@@ -93,6 +93,10 @@ function showLoginErrorMsg(message) {
     $('#login_error').text(message).show();
 }
 
+function showFeedbackErrorMsg(message) {
+    $('#feedback_error').text(message).show();
+}
+
 function loginError(status) {
     $('#login_btn').val('Sign in');
     if (status.code == 'Unauthorized') {
@@ -135,15 +139,30 @@ function confirmAction(action, callback) {
 }
 
 function setupFeedbackCall() {
-    $('#signup_btn').on('click', function(e) {
+    $('#feedback_btn').on('click', function(e) {
         cleanupErrors();
-        $(this).val('Signing you up...');
-        postToAPI('/user/signup', {
-            name: $('#signup_name').val(),
-            email: $('#signup_email').val(),
-            password: $('#signup_password').val()
-        }, signupSuccess);
+
+        if ($('#feedback_type').val() === 'none') {
+            showFeedbackErrorMsg('Please select a type!');
+            return;
+        }
+
+        if ($('#feedback_message').val() === '') {
+            showFeedbackErrorMsg('Please write something?');
+            return;
+        }
+
+        $(this).val('Sending...');
+        postToAPI('/feedback/report', {
+            path: location.href,
+            type: $('#feedback_type').val(),
+            content: $('#feedback_message').val()
+        }, feedbackSuccess);
     });
+}
+
+function feedbackSuccess(response) {
+    $('.feedback.popup').hide();
 }
 
 function setupFeedbackPopup() {

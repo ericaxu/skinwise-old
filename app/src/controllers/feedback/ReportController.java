@@ -19,8 +19,6 @@ public class ReportController extends Controller {
 		@NotEmpty
 		public String type;
 		@NotEmpty
-		public String title;
-		@NotEmpty
 		public String content;
 	}
 
@@ -33,7 +31,6 @@ public class ReportController extends Controller {
 			Report report = new Report();
 			report.setPath(request.path);
 			report.setType(request.type);
-			report.setTitle(request.title);
 			report.setContent(request.content);
 			report.setUser(state.getUser());
 			report.setTimestamp(System.currentTimeMillis());

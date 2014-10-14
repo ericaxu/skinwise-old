@@ -8,7 +8,7 @@
 
                 <form id="feedback_form" method="post" onsubmit="return false;">
                     <h1>Feedback</h1>
-                    <div id="login_error" class="error_msg">Error</div>
+                    <div id="feedback_error" class="error_msg">Error</div>
 
                     <div class="labels">
                         @if(state.getUser == null) {
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="button_container">
-                        <input id="login_btn" class="primary" type="button" name="login_submit" value="Send feedback">
+                        <input id="feedback_btn" class="primary" type="button" value="Send feedback">
                     </div>
                 </form>
             </div>
