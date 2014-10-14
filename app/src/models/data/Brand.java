@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 public class Brand extends BaseModel {
-	@Column(length = 1024, unique = true)
+	@Column(length = 1024, unique = true, nullable = false)
 	private String name;
 
 	@Column(length = 8192)

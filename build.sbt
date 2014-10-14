@@ -15,8 +15,10 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-javaOptions ++= Seq("-Xms512M", "-Xmx2G", "-XX:+CMSClassUnloadingEnabled", "-XX:+CMSPermGenSweepingEnabled")
+javaOptions ++= Seq("-Xms512M", "-Xmx2G",
+  "-XX:+CMSClassUnloadingEnabled", "-XX:+CMSPermGenSweepingEnabled",
+  "-XX:MaxMetaspaceSize=512m")
 
 scalacOptions ++= Seq("-feature")
 
-includeFilter in (Assets, LessKeys.less) := "*.less"
+includeFilter in(Assets, LessKeys.less) := "*.less"

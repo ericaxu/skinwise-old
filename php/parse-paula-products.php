@@ -110,7 +110,7 @@ foreach($urls as $url) {
 	$product = array();
 	$product["name"] = html_decode($product_name);
 	$product["brand"] = html_decode($product_brand);
-	$product["claims"] = html_decode($product_claims);
+	$product["description"] = html_decode($product_claims);
 	$product["key_ingredients"] = html_decode($product_key_ingredients);
 	$product["ingredients"] = html_decode($product_other_ingredients);
 	$products[] = $product;

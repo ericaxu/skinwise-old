@@ -76,6 +76,7 @@ public abstract class Permissible extends BaseModel {
 		public static final String ALL = "ADMIN.*";
 		public static final String VIEW = "ADMIN.VIEW";
 		public static final String IMPORT = "ADMIN.IMPORT";
+		public static final String EXPORT = "ADMIN.EXPORT";
 		public static final String USER = "ADMIN.USER";
 		public static final String ANALYTICS = "ADMIN.ANALYTICS";
 	}

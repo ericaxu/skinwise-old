@@ -1,5 +1,6 @@
 package src.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,6 +20,10 @@ public class Util {
 	}
 
 	public static void writeAll(String file, String data) throws IOException {
+		File f = new File(file);
+		if(!f.exists()) {
+			f.createNewFile();
+		}
 		Files.write(Paths.get(file), data.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
 	}
 }

@@ -28,7 +28,7 @@ public class Ingredient extends BaseModel {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	private Set<Function> functions = new HashSet<>();
 
-	// Non-columns
+	//Non-columns
 
 	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<IngredientName> names = new HashSet<>();
@@ -37,10 +37,6 @@ public class Ingredient extends BaseModel {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getDisplayName() {
-		return WordUtils.capitalizeFully(name);
 	}
 
 	public String getCas_number() {
@@ -91,6 +87,10 @@ public class Ingredient extends BaseModel {
 
 	//Others
 
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(name);
+	}
+
 	public List<String> getFunctionsString() {
 		List<String> result = new ArrayList<>();
 		for (Function function : getFunctions()) {
@@ -140,6 +140,10 @@ public class Ingredient extends BaseModel {
 		}
 
 		return page.apply(find.where().ilike("functions_string", functions_string));
+	}
+
+	public static List<Ingredient> all() {
+		return find.all();
 	}
 
 	public static List<Ingredient> getAll() {

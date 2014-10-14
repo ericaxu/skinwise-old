@@ -2,9 +2,10 @@ package src.models.data;
 
 import src.models.BaseModel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Function extends BaseModel {
@@ -15,6 +16,11 @@ public class Function extends BaseModel {
 	@Column(length = 1024)
 	private String description;
 
+	//Relation table
+
+	@ManyToMany(mappedBy = "functions", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private Set<Ingredient> ingredients = new HashSet<>();
+
 	//Getters
 
 	public String getName() {
@@ -23,6 +29,10 @@ public class Function extends BaseModel {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public Set<Ingredient> getIngredients() {
+		return ingredients;
 	}
 
 	//Setters
