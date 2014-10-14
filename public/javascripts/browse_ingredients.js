@@ -17,6 +17,17 @@ function ingredientResultHTML(ing) {
 }
 
 function loadFilterResults(response) {
+    switch (response.count) {
+        case 0:
+            $('.result_summary').text('No results found.');
+            break;
+        case 1:
+            $('.result_summary').text('Found 1 result.');
+            break;
+        default:
+            $('.result_summary').text('Found ' + formatNumber(response.count) + ' results.');
+    }
+
     for (var i = 0; i < response.results.length; i++) {
         $('.ingredients_list ul').append(ingredientResultHTML(response.results[i]));
     }

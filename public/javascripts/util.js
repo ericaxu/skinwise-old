@@ -2,6 +2,10 @@ function isInteger(str) {
     return /^\+?(0|[1-9]\d*)$/.test(str);
 }
 
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function postToAPI(url, params, successCallback, errorCallback, message) {
     console.log(SW.CONFIG.API_ROOT + url, params);
     if (message) {
