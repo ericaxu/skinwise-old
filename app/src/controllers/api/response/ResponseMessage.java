@@ -1,7 +1,7 @@
 package src.controllers.api.response;
 
 public class ResponseMessage {
-	private static final String TYPE_INFO = "ingredient";
+	private static final String TYPE_INFO = "info";
 	private static final String TYPE_ERROR = "error";
 	private static final int DEFAULT_TIMEOUT = 5000;
 
