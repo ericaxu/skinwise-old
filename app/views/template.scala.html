@@ -23,11 +23,11 @@
             </li>
         </ul>
         <ul class="user_nav horizontal">
-            <li id="feedback_link"><a href="#">Feedback</a></li>
             @if(state.getUser() == null) {
                 <li id="signup_link"><a href="#">Sign up</a></li>
                 <li id="login_link"><a href="#">Sign in</a></li>
             } else {
+                <li id="feedback_link"><a href="#">Feedback</a></li>
                 @if(state.userHasPermission(src.models.Permissible.ALL)) {
                     <li><a href="/admin">Console</a></li>
                 }
@@ -73,7 +73,9 @@
     @login_popup()
     @forgot_password_popup()
     @confirm_popup()
-    @feedback_popup(state)
+    @if(state.getUser != null) {
+        @feedback_popup(state)
+    }
     <script src='@routes.Assets.at("javascripts/vendor/jquery-1.9.0.min.js")'></script>
     <script src='@routes.Assets.at("javascripts/vendor/lodash-2.4.1-min.js")'></script>
     <script src='@routes.Assets.at("javascripts/config.js")'></script>
