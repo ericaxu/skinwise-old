@@ -163,6 +163,11 @@ function setupFeedbackCall() {
 
 function feedbackSuccess(response) {
     $('.feedback.popup').hide();
+    // Reset feedback popup
+    $('#feedback_type').val('none');
+    $('#feedback_message').val('');
+    $('#feedback_btn').val('Send feedback');
+
 }
 
 function setupFeedbackPopup() {
