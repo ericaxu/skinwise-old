@@ -21,6 +21,7 @@ function setupPopups() {
 
     setupLoginPopup();
     setupSignupPopup();
+    setupFeedbackPopup();
     setupForgotPasswordPopup();
 }
 
@@ -131,6 +132,26 @@ function confirmAction(action, callback) {
         callback();
     });
     $('.confirm.popup').show();
+}
+
+function setupFeedbackCall() {
+    $('#signup_btn').on('click', function(e) {
+        cleanupErrors();
+        $(this).val('Signing you up...');
+        postToAPI('/user/signup', {
+            name: $('#signup_name').val(),
+            email: $('#signup_email').val(),
+            password: $('#signup_password').val()
+        }, signupSuccess);
+    });
+}
+
+function setupFeedbackPopup() {
+    $('#feedback_link').on('click', function() {
+        $('.feedback.popup').show();
+    });
+
+    setupFeedbackCall();
 }
 
 $(document).ready(function() {
