@@ -31,6 +31,12 @@ function loadFilterResults(response) {
     for (var i = 0; i < response.results.length; i++) {
         $('.ingredients_list ul').append(ingredientResultHTML(response.results[i]));
     }
+
+    SW.ING_FETCH.LOADED_COUNT += response.results.length;
+
+    if (SW.ING_FETCH.LOADED_COUNT >= SW.ING_FETCH.RESULT_COUNT) {
+        $('.end_of_results').show();
+    }
 }
 
 function getSelectedFunctions() {
@@ -45,16 +51,17 @@ function getSelectedFunctions() {
 function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
 
+        $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
-        SW.ING_FETCH.SPINNER = new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
         postToAPI('/ingredient/filter', {
             functions: getSelectedFunctions(),
             page: SW.ING_FETCH.CUR_PAGE + 1
         }, function (response) {
-            SW.ING_FETCH.SPINNER.stop();
+            $('#loading_spinner').hide();
             SW.ING_FETCH.LOADING = false;
             SW.ING_FETCH.CUR_PAGE += 1;
+            SW.ING_FETCH.RESULT_COUNT = response.count;
             loadFilterResults(response);
         });
     }
@@ -62,23 +69,28 @@ function fetchNextPage() {
 
 function refetch() {
     $('.ingredients_list ul').empty();
+    $('.end_of_results').hide();
+    $('.result_summary').text('Fetching results...');
 
+    $('#loading_spinner').show();
     SW.ING_FETCH.LOADING = true;
-    SW.ING_FETCH.SPINNER = new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
     postToAPI('/ingredient/filter', {
         functions: getSelectedFunctions(),
         page: 0
     }, function (response) {
-        SW.ING_FETCH.SPINNER.stop();
+        $('#loading_spinner').hide();
         SW.ING_FETCH.LOADING = false;
         SW.ING_FETCH.CUR_PAGE = 0;
+        SW.ING_FETCH.RESULT_COUNT = response.count;
         loadFilterResults(response);
     });
 }
 
 
 $(document).on('ready', function() {
+    new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
+
     var original_offset = $('.filter_area').offset().top;
 
     fetchNextPage();
@@ -89,7 +101,10 @@ $(document).on('ready', function() {
 
     $(window).on('scroll', function() {
         // Check if we are at bottom of page
-        if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height()) {
+        console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
+        console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height() &&
+            SW.ING_FETCH.LOADED_COUNT <= SW.ING_FETCH.RESULT_COUNT) {
             fetchNextPage();
         }
 

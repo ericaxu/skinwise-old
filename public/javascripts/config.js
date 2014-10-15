@@ -37,7 +37,8 @@ SW.SPINNER_CONFIG = {
 
 /* Ingredient filter fetching */
 SW.ING_FETCH = {
-    SPINNER: null,
     LOADING: false,
-    CUR_PAGE: -1
+    CUR_PAGE: -1,
+    LOADED_COUNT: 0,
+    RESULT_COUNT: 0
 };
