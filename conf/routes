@@ -10,18 +10,19 @@ GET         /profile                            src.controllers.HtmlController.p
 GET         /routine                            src.controllers.HtmlController.routine()
 
 # Dynamic pages
-GET         /product/:id                        src.controllers.data.ProductController.info(id : Long)
+GET         /product/:id                        src.controllers.data.ProductController.product(id : Long)
 GET         /ingredient/:id                     src.controllers.data.IngredientController.ingredient(id : Long)
 
 # Ingredient API
 POST        /api/ingredient/functions           src.controllers.data.IngredientController.api_functions()
 POST        /api/ingredient/byid                src.controllers.data.IngredientController.api_ingredient()
 POST        /api/ingredient/filter              src.controllers.data.IngredientController.api_ingredient_filter()
+# POST        /api/product/filter                 src.controllers.data.ProductController.api_product_filter()
 GET         /api/quicksearch/:query             src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                  src.controllers.IngredientSearch.fullSearch(query)
 
 # Product API
-GET         /api/product                        src.controllers.data.ProductController.api_info()
+GET         /api/product                        src.controllers.data.ProductController.api_product()
 POST        /api/product/ingredientinfo         src.controllers.data.ProductController.api_ingredient_info()
 
 # User API

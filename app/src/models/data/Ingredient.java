@@ -1,12 +1,15 @@
 package src.models.data;
 
-import org.apache.commons.lang3.StringUtils;
+import com.avaje.ebean.RawSqlBuilder;
 import org.apache.commons.lang3.text.WordUtils;
 import src.models.BaseModel;
 import src.models.Page;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Ingredient extends BaseModel {
@@ -20,12 +23,10 @@ public class Ingredient extends BaseModel {
 	@Column(length = 4096)
 	private String description;
 
-	@Column(length = 4096)
-	private String functions_string;
-
 	//Relation table
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinTable(name = "ingredient_function")
 	private Set<Function> functions = new HashSet<>();
 
 	//Non-columns
@@ -75,14 +76,6 @@ public class Ingredient extends BaseModel {
 
 	public void setFunctions(Set<Function> functions) {
 		this.functions = functions;
-
-		//This is used for search
-		List<String> function_list = new ArrayList<>();
-		for (Function f : functions) {
-			function_list.add("[" + f.getId() + "]");
-		}
-		Collections.sort(function_list);
-		this.functions_string = StringUtils.join("", function_list);
 	}
 
 	//Others
@@ -128,18 +121,9 @@ public class Ingredient extends BaseModel {
 	}
 
 	public static List<Ingredient> byFunctions(long[] functions, Page page) {
-		String functions_string = "%";
-
-		if (functions.length > 0) {
-			List<String> function_list = new ArrayList<>();
-			for (long id : functions) {
-				function_list.add("[" + id + "]");
-			}
-			Collections.sort(function_list);
-			functions_string = "%" + StringUtils.join("%", function_list) + "%";
-		}
-
-		return page.apply(find.where().ilike("functions_string", functions_string));
+		return page.apply(find.setRawSql(RawSqlBuilder.parse("SELECT * FROM ingredient i " +
+				"WHERE (SELECT COUNT(*) FROM ingredient_function WHERE ingredient_id = i.id AND function_id IN (?,?,?,?,...)) = 2")
+				.create()));
 	}
 
 	public static List<Ingredient> all() {

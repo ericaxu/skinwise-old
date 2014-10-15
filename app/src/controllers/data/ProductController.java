@@ -7,16 +7,20 @@ import play.mvc.Result;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
+import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.Page;
 import src.models.data.Ingredient;
 import src.models.data.Product;
 import src.models.data.ProductIngredient;
 import views.html.product;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProductController extends Controller {
 	public static class ResponseProductInfo extends Response {
@@ -31,12 +35,12 @@ public class ProductController extends Controller {
 		}
 	}
 
-	public static class IngredientInfo {
+	public static class ResponseIngredientObject {
 		public String name;
 		public String description;
 		public List<String> functions;
 
-		public IngredientInfo(String name, String description, List<String> functions) {
+		public ResponseIngredientObject(String name, String description, List<String> functions) {
 			this.name = name;
 			this.description = description;
 			this.functions = functions;
@@ -44,22 +48,21 @@ public class ProductController extends Controller {
 	}
 
 	public static class ResponseProductIngredientInfo extends Response {
-		public List<IngredientInfo> ingredient_info;
+		public List<ResponseIngredientObject> ingredient_info;
 
-		public ResponseProductIngredientInfo(List<Ingredient> ingredients) {
-			this.ingredient_info = new ArrayList<>();
-
-			for (Ingredient ingredient : ingredients) {
-				this.ingredient_info.add(new IngredientInfo(
-						WordUtils.capitalizeFully(ingredient.getName()),
-						ingredient.getDescription(),
-						ingredient.getFunctionsString()
-				));
-			}
+		public ResponseProductIngredientInfo(List<ResponseIngredientObject> ingredient_info) {
+			this.ingredient_info = ingredient_info;
 		}
 	}
 
-	public static Result info(long product_id) {
+	public static class RequestProductFilter extends Api.RequestGetAllByPage {
+		@NotNull
+		public long brand;
+		@NotNull
+		public long[] ingredients;
+	}
+
+	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
 		Product result = Product.byId(product_id);
@@ -70,6 +73,7 @@ public class ProductController extends Controller {
 		return ok(product.render(state, result));
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_ingredient_info() {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
@@ -79,7 +83,7 @@ public class ProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
 
-			List<Ingredient> ingredients = new ArrayList<>();
+			Set<Ingredient> ingredients = new HashSet<>();
 
 			List<ProductIngredient> links = result.getIngredientLinks();
 
@@ -89,7 +93,16 @@ public class ProductController extends Controller {
 				}
 			}
 
-			Response response = new ResponseProductIngredientInfo(ingredients);
+			List<ResponseIngredientObject> results = new ArrayList<>();
+			for (Ingredient ingredient : ingredients) {
+				results.add(new ResponseIngredientObject(
+						WordUtils.capitalizeFully(ingredient.getName()),
+						ingredient.getDescription(),
+						ingredient.getFunctionsString()
+				));
+			}
+
+			Response response = new ResponseProductIngredientInfo(results);
 
 			return Api.write(response);
 		}
@@ -99,7 +112,7 @@ public class ProductController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_info() {
+	public static Result api_product() {
 		try {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
@@ -121,4 +134,33 @@ public class ProductController extends Controller {
 			return Api.write(new ErrorResponse(e));
 		}
 	}
+/*
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_product_filter() {
+		try {
+			RequestProductFilter request = Api.read(ctx(), RequestProductFilter.class);
+
+			Page page = new Page(request.page, 20);
+			List<Product> result = Product.byFunctions(request.functions, page);
+
+			ResponseIngredientFilter response = new ResponseIngredientFilter();
+			response.count = page.count;
+
+			for (Ingredient ingredient : result) {
+				response.results.add(new ResponseIngredientObject(
+						ingredient.getId(),
+						ingredient.getDisplayName(),
+						ingredient.getCas_number(),
+						ingredient.getDescription(),
+						ingredient.getFunctionsString(),
+						ingredient.getNamesString()
+				));
+			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}*/
 }
