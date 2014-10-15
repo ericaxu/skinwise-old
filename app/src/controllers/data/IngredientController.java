@@ -129,7 +129,7 @@ public class IngredientController extends Controller {
 			RequestIngredientFilter request = Api.read(ctx(), RequestIngredientFilter.class);
 
 			Page page = new Page(request.page, 20);
-			List<Ingredient> result = Ingredient.byFunctions(request.functions, page);
+			List<Ingredient> result = Ingredient.byFilter(request.functions, page);
 
 			ResponseIngredientFilter response = new ResponseIngredientFilter();
 			response.count = page.count;

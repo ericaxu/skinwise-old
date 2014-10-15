@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = IngredientName.TABLENAME)
 public class IngredientName extends BaseModel {
 
 	@Column(length = 1024)
@@ -41,6 +42,8 @@ public class IngredientName extends BaseModel {
 	}
 
 	//Static
+
+	public static final String TABLENAME = "ingredient_name";
 
 	public static Finder<Long, IngredientName> find = new Finder<>(Long.class, IngredientName.class);
 

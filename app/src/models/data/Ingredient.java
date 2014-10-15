@@ -1,26 +1,19 @@
 package src.models.data;
 
-import com.avaje.ebean.RawSqlBuilder;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import play.api.db.DB$;
-import play.db.DB;
 import src.models.BaseModel;
 import src.models.Page;
-import src.util.Logger;
 import src.util.Util;
 
 import javax.persistence.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = Ingredient.TABLENAME)
 public class Ingredient extends BaseModel {
-	private static final String TAG = "Ingredient";
-
 	@Column(length = 1024)
 	private String name;
 
@@ -33,7 +26,7 @@ public class Ingredient extends BaseModel {
 	//Relation table
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = "ingredient_function")
+	@JoinTable(name = FUNCTIONS_JOINTABLE)
 	private Set<Function> functions = new HashSet<>();
 
 	//Non-columns
@@ -109,6 +102,9 @@ public class Ingredient extends BaseModel {
 
 	//Static
 
+	public static final String TABLENAME = "ingredient";
+	public static final String FUNCTIONS_JOINTABLE = "ingredient_function";
+
 	public static Finder<Long, Ingredient> find = new Finder<>(Long.class, Ingredient.class);
 
 	public static Ingredient byId(long id) {
@@ -127,26 +123,18 @@ public class Ingredient extends BaseModel {
 				.findList();
 	}
 
-	public static List<Ingredient> byFunctions(long[] functions, Page page) {
-		// Return all ingredients
+	public static List<Ingredient> byFilter(long[] functions, Page page) {
 		if (functions.length == 0) {
 			return page.apply(find.query());
 		}
-		String query_from = " FROM ingredient i WHERE " +
-				"(SELECT COUNT(*) FROM ingredient_function WHERE " +
+
+		String query_from = " FROM " + TABLENAME + " i WHERE " +
+				"(SELECT COUNT(*) FROM " + FUNCTIONS_JOINTABLE + " WHERE " +
 				"ingredient_id = i.id AND " +
-				"function_id IN (" + Util.joinString(",", functions) + ") = " +
-				functions.length + ")";
+				"function_id IN (" + Util.joinString(",", functions) + ")) = " +
+				functions.length;
 
-		try {
-			page.count = Util.sqlCount(query_from);
-		}
-		catch (SQLException e) {
-			Logger.fatal(TAG, "SQL Count Query failed", e);
-		}
-
-		return page.apply(find.setRawSql(RawSqlBuilder.parse("SELECT i.id" + query_from)
-				.columnMapping("i.id", "id").create()), false);
+		return page.apply(find, query_from, "i");
 	}
 
 	public static List<Ingredient> all() {

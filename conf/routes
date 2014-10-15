@@ -17,7 +17,7 @@ GET         /ingredient/:id                     src.controllers.data.IngredientC
 POST        /api/ingredient/functions           src.controllers.data.IngredientController.api_functions()
 POST        /api/ingredient/byid                src.controllers.data.IngredientController.api_ingredient()
 POST        /api/ingredient/filter              src.controllers.data.IngredientController.api_ingredient_filter()
-# POST        /api/product/filter                 src.controllers.data.ProductController.api_product_filter()
+POST        /api/product/filter                 src.controllers.data.ProductController.api_product_filter()
 GET         /api/quicksearch/:query             src.controllers.IngredientSearch.partialSearch(query)
 GET         /api/search/:query                  src.controllers.IngredientSearch.fullSearch(query)
 

@@ -2,17 +2,17 @@ package src.models.data;
 
 import src.models.BaseModel;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = ProductIngredient.TABLENAME)
 public class ProductIngredient extends BaseModel {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "product_id", referencedColumnName = "id")
 	private Product product;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "ingredient_name_id", referencedColumnName = "id")
 	private IngredientName ingredient_name;
 
 	private boolean is_key;
@@ -31,7 +31,7 @@ public class ProductIngredient extends BaseModel {
 		return is_key;
 	}
 
-	//Others
+	//Setters
 
 	public void setProduct(Product product) {
 		this.product = product;
@@ -44,4 +44,8 @@ public class ProductIngredient extends BaseModel {
 	public void setIs_key(boolean is_key) {
 		this.is_key = is_key;
 	}
+
+	//Static
+
+	public static final String TABLENAME = "product_ingredient";
 }

@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Set;
 
 public class ProductController extends Controller {
-	public static class ResponseProductInfo extends Response {
+	public static class ResponseProduct extends Response {
 		public String product_name;
 		public String product_brand;
 		public String description;
 
-		public ResponseProductInfo(String product_name, String product_brand, String description) {
+		public ResponseProduct(String product_name, String product_brand, String description) {
 			this.product_name = product_name;
 			this.product_brand = product_brand;
 			this.description = description;
@@ -57,9 +57,30 @@ public class ProductController extends Controller {
 
 	public static class RequestProductFilter extends Api.RequestGetAllByPage {
 		@NotNull
-		public long brand;
+		public long[] brands;
 		@NotNull
 		public long[] ingredients;
+	}
+
+	public static class ResponseProductObject {
+		public long id;
+		public String name;
+		public String brand;
+		public String line;
+		public String image;
+
+		public ResponseProductObject(long id, String name, String brand, String line, String image) {
+			this.id = id;
+			this.name = name;
+			this.brand = brand;
+			this.line = line;
+			this.image = image;
+		}
+	}
+
+	public static class ResponseProductFilter extends Response {
+		public List<ResponseProductObject> results = new ArrayList<>();
+		public int count;
 	}
 
 	public static Result product(long product_id) {
@@ -122,7 +143,7 @@ public class ProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
 
-			Response response = new ResponseProductInfo(
+			Response response = new ResponseProduct(
 					result.getName(),
 					result.getBrandName(),
 					result.getDescription()
@@ -134,26 +155,25 @@ public class ProductController extends Controller {
 			return Api.write(new ErrorResponse(e));
 		}
 	}
-/*
+
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_product_filter() {
 		try {
 			RequestProductFilter request = Api.read(ctx(), RequestProductFilter.class);
 
 			Page page = new Page(request.page, 20);
-			List<Product> result = Product.byFunctions(request.functions, page);
+			List<Product> result = Product.byFilter(request.brands, request.ingredients, page);
 
-			ResponseIngredientFilter response = new ResponseIngredientFilter();
+			ResponseProductFilter response = new ResponseProductFilter();
 			response.count = page.count;
 
-			for (Ingredient ingredient : result) {
-				response.results.add(new ResponseIngredientObject(
-						ingredient.getId(),
-						ingredient.getDisplayName(),
-						ingredient.getCas_number(),
-						ingredient.getDescription(),
-						ingredient.getFunctionsString(),
-						ingredient.getNamesString()
+			for (Product product : result) {
+				response.results.add(new ResponseProductObject(
+						product.getId(),
+						product.getName(),
+						product.getBrandName(),
+						product.getLine(),
+						""
 				));
 			}
 
@@ -162,5 +182,5 @@ public class ProductController extends Controller {
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
 		}
-	}*/
+	}
 }

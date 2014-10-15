@@ -1,12 +1,15 @@
 package src.models.data;
 
 import src.models.BaseModel;
+import src.models.Page;
+import src.util.Util;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = Product.TABLENAME)
 public class Product extends BaseModel {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -122,6 +125,8 @@ public class Product extends BaseModel {
 
 	//Static
 
+	public static final String TABLENAME = "product";
+
 	public static Finder<Long, Product> find = new Finder<>(Long.class, Product.class);
 
 	public static List<Product> all() {
@@ -138,6 +143,35 @@ public class Product extends BaseModel {
 				.eq("brand", brand)
 				.eq("name", name)
 				.findUnique();
+	}
+
+	public static List<Product> byFilter(long[] brands, long[] ingredients, Page page) {
+		if (brands.length == 0 || ingredients.length == 0) {
+			return page.apply(find.query());
+		}
+
+		String query_from = " FROM " + TABLENAME + " p WHERE ";
+
+		if (brands.length > 0) {
+			query_from += " brand.id IN (" + Util.joinString(",", brands) + ") ";
+
+			if (ingredients.length > 0) {
+				query_from += "AND ";
+			}
+		}
+
+		if (ingredients.length > 0) {
+			query_from +=
+					" (SELECT COUNT(*) FROM " +
+							ProductIngredient.TABLENAME + " a LEFT JOIN " + IngredientName.TABLENAME + " b " +
+							"WHERE " +
+							"a.product_id = p.id AND " +
+							"a.ingredient_name_id = b.id AND " +
+							"b.ingredient_id IN (" + Util.joinString(",", ingredients) + ")) = " +
+							ingredients.length;
+		}
+
+		return page.apply(find, query_from, "p");
 	}
 
 	public static List<Product> byBrand(Brand brand) {
