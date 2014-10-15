@@ -50,6 +50,7 @@ function getSelectedFunctions() {
 
 function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
+        console.log('fetchNextPage');
 
         $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
@@ -63,6 +64,9 @@ function fetchNextPage() {
             SW.ING_FETCH.CUR_PAGE += 1;
             SW.ING_FETCH.RESULT_COUNT = response.count;
             loadFilterResults(response);
+
+            console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
+            console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
         });
     }
 }
@@ -73,7 +77,11 @@ function refetch() {
     $('.result_summary').text('Fetching results...');
 
     $('#loading_spinner').show();
+
+    SW.ING_FETCH.LOADED_COUNT = 0;
     SW.ING_FETCH.LOADING = true;
+
+    console.log('refetch');
 
     postToAPI('/ingredient/filter', {
         functions: getSelectedFunctions(),
@@ -84,6 +92,10 @@ function refetch() {
         SW.ING_FETCH.CUR_PAGE = 0;
         SW.ING_FETCH.RESULT_COUNT = response.count;
         loadFilterResults(response);
+
+
+        console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
+        console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
     });
 }
 
@@ -101,8 +113,6 @@ $(document).on('ready', function() {
 
     $(window).on('scroll', function() {
         // Check if we are at bottom of page
-        console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
-        console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
         if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height() &&
             SW.ING_FETCH.LOADED_COUNT <= SW.ING_FETCH.RESULT_COUNT) {
             fetchNextPage();

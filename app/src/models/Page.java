@@ -17,15 +17,18 @@ public class Page {
 		this.count = 0;
 	}
 
-	public <T> List<T> apply(ExpressionList<T> query) {
-		PagingList<T> list = query.findPagingList(size);
-		count = list.getTotalRowCount();
-		return list.getPage(page).getList();
+	public <T> List<T> apply(Query<T> query) {
+		return apply(query, true);
 	}
 
-	public <T> List<T> apply(Query<T> query) {
-		PagingList<T> list = query.findPagingList(size);
-		count = list.getTotalRowCount();
+	public <T> List<T> apply(Query<T> query, boolean doCount) {
+		return apply(query.findPagingList(size), doCount);
+	}
+
+	public <T> List<T> apply(PagingList<T> list, boolean doCount) {
+		if (doCount) {
+			count = list.getTotalRowCount();
+		}
 		return list.getPage(page).getList();
 	}
 }

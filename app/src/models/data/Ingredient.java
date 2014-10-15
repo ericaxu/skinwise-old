@@ -1,18 +1,25 @@
 package src.models.data;
 
 import com.avaje.ebean.RawSqlBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import play.api.db.DB$;
+import play.db.DB;
 import src.models.BaseModel;
 import src.models.Page;
+import src.util.Logger;
+import src.util.Util;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 @Entity
 public class Ingredient extends BaseModel {
+	private static final String TAG = "Ingredient";
 
 	@Column(length = 1024)
 	private String name;
@@ -121,9 +128,25 @@ public class Ingredient extends BaseModel {
 	}
 
 	public static List<Ingredient> byFunctions(long[] functions, Page page) {
-		return page.apply(find.setRawSql(RawSqlBuilder.parse("SELECT * FROM ingredient i " +
-				"WHERE (SELECT COUNT(*) FROM ingredient_function WHERE ingredient_id = i.id AND function_id IN (?,?,?,?,...)) = 2")
-				.create()));
+		// Return all ingredients
+		if (functions.length == 0) {
+			return page.apply(find.query());
+		}
+		String query_from = " FROM ingredient i WHERE " +
+				"(SELECT COUNT(*) FROM ingredient_function WHERE " +
+				"ingredient_id = i.id AND " +
+				"function_id IN (" + Util.joinString(",", functions) + ") = " +
+				functions.length + ")";
+
+		try {
+			page.count = Util.sqlCount(query_from);
+		}
+		catch (SQLException e) {
+			Logger.fatal(TAG, "SQL Count Query failed", e);
+		}
+
+		return page.apply(find.setRawSql(RawSqlBuilder.parse("SELECT i.id" + query_from)
+				.columnMapping("i.id", "id").create()), false);
 	}
 
 	public static List<Ingredient> all() {
