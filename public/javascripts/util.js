@@ -7,6 +7,8 @@ function formatNumber(num) {
 }
 
 function postToAPI(url, params, successCallback, errorCallback, message) {
+    console.log('Post to ' + url, params);
+
     if (message) {
         var $message_box = $(SW.TEMPALTES.NOTICE({
             type: 'info',
@@ -21,6 +23,8 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
         data: JSON.stringify(params),
         dataType: 'json',
         success: function(response, status, jqxhr) {
+
+            console.log(response);
 
             if (message) {
                 $message_box.fadeOut(SW.CONFIG.NOTICE_FADE_OUT);
