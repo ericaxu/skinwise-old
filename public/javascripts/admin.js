@@ -275,9 +275,12 @@ function setupProductEditSaveCall() {
     });
 }
 
-function setupImport() {
+function setupDatabaseManager() {
     $('#import_btn').on('click', function() {
         postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+    });
+    $('#export_btn').on('click', function() {
+        postToAPI('/admin/export', {}, null, null, 'Exporting database...');
     });
 }
 
@@ -320,7 +323,7 @@ $(document).ready(function() {
     setupProductDeleteCall();
     setupCreateProductCall();
 
-    setupImport();
+    setupDatabaseManager();
 
     listenForEnter();
 });
