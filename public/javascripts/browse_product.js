@@ -23,9 +23,12 @@ function getRandomImage() {
 
 function productResultHTML(product) {
     var $list_item = $('<li/>', { class: 'product' });
-    $list_item.append(getRandomImage());
-    $list_item.append($('<div/>', { class: 'product_brand', text: product.brand }));
-    $list_item.append($('<div/>', { class: 'product_name', text: product.name }));
+    var $link = $('<a/>', { href: '/product/' + product.id });
+    $link.append(getRandomImage());
+    $link.append($('<div/>', { class: 'product_brand', text: product.brand }));
+    $link.append($('<div/>', { class: 'product_name', text: product.name }));
+
+    $list_item.append($link);
 
     return $list_item;
 }
