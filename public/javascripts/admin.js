@@ -11,6 +11,12 @@ function setupTabSystem() {
     })
 }
 
+function hideEdit() {
+    $('.edit_container').hide();
+}
+
+// USERS
+
 function setupUserSearchCall() {
     $('#user_by_id_btn').on('click', function() {
         var user_id = $('#user_by_id').val();
@@ -39,7 +45,7 @@ function userLoadSuccess(response) {
     $('#edit_user_email').val(response.email).data('original', response.email);
     $('#edit_user_group').val(response.group);
     $('#edit_user_permissions').val(response.permissions.join(SW.CONFIG.PERMISSION_DELIMITER));
-    $('.edit_user_container').show();
+    $('#edit_user').show();
 }
 
 function setupUserDeleteCall() {
@@ -48,7 +54,7 @@ function setupUserDeleteCall() {
         confirmAction('delete user ' + user_email, function() {
             postToAPI('/admin/user/delete', {
                 id: $('#edit_user_id').val()
-            }, hideUserEdit, null, 'Deleting user ' + user_email);
+            }, hideEdit, null, 'Deleting user ' + user_email);
         });
     });
 }
@@ -67,10 +73,8 @@ function setupUserEditSaveCall() {
     })
 }
 
-function hideUserEdit() {
-    $('.edit_user_container').hide();
-}
 
+// GROUPS
 
 function setupGroupSearchCall() {
     $('#group_by_id_btn').on('click', function() {
@@ -98,7 +102,7 @@ function groupLoadSuccess(response) {
     $('#edit_group_id').val(response.id);
     $('#edit_group_name').val(response.name).data('original', response.name);
     $('#edit_group_permissions').val(response.permissions.join(SW.CONFIG.PERMISSION_DELIMITER));
-    $('.edit_group_container').show();
+    $('#edit_group').show();
 }
 
 function setupGroupDeleteCall() {
@@ -107,7 +111,7 @@ function setupGroupDeleteCall() {
         confirmAction('delete group ' + group_name, function() {
             postToAPI('/admin/group/delete', {
                 id: $('#edit_group_id').val()
-            }, hideGroupEdit, null, 'Deleting group ' + group_name);
+            }, hideEdit, null, 'Deleting group ' + group_name);
         });
     });
 }
@@ -128,10 +132,6 @@ function setupGroupEditSaveCall() {
     });
 }
 
-function hideGroupEdit() {
-    $('.edit_group_container').hide();
-}
-
 function setupCreateGroupCall() {
     $('#create_group_btn').on('click', function() {
         groupLoadSuccess({
@@ -141,6 +141,9 @@ function setupCreateGroupCall() {
         });
     });
 }
+
+
+// INGREDIENTS
 
 function setupIngredientSearchCall() {
     $('#ingredient_by_id_btn').on('click', function() {
@@ -162,7 +165,7 @@ function ingredientLoadSuccess(response) {
     $('#edit_ingredient_cas_number').val(response.cas_number);
     $('#edit_ingredient_description').val(response.description);
     $('#edit_ingredient_functions').val(response.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
-    $('.edit_ingredient_container').show();
+    $('#edit_ingredient').show();
 }
 
 function setupIngredientDeleteCall() {
@@ -171,7 +174,7 @@ function setupIngredientDeleteCall() {
         confirmAction('delete ingredient ' + ingredient_name, function() {
             postToAPI('/admin/ingredient/delete', {
                 id: $('#edit_ingredient_id').val()
-            }, hideIngredientEdit, null, 'Deleting ingredient ' + ingredient_name);
+            }, hideEdit, null, 'Deleting ingredient ' + ingredient_name);
         });
     });
 }
@@ -194,10 +197,6 @@ function setupIngredientEditSaveCall() {
     });
 }
 
-function hideIngredientEdit() {
-    $('.edit_ingredient_container').hide();
-}
-
 function setupCreateIngredientCall() {
     $('#create_ingredient_btn').on('click', function() {
         ingredientLoadSuccess({
@@ -207,6 +206,72 @@ function setupCreateIngredientCall() {
             description: '',
             functions: []
         });
+    });
+}
+
+// Product
+
+function setupProductSearchCall() {
+    $('#product_by_id_btn').on('click', function() {
+        var product_id = $('#product_by_id').val();
+        if (!isInteger(product_id)) {
+            showError('Product ID must be an integer.');
+            return;
+        }
+
+        postToAPI('/product/byid', {
+            id: product_id
+        }, productLoadSuccess, null, 'Looking up product...');
+    });
+}
+
+function setupCreateProductCall() {
+    $('#create_product_btn').on('click', function() {
+        productLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            brand: '',
+            line: '',
+            description: ''
+        });
+    });
+}
+
+function productLoadSuccess(response) {
+    $('#edit_product_id').val(response.id);
+    $('#edit_product_name').val(response.name).data('original', response.name);
+    $('#edit_product_brand').val(response.brand);
+    $('#edit_product_line').val(response.line);
+    $('#edit_product_description').val(response.description);
+    $('#edit_ingredient').show();
+}
+
+function setupProductDeleteCall() {
+    $('#delete_product_btn').on('click', function() {
+        var product_name = $('#edit_product_name').data('original');
+        confirmAction('delete product ' + product_name, function() {
+            postToAPI('/admin/product/delete', {
+                id: $('#edit_product_id').val()
+            }, hideEdit, null, 'Deleting product ' + product_name);
+        });
+    });
+}
+
+function setupProductEditSaveCall() {
+    $('#save_product_btn').on('click', function() {
+        var product_id = $('#edit_product_id').val();
+        if (product_id === 'Not assigned yet') {
+            product_id = '-1';
+        }
+        var new_product_info = {
+            id: product_id,
+            name: $('#edit_product_name').val(),
+            brand: $('#edit_product_brand').val(),
+            line: $('#edit_product_line').val(),
+            description: $('#edit_product_description').val()
+        };
+
+        postToAPI('/admin/product/update', new_product_info, null, null, 'Updating product...');
     });
 }
 
@@ -249,6 +314,11 @@ $(document).ready(function() {
     setupIngredientEditSaveCall();
     setupIngredientDeleteCall();
     setupCreateIngredientCall();
+
+    setupProductSearchCall();
+    setupProductEditSaveCall();
+    setupProductDeleteCall();
+    setupCreateProductCall();
 
     setupImport();
 
