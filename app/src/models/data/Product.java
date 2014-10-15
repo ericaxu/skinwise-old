@@ -7,6 +7,7 @@ import src.util.Util;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -146,32 +147,38 @@ public class Product extends BaseModel {
 	}
 
 	public static List<Product> byFilter(long[] brands, long[] ingredients, Page page) {
-		if (brands.length == 0 || ingredients.length == 0) {
+		if (brands.length == 0 && ingredients.length == 0) {
 			return page.apply(find.query());
 		}
 
-		String query_from = " FROM " + TABLENAME + " p WHERE ";
+		String query = "SELECT a.product_id as id " +
+				"FROM " + TABLENAME + " p INNER JOIN " + ProductIngredient.TABLENAME + " a " +
+				"ON p.id = a.product_id WHERE ";
 
 		if (brands.length > 0) {
-			query_from += " brand.id IN (" + Util.joinString(",", brands) + ") ";
+			query += " p.brand_id IN (" + Util.joinString(",", brands) + ") ";
 
 			if (ingredients.length > 0) {
-				query_from += "AND ";
+				query += "AND ";
 			}
 		}
 
 		if (ingredients.length > 0) {
-			query_from +=
-					" (SELECT COUNT(*) FROM " +
-							ProductIngredient.TABLENAME + " a LEFT JOIN " + IngredientName.TABLENAME + " b " +
-							"WHERE " +
-							"a.product_id = p.id AND " +
-							"a.ingredient_name_id = b.id AND " +
-							"b.ingredient_id IN (" + Util.joinString(",", ingredients) + ")) = " +
-							ingredients.length;
+			List<Long> ingredient_name_ids = new ArrayList<>();
+			for (long ingredient_id : ingredients) {
+				Set<IngredientName> names = Ingredient.byId(ingredient_id).getNames();
+				for (IngredientName name : names) {
+					ingredient_name_ids.add(name.getId());
+				}
+			}
+			Long[] list = ingredient_name_ids.toArray(new Long[ingredient_name_ids.size()]);
+
+			query += " a.ingredient_name_id IN (" + Util.joinString(",", list) + ") " +
+					"GROUP BY a.product_id " +
+					"HAVING count(*) = " + ingredients.length;
 		}
 
-		return page.apply(find, query_from, "p");
+		return page.apply(find, query);
 	}
 
 	public static List<Product> byBrand(Brand brand) {

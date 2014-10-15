@@ -128,13 +128,13 @@ public class Ingredient extends BaseModel {
 			return page.apply(find.query());
 		}
 
-		String query_from = " FROM " + TABLENAME + " i WHERE " +
-				"(SELECT COUNT(*) FROM " + FUNCTIONS_JOINTABLE + " WHERE " +
-				"ingredient_id = i.id AND " +
-				"function_id IN (" + Util.joinString(",", functions) + ")) = " +
-				functions.length;
+		String query = "SELECT i.ingredient_id as id " +
+				"FROM " + FUNCTIONS_JOINTABLE + " i WHERE " +
+				"i.function_id IN (" + Util.joinString(",", functions) + ") " +
+				"GROUP BY i.ingredient_id " +
+				"HAVING count(*) = " + functions.length;
 
-		return page.apply(find, query_from, "i");
+		return page.apply(find, query);
 	}
 
 	public static List<Ingredient> all() {

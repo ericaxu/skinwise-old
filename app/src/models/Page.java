@@ -4,11 +4,14 @@ import com.avaje.ebean.PagingList;
 import com.avaje.ebean.Query;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
+import play.db.DB;
 import play.db.ebean.Model;
 import src.util.Logger;
-import src.util.Util;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class Page {
@@ -24,23 +27,28 @@ public class Page {
 		this.count = 0;
 	}
 
-	/**
-	 * Apply paging on a raw sql query.
-	 * The query should exclude the SELECT portion and only start at the FROM section.
-	 * <p>
-	 * Example: "FROM ingredient table WHERE conditions..."
-	 */
-	public <I, T> List<T> apply(Model.Finder<I, T> find, String query_from, String table_alias) {
+	public static int sqlCount(String query) throws SQLException {
+		Connection connection = DB.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ")");
+		result_set.next();
+		int count = result_set.getInt("COUNT(*)");
+		result_set.close();
+		connection.close();
+		return count;
+	}
+
+	public <I, T> List<T> apply(Model.Finder<I, T> find, String query) {
+		Logger.debug(TAG, query);
+
 		try {
-			count = Util.sqlCount(query_from);
+			count = sqlCount(query);
 		}
 		catch (SQLException e) {
 			Logger.fatal(TAG, "SQL Count Query failed", e);
 		}
-		RawSql sql = RawSqlBuilder.parse("SELECT " + table_alias + ".id " + query_from)
-				.columnMapping(table_alias + ".id", "id").create();
 
-		Logger.debug("", sql.getSql().toString());
+		RawSql sql = RawSqlBuilder.parse(query).create();
 
 		return apply(find.setRawSql(sql), false);
 	}
