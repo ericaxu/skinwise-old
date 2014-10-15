@@ -209,6 +209,7 @@ function setupCreateIngredientCall() {
     });
 }
 
+
 // Product
 
 function setupProductSearchCall() {
@@ -275,6 +276,69 @@ function setupProductEditSaveCall() {
     });
 }
 
+
+// Function
+
+function setupFunctionSearchCall() {
+    $('#function_by_id_btn').on('click', function() {
+        var function_id = $('#function_by_id').val();
+        if (!isInteger(function_id)) {
+            showError('Function ID must be an integer.');
+            return;
+        }
+
+        postToAPI('/function/byid', {
+            id: function_id
+        }, functionLoadSuccess, null, 'Looking up function...');
+    });
+}
+
+function setupCreateFunctionCall() {
+    $('#create_function_btn').on('click', function() {
+        functionLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            brand: '',
+            line: '',
+            description: ''
+        });
+    });
+}
+
+function functionLoadSuccess(response) {
+    $('#edit_function_id').val(response.id);
+    $('#edit_function_name').val(response.name).data('original', response.name);
+    $('#edit_function_description').val(response.description);
+    $('#edit_ingredient').show();
+}
+
+function setupFunctionDeleteCall() {
+    $('#delete_function_btn').on('click', function() {
+        var function_name = $('#edit_function_name').data('original');
+        confirmAction('delete function ' + function_name, function() {
+            postToAPI('/admin/function/delete', {
+                id: $('#edit_function_id').val()
+            }, hideEdit, null, 'Deleting function ' + function_name);
+        });
+    });
+}
+
+function setupFunctionEditSaveCall() {
+    $('#save_function_btn').on('click', function() {
+        var function_id = $('#edit_function_id').val();
+        if (function_id === 'Not assigned yet') {
+            function_id = '-1';
+        }
+        var new_function_info = {
+            id: function_id,
+            name: $('#edit_function_name').val(),
+            description: $('#edit_function_description').val()
+        };
+
+        postToAPI('/admin/function/update', new_function_info, null, null, 'Updating function...');
+    });
+}
+
 function setupDatabaseManager() {
     $('#import_btn').on('click', function() {
         postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
@@ -322,6 +386,11 @@ $(document).ready(function() {
     setupProductEditSaveCall();
     setupProductDeleteCall();
     setupCreateProductCall();
+
+    setupFunctionSearchCall();
+    setupFunctionEditSaveCall();
+    setupFunctionDeleteCall();
+    setupCreateFunctionCall();
 
     setupDatabaseManager();
 

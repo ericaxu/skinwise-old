@@ -9,7 +9,7 @@
         <a href="#" class="tab_title current" data-tab-name="import_tab">Database</a><a href="#" class="tab_title"
           data-tab-name="user_tab">User</a><a href="#" class="tab_title" data-tab-name="group_tab">Group</a><a
           href="#" class="tab_title" data-tab-name="ingredient_tab">Ingredient</a><a href="#" class="tab_title"
-          data-tab-name="product_tab">Product</a>
+          data-tab-name="product_tab">Product</a><a href="#" class="tab_title" data-tab-name="function_tab">Function</a>
     </div>
 
     <div class="tab" id="import_tab">
@@ -177,12 +177,12 @@
         <h1>Product Manager</h1>
         <div class="field">
             <div class="labels">
-                <label for="prodcut_by_id">By ID:</label>
+                <label for="product_by_id">By ID:</label>
             </div>
 
             <div class="inputs">
-                <input type="text" id="prodcut_by_id"/>
-                <input type="button" id="prodcut_by_id_btn" value="Search"/>
+                <input type="text" id="product_by_id"/>
+                <input type="button" id="product_by_id_btn" value="Search"/>
             </div>
         </div>
         <p>
@@ -216,6 +216,51 @@
                     <p>
                         <input id="save_product_btn" class="primary" type="button" value="Save"/>
                         <input id="delete_product_btn" class="primary" type="button" value="Delete"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="tab" id="function_tab">
+        <h1>Function Manager</h1>
+        <div class="field">
+            <div class="labels">
+                <label for="function_by_id">By ID:</label>
+            </div>
+
+            <div class="inputs">
+                <input type="text" id="function_by_id"/>
+                <input type="button" id="function_by_id_btn" value="Search"/>
+            </div>
+        </div>
+        <p>
+            <input id="create_function_btn" class="primary" type="button" value="Create function"/>
+        </p>
+
+        <div class="edit_container" id="edit_function">
+            <h2>Edit Function</h2>
+            <div class="field">
+                <div class="labels">
+                    <label for="edit_function_id">ID:</label>
+                    <label for="edit_function_name">Name:</label>
+                    <label for="edit_function_description">Description:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="edit_function_id" disabled/>
+                    <br>
+                    <input type="text" id="edit_function_name"/>
+                    <br>
+                    <textarea type="text" id="edit_function_description"></textarea>
+                </div>
+
+                <div class="field">
+                    <p>
+                        <input id="save_function_btn" class="primary" type="button" value="Save"/>
+                        <input id="delete_function_btn" class="primary" type="button" value="Delete"/>
                     </p>
                 </div>
             </div>
