@@ -36,11 +36,13 @@ public class ProductController extends Controller {
 	}
 
 	public static class ResponseIngredientObject {
+		public long id;
 		public String name;
 		public String description;
 		public List<String> functions;
 
-		public ResponseIngredientObject(String name, String description, List<String> functions) {
+		public ResponseIngredientObject(long id, String name, String description, List<String> functions) {
+			this.id = id;
 			this.name = name;
 			this.description = description;
 			this.functions = functions;
@@ -117,6 +119,7 @@ public class ProductController extends Controller {
 			List<ResponseIngredientObject> results = new ArrayList<>();
 			for (Ingredient ingredient : ingredients) {
 				results.add(new ResponseIngredientObject(
+						ingredient.getId(),
 						WordUtils.capitalizeFully(ingredient.getName()),
 						ingredient.getDescription(),
 						ingredient.getFunctionsString()

@@ -25,7 +25,7 @@ function setupIngredientInfobox() {
             ingredient_info.append(functions);
             ingredient_info.appendTo('body');
             ingredient_info.append($('<p/>', { text: ingredient_data.short_desc }));
-            ingredient_info.append('<p><a class="explicit" href="#">More details</a></p>');
+            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + ingredient_data.id +  '">More details</a></p>');
             ingredient_info.show().offset({ top: e.pageY, left: e.pageX });
         }
     });
@@ -43,6 +43,7 @@ function getIngredientInfoSuccess(response) {
     for (var i = 0; i < response.ingredient_info.length; i++) {
         var ingredient = response.ingredient_info[i];
         SW.ING[ingredient.name] = {
+            id: ingredient.id,
             description: ingredient.description,
             functions: ingredient.functions
         };
