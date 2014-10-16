@@ -30,6 +30,9 @@ POST        /api/user/signup                    src.controllers.UserController.a
 POST        /api/user/login                     src.controllers.UserController.api_login()
 POST        /api/user/logout                    src.controllers.UserController.api_logout()
 
+POST        /api/user/ingredient/add            src.controllers.userdata.UserIngredientController.api_add()
+POST        /api/user/ingredient/remove         src.controllers.userdata.UserIngredientController.api_remove()
+
 # Feedback
 POST        /api/feedback/report                src.controllers.feedback.ReportController.api_report_create()
 POST        /api/feedback/analytics             src.controllers.feedback.AnalyticsController.api_analytics()
