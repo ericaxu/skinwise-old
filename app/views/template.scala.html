@@ -75,12 +75,12 @@
             <p class="message"></p>
         </div>
     </div>
-    @signup_popup()
-    @login_popup()
-    @forgot_password_popup()
-    @confirm_popup()
+    @popups.signup()
+    @popups.login()
+    @popups.forgot_password()
+    @popups.confirm()
     @if(state.getUser != null) {
-        @feedback_popup(state)
+        @popups.feedback(state)
     }
     <script src='@routes.Assets.at("javascripts/vendor/jquery-1.9.0.min.js")'></script>
     <script src='@routes.Assets.at("javascripts/vendor/lodash-2.4.1-min.js")'></script>

@@ -8,8 +8,8 @@ import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
-import views.html.error404;
-import views.html.error500;
+import views.html.error.error404;
+import views.html.error.error500;
 
 public class ErrorController extends Controller {
 	public static Result notfound(String route) {
