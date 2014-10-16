@@ -1,16 +1,16 @@
 function setupIngredientInfobox() {
     var $ingredient = $('.ingredient');
 
-    $ingredient.on('click', function(e) {
+    $ingredient.on('click', function (e) {
         var ingredient_name = $(this).text()
         $('.ingredient_infobox').remove();
         if (SW.ING[ingredient_name]) {
 
             var ingredient_data = SW.ING[ingredient_name];
-            var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function(e) {
+            var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function (e) {
                 e.stopPropagation();
             });
-            var close_button = $('<span/>', { class: 'close_btn' }).on('click', function() {
+            var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
                 $('.ingredient_infobox').remove();
             })
             ingredient_info.append(close_button);
@@ -25,16 +25,16 @@ function setupIngredientInfobox() {
             ingredient_info.append(functions);
             ingredient_info.appendTo('body');
             ingredient_info.append($('<p/>', { text: ingredient_data.short_desc }));
-            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + ingredient_data.id +  '">More details</a></p>');
+            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + ingredient_data.id + '">More details</a></p>');
             ingredient_info.show().offset({ top: e.pageY, left: e.pageX });
         }
     });
 
-    $(document).on('click', function() {
+    $(document).on('click', function () {
         $('.ingredient_infobox').remove();
     });
 
-    $ingredient.on('click', function(e) {
+    $ingredient.on('click', function (e) {
         e.stopPropagation();
     });
 }
@@ -50,20 +50,28 @@ function getIngredientInfoSuccess(response) {
     }
 }
 
-$(document).ready(function() {
+function getContainingProductsSuccess(response) {
+    var number_shown = Math.min(response.results.length, SW.CONFIG.CONTAINING_PRODUCT_NUM);
+
+    for (var i = 0; i < number_shown; i++) {
+        $('.contained_products ul').append(productResultHTML(response.results[i]));
+    }
+}
+
+$(document).ready(function () {
     setupIngredientInfobox();
 
-    $('.profile_add_input').on('focus', function() {
+    $('.profile_add_input').on('focus', function () {
         $(this).next().show();
-    }).on('blur', function() {
+    }).on('blur', function () {
         if ($(this).val() === '') {
             $(this).next().hide();
         }
     });
 
-    $('.expand_subnav').on('mouseenter', function() {
+    $('.expand_subnav').on('mouseenter', function () {
         $('.sub_navbar').fadeIn(SW.CONFIG.SUBNAV_FADE_IN);
-    }).on('mouseleave', function() {
+    }).on('mouseleave', function () {
         $('.sub_navbar').fadeOut(SW.CONFIG.SUBNAV_FADE_OUT);
     });
 });

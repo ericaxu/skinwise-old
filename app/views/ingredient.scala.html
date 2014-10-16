@@ -27,32 +27,19 @@
     <div class="contained_products section">
         <h3>Products with @ingredient.getDisplayName</h3>
         <ul>
-            <li>
-                <div class="product">
-                    <img class="product_pic" src="/assets/images/11620108701.jpg" alt="Dr. Dennis Gross Extra Strength Alpha Beta Peel"/>
-                    <div class="product_brand">Dr. Dennis Gross </div>
-                    <div class="product_name">Extra Strength Alpha Beta Peel</div>
-                </div>
-            </li>
-            <li>
-                <div class="product">
-                    <img class="product_pic" src="/assets/images/rby-philosophy-microdelivery-triple-acid-brightening-peel-de-36384246.jpg" alt="Philosophy The Microdelivery Triple-Acid Brightening Peel"/>
-                    <div class="product_brand">Philosophy</div>
-                    <div class="product_name">The Microdelivery Triple-Acid Brightening Peel</div>
-                </div>
-            </li>
-            <li>
-                <div class="product">
-                    <img class="product_pic" src="/assets/images/43640.jpg" alt="Vivant Skin Care 15% Mandelic Acid 3-in-1 Serum"/>
-                    <div class="product_brand">Vivant Skin Care</div>
-                    <div class="product_name">15% Mandelic Acid 3-in-1 Serum</div>
-                </div>
-            </li>
             <li class="stretch"></li>
         </ul>
     </div>
 </div>
 
 } {
+
+<script>
+    postToAPI('/product/filter', {
+        brands: [],
+        ingredients: [@ingredient.getId],
+        page: 0
+    }, getContainingProductsSuccess);
+</script>
 
 }

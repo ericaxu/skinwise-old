@@ -121,7 +121,7 @@ nav {
 }
 
 #page_content {
-    width: 70%;
+    width: 75%;
     margin: 0 auto;
 }
 
@@ -161,11 +161,11 @@ nav {
             zoom: 1
         }
 
-        .stretch {
+        &::after {
+            content:' ';
+            display:inline-block;
             width: 100%;
-            font-size: 0;
-            line-height: 0
-        }
+            height: 0 }
     }
 }
 
@@ -304,6 +304,27 @@ nav {
 
     .error {
         background: @error;
+    }
+}
+
+.product {
+    position: relative;
+    width: 340px;
+    height: 325px;
+    margin-bottom: 80px;
+    text-align: center;
+
+    .brand {
+        position: absolute;
+        bottom: 25px;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    .name {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
     }
 }
 

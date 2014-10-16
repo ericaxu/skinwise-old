@@ -71,3 +71,31 @@ function showError(message) {
 function showInfo(message) {
     showMessage({ type: 'info', message: message });
 }
+
+function getRandomImage() {
+    var images = [
+        '/assets/images/11620108701.jpg',
+        '/assets/images/rby-philosophy-microdelivery-triple-acid-brightening-peel-de-36384246.jpg',
+        '/assets/images/43640.jpg',
+        '/assets/images/COOLA_Tinted Matte_SPF_30_for_Face.jpg',
+        '/assets/images/2_percent_BHA_liquid.png',
+        '/assets/images/drbrandt_microdermabrasion_900x900.jpg'
+    ]
+
+    var chosen = _.random(images.length - 1);
+
+    return '<img class="product_pic" src="' + images[chosen] + '" alt="Product image"/>';
+}
+
+
+function productResultHTML(product) {
+    var $list_item = $('<li/>', { class: 'product' });
+    var $link = $('<a/>', { href: '/product/' + product.id });
+    $link.append(getRandomImage());
+    $link.append($('<div/>', { class: 'product_brand', text: product.brand }));
+    $link.append($('<div/>', { class: 'product_name', text: product.name }));
+
+    $list_item.append($link);
+
+    return $list_item;
+}
