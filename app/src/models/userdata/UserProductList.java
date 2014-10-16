@@ -1,15 +1,15 @@
 package src.models.userdata;
 
 import src.models.BaseModel;
-import src.models.data.Ingredient;
+import src.models.data.Product;
 import src.models.user.User;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = UserIngredients.TABLENAME)
-public class UserIngredients extends BaseModel {
+@Table(name = UserProductList.TABLENAME)
+public class UserProductList extends BaseModel {
 	@Column(length = 256)
 	private String key;
 
@@ -18,8 +18,8 @@ public class UserIngredients extends BaseModel {
 	private User user;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
-	private Ingredient ingredient;
+	@JoinColumn(name = "product_id", referencedColumnName = "id")
+	private Product product;
 
 	//Getters
 
@@ -31,10 +31,9 @@ public class UserIngredients extends BaseModel {
 		return user;
 	}
 
-	public Ingredient getIngredient() {
-		return ingredient;
+	public Product getProduct() {
+		return product;
 	}
-
 	//Setters
 
 	public void setKey(String key) {
@@ -45,25 +44,22 @@ public class UserIngredients extends BaseModel {
 		this.user = user;
 	}
 
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
-
 	//Static
 
-	public static final String TABLENAME = "user_ingredients";
+	public static final String TABLENAME = "user_product_list";
 
-	public static Finder<Long, UserIngredients> find = new Finder<>(Long.class, UserIngredients.class);
+	public static Finder<Long, UserProductList> find = new Finder<>(Long.class, UserProductList.class);
 
-	public static UserIngredients byId(long id) {
+	public static UserProductList byId(long id) {
 		return find.byId(id);
 	}
 
-	public static List<UserIngredients> byUser(User user) {
+	public static List<UserProductList> byUser(User user) {
 		return find.where()
 				.eq("user", user)
 				.findList();
-
 	}
-
 }
