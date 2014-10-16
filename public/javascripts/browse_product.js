@@ -1,11 +1,3 @@
-//<!--<li>-->
-//<!--<div class="product">-->
-//<!--<img class="product_pic" src="/assets/images/11620108701.jpg" alt="Dr. Dennis Gross Extra Strength Alpha Beta Peel"/>-->
-//<!--<div class="product_brand">Dr. Dennis Gross </div>-->
-//    <!--<div class="product_name">Extra Strength Alpha Beta Peel</div>-->
-//    <!--</div>-->
-//    <!--</li>-->
-
 function getRandomImage() {
     var images = [
         '/assets/images/11620108701.jpg',

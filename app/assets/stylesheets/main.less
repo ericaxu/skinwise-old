@@ -1,5 +1,129 @@
-@import "util/_mixins";
-@import "util/_colors";
+@import "partials/_base";
+@import "partials/_popup";
+@import "partials/_form";
+
+#logo {
+    text-align: center;
+
+    h1 {
+        display: inline-block;
+        margin-bottom: 20px;
+
+        color: @dark_text;
+
+        font-family: "Proxima Nova Thin";
+        font-size: 60px;
+        font-weight: 100;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+        .no_select;
+
+        a {
+            text-decoration: none;
+            &:visited {
+                color: @dark_text;
+            }
+        }
+    }
+
+    .version {
+        position: relative;
+        bottom: 35px;
+
+        padding: 3px 6px;
+        background: @nav_bg;
+        border-radius: 10px;
+
+        font-size: 16px;
+        letter-spacing: 1px;
+        font-family: "Proxima Nova Light";
+        color: white;
+    }
+}
+
+nav {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 50px;
+
+    background: @nav_bg;
+    font-family: "Proxima Nova Light";
+    letter-spacing: 1.5px;
+    color: @light_text;
+
+    li {
+        position: relative;
+        cursor: pointer;
+
+        a {
+            text-decoration: none;
+            display: inline-block;
+            padding: 15px 10px;
+
+            &:link, &:visited {
+                color: @light_text;
+            }
+
+            &:hover {
+                text-decoration: none;
+                color: darken(@light_text, 15);
+            }
+        }
+    }
+
+    .sub_navbar {
+        display: none;
+        position: absolute;
+        left: -10px;
+        background: @nav_bg;
+
+        li {
+            display: block;
+            margin: 0;
+            border-top: 1px solid @light_text;
+            text-align: center;
+
+            a {
+                padding: 12px 15px;
+            }
+
+        }
+    }
+}
+
+.info_nav {
+    margin-left: 30px;
+    float: left;
+}
+
+.user_nav {
+    float: right;
+}
+
+#homepage_search {
+    input {
+        display: block;
+        width: 700px;
+        height: 36px;
+        border: 1px solid @border;
+        border-radius: 105px;
+        margin: 0 auto;
+        padding: 3px 20px;
+
+        font-size: 22px;
+
+        outline: 0;
+    }
+}
+
+#page_content {
+    width: 70%;
+    margin: 0 auto;
+}
 
 #hero {
     h2 {
@@ -8,35 +132,6 @@
     }
     .primary {
         float: right;
-    }
-}
-
-.ingredient_detail, .product_detail {
-    .picture, .info {
-        float: left;
-    }
-
-    .info {
-        width: 600px;
-        margin-left: 50px;
-    }
-
-    .name {
-        font-size: 32px;
-        margin-bottom: 25px;
-    }
-
-    .price {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    .size {
-        font-size: 20px;
-    }
-
-    .price, .size {
-        margin-bottom: 10px;
     }
 }
 
@@ -74,59 +169,35 @@
     }
 }
 
-.product {
-    position: relative;
-    width: 340px;
-    height: 325px;
-    margin-bottom: 80px;
-    text-align: center;
+.ingredient_detail, .product_detail {
+    .picture, .info {
+        float: left;
+    }
 
-    .brand {
-        position: absolute;
-        bottom: 25px;
-        width: 100%;
-        font-weight: bold;
+    .info {
+        width: 600px;
+        margin-left: 50px;
     }
 
     .name {
-        width: 100%;
-        position: absolute;
-        bottom: 0;
+        font-size: 32px;
+        margin-bottom: 25px;
+    }
+
+    .price {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .size {
+        font-size: 20px;
+    }
+
+    .price, .size {
+        margin-bottom: 10px;
     }
 }
 
-.filter_area {
-    width: 20%;
-    float: left;
-}
-
-.filter_area.sticky {
-    position: fixed;
-    top: 100px;
-    float: left;
-}
-
-.products_list, .ingredients_list {
-    width: 70%;
-    float: right;
-    padding-left: 7%;
-    border-left: 1px solid @nav_bg;
-}
-
-.filter_section {
-    margin-top: 40px;
-}
-
-.filter_option {
-    margin-bottom: 4px;
-
-    label {
-        cursor: pointer;
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-}
 
 .function {
     border-radius: 5px;
@@ -154,83 +225,6 @@
     background: @neutral;
 }
 
-.field {
-    margin: 10px 0;
-}
-
-.field.right {
-    .no_margin;
-    text-align: right;
-}
-
-#login_form .button_container {
-    .no_margin;
-}
-
-.popup {
-    .hidden;
-}
-
-.popup_bg {
-    background: #3d464d;
-    opacity: 0.6;
-    .whole_page;
-}
-
-.wrapper {
-    display: table;
-    .whole_page;
-}
-
-.popup_cell {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.form_container {
-    position: relative;
-    display: block;
-    width: 400px;
-    padding: 20px 40px 40px 40px;
-    text-align: left;
-    background-color: @bg;
-    opacity: 1;
-    border: none;
-    z-index: 9999;
-    .hor_center;
-    overflow: hidden;
-}
-
-.form_container {
-    .field {
-        margin: 10px 0;
-    }
-}
-
-.error_msg {
-    width: 300px;
-    margin: 10px 0;
-    color: @error;
-    .hidden;
-}
-
-.close_btn {
-    position: absolute;
-    display: inline-block;
-    .square(20px);
-    color: @nav_bg;
-    font-family: "Proxima Nova Light";
-    font-size: 30px;
-    cursor: pointer;
-    top: 0;
-    right: 2px;
-    padding: 8px;
-
-    &::before {
-        content: "\D7";
-    }
-}
-
 .ingredient_infobox {
     position: absolute;
     .hidden;
@@ -246,31 +240,6 @@
     &:hover {
         text-decoration: underline;
     }
-}
-
-a.explicit {
-    text-decoration: underline;
-}
-
-.labels {
-    float: left;
-    margin-right: 10px;
-    line-height: 35px;
-
-    label {
-        position: relative;
-        bottom: 1px;
-        display: block;
-        text-align: right;
-    }
-}
-
-.inputs {
-    line-height: 35px;
-}
-
-.button_container {
-    margin-top: 20px;
 }
 
 #search_icon {
@@ -338,104 +307,10 @@ a.explicit {
     }
 }
 
-.edit_container {
-    display: none;
-}
-
-.tab_headers {
-    padding-bottom: 8px;
-    border-bottom: 1px solid @nav_bg;
-}
-
-a.tab_title {
-    padding: 10px 20px;
-    font-size: 20px;
-    border: 1px solid @nav_bg;
-    border-left: 1px solid @light_text;
-    border-bottom: none;
-    background: @nav_bg;
-    font-family: "Proxima Nova Light";
-    color: @light_text;
-    .no_margin;
-
-    &:hover {
-        color: darken(@light_text, 15);
-        text-decoration: none;
-    }
-
-    &:first-of-type {
-        border-left: none;
-    }
-
-    &.current + & {
-        border-left: 1px solid @nav_bg;
-    }
-
-    &.current {
-        background: @bg;
-        color: @dark_text;
-
-        border: 1px solid @nav_bg;
-        border-bottom: none;
-        font-weight: bold;
-    }
-}
-
-.preference_list {
-    margin-left: 45px;
-
-    li {
-        margin-bottom: 8px;
-        list-style: square;
-
-        &:last-of-type {
-            margin-bottom: 12px;
-        }
-    }
-}
-
-.routines {
-    li {
-        margin-bottom: 8px;
-    }
-}
-
-.delete_preference {
-    display: none;
-    position: relative;
-    top: 1px;
-    margin-left: 3px;
-    padding: 0 5px;
-
-    font-weight: bolder;
-    font-size: 22px;
-    color: @error;
-
-    cursor: pointer;
-
-    &::before {
-        content: "\D7";
-    }
-}
-
-.profile_add_btn {
-    display: none;
-}
-
 .column {
     min-width: 500px;
     margin-right: 30px;
     float: left;
-}
-
-.user_routine {
-    .column {
-        max-width: 500px;
-    }
-
-    .product_type {
-        font-weight: bold;
-    }
 }
 
 .down_arrow {
@@ -449,24 +324,6 @@ a.tab_title {
     }
 }
 
-.edit_btns {
-    display: none;
-    margin-top: 5px;
-}
-
-.editing {
-    li {
-        margin-bottom: 15px;
-        padding: 10px 20px;
-        background: @neutral;
-        cursor: move;
-    }
-
-    .edit_btns {
-        display: block;
-    }
-}
-
 .unrecognized {
     color: @border;
     cursor: default;
@@ -474,46 +331,4 @@ a.tab_title {
     &:hover {
         text-decoration: none;
     }
-}
-
-pre {
-    font-size: 16px;
-    line-height: 20px;
-}
-
-.editing .routine_placeholder {
-    display: block;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-#loading_spinner {
-    display: none;
-    position: relative;
-    top: 50px;
-    left: 50px;
-    height: 70px;
-    width: 100px;
-    margin: 0 auto;
-}
-
-.form_container textarea {
-    width: 250px;
-    height: 100px;
-}
-
-.result_summary {
-    margin-bottom: 40px;
-    font-size: 22px;
-}
-
-.tab_container {
-    margin-top: 20px;
-}
-
-.end_of_results {
-    display: none;
-    margin-top: 50px;
-    text-align: center;
-    font-size: 22px;
 }

@@ -1,0 +1,74 @@
+@import "../util/_mixins";
+@import "../util/_colors";
+
+#login_form .button_container {
+    .no_margin;
+}
+
+.popup {
+    .hidden;
+}
+
+.popup_bg {
+    background: #3d464d;
+    opacity: 0.6;
+    .whole_page;
+}
+
+.wrapper {
+    display: table;
+    .whole_page;
+}
+
+.popup_cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.form_container {
+    position: relative;
+    display: block;
+    width: 400px;
+    padding: 20px 40px 40px 40px;
+    text-align: left;
+    background-color: @bg;
+    opacity: 1;
+    border: none;
+    z-index: 9999;
+    .hor_center;
+    overflow: hidden;
+}
+
+.form_container {
+    .field {
+        margin: 10px 0;
+    }
+}
+
+.error_msg {
+    width: 300px;
+    margin: 10px 0;
+    color: @error;
+    .hidden;
+}
+
+.close_btn {
+    position: absolute;
+    display: inline-block;
+    .square(20px);
+    color: @nav_bg;
+    font-family: "Proxima Nova Light";
+    font-size: 30px;
+    cursor: pointer;
+    top: 0;
+    right: 2px;
+    padding: 8px;
+
+    &::before {
+        content: "\D7";
+    }
+}
+
+.button_container {
+    margin-top: 20px;
+}

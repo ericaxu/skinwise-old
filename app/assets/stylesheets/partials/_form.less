@@ -1,0 +1,58 @@
+@import "../util/_mixins";
+@import "../util/_colors";
+
+input[type="button"].primary {
+    height: 50px;
+    line-height: 1.5em;
+    padding: 0 20px;
+    margin-right: 10px;
+    border: none;
+
+    background: @nav_bg;
+    color: @light_text;
+
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+    outline: 0;
+
+    &:hover {
+        color: darken(@light_text, 15);
+    }
+}
+
+.field {
+    margin: 10px 0;
+}
+
+.field.right {
+    .no_margin;
+    text-align: right;
+}
+
+
+// For aligning the labels
+.labels {
+    float: left;
+    margin-right: 10px;
+    line-height: 35px;
+
+    label {
+        position: relative;
+        bottom: 1px;
+        display: block;
+        text-align: right;
+    }
+}
+
+.inputs {
+    line-height: 35px;
+}
+
+.form_container textarea {
+    width: 250px;
+    height: 100px;
+}

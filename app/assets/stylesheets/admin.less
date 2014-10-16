@@ -1,0 +1,50 @@
+@import "util/_mixins";
+@import "util/_colors";
+
+
+.tab_container {
+    margin-top: 20px;
+}
+
+.edit_container {
+    display: none;
+}
+
+.tab_headers {
+    padding-bottom: 8px;
+    border-bottom: 1px solid @nav_bg;
+}
+
+a.tab_title {
+    padding: 10px 20px;
+    font-size: 20px;
+    border: 1px solid @nav_bg;
+    border-left: 1px solid @light_text;
+    border-bottom: none;
+    background: @nav_bg;
+    font-family: "Proxima Nova Light";
+    color: @light_text;
+    .no_margin;
+
+    &:hover {
+        color: darken(@light_text, 15);
+        text-decoration: none;
+    }
+
+    &:first-of-type {
+        border-left: none;
+    }
+
+    &.current + & {
+        border-left: 1px solid @nav_bg;
+    }
+
+    &.current {
+        background: @bg;
+        color: @dark_text;
+
+        border: 1px solid @nav_bg;
+        border-bottom: none;
+        font-weight: bold;
+    }
+}

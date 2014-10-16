@@ -1,0 +1,43 @@
+@import "util/_mixins";
+@import "util/_colors";
+
+
+.routines {
+    li {
+        margin-bottom: 8px;
+    }
+}
+
+.user_routine {
+    .column {
+        max-width: 500px;
+    }
+
+    .product_type {
+        font-weight: bold;
+    }
+}
+
+.edit_btns {
+    display: none;
+    margin-top: 5px;
+}
+
+.editing {
+    li {
+        margin-bottom: 15px;
+        padding: 10px 20px;
+        background: @neutral;
+        cursor: move;
+    }
+
+    .edit_btns {
+        display: block;
+    }
+}
+
+.editing .routine_placeholder {
+    display: block;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.3);
+}
