@@ -39,7 +39,6 @@ public class Page {
 	}
 
 	public <I, T> List<T> apply(Model.Finder<I, T> find, String query) {
-		Logger.debug(TAG, query);
 
 		try {
 			count = sqlCount(query);

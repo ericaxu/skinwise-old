@@ -85,7 +85,12 @@ public abstract class Permissible extends BaseModel {
 		public static final String ALL = "INGREDIENT.*";
 		public static final String VIEW = "INGREDIENT.VIEW";
 		public static final String EDIT = "INGREDIENT.EDIT";
-		public static final String APPROVE = "INGREDIENT.APPROVE";
+	}
+
+	public static class PRODUCT {
+		public static final String ALL = "PRODUCT.*";
+		public static final String VIEW = "PRODUCT.VIEW";
+		public static final String EDIT = "PRODUCT.EDIT";
 	}
 
 	public static class REPORT {

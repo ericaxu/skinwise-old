@@ -78,7 +78,7 @@ public class AdminIngredientController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.INGREDIENT.APPROVE);
+			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
