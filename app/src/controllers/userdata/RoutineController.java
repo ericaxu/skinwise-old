@@ -4,6 +4,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
+import src.controllers.api.request.NotEmpty;
 import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
@@ -19,6 +20,9 @@ import java.util.List;
 
 public class RoutineController extends Controller {
 	public static class RoutineUpdate extends Request {
+		@NotEmpty
+		public String name;
+		public boolean is_public;
 		public long id;
 		public long[] product_ids;
 	}
@@ -57,6 +61,8 @@ public class RoutineController extends Controller {
 				item.delete();
 			}
 
+			result.setName(request.name);
+			result.setIs_public(request.is_public);
 			result.setItems(items);
 
 			result.save();
