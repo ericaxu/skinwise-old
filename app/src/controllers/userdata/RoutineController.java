@@ -19,12 +19,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoutineController extends Controller {
-	public static class RoutineUpdate extends Request {
+	public static class RequestRoutineUpdate extends Request {
 		@NotEmpty
 		public String name;
 		public boolean is_public;
 		public long id;
 		public long[] product_ids;
+	}
+
+	public static class ResponseProductObject {
+		public String brand;
+		public String name;
+	}
+
+	public static class ResponseRoutineObject {
+		@NotEmpty
+		public String name;
+		public boolean is_public;
+		public long id;
+		public List<ResponseProductObject> products = new ArrayList<>();
+	}
+
+	public static class ResponseRoutineList extends Response {
+		public List<ResponseRoutineObject> result = new ArrayList<>();
+	}
+
+	public static Result api_routine_byuser() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (state.getUser() == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Not logged in");
+			}
+
+			List<Routine> result = Routine.byUser(state.getUser());
+
+			ResponseRoutineList response = new ResponseRoutineList();
+
+			for (Routine routine : result) {
+				ResponseRoutineObject routineObject = new ResponseRoutineObject();
+				routineObject.id = routine.getId();
+				routineObject.is_public = routine.isIs_public();
+				routineObject.name = routine.getName();
+				for (RoutineItem item : routine.getItems()) {
+					ResponseProductObject productObject = new ResponseProductObject();
+					productObject.brand = item.getProduct().getBrandName();
+					productObject.name = item.getProduct().getName();
+					routineObject.products.add(productObject);
+				}
+				response.result.add(routineObject);
+			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
 	}
 
 	public static Result api_routine_update() {
@@ -35,7 +85,7 @@ public class RoutineController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Not logged in");
 			}
 
-			RoutineUpdate request = Api.read(ctx(), RoutineUpdate.class);
+			RequestRoutineUpdate request = Api.read(ctx(), RequestRoutineUpdate.class);
 
 			Routine result = Routine.byId(request.id);
 			if (request.id == BaseModel.NEW_ID) {
