@@ -8,6 +8,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.Page;
 import src.models.Permissible;
 import src.models.feedback.Report;
 
@@ -26,17 +27,20 @@ public class AdminReportController extends Controller {
 		public String title;
 		public String content;
 		public String reported_by;
+		public boolean resolved;
 		public long timestamp;
 
-		public ResponseReportObject(long id, String path, String type,
-		                            String title, String content,
-		                            String reported_by, long timestamp) {
+		public ResponseReportObject(long id, String path,
+		                            String type, String title,
+		                            String content, String reported_by,
+		                            boolean resolved, long timestamp) {
 			this.id = id;
 			this.path = path;
 			this.type = type;
 			this.title = title;
 			this.content = content;
 			this.reported_by = reported_by;
+			this.resolved = resolved;
 			this.timestamp = timestamp;
 		}
 	}
@@ -49,7 +53,7 @@ public class AdminReportController extends Controller {
 
 			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
 
-			List<Report> reports = Report.all(request.page, 20);
+			List<Report> reports = Report.all(new Page(request.page));
 
 			ResponseReportList response = new ResponseReportList();
 			for (Report report : reports) {
@@ -130,6 +134,7 @@ public class AdminReportController extends Controller {
 				object.getTitle(),
 				object.getContent(),
 				object.getUserName(),
+				object.isResolved(),
 				object.getTimestamp()
 		);
 	}

@@ -34,6 +34,7 @@ public class ReportController extends Controller {
 			report.setContent(request.content);
 			report.setUser(state.getUser());
 			report.setTimestamp(System.currentTimeMillis());
+			report.setResolved(false);
 
 			report.save();
 

@@ -1,6 +1,7 @@
 package src.models.feedback;
 
 import src.models.BaseModel;
+import src.models.Page;
 import src.models.user.User;
 
 import javax.persistence.Column;
@@ -27,6 +28,9 @@ public class Report extends BaseModel {
 	private long user_id;
 
 	@Column
+	private boolean resolved;
+
+	@Column
 	private long timestamp;
 
 	//Getters
@@ -49,6 +53,10 @@ public class Report extends BaseModel {
 
 	public long getUser_id() {
 		return user_id;
+	}
+
+	public boolean isResolved() {
+		return resolved;
 	}
 
 	public long getTimestamp() {
@@ -75,6 +83,10 @@ public class Report extends BaseModel {
 
 	public void setUser_id(long user_id) {
 		this.user_id = user_id;
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
 	}
 
 	public void setTimestamp(long timestamp) {
@@ -107,9 +119,7 @@ public class Report extends BaseModel {
 		return find.byId(id);
 	}
 
-	public static List<Report> all(int page, int size) {
-		return find.findPagingList(size)
-				.getPage(page)
-				.getList();
+	public static List<Report> all(Page page) {
+		return page.apply(find.where().eq("resolved", false).query());
 	}
 }

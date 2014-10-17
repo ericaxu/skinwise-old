@@ -21,6 +21,10 @@ public class Page {
 	public int size;
 	public int count;
 
+	public Page(int page) {
+		this(page, 20);
+	}
+
 	public Page(int page, int size) {
 		this.page = page;
 		this.size = size;
