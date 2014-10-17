@@ -12,6 +12,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.Page;
+import src.models.data.Brand;
 import src.models.data.Ingredient;
 import src.models.data.Product;
 import src.models.data.ProductIngredient;
@@ -163,6 +164,20 @@ public class ProductController extends Controller {
 	public static Result api_product_filter() {
 		try {
 			RequestProductFilter request = Api.read(ctx(), RequestProductFilter.class);
+
+			for (long brand_id : request.brands) {
+				Brand brand = Brand.byId(brand_id);
+				if (brand == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Brand not found");
+				}
+			}
+
+			for (long ingredient_id : request.ingredients) {
+				Ingredient ingredient = Ingredient.byId(ingredient_id);
+				if (ingredient == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
+				}
+			}
 
 			Page page = new Page(request.page, 20);
 			List<Product> result = Product.byFilter(request.brands, request.ingredients, page);

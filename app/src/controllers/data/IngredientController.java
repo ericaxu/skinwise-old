@@ -128,6 +128,13 @@ public class IngredientController extends Controller {
 		try {
 			RequestIngredientFilter request = Api.read(ctx(), RequestIngredientFilter.class);
 
+			for (long function_id : request.functions) {
+				Function function = Function.byId(function_id);
+				if (function == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Function not found");
+				}
+			}
+
 			Page page = new Page(request.page, 20);
 			List<Ingredient> result = Ingredient.byFilter(request.functions, page);
 
