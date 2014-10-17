@@ -9,6 +9,8 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable._
 import scala.math._
 
+import collection.mutable
+
 /**
  * More ideas :
  * - Weight during DP by character distance on keyboard to guess typos.
@@ -18,23 +20,32 @@ import scala.math._
  */
 
 class IngredientSearch extends Controller {
-  val wordToName = new HashMap[String, Set[String]]()
+  val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
+  val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
 
   def this(names: java.util.List[String]) = {
     this()
 
     names foreach { name =>
-      val words = name.split("( |/)").toList
+      // Not case-sensitive.
+      val words = name.toUpperCase.split("( |/)").toList
+
+      val wordPositionMap = new mutable.HashMap[String, Int]
+      words.zipWithIndex foreach { case (word, index) =>
+          wordPositionMap.put(word, index)
+      }
+      nameToWords.put(name, wordPositionMap)
+
       words foreach { word =>
-        if (!wordToName.contains(word)) {
-          wordToName.put(word, new HashSet[String])
+        if (!wordToNames.contains(word)) {
+          wordToNames.put(word, new mutable.HashSet[String])
         }
-        wordToName(word).add(name)
+        wordToNames(word).add(name)
       }
     }
 
-    trie = new Trie(wordToName.keys)
+    trie = new Trie(wordToNames.keys)
   }
 
   // Levenshtein gives the edit distance between two strings, but the longer the string, the
@@ -44,15 +55,52 @@ class IngredientSearch extends Controller {
     case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
   }
 
+  def getScoredNames(fullWords: List[String], partialWord: String) : mutable.Map[String, Double] = {
+    val nameToScore = mutable.HashMap[String, Double]().withDefaultValue(0)
+
+    val completedWords = trie.getAllWithPrefix(partialWord)
+    completedWords foreach { completedWord =>
+      val score = if (completedWord == partialWord) 1.0 else 0.5
+      wordToNames.getOrElse(completedWord, mutable.Set.empty[String]) foreach { name =>
+        nameToScore.put(name, max(nameToScore(name), score))
+      }
+    }
+
+    fullWords foreach { word =>
+      wordToNames.getOrElse(word, mutable.Set.empty[String]) foreach { name =>
+        nameToScore(name) += 1
+      }
+    }
+
+    nameToScore
+  }
+
+  def partialSearch(query: String): List[String] = {
+    // Not case-sensitive.
+    val queryWords = query.toUpperCase.split(" ").toList
+    val fullWords = queryWords.dropRight(1)
+    val partialWord = queryWords.last
+
+    val nameToScore = getScoredNames(fullWords, partialWord)
+    val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by(_._2))
+
+    nameToScore foreach { case (name, score) =>
+      results += ((name, score))
+    }
+
+    val maxResults = 3
+    results.take(maxResults).toList.map(_._1)
+  }
+
   def fullSearch(query: String): List[String] = {
     val queryWords = query.split(" ").toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
       .map(normalizeDistance(queryWord.length)))
       .flatten
-    val scores = new HashMap[String, Double]()
+    val scores = mutable.HashMap[String, Double]()
 
     matches foreach { case (result, score) =>
-      wordToName(result) foreach { name =>
+      wordToNames(result) foreach { name =>
         if (!scores.contains(name)) {
           scores.put(name, 0.0)
         }
@@ -87,7 +135,9 @@ object IngredientSearch extends Controller {
   }
 
   def partialSearch(query: String) = TimerAction {
-    Ok("Not implemented yet.")
+    val sorted_names = getInstance().partialSearch(query)
+
+    Ok(sorted_names mkString "\n")
   }
 
   def fullSearch(query: String) = TimerAction {
@@ -100,7 +150,7 @@ object IngredientSearch extends Controller {
 object Levenshtein {
 
   def getMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
-    val results = new PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
+    val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
     val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
     getMatches(query.toUpperCase, dict, maxResults, results, Nil, initialRow)
@@ -116,7 +166,7 @@ object Levenshtein {
   def getMatches(query: String,
                  dict: Trie,
                  maxResults: Int,
-                 results: PriorityQueue[(String, Double)],
+                 results: mutable.PriorityQueue[(String, Double)],
                  currentChars: List[Char],
                  dynamicTable: List[Array[Double]]): Unit = dynamicTable match {
     case previousRow :: remainingRows => {
@@ -147,7 +197,7 @@ object Levenshtein {
       else {
         val char = query(currentChars.length)
         dict.nodes.get(char) match {
-          case Some(node) => (char, node) :: dict.nodes.toList.filter(_ != char)
+          case Some(node) => (char, node) :: dict.nodes.toList.filter{ case (c, _) => c != char }
           case None => dict.nodes.toList
         }
       }
@@ -188,9 +238,10 @@ object Levenshtein {
   def min3(f1: Double, f2: Double, f3: Double) = min(min(f1, f2), f3)
 }
 
+// Note that the trie is not case-sensitive.
 class Trie {
   var terminal = false
-  val nodes = new HashMap[Char, Trie]()
+  val nodes = new mutable.HashMap[Char, Trie]()
 
   def this(words: collection.Iterable[String]) = {
     this()
@@ -214,5 +265,34 @@ class Trie {
       }
       case Nil => terminal = true
     }
+  }
+
+  def getPrefixNode(prefix: List[Char]): Option[Trie] = prefix match {
+    case char :: rest =>  nodes.get(char).flatMap(trie => trie.getPrefixNode(rest))
+    case Nil => Some(this)
+  }
+
+  def getPrefixNode(prefix: String): Option[Trie] = {
+    getPrefixNode(prefix.toList)
+  }
+
+  // prefix is the current chars obtained from traversing the trie
+  // and is in reverse order of the corresponding string
+  def listAll(prefix: List[Char], buffer: mutable.Buffer[String]): Unit = {
+    if (terminal) {
+      buffer += prefix.reverse.mkString
+    }
+    nodes foreach { case (char, trie) =>
+      trie.listAll(char :: prefix, buffer)
+    }
+  }
+
+  def getAllWithPrefix(prefix: String): List[String] = {
+    val buffer = ArrayBuffer[String]()
+    val upper = prefix.toUpperCase
+    getPrefixNode(upper).foreach { node =>
+      node.listAll(upper.toList.reverse, buffer)
+    }
+    buffer.toList
   }
 }
