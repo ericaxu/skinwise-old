@@ -114,14 +114,16 @@ $(document).on('ready', function() {
     $(window).on('scroll', function() {
         // Check if we are at bottom of page
         if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height() &&
-            SW.ING_FETCH.LOADED_COUNT <= SW.ING_FETCH.RESULT_COUNT) {
+            SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {
             fetchNextPage();
         }
 
-        if ($(window).scrollTop() >= original_offset - $('nav').height()) {
-            $('.filter_area').addClass('sticky');
-        } else {
-            $('.filter_area').removeClass('sticky');
+        if ($('.ingredients_list').height() + $('#logo').height() + $('nav').height() > $(window).height()) {
+            if ($(window).scrollTop() >= original_offset - $('nav').height()) {
+                $('.filter_area').addClass('sticky');
+            } else {
+                $('.filter_area').removeClass('sticky');
+            }
         }
     });
 });
