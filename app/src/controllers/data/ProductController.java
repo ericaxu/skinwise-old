@@ -12,10 +12,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.Page;
-import src.models.data.Brand;
-import src.models.data.Ingredient;
-import src.models.data.Product;
-import src.models.data.ProductIngredient;
+import src.models.data.*;
 import views.html.product;
 
 import java.util.ArrayList;
@@ -88,6 +85,38 @@ public class ProductController extends Controller {
 		public int count;
 	}
 
+	public static class ResponseBrandObject {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseBrandObject(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
+	public static class ResponseBrands extends Response {
+		public List<ResponseBrandObject> results = new ArrayList<>();
+	}
+
+	public static class ResponseTypeObject {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseTypeObject(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
+	public static class ResponseTypes extends Response {
+		public List<ResponseTypeObject> results = new ArrayList<>();
+	}
+
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
@@ -97,45 +126,6 @@ public class ProductController extends Controller {
 		}
 
 		return ok(product.render(state, result));
-	}
-
-	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_ingredient_info() {
-		try {
-			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
-
-			Product result = Product.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
-			}
-
-			Set<Ingredient> ingredients = new HashSet<>();
-
-			List<ProductIngredient> links = result.getIngredientLinks();
-
-			for (ProductIngredient link : links) {
-				if (link.getIngredient_name().getIngredient() != null) {
-					ingredients.add(link.getIngredient_name().getIngredient());
-				}
-			}
-
-			List<ResponseIngredientObject> results = new ArrayList<>();
-			for (Ingredient ingredient : ingredients) {
-				results.add(new ResponseIngredientObject(
-						ingredient.getId(),
-						WordUtils.capitalizeFully(ingredient.getName()),
-						ingredient.getDescription(),
-						ingredient.getFunctionsString()
-				));
-			}
-
-			Response response = new ResponseProductIngredientInfo(results);
-
-			return Api.write(response);
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -197,6 +187,79 @@ public class ProductController extends Controller {
 						""
 				));
 			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_brands() {
+		List<Brand> result = Brand.all();
+
+		ResponseBrands response = new ResponseBrands();
+
+		for (Brand brand : result) {
+			response.results.add(new ResponseBrandObject(
+					brand.getId(),
+					brand.getName(),
+					brand.getDescription()
+			));
+		}
+
+		return Api.write(response);
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_types() {
+		List<ProductType> result = ProductType.all();
+
+		ResponseTypes response = new ResponseTypes();
+
+		for (ProductType type : result) {
+			response.results.add(new ResponseTypeObject(
+					type.getId(),
+					type.getName(),
+					type.getDescription()
+			));
+		}
+
+		return Api.write(response);
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_ingredient_info() {
+		try {
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			Product result = Product.byId(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
+			}
+
+			Set<Ingredient> ingredients = new HashSet<>();
+
+			List<ProductIngredient> links = result.getIngredientLinks();
+
+			for (ProductIngredient link : links) {
+				if (link.getIngredient_name().getIngredient() != null) {
+					ingredients.add(link.getIngredient_name().getIngredient());
+				}
+			}
+
+			List<ResponseIngredientObject> results = new ArrayList<>();
+			for (Ingredient ingredient : ingredients) {
+				results.add(new ResponseIngredientObject(
+						ingredient.getId(),
+						WordUtils.capitalizeFully(ingredient.getName()),
+						ingredient.getDescription(),
+						ingredient.getFunctionsString()
+				));
+			}
+
+			Response response = new ResponseProductIngredientInfo(results);
 
 			return Api.write(response);
 		}

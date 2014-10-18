@@ -13,10 +13,7 @@ import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.BaseModel;
 import src.models.Permissible;
-import src.models.data.Brand;
-import src.models.data.IngredientName;
-import src.models.data.Product;
-import src.models.data.ProductIngredient;
+import src.models.data.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,23 +102,56 @@ public class AdminProductController extends Controller {
 		}
 	}
 
-	public static Result api_product_delete() {
+	public static Result api_brand_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.PRODUCT.EDIT);
+			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
-			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			Product result = Product.byId(request.id);
+			Brand result = Brand.byId(request.id);
+			if (request.id == BaseModel.NEW_ID) {
+				result = new Brand();
+			}
 			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+				throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
 			}
 
-			//TODO Mark deleted
-			result.delete();
+			result.setName(request.name);
+			result.setDescription(request.description);
 
-			return Api.write(new InfoResponse("Successfully deleted product " + request.id));
+			result.save();
+
+			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_type_update() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.INGREDIENT.EDIT);
+
+			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
+
+			ProductType result = ProductType.byId(request.id);
+			if (request.id == BaseModel.NEW_ID) {
+				result = new ProductType();
+			}
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
+			}
+
+			result.setName(request.name);
+			result.setDescription(request.description);
+
+			result.save();
+
+			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

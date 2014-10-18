@@ -98,7 +98,7 @@ public class IngredientController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_ingredient() {
+	public static Result api_ingredient_byid() {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 

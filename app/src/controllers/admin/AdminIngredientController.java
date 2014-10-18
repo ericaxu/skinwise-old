@@ -15,6 +15,7 @@ import src.models.BaseModel;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
+import src.models.data.IngredientName;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Set;
 public class AdminIngredientController extends Controller {
 	private static final String TAG = "AdminIngredientController";
 
-	public static class RequestIngredientAddEdit extends Request {
+	public static class RequestIngredientUpdate extends Request {
 		public long id;
 		@NotEmpty
 		public String name;
@@ -35,13 +36,20 @@ public class AdminIngredientController extends Controller {
 		public List<String> functions;
 	}
 
+	public static class RequestIngredientNameUpdate extends Request {
+		public long id;
+		public long ingredient_id;
+		@NotEmpty
+		public String name;
+	}
+
 	public static Result api_ingredient_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
 			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
-			RequestIngredientAddEdit request = Api.read(ctx(), RequestIngredientAddEdit.class);
+			RequestIngredientUpdate request = Api.read(ctx(), RequestIngredientUpdate.class);
 
 			Ingredient result = Ingredient.byId(request.id);
 			if (request.id == BaseModel.NEW_ID) {
@@ -74,23 +82,61 @@ public class AdminIngredientController extends Controller {
 		}
 	}
 
-	public static Result api_ingredient_delete() {
+	public static Result api_ingredient_name_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
 			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
-			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
 
-			Ingredient result = Ingredient.byId(request.id);
+			IngredientName result = IngredientName.byId(request.id);
+			if (request.id == BaseModel.NEW_ID) {
+				result = new IngredientName();
+			}
 			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+				throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
 			}
 
-			//TODO Mark deleted
-			result.delete();
+			Ingredient ingredient = Ingredient.byId(request.ingredient_id);
+			if (ingredient == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
+			}
 
-			return Api.write(new InfoResponse("Successfully deleted ingredient " + request.id));
+			result.setName(request.name);
+			result.setIngredient(ingredient);
+
+			result.save();
+
+			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_function_update() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.INGREDIENT.EDIT);
+
+			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
+
+			Function result = Function.byId(request.id);
+			if (request.id == BaseModel.NEW_ID) {
+				result = new Function();
+			}
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
+			}
+
+			result.setName(request.name);
+			result.setDescription(request.description);
+
+			result.save();
+
+			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
