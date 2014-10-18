@@ -1,5 +1,7 @@
 package src.controllers.admin;
 
+import src.App;
+import src.models.MemCache;
 import src.models.data.*;
 import src.util.Json;
 import src.util.Logger;
@@ -17,40 +19,35 @@ public class Import {
 	public static synchronized void importDB(String path) throws IOException {
 		String json = Util.readAll(path);
 		DBFormat input = Json.deserialize(json, DBFormat.class);
-		DBFormat.DBCache cache = new DBFormat.DBCache();
+		MemCache cache = App.cache();
 
 		Logger.debug(TAG, "Importing functions");
-		for (DBFormat.FunctionObject object : input.ingredient_functions) {
+		for (DBFormat.NamedObject object : input.ingredient_functions) {
 			object.sanitize();
-			create(object);
+			createFunction(object, cache);
 		}
-		cache.cacheFunctions();
 
 		Logger.debug(TAG, "Importing brands");
-		cache.cacheBrands();
-		for (DBFormat.BrandObject object : input.brands) {
+		for (DBFormat.NamedObject object : input.brands) {
 			object.sanitize();
-			create(object, cache);
+			createBrand(object, cache);
 		}
-		cache.cacheBrands();
-
-		Logger.debug(TAG, "Importing ingredients");
-		cache.cacheIngredientNames();
-		for (DBFormat.IngredientObject object : input.ingredients) {
-			object.sanitize();
-			create(object, cache);
-		}
-		cache.cacheIngredientNames();
 
 		Logger.debug(TAG, "Importing product types");
-		cache.cacheProductTypes();
-		for (DBFormat.ProductTypeObject object : input.types) {
+		for (DBFormat.NamedObject object : input.types) {
 			object.sanitize();
-			create(object, cache);
+			createType(object, cache);
 		}
-		cache.cacheProductTypes();
+
+		Logger.debug(TAG, "Importing ingredients");
+		for (DBFormat.IngredientObject object : input.ingredients) {
+			object.sanitize();
+			createIngredient(object, cache);
+		}
 
 		Logger.debug(TAG, "Looking through products");
+		cache.matcher.cache(cache.ingredient_names.all());
+
 		Set<String> allIngredients = new HashSet<>();
 		Set<String> brands = new HashSet<>();
 		Set<String> types = new HashSet<>();
@@ -60,82 +57,57 @@ public class Import {
 			brands.add(object.brand);
 			types.add(object.type);
 
-			List<String> ingredients = cache.splitIngredients(object.ingredients);
-			List<String> key_ingredients = cache.splitIngredients(object.key_ingredients);
+			List<String> ingredients = cache.matcher.splitIngredients(object.ingredients);
 			allIngredients.addAll(ingredients);
-			allIngredients.addAll(key_ingredients);
+			ingredients = cache.matcher.splitIngredients(object.key_ingredients);
+			allIngredients.addAll(ingredients);
 		}
 
 		brands.remove("");
-		brands.remove(null);
 		types.remove("");
-		types.remove(null);
 		allIngredients.remove("");
-		allIngredients.remove(null);
 
-		//Create brands
+		Logger.debug(TAG, "Importing product brands and types");
+		//Create brands not entered in the system
 		for (String brand : brands) {
-			Brand object = Brand.byName(brand);
+			Brand object = cache.brands.get(brand);
 			if (object == null) {
 				object = new Brand();
 				object.setName(brand);
 				object.setDescription("");
 				object.save();
+				cache.brands.update(object);
 			}
 		}
-		cache.cacheBrands();
 
-		//Create types
+		//Create types not entered in the system
 		for (String type : types) {
-			ProductType object = ProductType.byName(type);
+			ProductType object = cache.types.get(type);
 			if (object == null) {
 				object = new ProductType();
 				object.setName(type);
 				object.setDescription("");
 				object.save();
+				cache.types.update(object);
 			}
 		}
-		cache.cacheProductTypes();
 
+		Logger.debug(TAG, "Importing product ingredients");
 		for (String ingredient : allIngredients) {
-			cache.matchIngredientName(ingredient);
+			cache.matcher.matchIngredientName(ingredient);
 		}
 		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
 
 		Logger.debug(TAG, "Importing products");
 		for (DBFormat.ProductObject object : input.products) {
-			create(object, cache);
-		}
-	}
-
-	private static void create(DBFormat.BrandObject object, DBFormat.DBCache cache) {
-		Brand result = cache.getBrand(object.name);
-
-		if (result == null) {
-			result = new Brand();
+			createProduct(object, cache);
 		}
 
-		result.setName(object.name);
-		result.setDescription(object.description);
-
-		result.save();
+		cache.matcher.clear();
 	}
 
-	private static void create(DBFormat.ProductTypeObject object, DBFormat.DBCache cache) {
-		ProductType result = cache.getType(object.name);
-
-		if (result == null) {
-			result = new ProductType();
-		}
-
-		result.setName(object.name);
-		result.setDescription(object.description);
-
-		result.save();
-	}
-
-	private static void create(DBFormat.FunctionObject object) {
-		Function result = Function.byName(object.name);
+	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {
+		Function result = cache.functions.get(object.name);
 
 		if (result == null) {
 			result = new Function();
@@ -145,25 +117,57 @@ public class Import {
 		result.setDescription(object.description);
 
 		result.save();
+
+		cache.functions.update(result);
 	}
 
-	private static void create(DBFormat.IngredientObject object, DBFormat.DBCache cache) {
+	private static void createBrand(DBFormat.NamedObject object, MemCache cache) {
+		Brand result = cache.brands.get(object.name);
+
+		if (result == null) {
+			result = new Brand();
+		}
+
+		result.setName(object.name);
+		result.setDescription(object.description);
+
+		result.save();
+
+		cache.brands.update(result);
+	}
+
+	private static void createType(DBFormat.NamedObject object, MemCache cache) {
+		ProductType result = cache.types.get(object.name);
+
+		if (result == null) {
+			result = new ProductType();
+		}
+
+		result.setName(object.name);
+		result.setDescription(object.description);
+
+		result.save();
+
+		cache.types.update(result);
+	}
+
+	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
 		Set<Function> functionList = new HashSet<>();
-		for (String function : object.functions) {
-			function = function.trim();
-			if (function.isEmpty()) {
+		for (String f : object.functions) {
+			f = f.trim();
+			if (f.isEmpty()) {
 				continue;
 			}
-			Function function1 = cache.getFunction(function);
-			if (function1 == null) {
-				Logger.debug(TAG, "Function not found! " + function);
+			Function function = cache.functions.get(f);
+			if (function == null) {
+				Logger.debug(TAG, "Function not found! " + f);
 			}
 			else {
-				functionList.add(function1);
+				functionList.add(function);
 			}
 		}
 
-		Ingredient result = cache.getIngredient(object.name);
+		Ingredient result = cache.ingredients.get(object.name);
 
 		if (result == null) {
 			result = new Ingredient();
@@ -176,19 +180,38 @@ public class Import {
 
 		result.save();
 
-		create(result, object.name, cache);
+		cache.ingredients.update(result);
+
+		createIngredientName(object.name, result, cache);
 
 		for (String name : object.names) {
-			create(result, name, cache);
+			createIngredientName(name, result, cache);
 		}
 	}
 
-	private static void create(DBFormat.ProductObject object, DBFormat.DBCache cache) {
-		List<IngredientName> ingredients = cache.matchAllIngredientNames(object.ingredients);
-		List<IngredientName> key_ingredients = cache.matchAllIngredientNames(object.key_ingredients);
+	private static void createIngredientName(String name, Ingredient ingredient, MemCache cache) {
+		IngredientName result = cache.ingredient_names.get(name);
+		if (result == null) {
+			result = new IngredientName();
+		}
+		result.setName(name);
+		Ingredient old = result.getIngredient();
+		if (old != null && !old.equals(ingredient)) {
+			Logger.error(TAG, "Ingredient name attached to multiple ingredients! " +
+					ingredient.getName() + " | " + old.getName());
+		}
+		result.setIngredient(ingredient);
+		result.save();
 
-		Brand brand = cache.getBrand(object.brand);
-		ProductType type = cache.getType(object.type);
+		cache.ingredient_names.update(result);
+	}
+
+	private static void createProduct(DBFormat.ProductObject object, MemCache cache) {
+		List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(object.ingredients);
+		List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(object.key_ingredients);
+
+		Brand brand = cache.brands.get(object.brand);
+		ProductType type = cache.types.get(object.type);
 
 		Product result = Product.byBrandAndName(brand, object.name);
 		if (result == null) {
@@ -228,20 +251,7 @@ public class Import {
 		result.setIngredientLinks(ingredient_links);
 
 		result.save();
-	}
 
-	private static void create(Ingredient ingredient, String name, DBFormat.DBCache cache) {
-		IngredientName ingredientName = cache.getIngredientName(name);
-		if (ingredientName == null) {
-			ingredientName = new IngredientName();
-		}
-		ingredientName.setName(name);
-		Ingredient old = ingredientName.getIngredient();
-		if (old != null && !old.equals(ingredient)) {
-			Logger.error(TAG, "Ingredient name attached to multiple ingredients! " +
-					ingredient.getName() + " | " + old.getName());
-		}
-		ingredientName.setIngredient(ingredient);
-		ingredientName.save();
+		cache.products.update(result);
 	}
 }

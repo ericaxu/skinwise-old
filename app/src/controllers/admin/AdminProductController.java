@@ -2,6 +2,7 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotEmpty;
@@ -12,6 +13,7 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.BaseModel;
+import src.models.MemCache;
 import src.models.Permissible;
 import src.models.data.*;
 
@@ -44,7 +46,9 @@ public class AdminProductController extends Controller {
 
 			RequestProductUpdate request = Api.read(ctx(), RequestProductUpdate.class);
 
-			Product result = Product.byId(request.id);
+			MemCache cache = App.cache();
+
+			Product result = cache.products.get(request.id);
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Product();
 			}
@@ -62,9 +66,6 @@ public class AdminProductController extends Controller {
 			result.setName(request.name);
 			result.setDescription(request.description);
 
-			DBFormat.DBCache cache = new DBFormat.DBCache();
-			cache.cacheIngredientNames();
-
 			List<ProductIngredient> ingredient_links = new ArrayList<>();
 
 			if (request.id != BaseModel.NEW_ID) {
@@ -73,8 +74,10 @@ public class AdminProductController extends Controller {
 				}
 			}
 
+			cache.matcher.cache(cache.ingredient_names.all());
+
 			for (String ingredient : request.ingredients) {
-				IngredientName name = cache.matchIngredientName(ingredient);
+				IngredientName name = cache.matcher.matchIngredientName(ingredient);
 				ProductIngredient item = new ProductIngredient();
 				item.setProduct(result);
 				item.setIngredient_name(name);
@@ -83,13 +86,15 @@ public class AdminProductController extends Controller {
 			}
 
 			for (String ingredient : request.key_ingredients) {
-				IngredientName name = cache.matchIngredientName(ingredient);
+				IngredientName name = cache.matcher.matchIngredientName(ingredient);
 				ProductIngredient item = new ProductIngredient();
 				item.setProduct(result);
 				item.setIngredient_name(name);
 				item.setIs_key(true);
 				ingredient_links.add(item);
 			}
+
+			cache.matcher.clear();
 
 			result.setIngredientLinks(ingredient_links);
 
@@ -110,18 +115,22 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			Brand result = Brand.byId(request.id);
+			MemCache cache = App.cache();
+
+			Brand result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Brand();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
+			else {
+				result = cache.brands.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
+				}
 			}
 
-			result.setName(request.name);
 			result.setDescription(request.description);
 
-			result.save();
+			cache.brands.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
 		}
@@ -138,18 +147,22 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			ProductType result = ProductType.byId(request.id);
+			MemCache cache = App.cache();
+
+			ProductType result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new ProductType();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
+			else {
+				result = cache.types.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
+				}
 			}
 
-			result.setName(request.name);
 			result.setDescription(request.description);
 
-			result.save();
+			cache.types.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}

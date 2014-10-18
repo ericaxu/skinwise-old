@@ -3,6 +3,7 @@ package src.controllers.data;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
@@ -16,6 +17,7 @@ import src.models.data.Ingredient;
 import views.html.ingredient;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class IngredientController extends Controller {
@@ -89,7 +91,7 @@ public class IngredientController extends Controller {
 	public static Result ingredient(long id) {
 		ResponseState state = new ResponseState(session());
 
-		Ingredient result = Ingredient.byId(id);
+		Ingredient result = App.cache().ingredients.get(id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -102,7 +104,7 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Ingredient result = Ingredient.byId(request.id);
+			Ingredient result = App.cache().ingredients.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}
@@ -129,7 +131,7 @@ public class IngredientController extends Controller {
 			RequestIngredientFilter request = Api.read(ctx(), RequestIngredientFilter.class);
 
 			for (long function_id : request.functions) {
-				Function function = Function.byId(function_id);
+				Function function = App.cache().functions.get(function_id);
 				if (function == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Function not found");
 				}
@@ -161,7 +163,7 @@ public class IngredientController extends Controller {
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_functions() {
-		List<Function> result = Function.all();
+		Collection<Function> result = App.cache().functions.all();
 
 		ResponseFunctions response = new ResponseFunctions();
 

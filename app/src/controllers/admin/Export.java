@@ -1,50 +1,53 @@
 package src.controllers.admin;
 
 import org.apache.commons.lang3.StringUtils;
+import src.App;
+import src.models.MemCache;
 import src.models.data.*;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Export {
 	private static final String TAG = "Export";
 
 	public static synchronized void exportDB(String path) throws IOException {
 		DBFormat result = new DBFormat();
-		DBFormat.DBCache cache = new DBFormat.DBCache();
-		cache.cacheFunctions();
+		MemCache cache = App.cache();
 
 		Logger.debug(TAG, "Exporting functions");
-		for (Function object : cache.functions) {
+		cache.functions.cache();
+		for (Function object : cache.functions.all()) {
 			result.ingredient_functions.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting brands");
-		for (Brand object : Brand.all()) {
+		cache.brands.cache();
+		for (Brand object : cache.brands.all()) {
 			result.brands.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting ingredients");
-		cache.cacheIngredientNames();
-		cache.cacheIngredients();
-		for (Ingredient object : cache.ingredients) {
-			result.ingredients.add(export(object, cache));
+		cache.ingredients.cache();
+		cache.ingredient_names.cache();
+		IngredientRelations relations = new IngredientRelations();
+		relations.cacheIngredients(cache.ingredients.all(),
+				cache.ingredient_names.all(),
+				cache.functions.all());
+		for (Ingredient object : cache.ingredients.all()) {
+			result.ingredients.add(export(object, relations));
 		}
 
-		//Free memory
-		cache = null;
-
 		Logger.debug(TAG, "Exporting product types");
-		for (ProductType object : ProductType.all()) {
+		for (ProductType object : cache.types.all()) {
 			result.types.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting products");
-		for (Product object : Product.all()) {
+		for (Product object : cache.products.all()) {
 			result.products.add(export(object));
 		}
 
@@ -52,32 +55,32 @@ public class Export {
 		Util.writeAll(path, json);
 	}
 
-	public static DBFormat.FunctionObject export(Function object) {
-		DBFormat.FunctionObject result = new DBFormat.FunctionObject();
+	public static DBFormat.NamedObject export(Function object) {
+		DBFormat.NamedObject result = new DBFormat.NamedObject();
 		result.name = object.getName();
 		result.description = object.getDescription();
 		return result;
 	}
 
-	public static DBFormat.IngredientObject export(Ingredient object, DBFormat.DBCache cache) {
+	public static DBFormat.IngredientObject export(Ingredient object, IngredientRelations relations) {
 		DBFormat.IngredientObject result = new DBFormat.IngredientObject();
 		result.name = object.getName();
 		result.cas_no = object.getCas_number();
 		result.description = object.getDescription();
-		result.functions.addAll(cache.getIngredientFunctions(object));
-		result.names.addAll(cache.getIngredientNames(object));
+		result.functions.addAll(relations.getIngredientFunctions(object));
+		result.names.addAll(relations.getIngredientNames(object));
 		return result;
 	}
 
-	public static DBFormat.BrandObject export(Brand object) {
-		DBFormat.BrandObject result = new DBFormat.BrandObject();
+	public static DBFormat.NamedObject export(Brand object) {
+		DBFormat.NamedObject result = new DBFormat.NamedObject();
 		result.name = object.getName();
 		result.description = object.getDescription();
 		return result;
 	}
 
-	public static DBFormat.ProductTypeObject export(ProductType object) {
-		DBFormat.ProductTypeObject result = new DBFormat.ProductTypeObject();
+	public static DBFormat.NamedObject export(ProductType object) {
+		DBFormat.NamedObject result = new DBFormat.NamedObject();
 		result.name = object.getName();
 		result.description = object.getDescription();
 		return result;
@@ -100,5 +103,54 @@ public class Export {
 		result.key_ingredients = StringUtils.join(key_ingredients, ',');
 		result.ingredients = StringUtils.join(ingredients, ',');
 		return result;
+	}
+
+	public static class IngredientRelations {
+		public Map<Ingredient, List<IngredientName>> ingredient_to_names = new HashMap<>();
+		public Map<Ingredient, List<Function>> ingredient_to_function = new HashMap<>();
+
+		private void cacheIngredientName(IngredientName name) {
+			String key = name.getName().toLowerCase();
+			String[] words = key.split("[^a-zA-Z0-9]");
+			Set<String> set = new HashSet<>(Arrays.asList(words));
+			set.remove("");
+		}
+
+		public void cacheIngredients(Collection<Ingredient> ingredients,
+		                             Collection<IngredientName> names,
+		                             Collection<Function> functions) {
+			for (Ingredient i : ingredients) {
+				ingredient_to_function.put(i, new ArrayList<>());
+				ingredient_to_names.put(i, new ArrayList<>());
+			}
+
+			for (IngredientName name : names) {
+				if (name.getIngredient() != null) {
+					ingredient_to_names.get(name.getIngredient()).add(name);
+				}
+			}
+
+			for (Function func : functions) {
+				for (Ingredient i : func.getIngredients()) {
+					ingredient_to_function.get(i).add(func);
+				}
+			}
+		}
+
+		public List<String> getIngredientNames(Ingredient ingredient) {
+			List<String> result = new ArrayList<>();
+			for (IngredientName name : ingredient_to_names.get(ingredient)) {
+				result.add(name.getName());
+			}
+			return result;
+		}
+
+		public List<String> getIngredientFunctions(Ingredient ingredient) {
+			List<String> result = new ArrayList<>();
+			for (Function func : ingredient_to_function.get(ingredient)) {
+				result.add(func.getName());
+			}
+			return result;
+		}
 	}
 }

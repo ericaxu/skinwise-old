@@ -88,16 +88,10 @@ public class Ingredient extends NamedModel {
 		return find.byId(id);
 	}
 
-	public static Ingredient byINCIName(String name) {
+	public static Ingredient byName(String name) {
 		return find.where()
 				.eq("name", name)
 				.findUnique();
-	}
-
-	public static List<Ingredient> byName(String name) {
-		return find.where()
-				.like("name", name)
-				.findList();
 	}
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {

@@ -4,13 +4,14 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import src.controllers.ErrorController;
+import src.models.MemCache;
 import src.models.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
 import src.util.Logger;
 
 public class Global extends GlobalSettings {
-	private static final String TAG ="Global";
+	private static final String TAG = "Global";
 	public static final String ADMIN_USER_GROUP = "Administrators";
 
 	@Override
@@ -51,7 +52,7 @@ public class Global extends GlobalSettings {
 	public F.Promise<Result> onError(Http.RequestHeader requestHeader, Throwable e) {
 		Logger.error(TAG, e);
 
-		if(requestHeader.method().equalsIgnoreCase("POST") && requestHeader.path().startsWith("/api")) {
+		if (requestHeader.method().equalsIgnoreCase("POST") && requestHeader.path().startsWith("/api")) {
 			return F.Promise.pure(ErrorController.api_error(e));
 		}
 		return F.Promise.pure(ErrorController.error(e));

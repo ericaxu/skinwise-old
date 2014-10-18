@@ -2,6 +2,7 @@ package src.controllers.admin;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotEmpty;
@@ -12,6 +13,7 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.BaseModel;
+import src.models.MemCache;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
@@ -51,29 +53,33 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientUpdate request = Api.read(ctx(), RequestIngredientUpdate.class);
 
-			Ingredient result = Ingredient.byId(request.id);
+			MemCache cache = App.cache();
+
+			Ingredient result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Ingredient();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			else {
+				result = cache.ingredients.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.id + " not found");
+				}
 			}
 
 			Set<Function> functions = new HashSet<>();
-			for (String function : request.functions) {
-				Function function1 = Function.byName(function.toLowerCase());
-				if (function1 == null) {
-					throw new BadRequestException(Response.INVALID, "Function " + function + " not found");
+			for (String f : request.functions) {
+				Function function = cache.functions.get(f);
+				if (function == null) {
+					throw new BadRequestException(Response.INVALID, "Function " + f + " not found");
 				}
-				functions.add(function1);
+				functions.add(function);
 			}
 
-			result.setName(request.name);
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
 			result.setFunctions(functions);
 
-			result.save();
+			cache.ingredients.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
 		}
@@ -90,23 +96,27 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
 
-			IngredientName result = IngredientName.byId(request.id);
+			MemCache cache = App.cache();
+
+			IngredientName result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new IngredientName();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
+			else {
+				result = cache.ingredient_names.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
+				}
 			}
 
-			Ingredient ingredient = Ingredient.byId(request.ingredient_id);
+			Ingredient ingredient = cache.ingredients.get(request.ingredient_id);
 			if (ingredient == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
 			}
 
-			result.setName(request.name);
 			result.setIngredient(ingredient);
 
-			result.save();
+			cache.ingredient_names.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}
@@ -123,18 +133,22 @@ public class AdminIngredientController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			Function result = Function.byId(request.id);
+			MemCache cache = App.cache();
+
+			Function result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Function();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
+			else {
+				result = cache.functions.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
+				}
 			}
 
-			result.setName(request.name);
 			result.setDescription(request.description);
 
-			result.save();
+			cache.functions.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}
