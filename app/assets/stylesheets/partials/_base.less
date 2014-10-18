@@ -13,10 +13,15 @@
     src: url("../fonts/Proxima Nova Thin.otf") format("opentype");
 }
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
     font-family: "Source Sans Pro", sans-serif;
     background: @bg;
-    margin: 50px 0 25px 0;
+    margin: 50px 0 100px 0;
     font-size: 17px;
     overflow-y: scroll;
 }
@@ -135,6 +140,21 @@ a {
 }
 
 footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    text-align: center;
+
+    ul {
+        padding-top: 50px;
+    }
+
+    li {
+        display: inline-block;
+        margin-right: 20px;
+    }
     clear: both;
 }
 
