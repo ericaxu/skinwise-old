@@ -1,6 +1,5 @@
 package src.models.data;
 
-import src.models.BaseModel;
 import src.models.Page;
 import src.util.Util;
 
@@ -11,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
-public class Product extends BaseModel {
+public class Product extends NamedModel {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
@@ -22,12 +21,6 @@ public class Product extends BaseModel {
 
 	@Column(length = 1024)
 	private String line;
-
-	@Column(length = 1024)
-	private String name;
-
-	@Column(length = 4096)
-	private String description;
 
 	//Relation table
 
@@ -48,18 +41,6 @@ public class Product extends BaseModel {
 		return line;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public boolean hasDescription() {
-		return description.length() > 0;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
 	public List<ProductIngredient> getIngredientLinks() {
 		return ingredient_links;
 	}
@@ -78,14 +59,6 @@ public class Product extends BaseModel {
 		this.line = line;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
 		this.ingredient_links = ingredient_links;
 		ingredients_cache = null;
@@ -100,7 +73,6 @@ public class Product extends BaseModel {
 		}
 		return brand.getName();
 	}
-
 
 	public String getTypeName() {
 		if (type == null) {

@@ -1,17 +1,13 @@
 package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
-import src.models.BaseModel;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = IngredientName.TABLENAME)
-public class IngredientName extends BaseModel {
-
-	@Column(length = 1024)
-	private String name;
+public class IngredientName extends NamedModel {
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
@@ -19,12 +15,8 @@ public class IngredientName extends BaseModel {
 
 	//Getters
 
-	public String getName() {
-		return name;
-	}
-
 	public String getDisplayName() {
-		return WordUtils.capitalizeFully(name);
+		return WordUtils.capitalizeFully(getName());
 	}
 
 	public Ingredient getIngredient() {
@@ -32,10 +24,6 @@ public class IngredientName extends BaseModel {
 	}
 
 	//Setters
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public void setIngredient(Ingredient ingredient) {
 		this.ingredient = ingredient;

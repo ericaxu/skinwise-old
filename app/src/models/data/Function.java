@@ -1,20 +1,13 @@
 package src.models.data;
 
-import src.models.BaseModel;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Function extends BaseModel {
-
-	@Column(length = 256)
-	private String name;
-
-	@Column(length = 1024)
-	private String description;
+@Table(name = Function.TABLENAME)
+public class Function extends NamedModel {
 
 	//Relation table
 
@@ -23,30 +16,15 @@ public class Function extends BaseModel {
 
 	//Getters
 
-	public String getName() {
-		return name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
 	public Set<Ingredient> getIngredients() {
 		return ingredients;
 	}
 
 	//Setters
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	//Static
 
+	public static final String TABLENAME = "function";
 	public static Finder<Long, Function> find = new Finder<>(Long.class, Function.class);
 
 	public static List<Function> all() {

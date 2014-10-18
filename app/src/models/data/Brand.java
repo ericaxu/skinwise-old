@@ -1,41 +1,15 @@
 package src.models.data;
 
-import src.models.BaseModel;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-public class Brand extends BaseModel {
-	@Column(length = 1024, unique = true, nullable = false)
-	private String name;
-
-	@Column(length = 8192)
-	private String description;
-
-	//Getters
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	//Setters
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+@Table(name = Brand.TABLENAME)
+public class Brand extends NamedModel {
 	//Static
 
+	public static final String TABLENAME = "brand";
 	public static Finder<Long, Brand> find = new Finder<>(Long.class, Brand.class);
 
 	public static Brand byId(long id) {

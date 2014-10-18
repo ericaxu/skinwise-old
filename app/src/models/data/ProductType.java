@@ -1,42 +1,18 @@
 package src.models.data;
 
-import src.models.BaseModel;
+import play.db.ebean.Model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-public class ProductType extends BaseModel {
-	@Column(length = 1024, unique = true, nullable = false)
-	private String name;
-
-	@Column(length = 8192)
-	private String description;
-
-	//Getters
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	//Setters
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+@Table(name = ProductType.TABLENAME)
+public class ProductType extends NamedModel {
 	//Static
 
-	public static Finder<Long, ProductType> find = new Finder<>(Long.class, ProductType.class);
+	public static final String TABLENAME = "product_type";
+	public static Model.Finder<Long, ProductType> find = new Model.Finder<>(Long.class, ProductType.class);
 
 	public static ProductType byId(long id) {
 		return find.byId(id);
