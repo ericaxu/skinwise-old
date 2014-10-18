@@ -56,7 +56,7 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-			Brand brand = Brand.byId(request.brand_id);
+			Brand brand = cache.brands.get(request.brand_id);
 			if (brand == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
 			}

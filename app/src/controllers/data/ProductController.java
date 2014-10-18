@@ -4,6 +4,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
@@ -120,7 +121,7 @@ public class ProductController extends Controller {
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
-		Product result = Product.byId(product_id);
+		Product result = App.cache().products.get(product_id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -134,7 +135,7 @@ public class ProductController extends Controller {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = Product.byId(request.id);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
@@ -159,14 +160,14 @@ public class ProductController extends Controller {
 			RequestProductFilter request = Api.read(ctx(), RequestProductFilter.class);
 
 			for (long brand_id : request.brands) {
-				Brand brand = Brand.byId(brand_id);
+				Brand brand = App.cache().brands.get(brand_id);
 				if (brand == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Brand not found");
 				}
 			}
 
 			for (long ingredient_id : request.ingredients) {
-				Ingredient ingredient = Ingredient.byId(ingredient_id);
+				Ingredient ingredient = App.cache().ingredients.get(ingredient_id);
 				if (ingredient == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 				}
@@ -234,7 +235,7 @@ public class ProductController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = Product.byId(request.id);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}

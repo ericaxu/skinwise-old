@@ -213,7 +213,7 @@ public class Import {
 		Brand brand = cache.brands.get(object.brand);
 		ProductType type = cache.types.get(object.type);
 
-		Product result = Product.byBrandAndName(brand, object.name);
+		Product result = cache.products.get(brand, object.name);
 		if (result == null) {
 			result = new Product();
 		}
@@ -225,8 +225,6 @@ public class Import {
 			}
 		}
 
-		result.setName(object.name);
-		result.setBrand(brand);
 		result.setType(type);
 		result.setDescription(object.description);
 
@@ -250,8 +248,6 @@ public class Import {
 
 		result.setIngredientLinks(ingredient_links);
 
-		result.save();
-
-		cache.products.update(result);
+		cache.products.updateAndSave(result, brand, object.name);
 	}
 }
