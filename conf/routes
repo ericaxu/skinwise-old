@@ -3,12 +3,13 @@
 # ~~~~
 
 # Static page
-GET         /                                       src.controllers.HtmlController.index()
-GET         /products                               src.controllers.HtmlController.products()
-GET         /ingredients                            src.controllers.HtmlController.ingredients()
-GET         /profile                                src.controllers.HtmlController.profile()
-GET         /routine                                src.controllers.HtmlController.routine()
-GET         /about                                  src.controllers.HtmlController.about()
+GET         /                                   src.controllers.HtmlController.index()
+GET         /products                           src.controllers.HtmlController.products()
+GET         /ingredients                        src.controllers.HtmlController.ingredients()
+GET         /profile                            src.controllers.HtmlController.profile()
+GET         /routine                            src.controllers.HtmlController.routine()
+GET         /about                              src.controllers.HtmlController.about()
+GET         /team                               src.controllers.HtmlController.team()
 
 # Dynamic pages
 GET         /ingredient/:id                         src.controllers.data.IngredientController.ingredient(id : Long)

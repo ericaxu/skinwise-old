@@ -36,4 +36,9 @@ public class HtmlController extends Controller {
 		ResponseState state = new ResponseState(session());
 		return ok(about.render(state));
 	}
+
+	public static Result team() {
+		ResponseState state = new ResponseState(session());
+		return ok(team.render(state));
+	}
 }
