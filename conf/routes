@@ -8,6 +8,7 @@ GET         /products                           src.controllers.HtmlController.p
 GET         /ingredients                        src.controllers.HtmlController.ingredients()
 GET         /profile                            src.controllers.HtmlController.profile()
 GET         /routine                            src.controllers.HtmlController.routine()
+GET         /about                              src.controllers.HtmlController.about()
 
 # Dynamic pages
 GET         /product/:id                        src.controllers.data.ProductController.product(id : Long)

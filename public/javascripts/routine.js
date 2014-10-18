@@ -25,9 +25,12 @@ $(document).on('ready', function() {
 function createNewRoutine() {
     var new_routine = {
         name: 'Click to rename me',
-        products: []
+        products: [{
+            brand: 'Kiehl\'s',
+            name: 'Blue Herbal Spot Treatment'
+        }]
     };
-    $('.user_routine').append(routineHTML(new_routine));
+    $('.user_routine').append(routineHTML(new_routine, true));
 
 }
 
@@ -37,31 +40,38 @@ function fetchRoutine(user_id) {
 
 function routineItemHTML(product) {
     var $li = $('<li/>');
-    $li.append('<a/>', { href: '#', class: 'product_brand', text: product.brand });
-    $li.append('<a/>', { href: '#', class: 'product_name', text: product.name });
+    $li.append($('<a/>', { href: '#', class: 'product_brand', text: product.brand }));
+    $li.append(' ');
+    $li.append($('<a/>', { href: '#', class: 'product_name', text: product.name }));
     $li.append('<div class="edit_btns"><input type="button" class="edit_product" value="Edit"/><input type="button" ' +
         'class="delete_product" value="Delete"/></div>');
 
     return $li;
 }
 
-function routineHTML(routine) {
+function routineHTML(routine, is_new) {
 
     console.log(routine);
-    var $div = $('<div/>', { class: 'column' });
+    var $div = $('<div/>', { class: is_new ? 'column editing' : 'column' });
     var $routine = $('<div/>', { class: 'section' });
     $routine.append($('<h2/>', { text: routine.name }));
     var $routine_list = $('<ol/>', { class: 'routines' }).sortable({
         placeholder: 'routine_placeholder'
     });
 
-    for (var i = 0; i < routine.products; i++) {
+    for (var i = 0; i < routine.products.length; i++) {
         $routine_list.append(routineItemHTML(routine.products[i]));
     }
 
     $routine.append($routine_list);
     $div.append($routine);
-    $div.append('<input type="button" class="primary edit_routine" value="Edit routine">');
+    if (is_new) {
+        $div.append('<label>Add product: </label><input type="text" class="add_product">');
+        $div.append('<input type="button" class="primary edit_routine" value="Save routine">');
+
+    } else {
+        $div.append('<input type="button" class="primary edit_routine" value="Edit routine">');
+    }
 
     return $div;
 }

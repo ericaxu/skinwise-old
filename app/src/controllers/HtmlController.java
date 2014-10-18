@@ -31,4 +31,9 @@ public class HtmlController extends Controller {
 		ResponseState state = new ResponseState(session());
 		return ok(routine.render(state));
 	}
+
+	public static Result about() {
+		ResponseState state = new ResponseState(session());
+		return ok(about.render(state));
+	}
 }
