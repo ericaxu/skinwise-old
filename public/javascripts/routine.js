@@ -1,5 +1,5 @@
 $(document).on('ready', function() {
-    $('.edit_routine').on('click', function() {
+    $(document).on('click', '.edit_routine', function() {
         if (!$(this).parent().hasClass('editing')) {
             $(this).parent().find('.routines').sortable('enable');
             var $cancel_btn = $('<input/>', {
@@ -18,4 +18,56 @@ $(document).on('ready', function() {
     $('.routines').sortable({
         placeholder: 'routine_placeholder'
     });
+
+    $('.create_routine').on('click', createNewRoutine);
 });
+
+function createNewRoutine() {
+    var new_routine = {
+        name: 'Click to rename me',
+        products: []
+    };
+    $('.user_routine').append(routineHTML(new_routine));
+
+}
+
+function fetchRoutine(user_id) {
+    postToAPI('/user/routine/get', {}, loadRoutines);
+}
+
+function routineItemHTML(product) {
+    var $li = $('<li/>');
+    $li.append('<a/>', { href: '#', class: 'product_brand', text: product.brand });
+    $li.append('<a/>', { href: '#', class: 'product_name', text: product.name });
+    $li.append('<div class="edit_btns"><input type="button" class="edit_product" value="Edit"/><input type="button" ' +
+        'class="delete_product" value="Delete"/></div>');
+
+    return $li;
+}
+
+function routineHTML(routine) {
+
+    console.log(routine);
+    var $div = $('<div/>', { class: 'column' });
+    var $routine = $('<div/>', { class: 'section' });
+    $routine.append($('<h2/>', { text: routine.name }));
+    var $routine_list = $('<ol/>', { class: 'routines' }).sortable({
+        placeholder: 'routine_placeholder'
+    });
+
+    for (var i = 0; i < routine.products; i++) {
+        $routine_list.append(routineItemHTML(routine.products[i]));
+    }
+
+    $routine.append($routine_list);
+    $div.append($routine);
+    $div.append('<input type="button" class="primary edit_routine" value="Edit routine">');
+
+    return $div;
+}
+
+function loadRoutines(response) {
+    for (var i = 0; i < response.results.length; i++) {
+        $('.user_routine').append(routineHTML(response.results[i]));
+    }
+}

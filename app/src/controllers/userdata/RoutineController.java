@@ -41,7 +41,7 @@ public class RoutineController extends Controller {
 	}
 
 	public static class ResponseRoutineList extends Response {
-		public List<ResponseRoutineObject> result = new ArrayList<>();
+		public List<ResponseRoutineObject> results = new ArrayList<>();
 	}
 
 	public static Result api_routine_byuser() {
@@ -67,7 +67,7 @@ public class RoutineController extends Controller {
 					productObject.name = item.getProduct().getName();
 					routineObject.products.add(productObject);
 				}
-				response.result.add(routineObject);
+				response.results.add(routineObject);
 			}
 
 			return Api.write(response);
