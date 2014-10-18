@@ -42,13 +42,23 @@ public class Import {
 		}
 		cache.cacheIngredientNames();
 
+		Logger.debug(TAG, "Importing product types");
+		cache.cacheProductTypes();
+		for (DBFormat.ProductTypeObject object : input.types) {
+			object.sanitize();
+			create(object, cache);
+		}
+		cache.cacheProductTypes();
+
 		Logger.debug(TAG, "Looking through products");
 		Set<String> allIngredients = new HashSet<>();
 		Set<String> brands = new HashSet<>();
+		Set<String> types = new HashSet<>();
 		for (DBFormat.ProductObject object : input.products) {
 			object.sanitize();
 
 			brands.add(object.brand);
+			types.add(object.type);
 
 			List<String> ingredients = cache.splitIngredients(object.ingredients);
 			List<String> key_ingredients = cache.splitIngredients(object.key_ingredients);
@@ -58,20 +68,34 @@ public class Import {
 
 		brands.remove("");
 		brands.remove(null);
+		types.remove("");
+		types.remove(null);
 		allIngredients.remove("");
 		allIngredients.remove(null);
 
 		//Create brands
 		for (String brand : brands) {
-			Brand b = Brand.byName(brand);
-			if (b == null) {
-				b = new Brand();
-				b.setName(brand);
-				b.setDescription("");
-				b.save();
+			Brand object = Brand.byName(brand);
+			if (object == null) {
+				object = new Brand();
+				object.setName(brand);
+				object.setDescription("");
+				object.save();
 			}
 		}
 		cache.cacheBrands();
+
+		//Create types
+		for (String type : types) {
+			ProductType object = ProductType.byName(type);
+			if (object == null) {
+				object = new ProductType();
+				object.setName(type);
+				object.setDescription("");
+				object.save();
+			}
+		}
+		cache.cacheProductTypes();
 
 		for (String ingredient : allIngredients) {
 			cache.matchIngredientName(ingredient);
@@ -89,6 +113,19 @@ public class Import {
 
 		if (result == null) {
 			result = new Brand();
+		}
+
+		result.setName(object.name);
+		result.setDescription(object.description);
+
+		result.save();
+	}
+
+	private static void create(DBFormat.ProductTypeObject object, DBFormat.DBCache cache) {
+		ProductType result = cache.getType(object.name);
+
+		if (result == null) {
+			result = new ProductType();
 		}
 
 		result.setName(object.name);
@@ -151,6 +188,7 @@ public class Import {
 		List<IngredientName> key_ingredients = cache.matchAllIngredientNames(object.key_ingredients);
 
 		Brand brand = cache.getBrand(object.brand);
+		ProductType type = cache.getType(object.type);
 
 		Product result = Product.byBrandAndName(brand, object.name);
 		if (result == null) {
@@ -166,6 +204,7 @@ public class Import {
 
 		result.setName(object.name);
 		result.setBrand(brand);
+		result.setType(type);
 		result.setDescription(object.description);
 
 		List<ProductIngredient> ingredient_links = new ArrayList<>();

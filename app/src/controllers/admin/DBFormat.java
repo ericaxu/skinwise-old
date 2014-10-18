@@ -1,9 +1,6 @@
 package src.controllers.admin;
 
-import src.models.data.Brand;
-import src.models.data.Function;
-import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.data.*;
 import src.util.Util;
 
 import java.util.*;
@@ -12,6 +9,7 @@ public class DBFormat {
 	public List<IngredientObject> ingredients = new ArrayList<>();
 	public List<FunctionObject> ingredient_functions = new ArrayList<>();
 	public List<BrandObject> brands = new ArrayList<>();
+	public List<ProductTypeObject> types = new ArrayList<>();
 	public List<ProductObject> products = new ArrayList<>();
 
 	//Currently unused
@@ -75,9 +73,20 @@ public class DBFormat {
 		}
 	}
 
+	public static class ProductTypeObject {
+		public String name;
+		public String description;
+
+		public void sanitize() {
+			name = Util.notNull(name).trim();
+			description = Util.notNull(description).trim();
+		}
+	}
+
 	public static class ProductObject {
 		public String name;
 		public String brand;
+		public String type;
 		public String description;
 		public String key_ingredients;
 		public String ingredients;
@@ -85,6 +94,7 @@ public class DBFormat {
 		public void sanitize() {
 			name = Util.notNull(name).trim();
 			brand = Util.notNull(brand).trim();
+			type = Util.notNull(type).trim();
 			description = Util.notNull(description).trim();
 			ingredients = Util.notNull(ingredients).trim();
 			key_ingredients = Util.notNull(key_ingredients).trim();
@@ -94,6 +104,7 @@ public class DBFormat {
 	public static class DBCache {
 		public List<Function> functions;
 		public List<Brand> brands;
+		public List<ProductType> types;
 		public List<IngredientName> names;
 		public List<Ingredient> ingredients;
 		public Map<Ingredient, List<IngredientName>> ingredient_to_names = new HashMap<>();
@@ -103,6 +114,7 @@ public class DBFormat {
 		public Map<String, IngredientName> ingredient_name_index = new HashMap<>();
 		public Map<String, Function> function_index = new HashMap<>();
 		public Map<String, Brand> brand_index = new HashMap<>();
+		public Map<String, ProductType> type_index = new HashMap<>();
 
 		public void cacheFunctions() {
 			functions = Function.all();
@@ -115,6 +127,13 @@ public class DBFormat {
 			brands = Brand.all();
 			for (Brand brand : brands) {
 				brand_index.put(brand.getName().toLowerCase(), brand);
+			}
+		}
+
+		public void cacheProductTypes() {
+			types = ProductType.all();
+			for (ProductType type : types) {
+				type_index.put(type.getName().toLowerCase(), type);
 			}
 		}
 
@@ -287,6 +306,16 @@ public class DBFormat {
 			Brand brand = Brand.byName(key);
 			brand_index.put(key, brand);
 			return brand;
+		}
+
+		public ProductType getType(String input) {
+			String key = input.toLowerCase();
+			if (type_index.containsKey(key)) {
+				return type_index.get(key);
+			}
+			ProductType type = ProductType.byName(key);
+			type_index.put(key, type);
+			return type;
 		}
 	}
 }

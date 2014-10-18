@@ -16,6 +16,10 @@ public class Product extends BaseModel {
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
 
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "type_id", referencedColumnName = "id")
+	private ProductType type;
+
 	@Column(length = 1024)
 	private String line;
 
@@ -34,6 +38,10 @@ public class Product extends BaseModel {
 
 	public Brand getBrand() {
 		return brand;
+	}
+
+	public ProductType getType() {
+		return type;
 	}
 
 	public String getLine() {
@@ -62,6 +70,10 @@ public class Product extends BaseModel {
 		this.brand = brand;
 	}
 
+	public void setType(ProductType type) {
+		this.type = type;
+	}
+
 	public void setLine(String line) {
 		this.line = line;
 	}
@@ -87,6 +99,14 @@ public class Product extends BaseModel {
 			return "";
 		}
 		return brand.getName();
+	}
+
+
+	public String getTypeName() {
+		if (type == null) {
+			return "";
+		}
+		return type.getName();
 	}
 
 	private transient List<IngredientName> ingredients_cache;

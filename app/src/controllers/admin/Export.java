@@ -38,6 +38,11 @@ public class Export {
 		//Free memory
 		cache = null;
 
+		Logger.debug(TAG, "Exporting product types");
+		for (ProductType object : ProductType.all()) {
+			result.types.add(export(object));
+		}
+
 		Logger.debug(TAG, "Exporting products");
 		for (Product object : Product.all()) {
 			result.products.add(export(object));
@@ -71,10 +76,18 @@ public class Export {
 		return result;
 	}
 
+	public static DBFormat.ProductTypeObject export(ProductType object) {
+		DBFormat.ProductTypeObject result = new DBFormat.ProductTypeObject();
+		result.name = object.getName();
+		result.description = object.getDescription();
+		return result;
+	}
+
 	public static DBFormat.ProductObject export(Product object) {
 		DBFormat.ProductObject result = new DBFormat.ProductObject();
 		result.name = object.getName();
 		result.brand = object.getBrandName();
+		result.type = object.getTypeName();
 		result.description = object.getDescription();
 		List<String> key_ingredients = new ArrayList<>();
 		for (IngredientName ing : object.getKey_ingredients()) {

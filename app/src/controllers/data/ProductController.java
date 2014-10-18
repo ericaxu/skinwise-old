@@ -25,13 +25,15 @@ import java.util.Set;
 
 public class ProductController extends Controller {
 	public static class ResponseProduct extends Response {
-		public String product_name;
-		public String product_brand;
+		public String brand;
+		public String type;
+		public String name;
 		public String description;
 
-		public ResponseProduct(String product_name, String product_brand, String description) {
-			this.product_name = product_name;
-			this.product_brand = product_brand;
+		public ResponseProduct(String brand, String type, String name, String description) {
+			this.brand = brand;
+			this.type = type;
+			this.name = name;
 			this.description = description;
 		}
 	}
@@ -137,7 +139,7 @@ public class ProductController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_product() {
+	public static Result api_product_byid() {
 		try {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
@@ -148,8 +150,9 @@ public class ProductController extends Controller {
 			}
 
 			Response response = new ResponseProduct(
-					result.getName(),
 					result.getBrandName(),
+					result.getTypeName(),
+					result.getName(),
 					result.getDescription()
 			);
 

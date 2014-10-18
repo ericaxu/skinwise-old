@@ -94,6 +94,9 @@ foreach($urls as $url) {
 	$product_ingredients = parser_match("<div id=\"[^\"]*pnlTabBodyIngredients\"[^>]*>(.*?)<\\/div>", $page_html);
 	$product_ingredients = $product_ingredients[1];
 
+	$product_category = parser_match("<a id=\"[^\"]*hlCategory\"[^>]*>(.*?)<\\/a>", $page_html);
+	$product_category = $product_category[1];
+
 	$product_key_ingredients = parser_match("<dd[^>]*>(.*?)<\\/dd>", $product_ingredients);
 	$product_other_ingredients = parser_match("<p[^>]*>(.*?)<\\/p>", $product_ingredients);
 
@@ -110,6 +113,7 @@ foreach($urls as $url) {
 	$product = array();
 	$product["name"] = html_decode($product_name);
 	$product["brand"] = html_decode($product_brand);
+	$product["type"] = html_decode($product_category);
 	$product["description"] = html_decode($product_claims);
 	$product["key_ingredients"] = html_decode($product_key_ingredients);
 	$product["ingredients"] = html_decode($product_other_ingredients);
