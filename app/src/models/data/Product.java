@@ -171,7 +171,7 @@ public class Product extends BaseModel {
 			return page.apply(find.query());
 		}
 
-		String query = "SELECT a.product_id as id " +
+		String query = "SELECT DISTINCT a.product_id as id " +
 				"FROM " + TABLENAME + " p INNER JOIN " + ProductIngredient.TABLENAME + " a " +
 				"ON p.id = a.product_id WHERE ";
 
