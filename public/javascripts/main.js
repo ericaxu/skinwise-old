@@ -2,11 +2,10 @@ function setupIngredientInfobox() {
     var $ingredient = $('.ingredient');
 
     $ingredient.on('click', function (e) {
-        var ingredient_name = $(this).text()
+        var id = $(this).data('id');
         $('.ingredient_infobox').remove();
-        if (SW.ING[ingredient_name]) {
-
-            var ingredient_data = SW.ING[ingredient_name];
+        if (SW.ING[id]) {
+            var ingredient_data = SW.ING[id];
             var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function (e) {
                 e.stopPropagation();
             });
@@ -14,7 +13,7 @@ function setupIngredientInfobox() {
                 $('.ingredient_infobox').remove();
             })
             ingredient_info.append(close_button);
-            ingredient_info.append($('<h2/>', { text: ingredient_name }));
+            ingredient_info.append($('<h2/>', { text: ingredient_data.name }));
             var functions = $('<p/>', { class: 'functions' });
             for (var i = 0; i < ingredient_data.functions.length; i++) {
                 functions.append($('<span/>', {
@@ -25,7 +24,7 @@ function setupIngredientInfobox() {
             ingredient_info.append(functions);
             ingredient_info.appendTo('body');
             ingredient_info.append($('<p/>', { text: ingredient_data.short_desc }));
-            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + ingredient_data.id + '">More details</a></p>');
+            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + id + '">More details</a></p>');
             ingredient_info.show().offset({ top: e.pageY, left: e.pageX });
         }
     });
@@ -42,8 +41,8 @@ function setupIngredientInfobox() {
 function getIngredientInfoSuccess(response) {
     for (var i = 0; i < response.ingredient_info.length; i++) {
         var ingredient = response.ingredient_info[i];
-        SW.ING[ingredient.name] = {
-            id: ingredient.id,
+        SW.ING[ingredient.id] = {
+            name: ingredient.name,
             description: ingredient.description,
             functions: ingredient.functions
         };

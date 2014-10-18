@@ -24,14 +24,14 @@
                 @defining(product.getKey_ingredients) { key =>
                     <p>@for(i <- 0 to key.length-2) {
                         @if(key(i).getIngredient != null) {
-                            <span class="ingredient">@key(i).getDisplayName</span>,
+                            <span class="ingredient" data-id="@key(i).getIngredient.getId">@key(i).getDisplayName</span>,
                         } else {
                             <span class="ingredient unrecognized">@key(i).getDisplayName</span>,
                         }
                     }
 
                     @if(key(key.length-1).getIngredient != null) {
-                        <span class="ingredient">@key(key.length-1).getDisplayName</span>
+                        <span class="ingredient" data-id="@key(key.length-1).getIngredient.getId">@key(key.length-1).getDisplayName</span>
                     } else {
                         <span class="ingredient unrecognized">@key(key.length-1).getDisplayName</span>
                     }
@@ -54,14 +54,14 @@
             @defining(product.getIngredients) { ing =>
                 <p>@for(i <- 0 to ing.length-2) {
                     @if(ing(i).getIngredient != null) {
-                        <span class="ingredient">@ing(i).getDisplayName</span>,
+                        <span class="ingredient" data-id="@ing(i).getIngredient.getId">@ing(i).getDisplayName</span>,
                     } else {
                         <span class="ingredient unrecognized">@ing(i).getDisplayName</span>,
                     }
                 }
 
                 @if(ing(ing.length-1).getIngredient != null) {
-                    <span class="ingredient">@ing(ing.length-1).getDisplayName</span>
+                    <span class="ingredient" data-id="@ing(ing.length-1).getIngredient.getId">@ing(ing.length-1).getDisplayName</span>
                 } else {
                     <span class="ingredient unrecognized">@ing(ing.length-1).getDisplayName</span>
                 }
