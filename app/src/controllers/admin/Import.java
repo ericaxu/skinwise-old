@@ -8,7 +8,6 @@ import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -217,36 +216,10 @@ public class Import {
 		if (result == null) {
 			result = new Product();
 		}
-		else {
-			List<ProductIngredient> old_links = result.getIngredientLinks();
-
-			for (ProductIngredient link : old_links) {
-				link.delete();
-			}
-		}
 
 		result.setType(type);
 		result.setDescription(object.description);
-
-		List<ProductIngredient> ingredient_links = new ArrayList<>();
-
-		for (IngredientName ingredient : ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(result);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(false);
-			ingredient_links.add(item);
-		}
-
-		for (IngredientName ingredient : key_ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(result);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(true);
-			ingredient_links.add(item);
-		}
-
-		result.setIngredientLinks(ingredient_links);
+		result.setIngredientList(ingredients, key_ingredients);
 
 		cache.products.updateAndSave(result, brand, object.name);
 	}

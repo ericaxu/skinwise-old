@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MemCache {
 	public static class NamedIndex<T extends NamedModel> extends Idx<T> {
 		private Map<String, T> names;
+		private SearchEngine<T> search;
 
 		public NamedIndex(ReadWriteLock lock, NamedGetter<T> getter) {
 			super(lock, getter);
@@ -25,6 +26,7 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				super.cache(list);
+				search = null;
 				names.clear();
 				for (T object : list) {
 					names.put(key(object), object);
@@ -33,6 +35,33 @@ public class MemCache {
 			finally {
 				lock.writeLock().unlock();
 			}
+		}
+
+		public List<T> search(String query, int limit, boolean fullSearch) {
+			lock.writeLock().lock();
+			try {
+				if (search == null) {
+					search = new SearchEngine<>(names);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+			lock.readLock().lock();
+			try {
+				if (search != null) {
+					if (fullSearch) {
+						//return search.fullSearch(query, limit);
+					}
+					else {
+						//return search.partialSearch(query, limit);
+					}
+				}
+			}
+			finally {
+				lock.readLock().unlock();
+			}
+			return new ArrayList<>();
 		}
 
 		public void updateNameAndSave(T object, String name) {
@@ -54,6 +83,7 @@ public class MemCache {
 		public void update(T object) {
 			lock.writeLock().lock();
 			try {
+				search = null;
 				super.update(object);
 				names.put(key(object), object);
 			}
@@ -478,7 +508,6 @@ public class MemCache {
 	public NamedIndex<IngredientName> ingredient_names;
 	public ProductIndex products;
 	public Matcher matcher;
-	public SearchEngine ingredient_search;
 
 	public MemCache() {
 		lock = new ReentrantReadWriteLock();
@@ -489,7 +518,6 @@ public class MemCache {
 		ingredient_names = new NamedIndex<>(lock, new IngredientNameGetter());
 		products = new ProductIndex(lock, new ProductGetter());
 		matcher = new Matcher();
-		ingredient_search = new SearchEngine<IngredientName>(new HashMap<>());
 	}
 
 	public void init() {
@@ -501,7 +529,6 @@ public class MemCache {
 		ingredients.cache();
 		ingredient_names.cache();
 		products.cache();
-		ingredient_search = new SearchEngine<>(ingredient_names.names);
 		lock.writeLock().unlock();
 	}
 }

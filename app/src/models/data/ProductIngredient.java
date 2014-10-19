@@ -3,6 +3,7 @@ package src.models.data;
 import src.models.BaseModel;
 
 import javax.persistence.*;
+import java.util.Comparator;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
@@ -15,6 +16,7 @@ public class ProductIngredient extends BaseModel {
 	@JoinColumn(name = "ingredient_name_id", referencedColumnName = "id")
 	private IngredientName ingredient_name;
 
+	private int item_order;
 	private boolean is_key;
 
 	//Getters
@@ -31,6 +33,10 @@ public class ProductIngredient extends BaseModel {
 		return is_key;
 	}
 
+	public int getItem_order() {
+		return item_order;
+	}
+
 	//Setters
 
 	public void setProduct(Product product) {
@@ -45,7 +51,20 @@ public class ProductIngredient extends BaseModel {
 		this.is_key = is_key;
 	}
 
+	public void setItem_order(int item_order) {
+		this.item_order = item_order;
+	}
+
 	//Static
 
 	public static final String TABLENAME = "product_ingredient";
+
+	public static final Sorter sorter = new Sorter();
+
+	public static class Sorter implements Comparator<ProductIngredient> {
+		@Override
+		public int compare(ProductIngredient a, ProductIngredient b) {
+			return Integer.compare(a.getItem_order(), b.getItem_order());
+		}
+	}
 }

@@ -5,6 +5,7 @@ import src.util.Util;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -108,7 +109,9 @@ public class Product extends NamedModel {
 	public List<IngredientName> getIngredients() {
 		if (ingredients_cache == null) {
 			ingredients_cache = new ArrayList<>();
-			for (ProductIngredient link : getIngredientLinks()) {
+			List<ProductIngredient> list = getIngredientLinks();
+			Collections.sort(list, ProductIngredient.sorter);
+			for (ProductIngredient link : list) {
 				if (!link.isIs_key()) {
 					ingredients_cache.add(link.getIngredient_name());
 				}
@@ -120,14 +123,49 @@ public class Product extends NamedModel {
 	public List<IngredientName> getKey_ingredients() {
 		if (key_ingredients_cache == null) {
 			key_ingredients_cache = new ArrayList<>();
-			for (ProductIngredient link : getIngredientLinks()) {
+			List<ProductIngredient> list = getIngredientLinks();
+			Collections.sort(list, ProductIngredient.sorter);
+			for (ProductIngredient link : list) {
 				if (link.isIs_key()) {
 					key_ingredients_cache.add(link.getIngredient_name());
 				}
-
 			}
 		}
 		return key_ingredients_cache;
+	}
+
+	public void setIngredientList(List<IngredientName> ingredients,
+	                              List<IngredientName> key_ingredients) {
+
+		List<ProductIngredient> old_links = getIngredientLinks();
+		for (ProductIngredient link : old_links) {
+			link.delete();
+		}
+
+		List<ProductIngredient> ingredient_links = new ArrayList<>();
+		int i = 0;
+
+		for (IngredientName ingredient : ingredients) {
+			ProductIngredient item = new ProductIngredient();
+			item.setProduct(this);
+			item.setIngredient_name(ingredient);
+			item.setIs_key(false);
+			item.setItem_order(i);
+			i++;
+			ingredient_links.add(item);
+		}
+
+		for (IngredientName ingredient : key_ingredients) {
+			ProductIngredient item = new ProductIngredient();
+			item.setProduct(this);
+			item.setIngredient_name(ingredient);
+			item.setIs_key(true);
+			item.setItem_order(i);
+			i++;
+			ingredient_links.add(item);
+		}
+
+		setIngredientLinks(ingredient_links);
 	}
 
 	@Override

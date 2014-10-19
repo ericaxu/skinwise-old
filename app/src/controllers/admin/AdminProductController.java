@@ -15,9 +15,11 @@ import src.controllers.util.ResponseState;
 import src.models.BaseModel;
 import src.models.MemCache;
 import src.models.Permissible;
-import src.models.data.*;
+import src.models.data.Brand;
+import src.models.data.IngredientName;
+import src.models.data.Product;
+import src.models.data.ProductType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdminProductController extends Controller {
@@ -33,9 +35,9 @@ public class AdminProductController extends Controller {
 		@NotNull
 		public String description;
 		@NotNull
-		public List<String> ingredients;
+		public String ingredients;
 		@NotNull
-		public List<String> key_ingredients;
+		public String key_ingredients;
 	}
 
 	public static Result api_product_update() {
@@ -66,37 +68,12 @@ public class AdminProductController extends Controller {
 			result.setName(request.name);
 			result.setDescription(request.description);
 
-			List<ProductIngredient> ingredient_links = new ArrayList<>();
-
-			if (request.id != BaseModel.NEW_ID) {
-				for (ProductIngredient link : result.getIngredientLinks()) {
-					link.delete();
-				}
-			}
-
 			cache.matcher.cache(cache.ingredient_names.all());
-
-			for (String ingredient : request.ingredients) {
-				IngredientName name = cache.matcher.matchIngredientName(ingredient);
-				ProductIngredient item = new ProductIngredient();
-				item.setProduct(result);
-				item.setIngredient_name(name);
-				item.setIs_key(false);
-				ingredient_links.add(item);
-			}
-
-			for (String ingredient : request.key_ingredients) {
-				IngredientName name = cache.matcher.matchIngredientName(ingredient);
-				ProductIngredient item = new ProductIngredient();
-				item.setProduct(result);
-				item.setIngredient_name(name);
-				item.setIs_key(true);
-				ingredient_links.add(item);
-			}
-
+			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);
+			List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(request.key_ingredients);
 			cache.matcher.clear();
 
-			result.setIngredientLinks(ingredient_links);
+			result.setIngredientList(ingredients, key_ingredients);
 
 			result.save();
 
