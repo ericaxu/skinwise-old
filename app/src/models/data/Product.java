@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = Product.TABLENAME)
 public class Product extends NamedModel {
-	private int popularity;
+	private long popularity;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -35,7 +35,7 @@ public class Product extends NamedModel {
 
 	//Getters
 
-	public int getPopularity() {
+	public long getPopularity() {
 		return popularity;
 	}
 
@@ -61,7 +61,7 @@ public class Product extends NamedModel {
 
 	//Setters
 
-	public void setPopularity(int popularity) {
+	public void setPopularity(long popularity) {
 		this.popularity = popularity;
 	}
 

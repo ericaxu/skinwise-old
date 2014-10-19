@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = Ingredient.TABLENAME)
 public class Ingredient extends NamedModel {
-	private int popularity;
+	private long popularity;
 
 	@Column(length = 127)
 	private String cas_number;
@@ -31,7 +31,7 @@ public class Ingredient extends NamedModel {
 
 	//Getters
 
-	public int getPopularity() {
+	public long getPopularity() {
 		return popularity;
 	}
 
@@ -49,7 +49,7 @@ public class Ingredient extends NamedModel {
 
 	//Setters
 
-	public void setPopularity(int popularity) {
+	public void setPopularity(long popularity) {
 		this.popularity = popularity;
 	}
 
