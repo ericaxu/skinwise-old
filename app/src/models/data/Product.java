@@ -24,6 +24,9 @@ public class Product extends NamedModel {
 	@Column(length = 1024)
 	private String line;
 
+	@Column(length = 2048)
+	private String image;
+
 	//Relation table
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "product")
@@ -47,6 +50,10 @@ public class Product extends NamedModel {
 		return line;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
 	public List<ProductIngredient> getIngredientLinks() {
 		return ingredient_links;
 	}
@@ -67,6 +74,10 @@ public class Product extends NamedModel {
 
 	public void setLine(String line) {
 		this.line = line;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
