@@ -67,6 +67,7 @@ public class Export {
 		result.description = object.getDescription();
 		result.functions.addAll(relations.getIngredientFunctions(object));
 		result.names.addAll(relations.getIngredientNames(object));
+		result.names.remove(result.name);
 		return result;
 	}
 

@@ -1,8 +1,5 @@
 package src.models.data
 
-import play.api.mvc._
-import src.controllers.util.TimerAction
-
 import scala.Array._
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -17,35 +14,39 @@ import scala.math._
  *
  */
 
-class SearchEngine[T] extends Controller {
+class SearchEngine[T] {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
-  var namesToObjs : java.util.Map[String, T] = _
+  var namesToObjs: java.util.Map[String, T] = _
 
-  def this(_namesToObjs: java.util.Map[String, T]) = {
-    this()
-
+  def init(_namesToObjs: java.util.Map[String, T]) = {
     namesToObjs = _namesToObjs
+    trie = new Trie()
+
     namesToObjs foreach { case (name, _) =>
-      // Not case-sensitive.
-      val words = name.toUpperCase.split("( |/)").toList
+      update(name)
+    }
+  }
 
-      val wordPositionMap = new mutable.HashMap[String, Int]
-      words.zipWithIndex foreach { case (word, index) =>
-          wordPositionMap.put(word, index)
-      }
-      nameToWords.put(name, wordPositionMap)
+  def update(name: String) = {
+    // Not case-sensitive.
+    val words = name.split("( |/)").toList
 
-      words foreach { word =>
-        if (!wordToNames.contains(word)) {
-          wordToNames.put(word, new mutable.HashSet[String])
-        }
-        wordToNames(word).add(name)
+    val wordPositionMap = new mutable.HashMap[String, Int]
+    words.zipWithIndex foreach { case (word, index) =>
+      wordPositionMap.put(word, index)
+    }
+    nameToWords.put(name, wordPositionMap)
+
+    words foreach { word =>
+      if (!wordToNames.contains(word)) {
+        wordToNames.put(word, new mutable.HashSet[String])
       }
+      wordToNames(word).add(name)
     }
 
-    trie = new Trie(wordToNames.keys)
+    trie insertWords words
   }
 
   // Levenshtein gives the edit distance between two strings, but the longer the string, the
@@ -55,7 +56,7 @@ class SearchEngine[T] extends Controller {
     case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
   }
 
-  def getScoredNames(fullWords: List[String], partialWord: String) : mutable.Map[String, Double] = {
+  def getScoredNames(fullWords: List[String], partialWord: String): mutable.Map[String, Double] = {
     val nameToScore = mutable.HashMap[String, Double]().withDefaultValue(0)
 
     val completedWords = trie.getAllWithPrefix(partialWord)
@@ -80,9 +81,9 @@ class SearchEngine[T] extends Controller {
     nameToScore
   }
 
-  def partialSearch(query: String): List[T] = {
+  def partialSearch(query: String, limit: Int): java.util.List[T] = {
     // Not case-sensitive.
-    val queryWords = query.toUpperCase.split(" ").toList
+    val queryWords = query.split("( |/)").toList
     val fullWords = queryWords.dropRight(1)
     val partialWord = queryWords.last
 
@@ -93,12 +94,11 @@ class SearchEngine[T] extends Controller {
       results += ((name, score))
     }
 
-    val maxResults = 3
-    results.take(maxResults).toList.map(result => namesToObjs.get(result))
+    results.take(limit).toList.map(result => namesToObjs.get(result))
   }
 
-  def fullSearch(query: String): List[T] = {
-    val queryWords = query.split(" ").toList
+  def fullSearch(query: String, limit: Int): java.util.List[T] = {
+    val queryWords = query.split("( |/)").toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
       .map(normalizeDistance(queryWord.length)))
       .flatten
@@ -118,12 +118,12 @@ class SearchEngine[T] extends Controller {
     val weightedResults = scores.toList.sortBy { case (name, score) => -score }
 
     // Optimization idea : sorting with a priority queue with a max number of elements.
-    val slicedResults = weightedResults.slice(0, 50)
+    val slicedResults = weightedResults.slice(0, limit)
 
     // For debugging.
     //    slicedResults.foreach { case (name, score) => sln(f"$name $score%.3f") }
 
-    slicedResults.map(result => namesToObjs.get(result))
+    slicedResults.map(result => namesToObjs.get(result._1))
   }
 }
 
@@ -133,7 +133,7 @@ object Levenshtein {
     val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
     val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
-    getMatches(query.toUpperCase, dict, maxResults, results, Nil, initialRow)
+    getMatches(query, dict, maxResults, results, Nil, initialRow)
 
     val resultList: List[(String, Double)] = results.dequeueAll
     resultList.reverse
@@ -177,7 +177,7 @@ object Levenshtein {
       else {
         val char = query(currentChars.length)
         dict.nodes.get(char) match {
-          case Some(node) => (char, node) :: dict.nodes.toList.filter{ case (c, _) => c != char }
+          case Some(node) => (char, node) :: dict.nodes.toList.filter { case (c, _) => c != char }
           case None => dict.nodes.toList
         }
       }
@@ -223,9 +223,8 @@ class Trie {
   var terminal = false
   val nodes = new mutable.HashMap[Char, Trie]()
 
-  def this(words: collection.Iterable[String]) = {
-    this()
-    words foreach insert
+  def insertWords(word: List[String]): Unit = {
+    word foreach insert
   }
 
   def insert(word: String): Unit = {
@@ -237,18 +236,17 @@ class Trie {
     // and imperative style in odd ways...
     word match {
       case char :: rest => {
-        val uppercase = char.toUpper
-        if (!nodes.contains(uppercase)) {
-          nodes.put(uppercase, new Trie)
+        if (!nodes.contains(char)) {
+          nodes.put(char, new Trie)
         }
-        nodes(uppercase).insert(rest)
+        nodes(char).insert(rest)
       }
       case Nil => terminal = true
     }
   }
 
   def getPrefixNode(prefix: List[Char]): Option[Trie] = prefix match {
-    case char :: rest =>  nodes.get(char).flatMap(trie => trie.getPrefixNode(rest))
+    case char :: rest => nodes.get(char).flatMap(trie => trie.getPrefixNode(rest))
     case Nil => Some(this)
   }
 
@@ -269,9 +267,8 @@ class Trie {
 
   def getAllWithPrefix(prefix: String): List[String] = {
     val buffer = ArrayBuffer[String]()
-    val upper = prefix.toUpperCase
-    getPrefixNode(upper).foreach { node =>
-      node.listAll(upper.toList.reverse, buffer)
+    getPrefixNode(prefix).foreach { node =>
+      node.listAll(prefix.toList.reverse, buffer)
     }
     buffer.toList
   }

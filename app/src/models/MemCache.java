@@ -38,30 +38,23 @@ public class MemCache {
 		}
 
 		public List<T> search(String query, int limit, boolean fullSearch) {
+			query = query.toLowerCase();
 			lock.writeLock().lock();
 			try {
 				if (search == null) {
-					search = new SearchEngine<>(names);
+					search = new SearchEngine<>();
+					search.init(names);
+				}
+				if (fullSearch) {
+					return search.fullSearch(query, limit);
+				}
+				else {
+					return search.partialSearch(query, limit);
 				}
 			}
 			finally {
 				lock.writeLock().unlock();
 			}
-			lock.readLock().lock();
-			try {
-				if (search != null) {
-					if (fullSearch) {
-						//return search.fullSearch(query, limit);
-					}
-					else {
-						//return search.partialSearch(query, limit);
-					}
-				}
-			}
-			finally {
-				lock.readLock().unlock();
-			}
-			return new ArrayList<>();
 		}
 
 		public void updateNameAndSave(T object, String name) {
@@ -70,6 +63,7 @@ public class MemCache {
 				if (!Objects.equals(object.getName(), name)) {
 					names.remove(key(object));
 					object.setName(name);
+					search = null;
 				}
 				object.save();
 				update(object);
@@ -81,11 +75,14 @@ public class MemCache {
 
 		@Override
 		public void update(T object) {
+			String key = key(object);
 			lock.writeLock().lock();
 			try {
-				search = null;
 				super.update(object);
-				names.put(key(object), object);
+				names.put(key, object);
+				if (search != null) {
+					search.update(key);
+				}
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -403,7 +400,12 @@ public class MemCache {
 	}
 
 	public static class Matcher {
+		private MemCache cache;
 		public Map<IngredientName, Set<String>> ingredient_name_word_index = new HashMap<>();
+
+		public Matcher(MemCache cache) {
+			this.cache = cache;
+		}
 
 		private void cacheIngredientName(IngredientName name) {
 			String key = name.getName().toLowerCase();
@@ -421,7 +423,10 @@ public class MemCache {
 		}
 
 		public void clear() {
+			cache.lock.readLock().lock();
 			ingredient_name_word_index.clear();
+			cache.ingredient_names.search = null;
+			cache.lock.readLock().unlock();
 		}
 
 		public List<String> splitIngredients(String ingredient_string) {
@@ -481,6 +486,13 @@ public class MemCache {
 				}
 			}
 
+			/*
+			List<IngredientName> result = cache.ingredient_names.search(input, 1, true);
+			if (!result.isEmpty()) {
+				name = result.get(0);
+			}
+			*/
+
 			if (name == null) {
 				name = new IngredientName();
 			}
@@ -495,7 +507,6 @@ public class MemCache {
 			name.setName(input);
 			name.save();
 			App.cache().ingredient_names.update(name);
-			cacheIngredientName(name);
 			return name;
 		}
 	}
@@ -517,7 +528,7 @@ public class MemCache {
 		ingredients = new NamedIndex<>(lock, new IngredientGetter());
 		ingredient_names = new NamedIndex<>(lock, new IngredientNameGetter());
 		products = new ProductIndex(lock, new ProductGetter());
-		matcher = new Matcher();
+		matcher = new Matcher(this);
 	}
 
 	public void init() {
