@@ -106,7 +106,7 @@ public class IngredientController extends Controller {
 	public static Result ingredient(long id) {
 		ResponseState state = new ResponseState(session());
 
-		Ingredient result = App.cache().ingredients.get(id);
+		Ingredient result = App.cache().ingredients.get(id, true);
 		if (result == null) {
 			return ErrorController.notfound();
 		}

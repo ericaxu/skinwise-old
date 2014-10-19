@@ -138,7 +138,7 @@ public class ProductController extends Controller {
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
-		Product result = App.cache().products.get(product_id);
+		Product result = App.cache().products.get(product_id, true);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
