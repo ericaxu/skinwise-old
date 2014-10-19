@@ -170,3 +170,9 @@ function getFilterHTML(filter, type) {
 
     return $option;
 }
+
+function log() {
+    if (SW.DEBUG) {
+        console.log.apply(console, arguments);
+    }
+}

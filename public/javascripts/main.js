@@ -1,32 +1,49 @@
 function setupIngredientInfobox() {
     var $ingredient = $('.ingredient');
 
-    $ingredient.on('click', function (e) {
+    $ingredient.on('mouseenter', function (e) {
         var id = $(this).data('id');
-        $('.ingredient_infobox').remove();
-        if (SW.ING[id]) {
-            var ingredient_data = SW.ING[id];
-            var ingredient_info = $('<div/>', { class: 'ingredient_infobox' }).on('click', function (e) {
-                e.stopPropagation();
-            });
-            var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
+        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+        SW.INFOBOX.TIMEOUT_ID = setTimeout(function() {
+            if (SW.ING[id]) {
+                var ingredient_data = SW.ING[id];
+                var ingredient_info = $('<div/>').on('click', function (e) {
+                    e.stopPropagation();
+                });
+                var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
+                    $('.ingredient_infobox').remove();
+                })
+                ingredient_info.append(close_button);
+                ingredient_info.append($('<h2/>', { text: ingredient_data.name }));
+                var functions = $('<p/>', { class: 'functions' });
+                for (var i = 0; i < ingredient_data.functions.length; i++) {
+                    functions.append($('<span/>', {
+                        class: 'function neutral',
+                        text: ingredient_data.functions[i]
+                    }));
+                }
+                ingredient_info.append(functions);
+                ingredient_info.appendTo('body');
+                ingredient_info.append($('<p/>', { text: ingredient_data.description }));
                 $('.ingredient_infobox').remove();
-            })
-            ingredient_info.append(close_button);
-            ingredient_info.append($('<h2/>', { text: ingredient_data.name }));
-            var functions = $('<p/>', { class: 'functions' });
-            for (var i = 0; i < ingredient_data.functions.length; i++) {
-                functions.append($('<span/>', {
-                    class: 'function neutral',
-                    text: ingredient_data.functions[i]
-                }));
+                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 10 });
             }
-            ingredient_info.append(functions);
-            ingredient_info.appendTo('body');
-            ingredient_info.append($('<p/>', { text: ingredient_data.short_desc }));
-            ingredient_info.append('<p><a class="explicit" href="/ingredient/' + id + '">More details</a></p>');
-            ingredient_info.show().offset({ top: e.pageY, left: e.pageX });
-        }
+        }, SW.INFOBOX.TIMEOUT);
+    }).on('mouseleave', function() {
+        clearTimeout(SW.INFOBOX.TIMEOUT_ID);
+        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+            $('.ingredient_infobox').remove();
+        }, SW.INFOBOX.DISMISS_TIMEOUT);
+    }).on('click', function() {
+        location.href = '/ingredient/' + $(this).data('id');
+    });
+
+    $(document).on('mouseenter', '.ingredient_infobox', function() {
+        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+    }).on('mouseleave', '.ingredient_infobox', function() {
+        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+            $('.ingredient_infobox').remove();
+        }, SW.INFOBOX.DISMISS_TIMEOUT);
     });
 
     $(document).on('click', function () {

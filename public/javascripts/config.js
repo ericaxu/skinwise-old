@@ -44,3 +44,12 @@ SW.ING_FETCH = {
     LOADED_COUNT: 0,
     RESULT_COUNT: 0
 };
+
+SW.INFOBOX = {
+    TIMEOUT_ID: null,
+    TIMEOUT: 300,
+    DISMISS_TIMEOUT_ID: null,
+    DISMISS_TIMEOUT: 1000
+}
+
+SW.DEBUG = true;
