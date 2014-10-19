@@ -23,11 +23,13 @@ class IngredientSearch extends Controller {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
+  var namesToIds : java.util.Map[String, Long] = _
 
-  def this(names: java.util.List[String]) = {
+  def this(_namesToIds: java.util.Map[String, Long]) = {
     this()
 
-    names foreach { name =>
+    namesToIds = _namesToIds
+    namesToIds foreach { case (name, _) =>
       // Not case-sensitive.
       val words = name.toUpperCase.split("( |/)").toList
 
@@ -125,25 +127,27 @@ object IngredientSearch extends Controller {
   var instance: Option[IngredientSearch] = None
 
   def getInstance(): IngredientSearch = instance match {
-    case Some(x) => x
-    case None => {
-      val ingredients = Ingredient.getAll.toList
-      val names: List[String] = ingredients map { _.getName }
-      instance = Some(new IngredientSearch(names))
-      instance.get
-    }
+//    case Some(x) => x
+//    case None => {
+//      val ingredients = Ingredient.getAll.toList
+//      val names: List[String] = ingredients map { _.getName }
+//      instance = Some(new IngredientSearch(names))
+//      instance.get
+//    }
   }
 
   def partialSearch(query: String) = TimerAction {
-    val sorted_names = getInstance().partialSearch(query)
-
-    Ok(sorted_names mkString "\n")
+//    val sorted_names = getInstance().partialSearch(query)
+//
+//    Ok(sorted_names mkString "\n")
+    Ok("Under construction")
   }
 
   def fullSearch(query: String) = TimerAction {
-    val sorted_names = getInstance().fullSearch(query)
-
-    Ok(sorted_names mkString "\n")
+//    val sorted_names = getInstance().fullSearch(query)
+//
+//    Ok(sorted_names mkString "\n")
+    Ok("Under construction")
   }
 }
 
