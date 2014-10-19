@@ -4,18 +4,18 @@ function cleanupErrors() {
 
 function setupPopups() {
     // Closing popup
-    $('.wrapper, .close_btn, #cancel_btn').on('click', function(e) {
+    $('.wrapper, .close_btn, #cancel_btn').on('click', function (e) {
         $('.popup').hide();
     });
 
     // Allow user to close popup with ESC key
-    $(document).keydown(function(e){
-        if(e.keyCode == 27) {
+    $(document).keydown(function (e) {
+        if (e.keyCode == 27) {
             $('.popup, .ingredient_infobox').hide();
         }
     });
 
-    $('.form_container').click(function(e) {
+    $('.form_container').click(function (e) {
         e.stopPropagation();
     });
 
@@ -26,7 +26,7 @@ function setupPopups() {
 }
 
 function setupForgotPasswordPopup() {
-    $('#forget_password_link').on('click', function(e) {
+    $('#forget_password_link').on('click', function (e) {
         e.preventDefault();
         $('.popup').hide();
         $('.forgot_password.popup').show();
@@ -34,7 +34,7 @@ function setupForgotPasswordPopup() {
 }
 
 function setupLoginPopup() {
-    $('#login_link').on('click', function(e) {
+    $('#login_link').on('click', function (e) {
         $('.popup').hide();
         $('.login.popup').show();
         e.preventDefault();
@@ -44,7 +44,7 @@ function setupLoginPopup() {
 }
 
 function setupLoginCall() {
-    $('#login_btn').on('click', function(e) {
+    $('#login_btn').on('click', function (e) {
         cleanupErrors();
         $(this).val('Signing in...');
         postToAPI('/user/login', {
@@ -55,7 +55,7 @@ function setupLoginCall() {
 }
 
 function setupSignupCall() {
-    $('#signup_btn').on('click', function(e) {
+    $('#signup_btn').on('click', function (e) {
         cleanupErrors();
         $(this).val('Signing you up...');
         postToAPI('/user/signup', {
@@ -67,7 +67,7 @@ function setupSignupCall() {
 }
 
 function setupLogoutCall() {
-    $('#logout_link').on('click', function(e) {
+    $('#logout_link').on('click', function (e) {
         e.preventDefault();
         postToAPI('/user/logout', {}, logoutSuccesss);
     });
@@ -105,7 +105,7 @@ function loginError(status) {
 }
 
 function setupSignupPopup() {
-    $('#signup_link').on('click', function(e) {
+    $('#signup_link').on('click', function (e) {
         $('.popup').hide();
         $('.signup.popup').show();
         e.preventDefault();
@@ -115,15 +115,15 @@ function setupSignupPopup() {
 }
 
 function setupExpandableSearchbar() {
-    $('#search_icon').on('click', function() {
+    $('#search_icon').on('click', function () {
         $(this).hide();
         $('#nav_searchbar').addClass('activated');
-    }).on('mouseenter', function(e) {
-        SW.SEARCHBAR_EXPAND_TIMEOUT = setTimeout($.proxy(function() {
+    }).on('mouseenter', function (e) {
+        SW.SEARCHBAR_EXPAND_TIMEOUT = setTimeout($.proxy(function () {
             $(this).hide();
             $('#nav_searchbar').addClass('activated');
         }, this), SW.CONFIG.SEARCHBAR_EXPAND_TIMEOUT);
-    }).on('mouseleave', function() {
+    }).on('mouseleave', function () {
         clearTimeout(SW.SEARCHBAR_EXPAND_TIMEOUT);
     });
 }
@@ -131,7 +131,7 @@ function setupExpandableSearchbar() {
 function confirmAction(action, callback) {
     $('.popup').hide();
     $('.confirm.popup .action').text(action);
-    $('#confirm_btn').off('click').on('click', function() {
+    $('#confirm_btn').off('click').on('click', function () {
         $('.popup').hide();
         callback();
     });
@@ -139,7 +139,7 @@ function confirmAction(action, callback) {
 }
 
 function setupFeedbackCall() {
-    $('#feedback_btn').on('click', function(e) {
+    $('#feedback_btn').on('click', function (e) {
         cleanupErrors();
 
         if ($('#feedback_type').val() === 'none') {
@@ -171,19 +171,19 @@ function feedbackSuccess(response) {
 }
 
 function setupFeedbackPopup() {
-    $('#feedback_link').on('click', function() {
+    $('#feedback_link').on('click', function () {
         $('.feedback.popup').show();
     });
 
     setupFeedbackCall();
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     setupPopups();
     setupLogoutCall();
     setupExpandableSearchbar();
 
-    $('.notice_container').on('click', '.close_btn', function() {
+    $('.notice_container').on('click', '.close_btn', function () {
         $(this).parent().fadeOut(200);
     });
 });

@@ -84,7 +84,7 @@ $(document).on('ready', function () {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
     var original_offset = $('.filter_area').offset().top;
 
-    $('.add_filter').on('click', function() {
+    $('.open_add_filter_popup').on('click', function() {
         $('.add_filter.popup').show();
     });
 
