@@ -21,15 +21,6 @@ function loadFilterResults(response) {
     }
 }
 
-function getChebkexIds(filter_type) {
-    var results = [];
-    $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
-        results.push($(this).data('id'));
-    });
-
-    return results;
-}
-
 function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
         console.log('fetchNextPage');
@@ -74,18 +65,6 @@ function refetch() {
     });
 }
 
-function getFilterHTML(filter) {
-    console.log(filter);
-    var $option = $('<div/>', { class: 'filter_option' });
-    $option.append($('<input/>', {
-        type: 'checkbox',
-        id: filter.name
-    }).data('id', filter.id));
-    $option.append($('<label/>', { for: filter.name }).text(filter.name));
-
-    return $option;
-}
-
 function loadFilters() {
     var filter_types = ['ingredient', 'brand'];
     for (var i = 0; i < filter_types.length; i++) {
@@ -107,9 +86,7 @@ $(document).on('ready', function () {
 
     fetchNextPage();
 
-    $(document).on('change', '.filter_option input[type="checkbox"]', function () {
-        refetch();
-    });
+    $(document).on('change', '.filter_option input[type="checkbox"]', refetch);
 
     $(window).on('scroll', function () {
         // Check if we are at bottom of page

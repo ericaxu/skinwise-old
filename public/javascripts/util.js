@@ -148,3 +148,23 @@ function removeFilter(key, id) {
     }
     localStorage.setItem(key, filters);
 }
+
+function getChebkexIds(filter_type) {
+    var results = [];
+    $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
+        results.push($(this).data('id'));
+    });
+
+    return results;
+}
+
+function getFilterHTML(filter) {
+    var $option = $('<div/>', { class: 'filter_option' });
+    $option.append($('<input/>', {
+        type: 'checkbox',
+        id: filter.name
+    }).data('id', filter.id));
+    $option.append($('<label/>', { for: filter.name }).text(filter.name));
+
+    return $option;
+}

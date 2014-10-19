@@ -39,15 +39,6 @@ function loadFilterResults(response) {
     }
 }
 
-function getSelectedFunctions() {
-    var functions = [];
-    $('.function_filter:checked').each(function() {
-        functions.push($(this).data('id'));
-    });
-
-    return functions;
-}
-
 function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
         console.log('fetchNextPage');
@@ -56,7 +47,7 @@ function fetchNextPage() {
         SW.ING_FETCH.LOADING = true;
 
         postToAPI('/ingredient/filter', {
-            functions: getSelectedFunctions(),
+            functions: getChebkexIds('function'),
             page: SW.ING_FETCH.CUR_PAGE + 1
         }, function (response) {
             $('#loading_spinner').hide();
@@ -64,9 +55,6 @@ function fetchNextPage() {
             SW.ING_FETCH.CUR_PAGE += 1;
             SW.ING_FETCH.RESULT_COUNT = response.count;
             loadFilterResults(response);
-
-            console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
-            console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
         });
     }
 }
@@ -81,10 +69,8 @@ function refetch() {
     SW.ING_FETCH.LOADED_COUNT = 0;
     SW.ING_FETCH.LOADING = true;
 
-    console.log('refetch');
-
     postToAPI('/ingredient/filter', {
-        functions: getSelectedFunctions(),
+        functions: getChebkexIds('function'),
         page: 0
     }, function (response) {
         $('#loading_spinner').hide();
@@ -92,24 +78,32 @@ function refetch() {
         SW.ING_FETCH.CUR_PAGE = 0;
         SW.ING_FETCH.RESULT_COUNT = response.count;
         loadFilterResults(response);
-
-
-        console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
-        console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
     });
 }
 
+
+function loadFilters() {
+    var filter_types = ['function'];
+    for (var i = 0; i < filter_types.length; i++) {
+        var filter_type = filter_types[i];
+        var saved_filters = getIngredientFilters(filter_type);
+        for (var j = 0; j < saved_filters.length; j++) {
+            var filter = saved_filters[j];
+            console.log(filter);
+            $('.' + filter_type + '_filters').append(getFilterHTML(filter));
+        }
+    }
+}
 
 $(document).on('ready', function() {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
     var original_offset = $('.filter_area').offset().top;
 
+    loadFilters();
     fetchNextPage();
 
-    $('.function_filter').on('change', function() {
-        refetch();
-    });
+    $(document).on('change', '.filter_option input[type="checkbox"]', refetch);
 
     $(window).on('scroll', function() {
         // Check if we are at bottom of page
