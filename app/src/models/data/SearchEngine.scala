@@ -51,13 +51,6 @@ class SearchEngine[T] {
     trie insertWords words
   }
 
-  // Levenshtein gives the edit distance between two strings, but the longer the string, the
-  // less this distance should be considered an "error". This function changes the distance
-  // into a score. The lower the score the better the match.
-  def normalizeDistance(queryLength: Int)(matchResult: (String, Double)) = matchResult match {
-    case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
-  }
-
   def getScoredNames(fullWords: List[String], partialWord: String): mutable.Map[String, Double] = {
     val nameToScore = mutable.HashMap[String, Double]().withDefaultValue(0)
 
@@ -99,20 +92,54 @@ class SearchEngine[T] {
     results.take(limit).toList.map(result => namesToObjs.get(result._1))
   }
 
+  // Levenshtein gives the edit distance between two strings, but the longer the string, the
+  // less this distance should be considered an "error". This function changes the distance
+  // into a score. The lower the score the better the match.
+  def normalizeDistance(queryLength: Int)(matchResult: (String, Double)) = matchResult match {
+    case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
+  }
+
+  // Calculate the penalty as a function of the query length and the edit distance. Lower is better.
+  //
+  // The score is a function of the query length since the lower the query, the more tolerance
+  // to errors. However, the edit distance has higher weight.
+  def calculatePenalty(queryLength: Int, distance: Double) = {
+    if (distance == 0.0) {
+      // No penalty if the distance is 0
+      0.0
+    } else {
+      // Added weight for the edit distance. We add 1.0 to the distance because any non-zero
+      // distance is bad.
+      val edit = sqrt(distance + 1.0)
+      val ratio = distance / queryLength
+      val basePenalty = edit * ratio
+
+      // From numerical inspection, any penalty above 0.5 starts to be really bad, so
+      // increase the penalty further above that threshold.
+      basePenalty + max(basePenalty - 0.5, 0)
+    }
+  }
+
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
     val queryWords = MemCache.Matcher.splitIngredients(query).toList
-    val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
-      .map(normalizeDistance(queryWord.length)))
+    val matches = queryWords
+      .map(queryWord => Levenshtein.getMatches(queryWord, trie, 100))
       .flatten
     val scores = mutable.HashMap[String, Double]()
 
-    matches foreach { case (result, score) =>
+    matches foreach { case (result, distance) =>
       wordToNames(result) foreach { name =>
-        if (!scores.contains(name)) {
-          scores.put(name, 0.0)
+        val minScore = 1.0
+        val scoreForPenalty = max(0.0, minScore - calculatePenalty(query.length, distance))
+        if (scoreForPenalty > 0.0) {
+          if (!scores.contains(name)) {
+            scores.put(name, 0.0)
+          }
+          scores(name) += scoreForPenalty
+
+          // Give a higher score to smaller results, which should match the query more "tightly"
+          scores(name) += 0.1 / name.length
         }
-        scores(name) += (1.0 - score)
-        scores(name) += 0.1 / name.length
       }
     }
 
