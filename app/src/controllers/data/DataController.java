@@ -11,6 +11,8 @@ import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.models.MemCache;
+import src.models.data.Ingredient;
+import src.models.data.IngredientName;
 import src.models.data.NamedModel;
 import src.models.data.Product;
 
@@ -96,12 +98,23 @@ public class DataController extends Controller {
 
 			if (result != null) {
 				for (NamedModel object : result) {
+					long id = object.getId();
 					String name = object.getName();
+
+					//Ingredient names, we want ingredient ID instead, or skip if not associated
+					if (object instanceof IngredientName) {
+						Ingredient ingredient = ((IngredientName) object).getIngredient();
+						if (ingredient == null) {
+							continue;
+						}
+						id = ingredient.getId();
+					}
+					//Products, we want to display "Brand - Name"
 					if (object instanceof Product) {
 						name = ((Product) object).getBrandName() + " - " + name;
 					}
 					response.results.add(new ResponseDataObject(
-							object.getId(), name
+							id, name
 					));
 				}
 			}
