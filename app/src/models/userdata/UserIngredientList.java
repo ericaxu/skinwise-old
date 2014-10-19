@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = UserIngredientList.TABLENAME)
 public class UserIngredientList extends BaseModel {
-	@Column(length = 256)
+	@Column(name = "_key", length = 256)
 	private String key;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

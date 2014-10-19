@@ -1,6 +1,7 @@
-package src.models.user;
+package src.models.userdata;
 
 import play.db.ebean.Model;
+import src.models.user.User;
 
 import javax.persistence.*;
 
@@ -13,7 +14,7 @@ public class UserPreference extends Model {
 	@JoinColumn(name = "user")
 	private User user;
 
-	@Column(length = 256)
+	@Column(name = "_key", length = 256)
 	private String key;
 
 	@Lob
