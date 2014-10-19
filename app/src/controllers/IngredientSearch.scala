@@ -19,7 +19,7 @@ import collection.mutable
  *
  */
 
-class IngredientSearch extends Controller {
+class SearchEngine extends Controller {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
@@ -124,9 +124,9 @@ class IngredientSearch extends Controller {
 }
 
 object IngredientSearch extends Controller {
-  var instance: Option[IngredientSearch] = None
+  var instance: Option[SearchEngine] = None
 
-  def getInstance(): IngredientSearch = instance match {
+//  def getInstance(): SearchEngine = instance match {
 //    case Some(x) => x
 //    case None => {
 //      val ingredients = Ingredient.getAll.toList
@@ -134,7 +134,7 @@ object IngredientSearch extends Controller {
 //      instance = Some(new IngredientSearch(names))
 //      instance.get
 //    }
-  }
+//  }
 
   def partialSearch(query: String) = TimerAction {
 //    val sorted_names = getInstance().partialSearch(query)

@@ -16,8 +16,8 @@ GET         /ingredient/:id                         src.controllers.data.Ingredi
 GET         /product/:id                            src.controllers.data.ProductController.product(id : Long)
 
 # Search
-GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
-GET         /api/search/:query                      src.controllers.IngredientSearch.fullSearch(query)
+# GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
+# GET         /api/search/:query                      src.controllers.IngredientSearch.fullSearch(query)
 
 # Ingredient API
 POST        /api/ingredient/byid                    src.controllers.data.IngredientController.api_ingredient_byid()
