@@ -429,7 +429,7 @@ public class MemCache {
 			cache.lock.readLock().unlock();
 		}
 
-		public List<String> splitIngredients(String ingredient_string) {
+		public static List<String> splitIngredients(String ingredient_string) {
 			ingredient_string = ingredient_string
 					.replaceAll("[0-9\\.]+\\s*%", "")
 					.replaceAll("\\(\\s*\\)", "");

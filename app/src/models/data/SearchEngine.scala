@@ -1,5 +1,7 @@
 package src.models.data
 
+import src.models.MemCache
+
 import scala.Array._
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -31,7 +33,7 @@ class SearchEngine[T] {
 
   def update(name: String) = {
     // Not case-sensitive.
-    val words = name.split("( |/)").toList
+    val words = MemCache.Matcher.splitIngredients(name).toList
 
     val wordPositionMap = new mutable.HashMap[String, Int]
     words.zipWithIndex foreach { case (word, index) =>
@@ -83,7 +85,7 @@ class SearchEngine[T] {
 
   def partialSearch(query: String, limit: Int): java.util.List[T] = {
     // Not case-sensitive.
-    val queryWords = query.split("( |/)").toList
+    val queryWords = MemCache.Matcher.splitIngredients(query).toList
     val fullWords = queryWords.dropRight(1)
     val partialWord = queryWords.last
 
@@ -98,7 +100,7 @@ class SearchEngine[T] {
   }
 
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
-    val queryWords = query.split("( |/)").toList
+    val queryWords = MemCache.Matcher.splitIngredients(query).toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
       .map(normalizeDistance(queryWord.length)))
       .flatten
