@@ -121,7 +121,7 @@ public class MemCache {
 				}
 
 				for (Product object : list) {
-					products.get(object.getBrand()).put(key(object), object);
+					getOrCreateMap(object.getBrand()).put(key(object), object);
 				}
 			}
 			finally {
@@ -132,7 +132,9 @@ public class MemCache {
 		public void updateAndSave(Product object, Brand brand, String name) {
 			lock.writeLock().lock();
 			try {
-				products.get(object.getBrand()).remove(key(object));
+				if(object.getBrand() != null && object.getName() != null) {
+					getOrCreateMap(object.getBrand()).remove(key(object));
+				}
 				object.setBrand(brand);
 				object.setName(name);
 				object.save();
@@ -159,7 +161,7 @@ public class MemCache {
 			lock.readLock().lock();
 			try {
 				String key = name.toLowerCase();
-				Map<String, Product> map = products.get(brand);
+				Map<String, Product> map = getOrCreateMap(brand);
 				if (map.containsKey(key)) {
 					return map.get(key);
 				}
@@ -175,6 +177,18 @@ public class MemCache {
 			finally {
 				lock.readLock().unlock();
 			}
+		}
+
+		private Map<String, Product> getOrCreateMap(Brand brand) {
+			if (brand == null) {
+				return null;
+			}
+			Map<String, Product> map = products.get(brand);
+			if (map == null) {
+				map = new HashMap<>();
+				products.put(brand, map);
+			}
+			return map;
 		}
 	}
 
