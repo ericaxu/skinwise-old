@@ -1,5 +1,6 @@
 package src.util;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +16,7 @@ public class Json {
 		objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		objectMapper.getFactory().enable(JsonGenerator.Feature.ESCAPE_NON_ASCII);
 	}
 
 	public static ObjectMapper mapper() {

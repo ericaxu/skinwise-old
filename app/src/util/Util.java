@@ -2,11 +2,14 @@ package src.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class Util {
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+
 	public static String notNull(String input) {
 		if (input == null) {
 			return "";
@@ -16,7 +19,7 @@ public class Util {
 
 	public static String readAll(String file) throws IOException {
 		byte[] data = Files.readAllBytes(Paths.get(file));
-		return new String(data);
+		return new String(data, UTF8);
 	}
 
 	public static void writeAll(String file, String data) throws IOException {
@@ -24,7 +27,7 @@ public class Util {
 		if (!f.exists()) {
 			f.createNewFile();
 		}
-		Files.write(Paths.get(file), data.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+		Files.write(Paths.get(file), data.getBytes(UTF8), StandardOpenOption.TRUNCATE_EXISTING);
 	}
 
 	public static String joinString(String delimiter, long[] array) {
