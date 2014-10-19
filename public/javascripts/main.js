@@ -34,8 +34,6 @@ function setupIngredientInfobox() {
         SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.ingredient_infobox').remove();
         }, SW.INFOBOX.DISMISS_TIMEOUT);
-    }).on('click', function() {
-        location.href = '/ingredient/' + $(this).data('id');
     });
 
     // Dismiss infobox after leaving it for a while
@@ -81,8 +79,6 @@ function setupFunctionInfobox() {
         SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.function_infobox').remove();
         }, SW.INFOBOX.DISMISS_TIMEOUT);
-    }).on('click','.function', function() {
-        location.href = '/ingredient/' + $(this).data('id');
     });
 
     // Dismiss infobox after leaving it for a while
