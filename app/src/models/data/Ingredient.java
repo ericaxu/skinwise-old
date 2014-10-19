@@ -13,6 +13,8 @@ import java.util.Set;
 @Entity
 @Table(name = Ingredient.TABLENAME)
 public class Ingredient extends NamedModel {
+	private int popularity;
+
 	@Column(length = 128)
 	private String cas_number;
 
@@ -29,6 +31,10 @@ public class Ingredient extends NamedModel {
 
 	//Getters
 
+	public int getPopularity() {
+		return popularity;
+	}
+
 	public String getCas_number() {
 		return cas_number;
 	}
@@ -42,6 +48,10 @@ public class Ingredient extends NamedModel {
 	}
 
 	//Setters
+
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
+	}
 
 	public void setCas_number(String cas_number) {
 		this.cas_number = cas_number;
@@ -96,14 +106,16 @@ public class Ingredient extends NamedModel {
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
 		if (functions.length == 0) {
-			return page.apply(find.query());
+			return page.apply(find.order().desc("popularity"));
 		}
 
-		String query = "SELECT DISTINCT i.ingredient_id as id " +
-				"FROM " + FUNCTIONS_JOINTABLE + " i WHERE " +
-				"i.function_id IN (" + Util.joinString(",", functions) + ") " +
-				"GROUP BY i.ingredient_id " +
-				"HAVING count(*) = " + functions.length;
+		String query = "SELECT DISTINCT main.id as id, main.popularity " +
+				"FROM " + TABLENAME + " main JOIN " + FUNCTIONS_JOINTABLE + " aux " +
+				"ON main.id = aux.ingredient_id WHERE " +
+				"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
+				"GROUP BY main.id " +
+				"HAVING count(*) = " + functions.length + " " +
+				"ORDER BY main.popularity DESC ";
 
 		return page.apply(find, query);
 	}

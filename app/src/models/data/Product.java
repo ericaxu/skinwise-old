@@ -11,6 +11,8 @@ import java.util.Set;
 @Entity
 @Table(name = Product.TABLENAME)
 public class Product extends NamedModel {
+	private int popularity;
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "brand_id", referencedColumnName = "id")
 	private Brand brand;
@@ -29,6 +31,10 @@ public class Product extends NamedModel {
 
 	//Getters
 
+	public int getPopularity() {
+		return popularity;
+	}
+
 	public Brand getBrand() {
 		return brand;
 	}
@@ -46,6 +52,10 @@ public class Product extends NamedModel {
 	}
 
 	//Setters
+
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
+	}
 
 	public void setBrand(Brand brand) {
 		this.brand = brand;
@@ -140,15 +150,15 @@ public class Product extends NamedModel {
 
 	public static List<Product> byFilter(long[] brands, long[] ingredients, Page page) {
 		if (brands.length == 0 && ingredients.length == 0) {
-			return page.apply(find.query());
+			return page.apply(find.order().desc("popularity"));
 		}
 
-		String query = "SELECT DISTINCT a.product_id as id " +
-				"FROM " + TABLENAME + " p INNER JOIN " + ProductIngredient.TABLENAME + " a " +
-				"ON p.id = a.product_id WHERE ";
+		String query = "SELECT DISTINCT main.id as id, main.popularity " +
+				"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
+				"ON main.id = aux.product_id WHERE ";
 
 		if (brands.length > 0) {
-			query += " p.brand_id IN (" + Util.joinString(",", brands) + ") ";
+			query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
 
 			if (ingredients.length > 0) {
 				query += "AND ";
@@ -165,10 +175,12 @@ public class Product extends NamedModel {
 			}
 			Long[] list = ingredient_name_ids.toArray(new Long[ingredient_name_ids.size()]);
 
-			query += " a.ingredient_name_id IN (" + Util.joinString(",", list) + ") " +
-					"GROUP BY a.product_id " +
-					"HAVING count(*) = " + ingredients.length;
+			query += " aux.ingredient_name_id IN (" + Util.joinString(",", list) + ") " +
+					"GROUP BY main.id " +
+					"HAVING count(*) = " + ingredients.length + " ";
 		}
+
+		query += " ORDER BY main.popularity DESC ";
 
 		return page.apply(find, query);
 	}
