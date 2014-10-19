@@ -21,10 +21,10 @@ public class Product extends NamedModel {
 	@JoinColumn(name = "type_id", referencedColumnName = "id")
 	private ProductType type;
 
-	@Column(length = 1024)
+	@Column(length = 1023)
 	private String line;
 
-	@Column(length = 2048)
+	@Column(length = 1023)
 	private String image;
 
 	//Relation table

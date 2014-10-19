@@ -15,7 +15,7 @@ import java.util.Set;
 public class Ingredient extends NamedModel {
 	private int popularity;
 
-	@Column(length = 128)
+	@Column(length = 127)
 	private String cas_number;
 
 	//Relation table

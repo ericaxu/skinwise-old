@@ -11,13 +11,13 @@ import java.util.List;
 @Entity
 public class User extends Permissible {
 
-	@Column(length = 512, unique = true)
+	@Column(length = 255, unique = true)
 	private String email;
 
-	@Column(length = 256)
+	@Column(length = 255)
 	private String password_hash;
 
-	@Column(length = 512)
+	@Column(length = 255)
 	private String name;
 
 	private long time_registered;

@@ -7,10 +7,10 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class NamedModel extends BaseModel {
-	@Column(length = 1024, nullable = false)
+	@Column(length = 1023, nullable = false)
 	private String name;
 
-	@Column(length = 8192)
+	@Column(length = 8191)
 	private String description;
 
 	//Getters

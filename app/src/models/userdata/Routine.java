@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = Routine.TABLENAME)
 public class Routine extends BaseModel {
-	@Column(length = 256)
+	@Column(length = 255)
 	private String name;
 
 	@Column

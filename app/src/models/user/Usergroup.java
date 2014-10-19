@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class Usergroup extends Permissible {
 
-	@Column(length = 512, unique = true)
+	@Column(length = 255, unique = true)
 	private String name;
 
 	//Getters

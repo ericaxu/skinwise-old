@@ -14,7 +14,7 @@ public class UserPreference extends Model {
 	@JoinColumn(name = "user")
 	private User user;
 
-	@Column(name = "_key", length = 256)
+	@Column(name = "_key", length = 255)
 	private String key;
 
 	@Lob

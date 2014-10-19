@@ -10,10 +10,10 @@ import java.util.List;
 
 @Entity
 public class Analytics extends BaseModel {
-	@Column(length = 256)
+	@Column(length = 255)
 	private String event;
 
-	@Column(length = 1024)
+	@Column(length = 1023)
 	private String summary;
 
 	@Lob
