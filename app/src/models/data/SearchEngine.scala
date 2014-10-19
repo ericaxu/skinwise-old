@@ -21,13 +21,13 @@ class SearchEngine[T] extends Controller {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
-  var namesToIds : java.util.Map[String, T] = _
+  var namesToObjs : java.util.Map[String, T] = _
 
-  def this(_namesToIds: java.util.Map[String, T]) = {
+  def this(_namesToObjs: java.util.Map[String, T]) = {
     this()
 
-    namesToIds = _namesToIds
-    namesToIds foreach { case (name, _) =>
+    namesToObjs = _namesToObjs
+    namesToObjs foreach { case (name, _) =>
       // Not case-sensitive.
       val words = name.toUpperCase.split("( |/)").toList
 
@@ -75,7 +75,7 @@ class SearchEngine[T] extends Controller {
     nameToScore
   }
 
-  def partialSearch(query: String): List[String] = {
+  def partialSearch(query: String): List[T] = {
     // Not case-sensitive.
     val queryWords = query.toUpperCase.split(" ").toList
     val fullWords = queryWords.dropRight(1)
@@ -89,10 +89,10 @@ class SearchEngine[T] extends Controller {
     }
 
     val maxResults = 3
-    results.take(maxResults).toList.map(_._1)
+    results.take(maxResults).toList.map(result => namesToObjs.get(result))
   }
 
-  def fullSearch(query: String): List[String] = {
+  def fullSearch(query: String): List[T] = {
     val queryWords = query.split(" ").toList
     val matches = queryWords.map(queryWord => Levenshtein.getMatches(queryWord, trie, 100)
       .map(normalizeDistance(queryWord.length)))
@@ -117,7 +117,7 @@ class SearchEngine[T] extends Controller {
     // For debugging.
     //    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
 
-    slicedResults.map { _._1 }
+    slicedResults.map(result => namesToObjs.get(result))
   }
 }
 
