@@ -18,6 +18,7 @@ GET         /product/:id                            src.controllers.data.Product
 # Search
 # GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
 # GET         /api/search/:query                      src.controllers.IngredientSearch.fullSearch(query)
+POST        /api/autocomplete                       src.controllers.data.DataController.api_autocomplete()
 
 # Ingredient API
 POST        /api/ingredient/byid                    src.controllers.data.IngredientController.api_ingredient_byid()

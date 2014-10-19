@@ -40,21 +40,32 @@ public class MemCache {
 		public List<T> search(String query, int limit, boolean fullSearch) {
 			query = query.toLowerCase();
 			lock.writeLock().lock();
+			List<T> result;
 			try {
 				if (search == null) {
 					search = new SearchEngine<>();
 					search.init(names);
 				}
 				if (fullSearch) {
-					return search.fullSearch(query, limit);
+					result = search.fullSearch(query, limit);
 				}
 				else {
-					return search.partialSearch(query, limit);
+					result = search.partialSearch(query, limit);
 				}
 			}
 			finally {
 				lock.writeLock().unlock();
 			}
+			if (result == null || result.isEmpty()) {
+				return new ArrayList<>();
+			}
+			List<T> filteredResult = new ArrayList<>();
+			for (T object : result) {
+				if (object != null) {
+					filteredResult.add(object);
+				}
+			}
+			return filteredResult;
 		}
 
 		public void updateNameAndSave(T object, String name) {

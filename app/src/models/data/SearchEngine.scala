@@ -96,7 +96,7 @@ class SearchEngine[T] {
       results += ((name, score))
     }
 
-    results.take(limit).toList.map(result => namesToObjs.get(result))
+    results.take(limit).toList.map(result => namesToObjs.get(result._1))
   }
 
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
