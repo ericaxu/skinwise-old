@@ -13,7 +13,6 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.BaseModel;
-import src.models.MemCache;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
@@ -53,14 +52,12 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientUpdate request = Api.read(ctx(), RequestIngredientUpdate.class);
 
-			MemCache cache = App.cache();
-
 			Ingredient result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Ingredient();
 			}
 			else {
-				result = cache.ingredients.get(request.id);
+				result = Ingredient.byId(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.id + " not found");
 				}
@@ -68,7 +65,7 @@ public class AdminIngredientController extends Controller {
 
 			Set<Function> functions = new HashSet<>();
 			for (String f : request.functions) {
-				Function function = cache.functions.get(f);
+				Function function = App.cache().functions.get(f);
 				if (function == null) {
 					throw new BadRequestException(Response.INVALID, "Function " + f + " not found");
 				}
@@ -78,8 +75,8 @@ public class AdminIngredientController extends Controller {
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
 			result.setFunctions(functions);
-
-			cache.ingredients.updateNameAndSave(result, request.name);
+			
+			App.cache().ingredients.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
 		}
@@ -96,27 +93,25 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
 
-			MemCache cache = App.cache();
-
 			IngredientName result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new IngredientName();
 			}
 			else {
-				result = cache.ingredient_names.get(request.id);
+				result = IngredientName.byId(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
 				}
 			}
 
-			Ingredient ingredient = cache.ingredients.get(request.ingredient_id);
+			Ingredient ingredient = Ingredient.byId(request.ingredient_id);
 			if (ingredient == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
 			}
 
 			result.setIngredient(ingredient);
 
-			cache.ingredient_names.updateNameAndSave(result, request.name);
+			App.cache().ingredient_names.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}
@@ -133,14 +128,12 @@ public class AdminIngredientController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			MemCache cache = App.cache();
-
 			Function result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Function();
 			}
 			else {
-				result = cache.functions.get(request.id);
+				result = Function.byId(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
 				}
@@ -148,7 +141,7 @@ public class AdminIngredientController extends Controller {
 
 			result.setDescription(request.description);
 
-			cache.functions.updateNameAndSave(result, request.name);
+			App.cache().functions.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}

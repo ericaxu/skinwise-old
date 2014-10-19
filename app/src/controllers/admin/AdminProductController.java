@@ -52,7 +52,7 @@ public class AdminProductController extends Controller {
 
 			MemCache cache = App.cache();
 
-			Product result = cache.products.get(request.id);
+			Product result = Product.byId(request.id);
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Product();
 			}
@@ -65,9 +65,7 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
 			}
 
-			result.setBrand(brand);
 			result.setLine(request.line);
-			result.setName(request.name);
 			result.setDescription(request.description);
 			result.setImage(request.image);
 
@@ -78,7 +76,7 @@ public class AdminProductController extends Controller {
 
 			result.setIngredientList(ingredients, key_ingredients);
 
-			result.save();
+			cache.products.updateAndSave(result, brand, request.name);
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
 		}
@@ -95,14 +93,12 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			MemCache cache = App.cache();
-
 			Brand result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Brand();
 			}
 			else {
-				result = cache.brands.get(request.id);
+				result = Brand.byId(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
 				}
@@ -110,7 +106,7 @@ public class AdminProductController extends Controller {
 
 			result.setDescription(request.description);
 
-			cache.brands.updateNameAndSave(result, request.name);
+			App.cache().brands.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
 		}
@@ -127,14 +123,12 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
-			MemCache cache = App.cache();
-
 			ProductType result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new ProductType();
 			}
 			else {
-				result = cache.types.get(request.id);
+				result = ProductType.byId(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
 				}
@@ -142,7 +136,7 @@ public class AdminProductController extends Controller {
 
 			result.setDescription(request.description);
 
-			cache.types.updateNameAndSave(result, request.name);
+			App.cache().types.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}

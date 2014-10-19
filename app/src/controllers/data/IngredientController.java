@@ -9,7 +9,6 @@ import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
-import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.BaseModel;
@@ -128,7 +127,7 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Ingredient result = App.cache().ingredients.get(request.id);
+			Ingredient result = App.cache().ingredients.get(request.id, true);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}

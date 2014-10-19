@@ -271,24 +271,33 @@ public class MemCache {
 		}
 
 		public T get(long id) {
+			return get(id, false);
+		}
+
+		public T get(long id, boolean update) {
 			lock.readLock().lock();
 			try {
+				T result;
 				if (index.containsKey(id)) {
-					return index.get(id);
+					result = index.get(id);
+					if (update) {
+						result.syncRefresh();
+					}
+					return result;
 				}
-				return null;
-				/*
-				T result = getter.byId(id);
-				if (result == null) {
-					return null;
+				if (update) {
+					result = getter.byId(id);
+					if (result == null) {
+						return null;
+					}
+					update(result);
+					return result;
 				}
-				update(result);
-				return result;
-				*/
 			}
 			finally {
 				lock.readLock().unlock();
 			}
+			return null;
 		}
 	}
 

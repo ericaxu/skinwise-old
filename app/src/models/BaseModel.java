@@ -16,6 +16,10 @@ public abstract class BaseModel extends Model {
 		return id;
 	}
 
+	public synchronized void syncRefresh() {
+		refresh();
+	}
+
 	public static long getIdIfExists(BaseModel object) {
 		if (object == null) {
 			return -1;

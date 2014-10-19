@@ -152,7 +152,7 @@ public class ProductController extends Controller {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id);
+			Product result = App.cache().products.get(request.id, true);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
@@ -217,11 +217,9 @@ public class ProductController extends Controller {
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_brands() {
-		List<Brand> result = Brand.all();
-
 		ResponseBrands response = new ResponseBrands();
 
-		for (Brand brand : result) {
+		for (Brand brand : App.cache().brands.all()) {
 			response.results.add(new ResponseBrandObject(
 					brand.getId(),
 					brand.getName(),
@@ -259,11 +257,9 @@ public class ProductController extends Controller {
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_types() {
-		List<ProductType> result = ProductType.all();
-
 		ResponseTypes response = new ResponseTypes();
 
-		for (ProductType type : result) {
+		for (ProductType type : App.cache().types.all()) {
 			response.results.add(new ResponseTypeObject(
 					type.getId(),
 					type.getName(),
@@ -279,7 +275,7 @@ public class ProductController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id);
+			Product result = App.cache().products.get(request.id, true);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
