@@ -99,6 +99,14 @@ public class IngredientController extends Controller {
 		return ok(ingredient.render(state, result));
 	}
 
+	public static Result ingredient_search(String query) {
+		ResponseState state = new ResponseState(session());
+
+		//TODO
+
+		return ok();
+	}
+
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_ingredient_byid() {
 		try {

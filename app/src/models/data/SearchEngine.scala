@@ -1,15 +1,13 @@
-package src.controllers
+package src.models.data
 
 import play.api.mvc._
-import src.models.data.Ingredient
 import src.controllers.util.TimerAction
 
 import scala.Array._
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 import scala.collection.mutable._
 import scala.math._
-
-import collection.mutable
 
 /**
  * More ideas :
@@ -19,13 +17,13 @@ import collection.mutable
  *
  */
 
-class SearchEngine extends Controller {
+class SearchEngine[T] extends Controller {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
   var trie: Trie = _
-  var namesToIds : java.util.Map[String, Long] = _
+  var namesToIds : java.util.Map[String, T] = _
 
-  def this(_namesToIds: java.util.Map[String, Long]) = {
+  def this(_namesToIds: java.util.Map[String, T]) = {
     this()
 
     namesToIds = _namesToIds
@@ -120,34 +118,6 @@ class SearchEngine extends Controller {
     //    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
 
     slicedResults.map { _._1 }
-  }
-}
-
-object IngredientSearch extends Controller {
-  var instance: Option[SearchEngine] = None
-
-//  def getInstance(): SearchEngine = instance match {
-//    case Some(x) => x
-//    case None => {
-//      val ingredients = Ingredient.getAll.toList
-//      val names: List[String] = ingredients map { _.getName }
-//      instance = Some(new IngredientSearch(names))
-//      instance.get
-//    }
-//  }
-
-  def partialSearch(query: String) = TimerAction {
-//    val sorted_names = getInstance().partialSearch(query)
-//
-//    Ok(sorted_names mkString "\n")
-    Ok("Under construction")
-  }
-
-  def fullSearch(query: String) = TimerAction {
-//    val sorted_names = getInstance().fullSearch(query)
-//
-//    Ok(sorted_names mkString "\n")
-    Ok("Under construction")
   }
 }
 
