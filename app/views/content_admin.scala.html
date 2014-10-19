@@ -10,7 +10,8 @@
         <div class="tab_headers">
             <a href="#" class="tab_title current" data-tab-name="ingredient_tab">Ingredient</a><a href="#" class="tab_title"
         data-tab-name="product_tab">Product</a><a href="#" class="tab_title" data-tab-name="function_tab">Function</a><a
-        href="#" class="tab_title" data-tab-name="brand_tab">Brand</a>
+        href="#" class="tab_title" data-tab-name="brand_tab">Brand</a><a href="#" class="tab_title"
+        data-tab-name="type_tab">Type</a>
         </div>
 
         <div class="tab" id="ingredient_tab">
@@ -59,7 +60,6 @@
                     <div class="field">
                         <p>
                             <input id="save_ingredient_btn" class="primary" type="button" value="Save"/>
-                            <input id="delete_ingredient_btn" class="primary" type="button" value="Delete"/>
                         </p>
                     </div>
                 </div>
@@ -112,7 +112,6 @@
                     <div class="field">
                         <p>
                             <input id="save_product_btn" class="primary" type="button" value="Save"/>
-                            <input id="delete_product_btn" class="primary" type="button" value="Delete"/>
                         </p>
                     </div>
                 </div>
@@ -156,7 +155,6 @@
                     <div class="field">
                         <p>
                             <input id="save_function_btn" class="primary" type="button" value="Save"/>
-                            <input id="delete_function_btn" class="primary" type="button" value="Delete"/>
                         </p>
                     </div>
                 </div>
@@ -200,7 +198,49 @@
                     <div class="field">
                         <p>
                             <input id="save_brand_btn" class="primary" type="button" value="Save"/>
-                            <input id="delete_brand_btn" class="primary" type="button" value="Delete"/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab" id="type_tab">
+            <h1>Product Type Manager</h1>
+            <div class="field">
+                <div class="labels">
+                    <label for="type_by_id">By ID:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="type_by_id"/>
+                    <input type="button" id="type_by_id_btn" value="Search"/>
+                </div>
+            </div>
+            <p>
+                <input id="create_type_btn" class="primary" type="button" value="Create type"/>
+            </p>
+
+            <div class="edit_container" id="edit_type">
+                <h2>Edit Type</h2>
+                <div class="field">
+                    <div class="labels">
+                        <label for="edit_type_id">ID:</label>
+                        <label for="edit_type_name">Name:</label>
+                        <label for="edit_type_description">Description:</label>
+                    </div>
+
+                    <div class="inputs">
+                        <input type="text" id="edit_type_id" disabled/>
+                        <br>
+                        <input type="text" id="edit_type_name"/>
+                        <br>
+                        <textarea type="text" id="edit_type_description"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <p>
+                            <input id="save_type_btn" class="primary" type="button" value="Save"/>
                         </p>
                     </div>
                 </div>

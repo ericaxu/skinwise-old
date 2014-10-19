@@ -119,6 +119,18 @@ public class ProductController extends Controller {
 		public List<ResponseBrandObject> results = new ArrayList<>();
 	}
 
+	public static class ResponseType extends Response {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseType(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
 	public static class ResponseTypeObject {
 		public long id;
 		public String name;
@@ -268,6 +280,31 @@ public class ProductController extends Controller {
 		}
 
 		return Api.write(response);
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_type_byid() {
+		try {
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			MemCache cache = App.cache();
+
+			ProductType result = cache.types.get(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Type " + request.id + " not found");
+			}
+
+			ResponseType response = new ResponseType(
+					result.getId(),
+					result.getName(),
+					result.getDescription()
+			);
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

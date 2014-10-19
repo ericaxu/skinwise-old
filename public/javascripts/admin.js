@@ -15,6 +15,33 @@ function hideEdit() {
     $('.edit_container').hide();
 }
 
+
+
+function setupDatabaseManager() {
+    $('#import_btn').on('click', function() {
+        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+    });
+    $('#export_btn').on('click', function() {
+        postToAPI('/admin/export', {}, null, null, 'Exporting database...');
+    });
+}
+
+function listenForEnter() {
+    $("input").focus(function() {
+        $(this).addClass('focused');
+    }).blur(function() {
+        $(this).removeClass('focused');
+    });
+
+    $(document.body).on('keyup', function(e) {
+        // 13 is ENTER
+        if (e.which === 13 && $('.focused').length > 0) {
+            var btn_id = $('.focused').attr('id') + '_btn';
+            $('#' + btn_id).click();
+        }
+    });
+}
+
 // USERS
 
 function setupUserSearchCall() {
@@ -168,17 +195,6 @@ function ingredientLoadSuccess(response) {
     $('#edit_ingredient').show();
 }
 
-function setupIngredientDeleteCall() {
-    $('#delete_ingredient_btn').on('click', function() {
-        var ingredient_name = $('#edit_ingredient_name').data('original');
-        confirmAction('delete ingredient ' + ingredient_name, function() {
-            postToAPI('/admin/ingredient/delete', {
-                id: $('#edit_ingredient_id').val()
-            }, hideEdit, null, 'Deleting ingredient ' + ingredient_name);
-        });
-    });
-}
-
 function setupIngredientEditSaveCall() {
     $('#save_ingredient_btn').on('click', function() {
         var ingredient_id = $('#edit_ingredient_id').val();
@@ -249,17 +265,6 @@ function productLoadSuccess(response) {
     $('#edit_product').show();
 }
 
-function setupProductDeleteCall() {
-    $('#delete_product_btn').on('click', function() {
-        var product_name = $('#edit_product_name').data('original');
-        confirmAction('delete product ' + product_name, function() {
-            postToAPI('/admin/product/delete', {
-                id: $('#edit_product_id').val()
-            }, hideEdit, null, 'Deleting product ' + product_name);
-        });
-    });
-}
-
 function setupProductEditSaveCall() {
     $('#save_product_btn').on('click', function() {
         var product_id = $('#edit_product_id').val();
@@ -314,17 +319,6 @@ function functionLoadSuccess(response) {
     $('#edit_function').show();
 }
 
-function setupFunctionDeleteCall() {
-    $('#delete_function_btn').on('click', function() {
-        var function_name = $('#edit_function_name').data('original');
-        confirmAction('delete function ' + function_name, function() {
-            postToAPI('/admin/function/delete', {
-                id: $('#edit_function_id').val()
-            }, hideEdit, null, 'Deleting function ' + function_name);
-        });
-    });
-}
-
 function setupFunctionEditSaveCall() {
     $('#save_function_btn').on('click', function() {
         var function_id = $('#edit_function_id').val();
@@ -342,7 +336,7 @@ function setupFunctionEditSaveCall() {
 }
 
 
-// Brand
+// BRAND
 
 function setupBrandSearchCall() {
     $('#brand_by_id_btn').on('click', function() {
@@ -381,17 +375,6 @@ function brandLoadSuccess(response) {
     $('#edit_brand').show();
 }
 
-function setupBrandDeleteCall() {
-    $('#delete_brand_btn').on('click', function() {
-        var brand_name = $('#edit_brand_name').data('original');
-        confirmAction('delete brand ' + brand_name, function() {
-            postToAPI('/admin/brand/delete', {
-                id: $('#edit_brand_id').val()
-            }, hideEdit, null, 'Deleting brand ' + brand_name);
-        });
-    });
-}
-
 function setupBrandEditSaveCall() {
     $('#save_brand_btn').on('click', function() {
         var brand_id = $('#edit_brand_id').val();
@@ -407,6 +390,61 @@ function setupBrandEditSaveCall() {
         };
 
         postToAPI('/admin/brand/update', new_brand_info, null, null, 'Updating brand...');
+    });
+}
+
+
+// PRODUCT TYPE
+
+function setupTypeSearchCall() {
+    $('#type_by_id_btn').on('click', function() {
+        var type_id = $('#type_by_id').val();
+        if (!isInteger(type_id)) {
+            showError('Type ID must be an integer.');
+            return;
+        }
+
+        postToAPI('/product/type/byid', {
+            id: type_id
+        }, typeLoadSuccess, null, 'Looking up type...');
+    });
+}
+
+function setupCreateTypeCall() {
+    $('#create_type_btn').on('click', function() {
+        typeLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            type: '',
+            line: '',
+            description: ''
+        });
+    });
+}
+
+function typeLoadSuccess(response) {
+    log(response);
+    $('#edit_type_id').val(response.id);
+    $('#edit_type_name').val(response.name).data('original', response.name);
+    $('#edit_type_description').val(response.description);
+    $('#edit_type').show();
+}
+
+function setupTypeEditSaveCall() {
+    $('#save_type_btn').on('click', function() {
+        var type_id = $('#edit_type_id').val();
+        if (type_id === 'Not assigned yet') {
+            type_id = '-1';
+        }
+        var new_type_info = {
+            id: type_id,
+            name: $('#edit_type_name').val(),
+            type: $('#edit_type_type').val(),
+            line: $('#edit_type_line').val(),
+            description: $('#edit_type_description').val()
+        };
+
+        postToAPI('/admin/producttype/update', new_type_info, null, null, 'Updating type...');
     });
 }
 
@@ -450,23 +488,23 @@ $(document).ready(function() {
 
     setupIngredientSearchCall();
     setupIngredientEditSaveCall();
-    setupIngredientDeleteCall();
     setupCreateIngredientCall();
 
     setupProductSearchCall();
     setupProductEditSaveCall();
-    setupProductDeleteCall();
     setupCreateProductCall();
 
     setupFunctionSearchCall();
     setupFunctionEditSaveCall();
-    setupFunctionDeleteCall();
     setupCreateFunctionCall();
 
     setupBrandSearchCall();
     setupBrandEditSaveCall();
-    setupBrandDeleteCall();
     setupCreateBrandCall();
+
+    setupTypeSearchCall();
+    setupTypeEditSaveCall();
+    setupCreateTypeCall();
 
     setupDatabaseManager();
 
