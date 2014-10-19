@@ -70,17 +70,29 @@ function loadFilters() {
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
         var saved_filters = getProductFilters(filter_type);
+
+        $filters = $('.' + filter_type + '_filters');
+        $filters.empty();
         for (var j = 0; j < saved_filters.length; j++) {
             var filter = saved_filters[j];
-            $('.' + filter_type + '_filters').append(getFilterHTML(filter));
+            $filters.append(getFilterHTML(filter));
         }
     }
 }
 
 $(document).on('ready', function () {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
-
     var original_offset = $('.filter_area').offset().top;
+
+    $('.add_filter').on('click', function() {
+        $('.add_filter.popup').show();
+    });
+
+    $('#add_filter_btn').on('click', function() {
+        // Add filter to local storage
+        loadFilters();
+        $('.popup').hide();
+    });
 
     loadFilters();
 
