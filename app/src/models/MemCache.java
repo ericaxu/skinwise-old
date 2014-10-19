@@ -195,6 +195,7 @@ public class MemCache {
 	public static class Idx<T extends BaseModel> {
 		protected ReadWriteLock lock;
 		private Map<Long, T> index;
+		private List<T> all;
 		private Getter<T> getter;
 
 		public Idx(ReadWriteLock lock, Getter<T> getter) {
@@ -217,6 +218,7 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				index.clear();
+				all = list;
 				for (T object : list) {
 					index.put(object.getId(), object);
 				}
@@ -230,6 +232,7 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				index.put(item.getId(), item);
+				all.add(item);
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -239,7 +242,7 @@ public class MemCache {
 		public Collection<T> all() {
 			lock.readLock().lock();
 			try {
-				return index.values();
+				return all;
 			}
 			finally {
 				lock.readLock().unlock();
@@ -495,11 +498,13 @@ public class MemCache {
 
 	public void init() {
 		System.gc();
+		lock.writeLock().lock();
 		functions.cache();
 		brands.cache();
 		types.cache();
 		ingredients.cache();
 		ingredient_names.cache();
 		products.cache();
+		lock.writeLock().unlock();
 	}
 }

@@ -18,21 +18,19 @@ public class Export {
 		DBFormat result = new DBFormat();
 		MemCache cache = App.cache();
 
+		cache.init();
+
 		Logger.debug(TAG, "Exporting functions");
-		cache.functions.cache();
 		for (Function object : cache.functions.all()) {
 			result.ingredient_functions.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting brands");
-		cache.brands.cache();
 		for (Brand object : cache.brands.all()) {
 			result.brands.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting ingredients");
-		cache.ingredients.cache();
-		cache.ingredient_names.cache();
 		IngredientRelations relations = new IngredientRelations();
 		relations.cacheIngredients(cache.ingredients.all(),
 				cache.ingredient_names.all(),
