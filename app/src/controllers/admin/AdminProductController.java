@@ -38,6 +38,8 @@ public class AdminProductController extends Controller {
 		public String ingredients;
 		@NotNull
 		public String key_ingredients;
+		@NotNull
+		public String image;
 	}
 
 	public static Result api_product_update() {
@@ -67,6 +69,7 @@ public class AdminProductController extends Controller {
 			result.setLine(request.line);
 			result.setName(request.name);
 			result.setDescription(request.description);
+			result.setImage(request.image);
 
 			cache.matcher.cache(cache.ingredient_names.all());
 			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);

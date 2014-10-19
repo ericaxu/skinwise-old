@@ -23,16 +23,20 @@ import java.util.Set;
 
 public class ProductController extends Controller {
 	public static class ResponseProduct extends Response {
+		public long id;
 		public String brand;
 		public String type;
 		public String name;
 		public String description;
+		public String image;
 
-		public ResponseProduct(String brand, String type, String name, String description) {
+		public ResponseProduct(long id, String brand, String type, String name, String description, String image) {
+			this.id = id;
 			this.brand = brand;
 			this.type = type;
 			this.name = name;
 			this.description = description;
+			this.image = image;
 		}
 	}
 
@@ -141,10 +145,12 @@ public class ProductController extends Controller {
 			}
 
 			Response response = new ResponseProduct(
+					result.getId(),
 					result.getBrandName(),
 					result.getTypeName(),
 					result.getName(),
-					result.getDescription()
+					result.getDescription(),
+					result.getImage()
 			);
 
 			return Api.write(response);

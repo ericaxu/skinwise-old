@@ -239,12 +239,14 @@ function setupCreateProductCall() {
 }
 
 function productLoadSuccess(response) {
+    log(response);
     $('#edit_product_id').val(response.id);
     $('#edit_product_name').val(response.name).data('original', response.name);
     $('#edit_product_brand').val(response.brand);
     $('#edit_product_line').val(response.line);
+    $('#edit_product_image').val(response.image);
     $('#edit_product_description').val(response.description);
-    $('#edit_ingredient').show();
+    $('#edit_product').show();
 }
 
 function setupProductDeleteCall() {
@@ -287,7 +289,7 @@ function setupFunctionSearchCall() {
             return;
         }
 
-        postToAPI('/function/byid', {
+        postToAPI('/ingredient/function/byid', {
             id: function_id
         }, functionLoadSuccess, null, 'Looking up function...');
     });
@@ -309,7 +311,7 @@ function functionLoadSuccess(response) {
     $('#edit_function_id').val(response.id);
     $('#edit_function_name').val(response.name).data('original', response.name);
     $('#edit_function_description').val(response.description);
-    $('#edit_ingredient').show();
+    $('#edit_function').show();
 }
 
 function setupFunctionDeleteCall() {

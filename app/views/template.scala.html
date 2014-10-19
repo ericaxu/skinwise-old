@@ -15,7 +15,7 @@
         <ul class="info_nav horizontal">
             <li><a href="/products">Products</a></li>
             <li><a href="/ingredients">Ingredients</a></li>
-            <li><a href="#">Guides</a></li>
+            <!--<li><a href="#">Guides</a></li>-->
             <li>
                 @search_icon()
                 <select id="search_category_select">
@@ -33,7 +33,8 @@
             } else {
                 <li id="feedback_link"><a href="#">Feedback</a></li>
                 @if(state.userHasPermission(src.models.Permissible.ALL)) {
-                    <li><a href="/admin">Console</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/admin/content">Content</a></li>
                 }
                 <!--<li class="expand_subnav">-->
                     <!--<a href="#">@state.getUser().getName()<span class="down_arrow"></span></a>-->

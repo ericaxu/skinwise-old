@@ -9,9 +9,13 @@ import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
+import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.BaseModel;
+import src.models.MemCache;
 import src.models.Page;
+import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
 import views.html.ingredient;
@@ -78,6 +82,18 @@ public class IngredientController extends Controller {
 		public String description;
 
 		public ResponseFunctionObject(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
+	public static class ResponseFunction extends Response {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseFunction(long id, String name, String description) {
 			this.id = id;
 			this.name = name;
 			this.description = description;
@@ -161,6 +177,40 @@ public class IngredientController extends Controller {
 						ingredient.getNamesString()
 				));
 			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_function_byid() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.INGREDIENT.EDIT);
+
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			MemCache cache = App.cache();
+
+			Function result;
+			if (request.id == BaseModel.NEW_ID) {
+				result = new Function();
+			}
+			else {
+				result = cache.functions.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
+				}
+			}
+
+			ResponseFunction response = new ResponseFunction(
+					result.getId(),
+					result.getName(),
+					result.getDescription()
+			);
 
 			return Api.write(response);
 		}
