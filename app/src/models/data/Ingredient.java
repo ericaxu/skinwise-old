@@ -102,6 +102,10 @@ public class Ingredient extends NamedModel {
 
 	public static Finder<Long, Ingredient> find = new Finder<>(Long.class, Ingredient.class);
 
+	public static List<Ingredient> all() {
+		return find.all();
+	}
+
 	public static Ingredient byId(long id) {
 		return find.byId(id);
 	}
@@ -114,7 +118,7 @@ public class Ingredient extends NamedModel {
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
 		if (functions.length == 0) {
-			return page.apply(find.order().desc("popularity"));
+			return page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 
 		String query = "SELECT DISTINCT main.id as id, main.popularity " +
@@ -123,16 +127,8 @@ public class Ingredient extends NamedModel {
 				"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
 				"GROUP BY main.id " +
 				"HAVING count(*) = " + functions.length + " " +
-				"ORDER BY main.popularity DESC ";
+				"ORDER BY main.popularity DESC, main.id ASC ";
 
 		return page.apply(find, query);
-	}
-
-	public static List<Ingredient> all() {
-		return find.all();
-	}
-
-	public static List<Ingredient> getAll() {
-		return find.all();
 	}
 }

@@ -199,7 +199,7 @@ public class Product extends NamedModel {
 
 	public static List<Product> byFilter(long[] brands, long[] ingredients, Page page) {
 		if (brands.length == 0 && ingredients.length == 0) {
-			return page.apply(find.order().desc("popularity"));
+			return page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 
 		String query = "SELECT DISTINCT main.id as id, main.popularity " +
@@ -229,14 +229,8 @@ public class Product extends NamedModel {
 					"HAVING count(*) = " + ingredients.length + " ";
 		}
 
-		query += " ORDER BY main.popularity DESC ";
+		query += " ORDER BY main.popularity DESC, main.id ASC ";
 
 		return page.apply(find, query);
-	}
-
-	public static List<Product> byBrand(Brand brand) {
-		return find.where()
-				.eq("brand", brand)
-				.findList();
 	}
 }
