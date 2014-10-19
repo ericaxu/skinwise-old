@@ -21,22 +21,13 @@ function loadFilterResults(response) {
     }
 }
 
-function getSelectedBrands() {
-    var brands = [];
-    $('.brand_filter:checked').each(function() {
-        brands.push($(this).data('id'));
+function getChebkexIds(filter_type) {
+    var results = [];
+    $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
+        results.push($(this).data('id'));
     });
 
-    return brands;
-}
-
-function getSelectedIngredients() {
-    var ingredients = [];
-    $('.ingredient_filter:checked').each(function() {
-        ingredients.push($(this).data('id'));
-    });
-
-    return ingredients;
+    return results;
 }
 
 function fetchNextPage() {
@@ -47,8 +38,8 @@ function fetchNextPage() {
         SW.ING_FETCH.LOADING = true;
 
         postToAPI('/product/filter', {
-            brands: getSelectedBrands(),
-            ingredients: getSelectedIngredients(),
+            brands: getChebkexIds('brand'),
+            ingredients: getChebkexIds('ingredient'),
             page: SW.ING_FETCH.CUR_PAGE + 1
         }, function (response) {
             $('#loading_spinner').hide();
@@ -56,9 +47,6 @@ function fetchNextPage() {
             SW.ING_FETCH.CUR_PAGE += 1;
             SW.ING_FETCH.RESULT_COUNT = response.count;
             loadFilterResults(response);
-
-            console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
-            console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
         });
     }
 }
@@ -73,11 +61,9 @@ function refetch() {
     SW.ING_FETCH.LOADED_COUNT = 0;
     SW.ING_FETCH.LOADING = true;
 
-    console.log('refetch');
-
     postToAPI('/product/filter', {
-        brands: getSelectedBrands(),
-        ingredients: getSelectedIngredients(),
+        brands: getChebkexIds('brand'),
+        ingredients: getChebkexIds('ingredient'),
         page: 0
     }, function (response) {
         $('#loading_spinner').hide();
@@ -85,26 +71,47 @@ function refetch() {
         SW.ING_FETCH.CUR_PAGE = 0;
         SW.ING_FETCH.RESULT_COUNT = response.count;
         loadFilterResults(response);
-
-
-        console.log("Loaded: " + SW.ING_FETCH.LOADED_COUNT);
-        console.log("Total: " + SW.ING_FETCH.RESULT_COUNT);
     });
 }
 
+function getFilterHTML(filter) {
+    console.log(filter);
+    var $option = $('<div/>', { class: 'filter_option' });
+    $option.append($('<input/>', {
+        type: 'checkbox',
+        id: filter.name
+    }).data('id', filter.id));
+    $option.append($('<label/>', { for: filter.name }).text(filter.name));
 
-$(document).on('ready', function() {
+    return $option;
+}
+
+function loadFilters() {
+    var filter_types = ['ingredient', 'brand'];
+    for (var i = 0; i < filter_types.length; i++) {
+        var filter_type = filter_types[i];
+        var saved_filters = getProductFilters(filter_type);
+        for (var j = 0; j < saved_filters.length; j++) {
+            var filter = saved_filters[j];
+            $('.' + filter_type + '_filters').append(getFilterHTML(filter));
+        }
+    }
+}
+
+$(document).on('ready', function () {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
     var original_offset = $('.filter_area').offset().top;
 
+    loadFilters();
+
     fetchNextPage();
 
-    $('.brand_filter, .ingredient_filter').on('change', function() {
+    $(document).on('change', '.filter_option input[type="checkbox"]', function () {
         refetch();
     });
 
-    $(window).on('scroll', function() {
+    $(window).on('scroll', function () {
         // Check if we are at bottom of page
         if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height() &&
             SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {

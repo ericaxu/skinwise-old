@@ -99,3 +99,52 @@ function productResultHTML(product) {
 
     return $list_item;
 }
+
+function addProductFilter(filter_type, id, name) {
+    addFilter('product_' + filter_type, {
+        id: id,
+        name: name
+    });
+}
+
+function addIngredientFilter(filter_type, id, name) {
+    addFilter('ingredient_' + filter_type, {
+        id: id,
+        name: name
+    });
+}
+
+function removeProductFilter(filter_type, id) {
+    removeFilter('product_' + filter_type, id);
+}
+
+function removeIngredientFilter(filter_type, id) {
+    removeFilter('ingredient_' + filter_type, id);
+}
+
+function addFilter(key, item) {
+    var filters = JSON.parse(localStorage.getItem(key) || '[]');
+    console.log(filters);
+    filters.push(item);
+    localStorage.setItem(key, JSON.stringify(filters));
+}
+
+function getProductFilters(key) {
+    return JSON.parse(localStorage.getItem('product_' + key) || '[]');
+}
+
+
+function getIngredientFilters(key) {
+    return JSON.parse(localStorage.getItem('ingredient_' + key) || '[]');
+}
+
+function removeFilter(key, id) {
+    var filters = JSON.parse(localStorage.getItem(key) || '[]');
+    if (!filters) return;
+    for (var i = 0; i < filters.length; i++) {
+        if (id == filters[i].id) {
+            filters.splice(i, 1);
+        }
+    }
+    localStorage.setItem(key, filters);
+}
