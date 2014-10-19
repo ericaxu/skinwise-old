@@ -4,7 +4,11 @@ function ingredientResultHTML(ing) {
     var functions = $('<p/>', { class: 'functions' });
 
     for (var j = 0; j < ing.functions.length; j++) {
-        functions.append('<span class="function neutral">' + ing.functions[j] + '</span>');
+        var id = ing.functions[j];
+        if (SW.FUNC[id]) {
+            var name = fullyCapitalize(SW.FUNC[id].name);
+            functions.append($('<span/>', { class: 'function neutral'}).text(fullyCapitalize(SW.FUNC[id].name)).data('id', id));
+        }
     }
 
     $list_item.append(functions);

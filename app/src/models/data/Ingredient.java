@@ -79,6 +79,14 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
+	public List<Long> getFunctionIds() {
+		List<Long> result = new ArrayList<>();
+		for (Function function : getFunctions()) {
+			result.add(function.getId());
+		}
+		return result;
+	}
+
 	public List<String> getNamesString() {
 		List<String> result = new ArrayList<>();
 		for (IngredientName name : names) {
