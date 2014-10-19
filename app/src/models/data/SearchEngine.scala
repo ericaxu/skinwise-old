@@ -72,6 +72,11 @@ class SearchEngine[T] extends Controller {
       }
     }
 
+    // Give a higher score to smaller results, which should match the query more "tightly"
+    nameToScore.keys foreach { name =>
+      nameToScore(name) += 0.1 / name.length
+    }
+
     nameToScore
   }
 
@@ -105,6 +110,7 @@ class SearchEngine[T] extends Controller {
           scores.put(name, 0.0)
         }
         scores(name) += (1.0 - score)
+        scores(name) += 0.1 / name.length
       }
     }
 
@@ -115,7 +121,7 @@ class SearchEngine[T] extends Controller {
     val slicedResults = weightedResults.slice(0, 50)
 
     // For debugging.
-    //    slicedResults.foreach { case (name, score) => println(f"$name $score%.3f") }
+    //    slicedResults.foreach { case (name, score) => sln(f"$name $score%.3f") }
 
     slicedResults.map(result => namesToObjs.get(result))
   }
