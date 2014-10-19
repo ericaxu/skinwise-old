@@ -92,13 +92,6 @@ class SearchEngine[T] {
     results.take(limit).toList.map(result => namesToObjs.get(result._1))
   }
 
-  // Levenshtein gives the edit distance between two strings, but the longer the string, the
-  // less this distance should be considered an "error". This function changes the distance
-  // into a score. The lower the score the better the match.
-  def normalizeDistance(queryLength: Int)(matchResult: (String, Double)) = matchResult match {
-    case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
-  }
-
   // Calculate the penalty as a function of the query length and the edit distance. Lower is better.
   //
   // The score is a function of the query length since the lower the query, the more tolerance
