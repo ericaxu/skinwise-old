@@ -3,8 +3,9 @@ function setupIngredientInfobox() {
 
     $ingredient.on('mouseenter', function (e) {
         var id = $(this).data('id');
-        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
-        SW.INFOBOX.TIMEOUT_ID = setTimeout(function() {
+        clearTimeout(SW.ING_BOX.DISMISS_TIMEOUT_ID);
+        clearTimeout(SW.ING_BOX.TIMEOUT_ID);
+        SW.ING_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.ING[id]) {
                 var ingredient_data = SW.ING[id];
                 var ingredient_info = $('<div/>').on('click', function (e) {
@@ -17,32 +18,36 @@ function setupIngredientInfobox() {
                 ingredient_info.append($('<h2/>', { text: ingredient_data.name }));
                 var functions = $('<p/>', { class: 'functions' });
                 for (var i = 0; i < ingredient_data.functions.length; i++) {
-                    functions.append($('<span/>', {
-                        class: 'function neutral',
-                        text: ingredient_data.functions[i]
-                    }));
+                    var func_id = ingredient_data.functions[i];
+                    if (SW.FUNC[func_id]) {
+                        functions.append($('<span/>', {
+                            class: 'function neutral',
+                            text: fullyCapitalize(SW.FUNC[func_id].name)
+                        }).data('id', func_id));
+                    }
                 }
                 ingredient_info.append(functions);
                 ingredient_info.appendTo('body');
                 ingredient_info.append($('<p/>', { text: ingredient_data.description }));
                 $('.ingredient_infobox').remove();
-                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 10 });
+                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 5 });
             }
-        }, SW.INFOBOX.TIMEOUT);
+        }, SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
-        clearTimeout(SW.INFOBOX.TIMEOUT_ID);
-        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+        clearTimeout(SW.FUNC_BOX.TIMEOUT_ID);
+        SW.ING_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.ingredient_infobox').remove();
-        }, SW.INFOBOX.DISMISS_TIMEOUT);
+        }, SW.ING_BOX.DISMISS_TIMEOUT);
     });
 
     // Dismiss infobox after leaving it for a while
-    $(document).on('mouseenter', '.ingredient_infobox', function() {
-        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+    $(document).on('mouseenter', '.ingredient_infobox', function(e) {
+        clearTimeout(SW.ING_BOX.TIMEOUT_ID);
+        clearTimeout(SW.ING_BOX.DISMISS_TIMEOUT_ID);
     }).on('mouseleave', '.ingredient_infobox', function() {
-        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+        SW.ING_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.ingredient_infobox').remove();
-        }, SW.INFOBOX.DISMISS_TIMEOUT);
+        }, SW.ING_BOX.DISMISS_TIMEOUT);
     });
 
     $(document).on('click', function () {
@@ -51,13 +56,10 @@ function setupIngredientInfobox() {
 }
 
 function setupFunctionInfobox() {
-
     $(document).on('mouseenter', '.function', function (e) {
-        log('mouseenter');
         var id = $(this).data('id');
-        log(id);
-        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
-        SW.INFOBOX.TIMEOUT_ID = setTimeout(function() {
+        clearTimeout(SW.FUNC_BOX.DISMISS_TIMEOUT_ID);
+        SW.FUNC_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.FUNC[id]) {
                 var func_data = SW.FUNC[id];
                 var func_info = $('<div/>').on('click', function (e) {
@@ -73,21 +75,21 @@ function setupFunctionInfobox() {
                 $('.function_infobox').remove();
                 func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 10 });
             }
-        }, SW.INFOBOX.TIMEOUT);
+        }, SW.FUNC_BOX.TIMEOUT);
     }).on('mouseleave', '.function', function() {
-        clearTimeout(SW.INFOBOX.TIMEOUT_ID);
-        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+        clearTimeout(SW.FUNC_BOX.TIMEOUT_ID);
+        SW.FUNC_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.function_infobox').remove();
-        }, SW.INFOBOX.DISMISS_TIMEOUT);
+        }, SW.FUNC_BOX.DISMISS_TIMEOUT);
     });
 
     // Dismiss infobox after leaving it for a while
     $(document).on('mouseenter', '.function_infobox', function() {
-        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+        clearTimeout(SW.FUNC_BOX.DISMISS_TIMEOUT_ID);
     }).on('mouseleave', '.function_infobox', function() {
-        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+        SW.FUNC_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.function_infobox').remove();
-        }, SW.INFOBOX.DISMISS_TIMEOUT);
+        }, SW.FUNC_BOX.DISMISS_TIMEOUT);
     });
 
     $(document).on('click', function () {

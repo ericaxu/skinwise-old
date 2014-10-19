@@ -43,7 +43,14 @@ SW.ING_FETCH = {
     RESULT_COUNT: 0
 };
 
-SW.INFOBOX = {
+SW.ING_BOX = {
+    TIMEOUT_ID: null,
+    TIMEOUT: 300,
+    DISMISS_TIMEOUT_ID: null,
+    DISMISS_TIMEOUT: 600
+}
+
+SW.FUNC_BOX = {
     TIMEOUT_ID: null,
     TIMEOUT: 300,
     DISMISS_TIMEOUT_ID: null,

@@ -25,8 +25,7 @@
                     <p>@for(i <- 0 to key.size-2) {
                         @if(key(i).getIngredient != null) {
                             @defining(key(i).getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient" data-id="@id">@key(i).getDisplayName</span></a>
-                                ,
+                                <a href="/ingredient/@id"><span class="ingredient" data-id="@id">@key(i).getDisplayName</span></a>,
                             }
                         } else {
                             <span class="ingredient unrecognized">@key(i).getDisplayName</span>,
@@ -60,8 +59,7 @@
                 <p>@for(i <- 0 to ing.size-2) {
                     @if(ing(i).getIngredient != null) {
                         @defining(ing(i).getIngredient.getId) { id =>
-                            <a href="/ingredient/@id"><span class="ingredient" data-id="@id">@ing(i).getDisplayName</span></a>
-                            ,
+                            <a href="/ingredient/@id"><span class="ingredient" data-id="@id">@ing(i).getDisplayName</span></a>,
                         }
                     } else {
                         <span class="ingredient unrecognized">@ing(i).getDisplayName</span>,
