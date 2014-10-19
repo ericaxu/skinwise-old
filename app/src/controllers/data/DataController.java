@@ -12,6 +12,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.models.MemCache;
 import src.models.data.NamedModel;
+import src.models.data.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +96,12 @@ public class DataController extends Controller {
 
 			if (result != null) {
 				for (NamedModel object : result) {
+					String name = object.getName();
+					if (object instanceof Product) {
+						name = ((Product) object).getBrandName() + " - " + name;
+					}
 					response.results.add(new ResponseDataObject(
-							object.getId(), object.getName()
+							object.getId(), name
 					));
 				}
 			}
