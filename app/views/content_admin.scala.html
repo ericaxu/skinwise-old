@@ -9,7 +9,8 @@
     <div class="tab_container">
         <div class="tab_headers">
             <a href="#" class="tab_title current" data-tab-name="ingredient_tab">Ingredient</a><a href="#" class="tab_title"
-        data-tab-name="product_tab">Product</a><a href="#" class="tab_title" data-tab-name="function_tab">Function</a>
+        data-tab-name="product_tab">Product</a><a href="#" class="tab_title" data-tab-name="function_tab">Function</a><a
+        href="#" class="tab_title" data-tab-name="brand_tab">Brand</a>
         </div>
 
         <div class="tab" id="ingredient_tab">
@@ -119,7 +120,6 @@
         </div>
 
 
-
         <div class="tab" id="function_tab">
             <h1>Function Manager</h1>
             <div class="field">
@@ -157,6 +157,50 @@
                         <p>
                             <input id="save_function_btn" class="primary" type="button" value="Save"/>
                             <input id="delete_function_btn" class="primary" type="button" value="Delete"/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab" id="brand_tab">
+            <h1>Brand Manager</h1>
+            <div class="field">
+                <div class="labels">
+                    <label for="brand_by_id">By ID:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="brand_by_id"/>
+                    <input type="button" id="brand_by_id_btn" value="Search"/>
+                </div>
+            </div>
+            <p>
+                <input id="create_brand_btn" class="primary" type="button" value="Create brand"/>
+            </p>
+
+            <div class="edit_container" id="edit_brand">
+                <h2>Edit Brand</h2>
+                <div class="field">
+                    <div class="labels">
+                        <label for="edit_brand_id">ID:</label>
+                        <label for="edit_brand_name">Name:</label>
+                        <label for="edit_brand_description">Description:</label>
+                    </div>
+
+                    <div class="inputs">
+                        <input type="text" id="edit_brand_id" disabled/>
+                        <br>
+                        <input type="text" id="edit_brand_name"/>
+                        <br>
+                        <textarea type="text" id="edit_brand_description"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <p>
+                            <input id="save_brand_btn" class="primary" type="button" value="Save"/>
+                            <input id="delete_brand_btn" class="primary" type="button" value="Delete"/>
                         </p>
                     </div>
                 </div>

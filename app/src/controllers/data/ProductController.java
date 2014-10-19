@@ -12,6 +12,7 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.MemCache;
 import src.models.Page;
 import src.models.data.*;
 import views.html.product;
@@ -88,6 +89,18 @@ public class ProductController extends Controller {
 	public static class ResponseProductFilter extends Response {
 		public List<ResponseProductObject> results = new ArrayList<>();
 		public int count;
+	}
+
+	public static class ResponseBrand extends Response {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseBrand(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
 	}
 
 	public static class ResponseBrandObject {
@@ -217,6 +230,31 @@ public class ProductController extends Controller {
 		}
 
 		return Api.write(response);
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_function_byid() {
+		try {
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			MemCache cache = App.cache();
+
+			Brand result = cache.brands.get(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
+			}
+
+			ResponseBrand response = new ResponseBrand(
+					result.getId(),
+					result.getName(),
+					result.getDescription()
+			);
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

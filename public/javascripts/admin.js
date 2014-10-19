@@ -210,7 +210,7 @@ function setupCreateIngredientCall() {
 }
 
 
-// Product
+// PRODUCT
 
 function setupProductSearchCall() {
     $('#product_by_id_btn').on('click', function() {
@@ -279,7 +279,7 @@ function setupProductEditSaveCall() {
 }
 
 
-// Function
+// FUNCTION
 
 function setupFunctionSearchCall() {
     $('#function_by_id_btn').on('click', function() {
@@ -341,6 +341,75 @@ function setupFunctionEditSaveCall() {
     });
 }
 
+
+// Brand
+
+function setupBrandSearchCall() {
+    $('#brand_by_id_btn').on('click', function() {
+        var brand_id = $('#brand_by_id').val();
+        if (!isInteger(brand_id)) {
+            showError('Brand ID must be an integer.');
+            return;
+        }
+
+        postToAPI('/product/brand/byid', {
+            id: brand_id
+        }, brandLoadSuccess, null, 'Looking up brand...');
+    });
+}
+
+function setupCreateBrandCall() {
+    $('#create_brand_btn').on('click', function() {
+        brandLoadSuccess({
+            id: 'Not assigned yet',
+            name: '',
+            brand: '',
+            line: '',
+            description: ''
+        });
+    });
+}
+
+function brandLoadSuccess(response) {
+    log(response);
+    $('#edit_brand_id').val(response.id);
+    $('#edit_brand_name').val(response.name).data('original', response.name);
+    $('#edit_brand_brand').val(response.brand);
+    $('#edit_brand_line').val(response.line);
+    $('#edit_brand_image').val(response.image);
+    $('#edit_brand_description').val(response.description);
+    $('#edit_brand').show();
+}
+
+function setupBrandDeleteCall() {
+    $('#delete_brand_btn').on('click', function() {
+        var brand_name = $('#edit_brand_name').data('original');
+        confirmAction('delete brand ' + brand_name, function() {
+            postToAPI('/admin/brand/delete', {
+                id: $('#edit_brand_id').val()
+            }, hideEdit, null, 'Deleting brand ' + brand_name);
+        });
+    });
+}
+
+function setupBrandEditSaveCall() {
+    $('#save_brand_btn').on('click', function() {
+        var brand_id = $('#edit_brand_id').val();
+        if (brand_id === 'Not assigned yet') {
+            brand_id = '-1';
+        }
+        var new_brand_info = {
+            id: brand_id,
+            name: $('#edit_brand_name').val(),
+            brand: $('#edit_brand_brand').val(),
+            line: $('#edit_brand_line').val(),
+            description: $('#edit_brand_description').val()
+        };
+
+        postToAPI('/admin/brand/update', new_brand_info, null, null, 'Updating brand...');
+    });
+}
+
 function setupDatabaseManager() {
     $('#import_btn').on('click', function() {
         postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
@@ -393,6 +462,11 @@ $(document).ready(function() {
     setupFunctionEditSaveCall();
     setupFunctionDeleteCall();
     setupCreateFunctionCall();
+
+    setupBrandSearchCall();
+    setupBrandEditSaveCall();
+    setupBrandDeleteCall();
+    setupCreateBrandCall();
 
     setupDatabaseManager();
 
