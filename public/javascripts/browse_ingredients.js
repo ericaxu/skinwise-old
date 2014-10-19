@@ -118,13 +118,21 @@ $(document).on('ready', function() {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
     var original_offset = $('.filter_area').offset().top;
 
-    $('.open_add_filter_popup').on('click', function() {
+    $('.open_add_filter_popup').on('click', function () {
+        $('#add_filter_btn').data('type', $(this).data('type'));
+        enableAutocomplete($(this).data('type'), '#add_filter', '#add_filter_form .inputs', 3);
         $('.add_filter.popup').show();
     });
 
-    $('#add_filter_btn').on('click', function() {
-        // Add filter to local storage
+    $('#add_filter_btn').on('click', function () {
+        // TODO: check if the id is valid
+        var id = $('#add_filter').data('id');
+        var name = $('#add_filter').val();
+        addIngredientFilter($(this).data('type'), id, name);
         loadFilters();
+
+        // reset
+        $('#add_filter').val('');
         $('.popup').hide();
     });
 

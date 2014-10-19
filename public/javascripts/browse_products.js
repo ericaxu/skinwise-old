@@ -98,12 +98,20 @@ $(document).on('ready', function () {
     var original_offset = $('.filter_area').offset().top;
 
     $('.open_add_filter_popup').on('click', function () {
+        $('#add_filter_btn').data('type', $(this).data('type'));
+        enableAutocomplete($(this).data('type'), '#add_filter', '#add_filter_form .inputs', 3);
         $('.add_filter.popup').show();
     });
 
     $('#add_filter_btn').on('click', function () {
-        // Add filter to local storage
+        // TODO: check if the id is valid
+        var id = $('#add_filter').data('id');
+        var name = $('#add_filter').val();
+        addProductFilter($(this).data('type'), id, name);
         loadFilters();
+
+        // reset
+        $('#add_filter').val('');
         $('.popup').hide();
     });
 
@@ -111,8 +119,6 @@ $(document).on('ready', function () {
     loadFilters();
 
     fetchNextPage();
-
-    enableAutocomplete('ingredient', '#add_filter', '#add_filter_form .inputs');
 
     $(document).on('change', '.filter_option input[type="checkbox"]', refetch);
 

@@ -183,18 +183,21 @@ function log() {
     }
 }
 
-function enableAutocomplete(type, selector, append_to) {
+function enableAutocomplete(type, selector, append_to, limit) {
+    if ($(selector).hasClass('ui-autocomplete-input')) {
+        $(selector).autocomplete('destroy');
+    }
     $(selector).autocomplete({
         appendTo: append_to,
 
         select: function (event, ui) {
             event.preventDefault();
-            $(selector).val(ui.item.label);
+            $(selector).val(ui.item.label).data('id', ui.item.value);
         },
 
         focus: function (event, ui) {
             event.preventDefault();
-            $(selector).val(ui.item.label);
+            $(selector).val(ui.item.label).data('id', ui.item.value);
         },
 
         source: function (request, response) {
@@ -204,7 +207,8 @@ function enableAutocomplete(type, selector, append_to) {
                 query: query
             }, function (api_response) {
                 var data = [];
-                for (var i = 0; i < api_response.results.length; i++) {
+                var length = Math.min(api_response.results.length, limit || Number.MAX_VALUE)
+                for (var i = 0; i < length; i++) {
                     var item = api_response.results[i];
                     data.push({
                         label: fullyCapitalize(item.name),
