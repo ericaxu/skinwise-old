@@ -1,5 +1,6 @@
 @(state: src.controllers.util.ResponseState, ingredient: src.models.data.Ingredient)
 
+@import org.apache.commons.lang3.text.WordUtils;
 @template(ingredient.getDisplayName + " - Skin Wise", state) {
 
 } {
@@ -13,8 +14,8 @@
 
     <div class="functions section">
         <h3>What It Does</h3>
-        <p>@for(f <- ingredient.getFunctionsString) {
-            <a class="function neutral">@f</a>
+        <p>@for(f <- ingredient.getFunctions) {
+            <a class="function neutral" data-id="@f.getId">@WordUtils.capitalizeFully(f.getName)</a>
         }
         </p>
     </div>

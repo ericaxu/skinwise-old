@@ -24,6 +24,8 @@ SW.TEMPALTES.NOTICE = _.template('<div class="<%= type %>"><span class="close_bt
 /* Product ingredient data */
 SW.ING = {};
 
+SW.FUNC = {};
+
 SW.SPINNER_CONFIG = {
     lines: 11,
     width: 4,

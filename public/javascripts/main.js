@@ -38,6 +38,7 @@ function setupIngredientInfobox() {
         location.href = '/ingredient/' + $(this).data('id');
     });
 
+    // Dismiss infobox after leaving it for a while
     $(document).on('mouseenter', '.ingredient_infobox', function() {
         clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
     }).on('mouseleave', '.ingredient_infobox', function() {
@@ -49,19 +50,72 @@ function setupIngredientInfobox() {
     $(document).on('click', function () {
         $('.ingredient_infobox').remove();
     });
+}
 
-    $ingredient.on('click', function (e) {
-        e.stopPropagation();
+function setupFunctionInfobox() {
+
+    $(document).on('mouseenter', '.function', function (e) {
+        log('mouseenter');
+        var id = $(this).data('id');
+        log(id);
+        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+        SW.INFOBOX.TIMEOUT_ID = setTimeout(function() {
+            if (SW.FUNC[id]) {
+                var func_data = SW.FUNC[id];
+                var func_info = $('<div/>').on('click', function (e) {
+                    e.stopPropagation();
+                });
+                var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
+                    $('.function_infobox').remove();
+                })
+                func_info.append(close_button);
+                func_info.append($('<h2/>', { text: func_data.name }));
+                func_info.appendTo('body');
+                func_info.append($('<p/>', { text: func_data.description }));
+                $('.function_infobox').remove();
+                func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 10 });
+            }
+        }, SW.INFOBOX.TIMEOUT);
+    }).on('mouseleave', '.function', function() {
+        clearTimeout(SW.INFOBOX.TIMEOUT_ID);
+        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+            $('.function_infobox').remove();
+        }, SW.INFOBOX.DISMISS_TIMEOUT);
+    }).on('click','.function', function() {
+        location.href = '/ingredient/' + $(this).data('id');
+    });
+
+    // Dismiss infobox after leaving it for a while
+    $(document).on('mouseenter', '.function_infobox', function() {
+        clearTimeout(SW.INFOBOX.DISMISS_TIMEOUT_ID);
+    }).on('mouseleave', '.function_infobox', function() {
+        SW.INFOBOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
+            $('.function_infobox').remove();
+        }, SW.INFOBOX.DISMISS_TIMEOUT);
+    });
+
+    $(document).on('click', function () {
+        $('.function_infobox').remove();
     });
 }
 
 function getIngredientInfoSuccess(response) {
-    for (var i = 0; i < response.ingredient_info.length; i++) {
-        var ingredient = response.ingredient_info[i];
+    for (var i = 0; i < response.results.length; i++) {
+        var ingredient = response.results[i];
         SW.ING[ingredient.id] = {
             name: ingredient.name,
             description: ingredient.description,
             functions: ingredient.functions
+        };
+    }
+}
+
+function getFunctionsSuccess(response) {
+    for (var i = 0; i < response.results.length; i++) {
+        var func = response.results[i];
+        SW.FUNC[func.id] = {
+            name: fullyCapitalize(func.name),
+            description: func.description
         };
     }
 }
@@ -76,6 +130,9 @@ function getContainingProductsSuccess(response) {
 
 $(document).ready(function () {
     setupIngredientInfobox();
+    setupFunctionInfobox();
+
+    postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
 
     $('.profile_add_input').on('focus', function () {
         $(this).next().show();

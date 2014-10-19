@@ -1,3 +1,9 @@
+function fullyCapitalize(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 function isInteger(str) {
     return /^\+?(0|[1-9]\d*)$/.test(str);
 }
@@ -7,7 +13,7 @@ function formatNumber(num) {
 }
 
 function postToAPI(url, params, successCallback, errorCallback, message) {
-    console.log('Post to ' + url, params);
+    log('Post to ' + url, params);
 
     if (message) {
         var $message_box = $(SW.TEMPALTES.NOTICE({
@@ -22,9 +28,9 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
         type: 'POST',
         data: JSON.stringify(params),
         dataType: 'json',
-        success: function(response, status, jqxhr) {
+        success: function (response, status, jqxhr) {
 
-            console.log(response);
+            log(response);
 
             if (message) {
                 $message_box.fadeOut(SW.CONFIG.NOTICE_FADE_OUT);
@@ -35,12 +41,12 @@ function postToAPI(url, params, successCallback, errorCallback, message) {
             if (response.code == "Ok") {
                 successCallback && successCallback(response);
             } else if (errorCallback) {
-                console.log("Error communicating with API: " + response.code);
+                log("Error communicating with API: " + response.code);
                 errorCallback(response);
             }
         },
 
-        error: function(jqxhr, status, err) {
+        error: function (jqxhr, status, err) {
             console.error("Network error occurred when trying to post to " + url + ": " + status);
 
             if (message) {
@@ -59,7 +65,7 @@ function showMessage(message) {
     }));
     $('.notice_container').append($notice_box);
     $notice_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
-    setTimeout(function() {
+    setTimeout(function () {
         $notice_box.fadeOut(200);
     }, message.timeout || SW.CONFIG.DEFAULT_NOTICE_TIMEOUT);
 }
@@ -124,7 +130,7 @@ function removeIngredientFilter(filter_type, id) {
 
 function addFilter(key, item) {
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
-    console.log(filters);
+    log(filters);
     filters.push(item);
     localStorage.setItem(key, JSON.stringify(filters));
 }
@@ -140,7 +146,7 @@ function getIngredientFilters(key) {
 
 function removeFilter(key, id) {
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
-    console.log(filters);
+    log(filters);
     if (!filters) return;
     for (var i = 0; i < filters.length; i++) {
         if (id == filters[i].id) {

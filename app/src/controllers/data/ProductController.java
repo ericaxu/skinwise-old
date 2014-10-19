@@ -51,10 +51,10 @@ public class ProductController extends Controller {
 	}
 
 	public static class ResponseProductIngredientInfo extends Response {
-		public List<ResponseIngredientObject> ingredient_info;
+		public List<ResponseIngredientObject> results;
 
-		public ResponseProductIngredientInfo(List<ResponseIngredientObject> ingredient_info) {
-			this.ingredient_info = ingredient_info;
+		public ResponseProductIngredientInfo(List<ResponseIngredientObject> results) {
+			this.results = results;
 		}
 	}
 
