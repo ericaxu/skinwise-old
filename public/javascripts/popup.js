@@ -117,14 +117,7 @@ function setupSignupPopup() {
 function setupExpandableSearchbar() {
     $('#search_icon').on('click', function () {
         $(this).hide();
-        $('#nav_searchbar').addClass('activated');
-    }).on('mouseenter', function (e) {
-        SW.SEARCHBAR_EXPAND_TIMEOUT = setTimeout($.proxy(function () {
-            $(this).hide();
-            $('#nav_searchbar').addClass('activated');
-        }, this), SW.CONFIG.SEARCHBAR_EXPAND_TIMEOUT);
-    }).on('mouseleave', function () {
-        clearTimeout(SW.SEARCHBAR_EXPAND_TIMEOUT);
+        $('#search_category_select, #search_category_arrow, #nav_searchbar').show();
     });
 }
 

@@ -18,7 +18,12 @@
             <li><a href="#">Guides</a></li>
             <li>
                 @search_icon()
-                <input id="nav_searchbar" class="closed" type="text" placeholder="Type in any ingredient or product&hellip;"/>
+                <select id="search_category_select">
+                    <option value="product" selected>Product</option>
+                    <option value="product">Ingredient</option>
+                </select>
+                <!--<span class="down_arrow" id="search_category_arrow"></span>-->
+                <input id="nav_searchbar" type="text" placeholder="Choose category and search&hellip;"/>
             </li>
         </ul>
         <ul class="user_nav horizontal">

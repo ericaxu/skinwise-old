@@ -53,11 +53,12 @@ nav {
 
     background: @nav_bg;
     font-family: "Proxima Nova Light";
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     color: @light_text;
 
     li {
         position: relative;
+        top: 1px;
         cursor: pointer;
 
         a {
@@ -275,31 +276,6 @@ nav {
         fill: darken(@light_text, 15);
     }
 }
-
-#nav_searchbar {
-    border-radius: 99px;
-    height: 25px;
-    font-size: 17px;
-    padding: 0 12px;
-
-    -moz-transition: width 0.2s ease-in-out;
-    -o-transition: width 0.2s ease-in-out;
-    -webkit-transition: width 0.2s ease-in-out;
-    transition: width 0.2s ease-in-out;
-
-    &.closed {
-        width: 0;
-        background: @nav_bg;
-        border: none;
-    }
-
-    &.activated {
-        width: 400px;
-        background: @bg;
-        border: 1px solid @border;
-    }
- }
-
 .notice_container {
     position: fixed;
     top: 80px;
@@ -374,4 +350,34 @@ nav {
     &:hover {
         text-decoration: none;
     }
+}
+
+#search_category_arrow {
+    display: none;
+    position: relative;
+    top: 1px;
+    right: 30px;
+}
+
+#search_category_select, #nav_searchbar {
+    display: none;
+    position: relative;
+    top: 1px;
+    height: 28px;
+    border: none;
+}
+#search_category_select {
+    padding: 0 2px 0 10px;
+    border-radius: 100px 0 0 100px;
+}
+
+#nav_searchbar {
+    right: 5px;
+    padding: 0 8px;
+    width: 400px;
+    border-left: 1px solid @border;
+    border-radius: 0 100px 100px 0;
+    font-size: 17px;
+    background: @bg;
+
 }
