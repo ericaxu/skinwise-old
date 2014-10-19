@@ -79,14 +79,14 @@ function loadFilters() {
 }
 
 function setupDeleteButtons() {
-    $(document).on('mouseenter', '.filter_option', function() {
+    $(document).on('mouseenter', '.filter_option', function () {
         $(this).find('.delete_btn').show();
-    }).on('mouseleave', '.filter_option', function() {
+    }).on('mouseleave', '.filter_option', function () {
         $(this).find('.delete_btn').hide();
     });
 
-    $(document).on('click', '.delete_btn', function() {
-        confirmAction('delete filter "' + $(this).parent().find('label').text() + '"', $.proxy(function() {
+    $(document).on('click', '.delete_btn', function () {
+        confirmAction('delete filter "' + $(this).parent().find('label').text() + '"', $.proxy(function () {
             removeProductFilter($(this).data('type'), $(this).parent().find('input[type="checkbox"]').data('id'));
             loadFilters();
         }, this));
@@ -97,11 +97,11 @@ $(document).on('ready', function () {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
     var original_offset = $('.filter_area').offset().top;
 
-    $('.open_add_filter_popup').on('click', function() {
+    $('.open_add_filter_popup').on('click', function () {
         $('.add_filter.popup').show();
     });
 
-    $('#add_filter_btn').on('click', function() {
+    $('#add_filter_btn').on('click', function () {
         // Add filter to local storage
         loadFilters();
         $('.popup').hide();
@@ -111,6 +111,8 @@ $(document).on('ready', function () {
     loadFilters();
 
     fetchNextPage();
+
+    enableAutocomplete('ingredient', '#add_filter', '#add_filter_form .inputs');
 
     $(document).on('change', '.filter_option input[type="checkbox"]', refetch);
 

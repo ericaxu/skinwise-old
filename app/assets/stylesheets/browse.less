@@ -81,3 +81,24 @@ footer {
         content: "\D7";
     }
 }
+
+.ui-autocomplete {
+    position: absolute;
+    background: @bg;
+    z-index: 99;
+
+    li {
+        padding: 1px 7px;
+        border: 1px solid @nav_bg;
+        border-top: none;
+
+        &.ui-state-focus {
+            background: @nav_bg;
+            color: @light_text;
+        }
+    }
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
+}

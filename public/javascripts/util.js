@@ -182,3 +182,37 @@ function log() {
         console.log.apply(console, arguments);
     }
 }
+
+function enableAutocomplete(type, selector, append_to) {
+    $(selector).autocomplete({
+        appendTo: append_to,
+
+        select: function (event, ui) {
+            event.preventDefault();
+            $(selector).val(ui.item.label);
+        },
+
+        focus: function (event, ui) {
+            event.preventDefault();
+            $(selector).val(ui.item.label);
+        },
+
+        source: function (request, response) {
+            var query = request.term;
+            postToAPI('/autocomplete', {
+                type: type,
+                query: query
+            }, function (api_response) {
+                var data = [];
+                for (var i = 0; i < api_response.results.length; i++) {
+                    var item = api_response.results[i];
+                    data.push({
+                        label: fullyCapitalize(item.name),
+                        value: item.id
+                    });
+                }
+                response(data);
+            });
+        }
+    });
+}
