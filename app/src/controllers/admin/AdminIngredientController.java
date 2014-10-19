@@ -75,7 +75,7 @@ public class AdminIngredientController extends Controller {
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
 			result.setFunctions(functions);
-			
+
 			App.cache().ingredients.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));

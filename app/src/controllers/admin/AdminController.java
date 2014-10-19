@@ -10,7 +10,8 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
-import views.html.*;
+import views.html.admin;
+import views.html.content_admin;
 
 public class AdminController extends Controller {
 	private static final String TAG = "AdminController";

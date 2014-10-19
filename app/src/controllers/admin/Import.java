@@ -56,9 +56,9 @@ public class Import {
 			brands.add(object.brand);
 			types.add(object.type);
 
-			List<String> ingredients = cache.matcher.splitIngredients(object.ingredients);
+			List<String> ingredients = MemCache.Matcher.splitIngredients(object.ingredients);
 			allIngredients.addAll(ingredients);
-			ingredients = cache.matcher.splitIngredients(object.key_ingredients);
+			ingredients = MemCache.Matcher.splitIngredients(object.key_ingredients);
 			allIngredients.addAll(ingredients);
 		}
 

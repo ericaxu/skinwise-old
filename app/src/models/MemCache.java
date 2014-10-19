@@ -10,14 +10,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MemCache {
 	public static class NamedIndex<T extends NamedModel> extends Idx<T> {
 		private Map<String, T> names;
-		private SearchEngine<T> search;
+		private Searchable<T> search;
 
 		public NamedIndex(ReadWriteLock lock, NamedGetter<T> getter) {
 			super(lock, getter);
 			this.names = new HashMap<>();
+			this.search = new Searchable<>(this.names, lock);
 		}
 
-		private String key(T input) {
+		protected String key(T input) {
 			return input.getName().toLowerCase();
 		}
 
@@ -26,8 +27,8 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				super.cache(list);
-				search = null;
 				names.clear();
+				search.reset();
 				for (T object : list) {
 					names.put(key(object), object);
 				}
@@ -38,34 +39,7 @@ public class MemCache {
 		}
 
 		public List<T> search(String query, int limit, boolean fullSearch) {
-			query = query.toLowerCase();
-			lock.writeLock().lock();
-			List<T> result;
-			try {
-				if (search == null) {
-					search = new SearchEngine<>();
-					search.init(names);
-				}
-				if (fullSearch) {
-					result = search.fullSearch(query, limit);
-				}
-				else {
-					result = search.partialSearch(query, limit);
-				}
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-			if (result == null || result.isEmpty()) {
-				return new ArrayList<>();
-			}
-			List<T> filteredResult = new ArrayList<>();
-			for (T object : result) {
-				if (object != null) {
-					filteredResult.add(object);
-				}
-			}
-			return filteredResult;
+			return search.search(query, limit, fullSearch);
 		}
 
 		public void updateNameAndSave(T object, String name) {
@@ -74,7 +48,7 @@ public class MemCache {
 				if (!Objects.equals(object.getName(), name)) {
 					names.remove(key(object));
 					object.setName(name);
-					search = null;
+					search.reset();
 				}
 				object.save();
 				update(object);
@@ -91,9 +65,7 @@ public class MemCache {
 			try {
 				super.update(object);
 				names.put(key, object);
-				if (search != null) {
-					search.update(key);
-				}
+				search.update(key);
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -108,13 +80,6 @@ public class MemCache {
 					return names.get(key);
 				}
 				return null;
-				/*
-				T result = getter.byName(key);
-				if (result == null) {
-					return null;
-				}
-				update(result);
-				return result;*/
 			}
 			finally {
 				lock.readLock().unlock();
@@ -122,22 +87,17 @@ public class MemCache {
 		}
 	}
 
-	public static class ProductIndex extends Idx<Product> {
+	public static class ProductIndex extends NamedIndex<Product> {
 		private Map<Brand, Map<String, Product>> products;
 
-		public ProductIndex(ReadWriteLock lock, Getter<Product> getter) {
+		public ProductIndex(ReadWriteLock lock, NamedGetter<Product> getter) {
 			super(lock, getter);
 			this.products = new HashMap<>();
 		}
 
-		private String key(Product input) {
-			lock.readLock().lock();
-			try {
-				return input.getName().toLowerCase();
-			}
-			finally {
-				lock.readLock().unlock();
-			}
+		@Override
+		protected String key(Product input) {
+			return (input.getBrandName() + " " + input.getName()).toLowerCase();
 		}
 
 		@Override
@@ -153,7 +113,7 @@ public class MemCache {
 				}
 
 				for (Product object : list) {
-					getOrCreateMap(object.getBrand()).put(key(object), object);
+					getOrCreateMap(object.getBrand()).put(super.key(object), object);
 				}
 			}
 			finally {
@@ -165,12 +125,12 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				if (object.getBrand() != null && object.getName() != null) {
-					getOrCreateMap(object.getBrand()).remove(key(object));
+					if (!Objects.equals(object.getBrand(), brand) || !Objects.equals(object.getName(), name)) {
+						getOrCreateMap(object.getBrand()).remove(super.key(object));
+					}
 				}
 				object.setBrand(brand);
-				object.setName(name);
-				object.save();
-				update(object);
+				super.updateNameAndSave(object, name);
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -182,7 +142,7 @@ public class MemCache {
 			lock.writeLock().lock();
 			try {
 				super.update(object);
-				products.get(object.getBrand()).put(key(object), object);
+				products.get(object.getBrand()).put(super.key(object), object);
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -198,13 +158,6 @@ public class MemCache {
 					return map.get(key);
 				}
 				return null;
-				/*
-				T result = getter.byName(key);
-				if (result == null) {
-					return null;
-				}
-				update(result);
-				return result;*/
 			}
 			finally {
 				lock.readLock().unlock();
@@ -407,7 +360,7 @@ public class MemCache {
 		}
 	}
 
-	private static class ProductGetter extends Getter<Product> {
+	private static class ProductGetter extends NamedGetter<Product> {
 		@Override
 		public List<Product> all() {
 			return Product.all();
@@ -416,6 +369,11 @@ public class MemCache {
 		@Override
 		public Product byId(long id) {
 			return Product.byId(id);
+		}
+
+		@Override
+		public Product byName(String name) {
+			return null;
 		}
 	}
 
@@ -443,9 +401,9 @@ public class MemCache {
 		}
 
 		public void clear() {
+			cache.ingredient_names.search.reset();
 			cache.lock.readLock().lock();
 			ingredient_name_word_index.clear();
-			cache.ingredient_names.search = null;
 			cache.lock.readLock().unlock();
 		}
 
@@ -528,6 +486,70 @@ public class MemCache {
 			name.save();
 			App.cache().ingredient_names.update(name);
 			return name;
+		}
+	}
+
+	public static class Searchable<T extends NamedModel> {
+		private Map<String, T> names;
+		private ReadWriteLock lock;
+		private SearchEngine<T> search;
+
+		public Searchable(Map<String, T> names, ReadWriteLock lock) {
+			this.names = names;
+			this.lock = lock;
+		}
+
+		public List<T> search(String query, int limit, boolean fullSearch) {
+			query = query.toLowerCase();
+			List<T> result;
+			lock.writeLock().lock();
+			try {
+				if (search == null) {
+					search = new SearchEngine<>();
+					search.init(names);
+				}
+				if (fullSearch) {
+					result = search.fullSearch(query, limit);
+				}
+				else {
+					result = search.partialSearch(query, limit);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+			if (result == null || result.isEmpty()) {
+				return new ArrayList<>();
+			}
+			List<T> filteredResult = new ArrayList<>();
+			for (T object : result) {
+				if (object != null) {
+					filteredResult.add(object);
+				}
+			}
+			return filteredResult;
+		}
+
+		public void update(String key) {
+			lock.writeLock().lock();
+			try {
+				if (search != null) {
+					search.update(key);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void reset() {
+			lock.writeLock().lock();
+			try {
+				search = null;
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 	}
 
