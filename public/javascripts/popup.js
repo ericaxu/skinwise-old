@@ -117,7 +117,7 @@ function setupSignupPopup() {
 function setupExpandableSearchbar() {
     $('#search_icon').on('click', function () {
         $(this).hide();
-        $('#search_category_select, #search_category_arrow, #nav_searchbar').show();
+        $('#search_category_select, #search_category_arrow, #nav_searchbar, #nav_searchbar_btn').show();
     });
 }
 

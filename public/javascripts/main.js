@@ -130,6 +130,26 @@ $(document).ready(function () {
     setupIngredientInfobox();
     setupFunctionInfobox();
 
+    enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
+
+    $('#search_category_select').on('change', function() {
+        enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
+        $('#nav_searchbar').val('');
+    });
+
+    $('#nav_searchbar_btn').on('click', function() {
+        // TODO: check if id is valid
+        var id = $('#nav_searchbar').data('id');
+        location.href = '/' + $('#search_category_select').val() + '/' + id;
+    });
+
+    $(document.body).on('keyup', function(e) {
+        // 13 is ENTER
+        if (e.which === 13 && $('#nav_searchbar').is(':focus')) {
+            $('#nav_searchbar_btn').trigger('click');
+        }
+    });
+
     postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
 
     $('.profile_add_input').on('focus', function () {

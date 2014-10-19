@@ -376,8 +376,43 @@ nav {
     padding: 0 8px;
     width: 400px;
     border-left: 1px solid @border;
-    border-radius: 0 100px 100px 0;
     font-size: 17px;
     background: @bg;
+}
 
+#nav_searchbar_btn {
+    display: none;
+    background: @bg;
+    color: @dark_text;
+    height: 28px;
+    left: -13px;
+    top: 0px;
+    border-radius: 0 14px 14px 0;
+    border-left: 1px solid @border;
+}
+
+.ui-autocomplete.ui-widget {
+    position: absolute;
+    background: @bg;
+    z-index: 99;
+
+    li {
+        display: block;
+        padding: 4px 7px;
+        margin: 0;
+        border: 1px solid @nav_bg;
+        border-top: none;
+        color: @dark_text;
+        font-family: "Source Sans Pro";
+        letter-spacing: 0;
+
+        &.ui-state-focus {
+            background: @nav_bg;
+            color: @light_text;
+        }
+    }
+}
+
+.ui-helper-hidden-accessible {
+    display: none;
 }
