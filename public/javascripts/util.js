@@ -140,13 +140,14 @@ function getIngredientFilters(key) {
 
 function removeFilter(key, id) {
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
+    console.log(filters);
     if (!filters) return;
     for (var i = 0; i < filters.length; i++) {
         if (id == filters[i].id) {
             filters.splice(i, 1);
         }
     }
-    localStorage.setItem(key, filters);
+    localStorage.setItem(key, JSON.stringify(filters));
 }
 
 function getChebkexIds(filter_type) {
@@ -158,13 +159,14 @@ function getChebkexIds(filter_type) {
     return results;
 }
 
-function getFilterHTML(filter) {
+function getFilterHTML(filter, type) {
     var $option = $('<div/>', { class: 'filter_option' });
     $option.append($('<input/>', {
         type: 'checkbox',
         id: filter.name
     }).data('id', filter.id));
     $option.append($('<label/>', { for: filter.name }).text(filter.name));
+    $option.append($('<span/>', { class: 'delete_btn' }).data('type', type));
 
     return $option;
 }

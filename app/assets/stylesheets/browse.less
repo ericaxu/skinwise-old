@@ -65,3 +65,19 @@ footer {
 .open_add_filter_popup {
     margin-top: 10px;
 }
+
+.delete_btn {
+    display: none;
+    position: relative;
+    top: 1.5px;
+    margin-left: 5px;
+    padding: 1px 3px;
+    color: @error;
+    font-size: 20px;
+    font-family: "Proxima Nova Light";
+    cursor: pointer;
+
+    &::before {
+        content: "\D7";
+    }
+}

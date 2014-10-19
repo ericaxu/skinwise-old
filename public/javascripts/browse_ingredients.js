@@ -41,8 +41,6 @@ function loadFilterResults(response) {
 
 function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
-        console.log('fetchNextPage');
-
         $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
 
@@ -88,14 +86,28 @@ function loadFilters() {
         var filter_type = filter_types[i];
         var saved_filters = getIngredientFilters(filter_type);
 
-        $filters = $('.' + filter_type + '_filters');
+        var $filters = $('.' + filter_type + '_filters');
         $filters.empty();
         for (var j = 0; j < saved_filters.length; j++) {
             var filter = saved_filters[j];
-            console.log(filter);
-            $filters.append(getFilterHTML(filter));
+            $filters.append(getFilterHTML(filter, filter_type));
         }
     }
+}
+
+function setupDeleteButtons() {
+    $(document).on('mouseenter', '.filter_option', function() {
+        $(this).find('.delete_btn').show();
+    }).on('mouseleave', '.filter_option', function() {
+        $(this).find('.delete_btn').hide();
+    });
+
+    $(document).on('click', '.delete_btn', function() {
+        confirmAction('delete filter "' + $(this).parent().find('label').text() + '"', $.proxy(function() {
+            removeIngredientFilter($(this).data('type'), $(this).parent().find('input[type="checkbox"]').data('id'));
+            loadFilters();
+        }, this));
+    });
 }
 
 $(document).on('ready', function() {
@@ -111,6 +123,8 @@ $(document).on('ready', function() {
         loadFilters();
         $('.popup').hide();
     });
+
+    setupDeleteButtons();
 
     loadFilters();
     fetchNextPage();
