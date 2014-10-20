@@ -130,7 +130,12 @@ function removeIngredientFilter(filter_type, id) {
 
 function addFilter(key, item) {
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
-    log(filters);
+    var id = item.id;
+    for (var i = 0; i < filters.length; i++) {
+        if (filters[i].id === id) {
+            return;
+        }
+    }
     filters.push(item);
     localStorage.setItem(key, JSON.stringify(filters));
 }
