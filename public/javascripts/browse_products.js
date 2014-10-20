@@ -64,7 +64,7 @@ function refetch() {
 }
 
 function loadFilters() {
-    var filter_types = ['ingredient', 'brand'];
+    var filter_types = ['type', 'brand', 'ingredient'];
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
         var saved_filters = getProductFilters(filter_type);
@@ -80,9 +80,9 @@ function loadFilters() {
 
 function setupDeleteButtons() {
     $(document).on('mouseenter', '.filter_option', function () {
-        $(this).find('.delete_btn').show();
+        $(this).find('.delete_btn').css('visibility', 'visible');
     }).on('mouseleave', '.filter_option', function () {
-        $(this).find('.delete_btn').hide();
+        $(this).find('.delete_btn').css('visibility', 'hidden');
     });
 
     $(document).on('click', '.delete_btn', function () {
