@@ -156,6 +156,14 @@ function removeFilter(key, id) {
     localStorage.setItem(key, JSON.stringify(filters));
 }
 
+function getLastSearchedCatgory() {
+    return localStorage.getItem('last_searched_category') || 'product';
+}
+
+function setLastSearchedCatgory(category) {
+    localStorage.setItem('last_searched_category', category);
+}
+
 function getChebkexIds(filter_type) {
     var results = [];
     $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
