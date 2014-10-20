@@ -27,6 +27,7 @@ function fetchNextPage() {
         SW.ING_FETCH.LOADING = true;
 
         postToAPI('/product/filter', {
+            types: getChebkexIds('type'),
             brands: getChebkexIds('brand'),
             ingredients: getChebkexIds('ingredient'),
             page: SW.ING_FETCH.CUR_PAGE + 1
@@ -51,6 +52,7 @@ function refetch() {
     SW.ING_FETCH.LOADING = true;
 
     postToAPI('/product/filter', {
+        types: getChebkexIds('type'),
         brands: getChebkexIds('brand'),
         ingredients: getChebkexIds('ingredient'),
         page: 0
