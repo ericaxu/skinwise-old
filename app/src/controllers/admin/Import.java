@@ -289,6 +289,7 @@ public class Import {
 		result.setType(type);
 		result.setDescription(object.description);
 		result.setIngredientList(ingredients, key_ingredients);
+		result.setImage(object.image);
 
 		cache.products.updateAndSave(result, brand, object.name);
 	}

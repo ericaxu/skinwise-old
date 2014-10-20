@@ -67,6 +67,7 @@ public class DBFormat {
 		public String type;
 		public String key_ingredients;
 		public String ingredients;
+		public String image;
 
 		@Override
 		public void sanitize() {
@@ -75,6 +76,7 @@ public class DBFormat {
 			type = Util.notNull(type).trim();
 			ingredients = Util.notNull(ingredients).trim();
 			key_ingredients = Util.notNull(key_ingredients).trim();
+			image = Util.notNull(image).trim();
 		}
 	}
 }

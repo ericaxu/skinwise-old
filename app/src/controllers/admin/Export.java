@@ -92,6 +92,7 @@ public class Export {
 		result.brand = object.getBrandName();
 		result.type = object.getTypeName();
 		result.description = object.getDescription();
+		result.image = object.getImage();
 		List<String> key_ingredients = new ArrayList<>();
 		for (IngredientName ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());
