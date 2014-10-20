@@ -425,6 +425,18 @@ public class MemCache {
 			return result;
 		}
 
+		public static List<String> splitIngredient(String ingredient) {
+			String[] words = ingredient.toLowerCase().split("[^a-zA-Z0-9]");
+			List<String> result = new ArrayList<>();
+			for (String word : words) {
+				word = word.trim().toLowerCase();
+				if (!word.isEmpty()) {
+					result.add(word);
+				}
+			}
+			return result;
+		}
+
 		public List<IngredientName> matchAllIngredientNames(String input) {
 			List<IngredientName> matches = new ArrayList<>();
 			Set<IngredientName> matchSet = new HashSet<>();
@@ -445,8 +457,8 @@ public class MemCache {
 				return name;
 			}
 
+			/*
 			String[] words = input.toLowerCase().split("[^a-zA-Z0-9]");
-
 			for (Map.Entry<IngredientName, Set<String>> entry : ingredient_name_word_index.entrySet()) {
 				boolean allmatch = true;
 				for (String word : words) {
@@ -463,28 +475,13 @@ public class MemCache {
 					break;
 				}
 			}
+			*/
 
-			/*
 			List<IngredientName> result = cache.ingredient_names.search(input, 1, true);
 			if (!result.isEmpty()) {
 				name = result.get(0);
 			}
-			*/
 
-			if (name == null) {
-				name = new IngredientName();
-			}
-			else if (!name.getName().equalsIgnoreCase(input)) {
-				Ingredient ingredient = name.getIngredient();
-				name = new IngredientName();
-				name.setIngredient(ingredient);
-			}
-			else {
-				return name;
-			}
-			name.setName(input);
-			name.save();
-			App.cache().ingredient_names.update(name);
 			return name;
 		}
 	}

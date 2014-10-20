@@ -8,6 +8,7 @@ import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,9 +93,52 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Importing product ingredients");
-		for (String ingredient : allIngredients) {
-			cache.matcher.matchIngredientName(ingredient);
+		List<IngredientName> pending = new ArrayList<>();
+
+		//First pass
+		Logger.debug(TAG, "Ingredient names - first pass");
+		for (String string : allIngredients) {
+			IngredientName name = cache.matcher.matchIngredientName(string);
+
+			if (name != null && !name.getName().equalsIgnoreCase(string)) {
+				Ingredient ingredient = name.getIngredient();
+				if (ingredient != null) {
+					name = new IngredientName();
+					name.setIngredient(ingredient);
+					name.setName(string);
+					pending.add(name);
+				}
+			}
 		}
+
+		//Spill to DB
+		Logger.debug(TAG, "Ingredient names - spill");
+		for (IngredientName name : pending) {
+			name.save();
+			App.cache().ingredient_names.update(name);
+		}
+
+		//Second pass
+		Logger.debug(TAG, "Ingredient names - second pass");
+		for (String string : allIngredients) {
+			IngredientName name = cache.matcher.matchIngredientName(string);
+
+			if (name == null) {
+				name = new IngredientName();
+			}
+			else if (!name.getName().equalsIgnoreCase(string)) {
+				Ingredient ingredient = name.getIngredient();
+				name = new IngredientName();
+				name.setIngredient(ingredient);
+			}
+			else {
+				continue;
+			}
+			name.setName(string);
+			name.save();
+			App.cache().ingredient_names.update(name);
+		}
+
 		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
 
 		Logger.debug(TAG, "Importing products");
