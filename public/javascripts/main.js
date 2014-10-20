@@ -143,7 +143,9 @@ $(document).ready(function () {
     $('#nav_searchbar_btn').on('click', function() {
         // TODO: check if id is valid
         var id = $('#nav_searchbar').data('id');
-        location.href = '/' + $('#search_category_select').val() + '/' + id;
+        if (id !== '') {
+            location.href = '/' + $('#search_category_select').val() + '/' + id;
+        }
     });
 
     $(document).on('keyup', function(e) {
