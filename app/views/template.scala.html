@@ -16,6 +16,7 @@
     </head>
     <body>
     <nav>
+
         <ul class="info_nav horizontal">
             <li><a href="/products">Products</a></li>
             <li><a href="/ingredients">Ingredients</a></li>
@@ -36,7 +37,7 @@
                 <!--<li id="signup_link"><a href="#">Sign up</a></li>-->
                 <li id="login_link"><a href="#">Sign in</a></li>
             } else {
-                <li id="feedback_link"><a href="#">Feedback</a></li>
+                <li class="feedback_link"><a href="#">Feedback</a></li>
                 @if(state.userHasPermission(src.models.Permissible.ALL)) {
                     <li><a href="/admin">Admin</a></li>
                     <li><a href="/admin/content">Content</a></li>
@@ -69,8 +70,8 @@
         <ul>
             <li><a href="/about">About</a></li>
             <li><a href="/team">Team</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Need Help?</a></li>
+            <li class="feedback_link"><a href="#">Contact Us</a></li>
+            <li class="feedback_link"><a href="#">Need Help?</a></li>
         </ul>
     </footer>
 

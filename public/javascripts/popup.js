@@ -164,7 +164,7 @@ function feedbackSuccess(response) {
 }
 
 function setupFeedbackPopup() {
-    $('#feedback_link').on('click', function () {
+    $('.feedback_link').on('click', function () {
         $('.feedback.popup').show();
     });
 
