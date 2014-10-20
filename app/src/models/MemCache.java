@@ -1,5 +1,6 @@
 package src.models;
 
+import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
 
@@ -417,6 +418,7 @@ public class MemCache {
 			List<String> result = new ArrayList<>();
 			for (String ingredient : ingredients) {
 				ingredient = ingredient.trim().toLowerCase();
+				ingredient = StringUtils.strip(ingredient, "\t ,./?`~!@#$%^&*;:");
 				if (!ingredient.isEmpty()) {
 					result.add(ingredient);
 				}

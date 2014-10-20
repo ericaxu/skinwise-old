@@ -4,7 +4,6 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import src.controllers.ErrorController;
-import src.models.MemCache;
 import src.models.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
