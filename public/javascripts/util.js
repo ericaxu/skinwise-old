@@ -207,11 +207,6 @@ function enableAutocomplete(type, selector, append_to, limit) {
             enableAutocomplete(type, selector, append_to, limit);
         },
 
-        focus: function (event, ui) {
-            event.preventDefault();
-            $(selector).val(ui.item.label).data('id', ui.item.value);
-        },
-
         source: function (request, response) {
             var query = request.term;
             postToAPI('/autocomplete', {
