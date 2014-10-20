@@ -143,7 +143,7 @@ $(document).ready(function () {
         location.href = '/' + $('#search_category_select').val() + '/' + id;
     });
 
-    $(document.body).on('keyup', function(e) {
+    $(document).on('keyup', function(e) {
         // 13 is ENTER
         if (e.which === 13 && $('#nav_searchbar').is(':focus')) {
             $('#nav_searchbar_btn').trigger('click');

@@ -394,7 +394,6 @@ nav {
 .ui-autocomplete.ui-widget {
     position: absolute;
     background: @bg;
-    z-index: 99;
 
     li {
         display: block;
@@ -405,6 +404,8 @@ nav {
         color: @dark_text;
         font-family: "Source Sans Pro";
         letter-spacing: 0;
+        line-height: 100%;
+        cursor: pointer;
 
         &.ui-state-focus {
             background: @nav_bg;

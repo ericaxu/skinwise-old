@@ -184,6 +184,7 @@ function log() {
 }
 
 function enableAutocomplete(type, selector, append_to, limit) {
+    log('enable autocomplete');
     if ($(selector).hasClass('ui-autocomplete-input')) {
         $(selector).autocomplete('destroy');
     }
@@ -191,8 +192,11 @@ function enableAutocomplete(type, selector, append_to, limit) {
         appendTo: append_to,
 
         select: function (event, ui) {
+            log('select');
             event.preventDefault();
             $(selector).val(ui.item.label).data('id', ui.item.value);
+            // To fix add filter auto complete
+            enableAutocomplete(type, selector, append_to, limit);
         },
 
         focus: function (event, ui) {
