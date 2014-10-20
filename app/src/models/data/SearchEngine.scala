@@ -79,24 +79,21 @@ class SearchEngine[T] {
   def partialSearch(query: String, limit: Int): java.util.List[T] = {
     // Not case-sensitive.
     val queryWords = MemCache.Matcher.splitIngredients(query).toList
-    val fullWords = queryWords.dropRight(1)
-    val partialWord = queryWords.last
+    if (queryWords.length > 0) {
+      val fullWords = queryWords.dropRight(1)
+      val partialWord = queryWords.last
 
-    val nameToScore = getScoredNames(fullWords, partialWord)
-    val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by(_._2))
+      val nameToScore = getScoredNames(fullWords, partialWord)
+      val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by(_._2))
 
-    nameToScore foreach { case (name, score) =>
-      results += ((name, score))
+      nameToScore foreach { case (name, score) =>
+        results += ((name, score))
+      }
+
+      results.take(limit).toList.map(result => namesToObjs.get(result._1))
+    } else {
+      List.empty[T]
     }
-
-    results.take(limit).toList.map(result => namesToObjs.get(result._1))
-  }
-
-  // Levenshtein gives the edit distance between two strings, but the longer the string, the
-  // less this distance should be considered an "error". This function changes the distance
-  // into a score. The lower the score the better the match.
-  def normalizeDistance(queryLength: Int)(matchResult: (String, Double)) = matchResult match {
-    case (result, distance) => (result, sqrt(distance / queryLength) + distance * 0.2)
   }
 
   // Calculate the penalty as a function of the query length and the edit distance. Lower is better.
