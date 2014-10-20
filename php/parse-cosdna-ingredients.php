@@ -6,7 +6,7 @@ parser_no_timeout();
 $source_root = "http://cosdna.com/eng/";
 $source_search = $source_root . "stuff.php?q=";
 
-$file_inci_json = "data/inci.json.txt";
+$file_data_json = "data/data.json.txt";
 $file_inci_to_cosdna_json = "data/inci-to-cosdna.json.txt";
 $file_cosdna_json = "data/cosdna.json.txt";
 
@@ -16,7 +16,7 @@ util_create_dir("data");
 $mapping = util_json_read($file_inci_to_cosdna_json);
 
 //Load inci data
-$inci = util_json_read($file_inci_json);
+$data = util_json_read($file_data_json);
 
 function getIngredientPageFromSearch($ingredient) {
 	global $source_search, $mapping;
@@ -47,12 +47,12 @@ function getIngredientPageFromSearch($ingredient) {
 	return $result;
 }
 
-if(!$inci["ingredients"]) {
+if(!$data["ingredients"]) {
 	exit();
 }
 
-foreach($inci["ingredients"] as $ingredient) {
-	$cosdna_page = getIngredientPageFromSearch($ingredient["name"]);
+foreach($data["ingredients"] as $ingredient) {
+	$cosdna_page = getIngredientPageFromSearch(strtoupper($ingredient["name"]));
 	if(!$cosdna_page) {
 		echo "Cosdna not found " . $ingredient["name"] . "<br>\n";
 	}
@@ -85,6 +85,19 @@ function getCosdnaDataFromCosdnaId($cosdna_id) {
 	if($ingredient_data["Stuff_DetailK"]) {
 		$ingredient_names = parser_match("^\\((.*)\\)$", $ingredient_data["Stuff_DetailK"]);
 		$ingredient["names"] = util_trim_array(explode(",", $ingredient_names[1]));
+		$tmp = array();
+		$cnt = count($ingredient["names"]);
+		for ($i=0; $i < $cnt; $i++) { 
+			$name = $ingredient["names"][$i];
+			if(strlen($name) == 1 && is_numeric($name) && $i < $cnt-1) {
+				$tmp[] = $name . "." . $ingredient["names"][$i + 1];
+				$i++;
+			}
+			else {
+				$tmp[] = $name;
+			}
+		}
+		$ingredient["names"] = $tmp;
 	}
 	if(count($ingredient_function)) {
 		$ingredient["function"] = $ingredient_function[1][0];
@@ -133,12 +146,14 @@ while(count($related_search) > 0) {
 }
 
 //Convert to standard ingredient format
+/*
 $ingredients_cosdna = $ingredients;
 $ingredients = array();
 foreach($ingredients_cosdna as $key => $value) {
 	unset($value["cosdna_id"]);
 	$ingredients[] = $value;
 }
+*/
 
 $result = array();
 $result["ingredients"] = $ingredients;

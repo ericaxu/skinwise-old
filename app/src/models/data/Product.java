@@ -197,8 +197,8 @@ public class Product extends NamedModel {
 				.findUnique();
 	}
 
-	public static List<Product> byFilter(long[] brands, long[] ingredients, Page page) {
-		if (brands.length == 0 && ingredients.length == 0) {
+	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredients, Page page) {
+		if (brands.length == 0 && types.length == 0 && ingredients.length == 0) {
 			return page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 
@@ -206,15 +206,25 @@ public class Product extends NamedModel {
 				"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
 				"ON main.id = aux.product_id WHERE ";
 
+		boolean needAnd = false;
+
 		if (brands.length > 0) {
 			query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
+			needAnd = true;
+		}
 
-			if (ingredients.length > 0) {
-				query += "AND ";
+		if (types.length > 0) {
+			if (needAnd) {
+				query += " AND ";
 			}
+			query += " main.type_id IN (" + Util.joinString(",", types) + ") ";
+			needAnd = true;
 		}
 
 		if (ingredients.length > 0) {
+			if (needAnd) {
+				query += " AND ";
+			}
 			List<Long> ingredient_name_ids = new ArrayList<>();
 			for (long ingredient_id : ingredients) {
 				Set<IngredientName> names = Ingredient.byId(ingredient_id).getNames();

@@ -68,6 +68,8 @@ public class ProductController extends Controller {
 		public long[] brands;
 		@NotNull
 		public long[] ingredients;
+		@NotNull
+		public long[] types;
 	}
 
 	public static class ResponseProductObject {
@@ -197,6 +199,13 @@ public class ProductController extends Controller {
 				}
 			}
 
+			for (long type_id : request.types) {
+				ProductType type = App.cache().types.get(type_id);
+				if (type == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Product type not found");
+				}
+			}
+
 			for (long ingredient_id : request.ingredients) {
 				Ingredient ingredient = App.cache().ingredients.get(ingredient_id);
 				if (ingredient == null) {
@@ -205,7 +214,7 @@ public class ProductController extends Controller {
 			}
 
 			Page page = new Page(request.page, 20);
-			List<Product> result = Product.byFilter(request.brands, request.ingredients, page);
+			List<Product> result = Product.byFilter(request.brands, request.types, request.ingredients, page);
 
 			ResponseProductFilter response = new ResponseProductFilter();
 			response.count = page.count;

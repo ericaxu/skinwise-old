@@ -8,10 +8,7 @@ import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Import {
 	private static final String TAG = "Import";
@@ -147,6 +144,7 @@ public class Import {
 		}
 
 		cache.matcher.clear();
+		cache.init();
 	}
 
 	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {
@@ -195,6 +193,34 @@ public class Import {
 	}
 
 	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
+		object.names.add(object.name);
+		//Remove duplicates
+		for (String name : object.names) {
+			IngredientName ingredientName = cache.ingredient_names.get(name);
+			if (ingredientName == null) {
+				continue;
+			}
+			Ingredient ingredient = ingredientName.getIngredient();
+			if (ingredient != null && !Objects.equals(ingredient.getName(), object.name)) {
+				//Logger.debug(TAG, "Duplicate ingredient " +
+				//		object.name + " | " + ingredient.getName());
+
+				//Attach alt names to ingredient
+				for (String name2 : object.names) {
+					createIngredientName(name2, ingredient, cache);
+				}
+				//Attach info if possible
+				if (ingredient.getCas_number().isEmpty()) {
+					ingredient.setCas_number(object.cas_no);
+				}
+				if (ingredient.getDescription().isEmpty()) {
+					ingredient.setDescription(object.description);
+				}
+				ingredient.save();
+				return;
+			}
+		}
+
 		Set<Function> functionList = new HashSet<>();
 		for (String f : object.functions) {
 			f = f.trim();
@@ -225,8 +251,6 @@ public class Import {
 
 		cache.ingredients.update(result);
 
-		createIngredientName(object.name, result, cache);
-
 		for (String name : object.names) {
 			createIngredientName(name, result, cache);
 		}
@@ -240,7 +264,7 @@ public class Import {
 		result.setName(name);
 		Ingredient old = result.getIngredient();
 		if (old != null && !old.equals(ingredient)) {
-			Logger.error(TAG, "Ingredient name attached to multiple ingredients! " +
+			Logger.debug(TAG, "Ingredient name attached to multiple ingredients! " +
 					ingredient.getName() + " | " + old.getName());
 		}
 		result.setIngredient(ingredient);
