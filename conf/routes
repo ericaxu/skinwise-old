@@ -10,6 +10,7 @@ GET         /profile                                src.controllers.HtmlControll
 GET         /routine                                src.controllers.HtmlController.routine()
 GET         /about                                  src.controllers.HtmlController.about()
 GET         /team                                   src.controllers.HtmlController.team()
+GET         /favicon.ico                            controllers.Assets.at(path="/public/images/", file="favicon.ico")
 
 # Dynamic pages
 GET         /ingredient/:id                         src.controllers.data.IngredientController.ingredient(id : Long)
