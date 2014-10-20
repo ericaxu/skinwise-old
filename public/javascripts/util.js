@@ -71,11 +71,11 @@ function showMessage(message) {
 }
 
 function showError(message) {
-    showMessage({ type: 'error', message: message });
+    showMessage({type: 'error', message: message});
 }
 
 function showInfo(message) {
-    showMessage({ type: 'info', message: message });
+    showMessage({type: 'info', message: message});
 }
 
 function getRandomImage() {
@@ -95,11 +95,11 @@ function getRandomImage() {
 
 
 function productResultHTML(product) {
-    var $list_item = $('<li/>', { class: 'product' });
-    var $link = $('<a/>', { href: '/product/' + product.id });
+    var $list_item = $('<li/>', {class: 'product'});
+    var $link = $('<a/>', {href: '/product/' + product.id});
     $link.append(getRandomImage());
-    $link.append($('<div/>', { class: 'product_brand', text: product.brand }));
-    $link.append($('<div/>', { class: 'product_name', text: product.name }));
+    $link.append($('<div/>', {class: 'product_brand', text: product.brand}));
+    $link.append($('<div/>', {class: 'product_name', text: product.name}));
 
     $list_item.append($link);
 
@@ -174,13 +174,13 @@ function getChebkexIds(filter_type) {
 }
 
 function getFilterHTML(filter, type) {
-    var $option = $('<div/>', { class: 'filter_option' });
+    var $option = $('<div/>', {class: 'filter_option'});
     $option.append($('<input/>', {
         type: 'checkbox',
         id: filter.name
     }).data('id', filter.id));
-    $option.append($('<label/>', { for: filter.name }).text(filter.name));
-    $option.append($('<span/>', { class: 'delete_btn' }).data('type', type));
+    $option.append($('<label/>', {for: filter.name}).text(filter.name));
+    $option.append($('<span/>', {class: 'delete_btn'}).data('type', type));
 
     return $option;
 }
@@ -229,9 +229,30 @@ function enableAutocomplete(type, selector, append_to, limit) {
                 response(data);
             });
         }
-    });
+    }).autocomplete('instance')._renderItem = function (ul, item) {
+        var query = $(selector).val().toLowerCase();
+        var html = item.label;
+        if (item.label.toLowerCase().indexOf(query) !== -1) {
+            var parts = item.label.toLowerCase().split(query);
+            var start = 0;
+            var end = parts[0].length;
+            html = item.label.slice(start, end);
+            for (var i = 1; i < parts.length; i++) {
+                start = end;
+                end = start + query.length;
+                html += ('<span class="autocomplete_found_part">' + item.label.slice(start, end) + '</span>');
 
-    $(selector).off('change').on('change', function() {
+                start = end;
+                end = start + parts[i].length;
+                html += item.label.slice(start, end);
+            }
+        }
+        return $("<li>")
+            .append(html)
+            .appendTo(ul);
+    };
+
+    $(selector).off('change').on('change', function () {
         $(this).data('id', '');
     });
 }
