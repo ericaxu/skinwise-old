@@ -1,5 +1,6 @@
 @(state: src.controllers.util.ResponseState, ingredient: src.models.data.Ingredient)
 
+@import src.util.Util;
 @import org.apache.commons.lang3.text.WordUtils;
 @template(ingredient.getDisplayName + " - Skin Wise", state) {
 
@@ -9,7 +10,13 @@
 
     <div class="section">
         <h1 class="name">@ingredient.getDisplayName</h1>
-        <div class="classification"></div>
+        @if(ingredient.getNamesString.size > 0) {
+            <div class="alternate_names">
+                Also known as
+                @Util.joinString(", ", ingredient.getNamesString.map{WordUtils.capitalizeFully(_)}
+                        .filter{_.toLowerCase != ingredient.getName.toLowerCase})
+            </div>
+        }
     </div>
 
     <div class="functions section">

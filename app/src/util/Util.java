@@ -6,6 +6,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.List;
 
 public class Util {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -40,11 +42,15 @@ public class Util {
 	}
 
 	public static <T> String joinString(String delimiter, T[] array) {
+		return joinString(delimiter, Arrays.asList(array));
+	}
+
+	public static <T> String joinString(String delimiter, List<T> array) {
 		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < array.length - 1; i++) {
-			result.append(array[i]).append(delimiter);
+		for (int i = 0; i < array.size() - 1; i++) {
+			result.append(array.get(i)).append(delimiter);
 		}
-		result.append(array[array.length - 1]);
+		result.append(array.get(array.size() - 1));
 		return result.toString();
 	}
 }
