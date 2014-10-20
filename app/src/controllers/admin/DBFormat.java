@@ -2,10 +2,7 @@ package src.controllers.admin;
 
 import src.util.Util;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DBFormat {
 	public List<IngredientObject> ingredients = new ArrayList<>();
@@ -31,8 +28,8 @@ public class DBFormat {
 		public String cas_no;
 		public String ec_no;
 		public String restriction;
-		public Set<String> functions = new HashSet<>();
-		public Set<String> names = new HashSet<>();
+		public List<String> functions = new ArrayList<>();
+		public List<String> names = new ArrayList<>();
 
 		@Override
 		public void sanitize() {
@@ -41,15 +38,17 @@ public class DBFormat {
 			ec_no = Util.notNull(ec_no).trim();
 			restriction = Util.notNull(restriction).trim();
 			if (functions == null) {
-				functions = new HashSet<>();
+				functions = new ArrayList<>();
 			}
 			if (names == null) {
-				names = new HashSet<>();
+				names = new ArrayList<>();
 			}
 			functions.remove("");
 			functions.remove(null);
 			names.remove("");
 			names.remove(null);
+			functions = new ArrayList<>(new LinkedHashSet<>(functions));
+			names = new ArrayList<>(new LinkedHashSet<>(names));
 		}
 	}
 

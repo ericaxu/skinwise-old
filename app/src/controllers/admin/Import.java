@@ -193,7 +193,6 @@ public class Import {
 	}
 
 	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
-		object.names.add(object.name);
 		//Remove duplicates
 		for (String name : object.names) {
 			IngredientName ingredientName = cache.ingredient_names.get(name);
@@ -250,6 +249,8 @@ public class Import {
 		result.save();
 
 		cache.ingredients.update(result);
+
+		createIngredientName(object.name, result, cache);
 
 		for (String name : object.names) {
 			createIngredientName(name, result, cache);
