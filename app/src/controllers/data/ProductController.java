@@ -225,7 +225,7 @@ public class ProductController extends Controller {
 						product.getName(),
 						product.getBrandName(),
 						product.getLine(),
-						""
+						product.getImage()
 				));
 			}
 
