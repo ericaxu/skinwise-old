@@ -4,19 +4,23 @@
 .products_list, .ingredients_list {
     width: 70%;
     float: right;
-    padding-left: 7%;
-    border-left: 1px solid @nav_bg;
 }
 
 .filter_area {
-    width: 20%;
     float: left;
+    width: 25%;
+    margin-right: 5%;
+    padding-right: 1%;
+    border-right: 1px solid @border;
 }
 
 .filter_area.sticky {
     position: fixed;
     top: 100px;
-    float: left;
+    height: 80%;
+    width: 19%;
+    border-right: none;
+    overflow-y: scroll;
 }
 
 .filter_section {
@@ -67,7 +71,7 @@ footer {
 }
 
 .delete_btn {
-    display: none;
+    visibility: hidden;
     position: relative;
     top: 1.5px;
     margin-left: 5px;

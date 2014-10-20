@@ -130,9 +130,12 @@ $(document).ready(function () {
     setupIngredientInfobox();
     setupFunctionInfobox();
 
+    $('#search_category_select').val(getLastSearchedCatgory());
+
     enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
 
     $('#search_category_select').on('change', function() {
+        setLastSearchedCatgory($(this).val());
         enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
         $('#nav_searchbar').val('');
     });
@@ -140,10 +143,12 @@ $(document).ready(function () {
     $('#nav_searchbar_btn').on('click', function() {
         // TODO: check if id is valid
         var id = $('#nav_searchbar').data('id');
-        location.href = '/' + $('#search_category_select').val() + '/' + id;
+        if (id !== '') {
+            location.href = '/' + $('#search_category_select').val() + '/' + id;
+        }
     });
 
-    $(document.body).on('keyup', function(e) {
+    $(document).on('keyup', function(e) {
         // 13 is ENTER
         if (e.which === 13 && $('#nav_searchbar').is(':focus')) {
             $('#nav_searchbar_btn').trigger('click');

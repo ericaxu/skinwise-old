@@ -27,6 +27,7 @@ function fetchNextPage() {
         SW.ING_FETCH.LOADING = true;
 
         postToAPI('/product/filter', {
+            types: getChebkexIds('type'),
             brands: getChebkexIds('brand'),
             ingredients: getChebkexIds('ingredient'),
             page: SW.ING_FETCH.CUR_PAGE + 1
@@ -51,6 +52,7 @@ function refetch() {
     SW.ING_FETCH.LOADING = true;
 
     postToAPI('/product/filter', {
+        types: getChebkexIds('type'),
         brands: getChebkexIds('brand'),
         ingredients: getChebkexIds('ingredient'),
         page: 0
@@ -64,7 +66,7 @@ function refetch() {
 }
 
 function loadFilters() {
-    var filter_types = ['ingredient', 'brand'];
+    var filter_types = ['type', 'brand', 'ingredient'];
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
         var saved_filters = getProductFilters(filter_type);
@@ -80,9 +82,9 @@ function loadFilters() {
 
 function setupDeleteButtons() {
     $(document).on('mouseenter', '.filter_option', function () {
-        $(this).find('.delete_btn').show();
+        $(this).find('.delete_btn').css('visibility', 'visible');
     }).on('mouseleave', '.filter_option', function () {
-        $(this).find('.delete_btn').hide();
+        $(this).find('.delete_btn').css('visibility', 'hidden');
     });
 
     $(document).on('click', '.delete_btn', function () {
@@ -95,7 +97,7 @@ function setupDeleteButtons() {
 
 $(document).on('ready', function () {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
-    var original_offset = $('.filter_area').offset().top;
+    var nav_height = $('nav').height();
 
     $('.open_add_filter_popup').on('click', function () {
         $('#add_filter_btn').data('type', $(this).data('type'));
@@ -124,14 +126,13 @@ $(document).on('ready', function () {
 
     $(window).on('scroll', function () {
         // Check if we are at bottom of page
-        if ($(window).scrollTop() + $(window).height() > $(document).height() - $('nav').height() &&
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - nav_height &&
             SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {
             fetchNextPage();
         }
 
-
-        if ($('.products_list').height() + $('#logo').height() + $('nav').height() > $(window).height()) {
-            if ($(window).scrollTop() >= original_offset - $('nav').height()) {
+        if ($('.products_list').height() + $('#logo').height() + nav_height > $(window).height()) {
+            if ($(window).scrollTop() >= 100 - nav_height) {
                 $('.filter_area').addClass('sticky');
             } else {
                 $('.filter_area').removeClass('sticky');
