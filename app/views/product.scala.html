@@ -6,11 +6,12 @@
 
 <div class="product_detail">
     <div class="picture">
-        <img src="@product.getImage" alt="@product.getBrand.getName + ' ' + product.getName"/>
+        <img src="@product.getImage" alt="@product.getBrandName + ' ' + product.getName"/>
     </div>
 
     <div class="ingredient_container">
-        <h1 class="name">@product.getBrandName @product.getName</h1>
+        <h1 class="name">by @product.getName</h1>
+        <h3 class="brand">@product.getBrandName</h3>
         @if(product.hasDescription) {
             <div class="claim">
                 <h3>What It Does</h3>
