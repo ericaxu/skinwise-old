@@ -75,24 +75,25 @@ public class DataController extends Controller {
 			}
 
 			ResponseAutocomplete response = new ResponseAutocomplete();
+			int numResults = 10;
 			MemCache cache = App.cache();
 
 			List<? extends NamedModel> result = null;
 			switch (type) {
 				case FUNCTION:
-					result = cache.functions.search(request.query, 20, false);
+					result = cache.functions.search(request.query, numResults, false);
 					break;
 				case BRAND:
-					result = cache.brands.search(request.query, 20, false);
+					result = cache.brands.search(request.query, numResults, false);
 					break;
 				case PRODUCT_TYPE:
-					result = cache.types.search(request.query, 20, false);
+					result = cache.types.search(request.query, numResults, false);
 					break;
 				case INGREDIENT:
-					result = cache.ingredient_names.search(request.query, 20, false);
+					result = cache.ingredient_names.search(request.query, numResults, false);
 					break;
 				case PRODUCT:
-					result = cache.products.search(request.query, 20, false);
+					result = cache.products.search(request.query, numResults, false);
 					break;
 			}
 

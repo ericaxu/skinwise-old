@@ -34,7 +34,7 @@ public class Page {
 	public static int sqlCount(String query) throws SQLException {
 		Connection connection = DB.getConnection();
 		Statement statement = connection.createStatement();
-		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ")");
+		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ") AS t");
 		result_set.next();
 		int count = result_set.getInt("COUNT(*)");
 		result_set.close();
