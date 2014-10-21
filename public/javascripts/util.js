@@ -190,6 +190,12 @@ function log() {
     }
 }
 
+// From http://stackoverflow.com/questions/273789/is-there-a-version-of-javascripts-string-indexof-that-allows-for-regular-expr
+String.prototype.regexIndexOf = function(regex, startpos) {
+    var indexOf = this.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+}
+
 function enableAutocomplete(type, selector, append_to, limit) {
     log('enable autocomplete');
     if ($(selector).hasClass('ui-autocomplete-input')) {
@@ -230,22 +236,64 @@ function enableAutocomplete(type, selector, append_to, limit) {
         }
     }).autocomplete('instance')._renderItem = function (ul, item) {
         var query = $(selector).val().toLowerCase();
-        var html = item.label;
-        if (item.label.toLowerCase().indexOf(query) !== -1) {
-            var parts = item.label.toLowerCase().split(query);
-            var start = 0;
-            var end = parts[0].length;
-            html = item.label.slice(start, end);
-            for (var i = 1; i < parts.length; i++) {
-                start = end;
-                end = start + query.length;
-                html += ('<span class="autocomplete_found_part">' + item.label.slice(start, end) + '</span>');
 
-                start = end;
-                end = start + parts[i].length;
-                html += item.label.slice(start, end);
+        var words = query.split(/[^a-zA-Z0-9]/);
+
+        // Because "a   b".split(" ") returns ["a", "", "", "", "b"] ... sigh
+        var nonemptyWords = []
+        for (var i = 0; i < words.length; i++) {
+            if (words[i].length > 0)
+                nonemptyWords.push(words[i])
+        }
+
+        // Add a space to the front and end to avoid having a special case
+        // for the first and last word during regex search (not displayed).
+        // Also convert to lowercase to avoid dealing with case.
+        var paddedItem = " " + item.label.toLowerCase() + " ";
+
+        // Whether the character should be bolded.
+        var flags = new Array(item.label.length);
+        for (var i = 0; i < flags.length; i++)
+            flags[i] = false;
+
+        for (var i = 0; i < nonemptyWords.length; i++) {
+            var word = nonemptyWords[i];
+            var regex;
+            if (i == nonemptyWords.length - 1) {
+                // Prefix search.
+                regex = "[^a-zA-Z0-9]" + word;
+            } else {
+                // Full word search.
+                regex = "[^a-zA-Z0-9]" + word + "[^a-zA-Z0-9]";
+            }
+
+            var index = paddedItem.regexIndexOf(regex);
+            while (index >= 0) {
+                for (var j = 0; j < word.length; j++) {
+                    // We should do (index + j + 1) because of the leading
+                    // padded whitespace, but it is cancelled by the
+                    // leading non-alphanumerical in the regex.
+                    flags[index + j] = true;
+                }
+                index = paddedItem.regexIndexOf(regex, index + 1);
             }
         }
+
+        // Get runs of true flags.
+        var html = [];
+        for (var i = 0; i < item.label.length; i++) {
+            if (flags[i]) {
+                var start = i;
+                i++;
+                while (flags[i]) {
+                    i++;
+                }
+                html.push('<span class="autocomplete_found_part">' + item.label.slice(start, i) + '</span>');
+            }
+            html.push(item.label[i]);
+        }
+        html = html.join("");
+
         return $("<li>")
             .append(html)
             .appendTo(ul);
