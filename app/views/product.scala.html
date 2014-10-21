@@ -7,9 +7,9 @@
 <div class="product_detail">
     <div class="picture">
         @if(product.getImage.length > 0) {
-            <img src="" alt="@product.getBrandName + ' ' + product.getName"/>
+            <img src="@product.getImage" alt="@product.getBrandName @product.getName"/>
         } else {
-            <img src="" alt="No Image Available"/>
+            <img src="@routes.Assets.at("/public", "images/placeholder.png")" alt="No Image Available"/>
         }
     </div>
 

@@ -83,7 +83,7 @@ function productResultHTML(product) {
     var $link = $('<a/>', {href: '/product/' + product.id});
     var $img = $('<img/>', {
         class: 'product_pic',
-        src: product.image ? '' : SW_PLACEHOLDER_URL,
+        src: product.image || SW_PLACEHOLDER_URL,
         alt: product.brand + ' ' + product.name
     });
     // check if image is ok
