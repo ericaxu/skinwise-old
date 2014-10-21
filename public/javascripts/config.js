@@ -63,3 +63,12 @@ SW.AUTOCOMPLETE_LIMIT = {
     NAV_SEARCH: 10,
     ADD_FILTER: 4
 }
+
+SW.FEEDBACK = {
+    question: _.template('<%= user %> needs your help!'),
+    content: _.template('<%= user %> spotted a mistake that we made. How embarrassing!'),
+    missing: _.template('<%= user %> points out we should add something to our database.'),
+    bug: _.template('Bug report from our volunteer QA <%= user %>'),
+    suggestion: _.template('<%= user %> thinks we should build this.'),
+    other: _.template('<%= user %> has feedback for us.')
+}

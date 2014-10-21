@@ -43,7 +43,7 @@ public class AdminReportController extends Controller {
 	}
 
 	public static class ResponseReportList extends Response {
-		public List<ResponseReportObject> result = new ArrayList<>();
+		public List<ResponseReportObject> results = new ArrayList<>();
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -59,7 +59,7 @@ public class AdminReportController extends Controller {
 
 			ResponseReportList response = new ResponseReportList();
 			for (Report report : reports) {
-				response.result.add(getResponse(report));
+				response.results.add(getResponse(report));
 			}
 
 			return Api.write(response);
@@ -83,7 +83,7 @@ public class AdminReportController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 			ResponseReportList response = new ResponseReportList();
-			response.result.add(getResponse(result));
+			response.results.add(getResponse(result));
 
 			return Api.write(response);
 		}

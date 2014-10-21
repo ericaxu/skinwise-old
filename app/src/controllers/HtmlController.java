@@ -9,7 +9,7 @@ public class HtmlController extends Controller {
 
 	public static Result index() {
 		ResponseState state = new ResponseState(session());
-		return ok(index.render(state));
+		return redirect("/products");
 	}
 
 	public static Result products() {
