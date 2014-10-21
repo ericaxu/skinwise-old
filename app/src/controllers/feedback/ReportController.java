@@ -20,6 +20,8 @@ public class ReportController extends Controller {
 		public String type;
 		@NotEmpty
 		public String content;
+		@NotEmpty
+		public String email;
 	}
 
 	public static Result api_report_create() {
@@ -32,6 +34,7 @@ public class ReportController extends Controller {
 			report.setPath(request.path);
 			report.setType(request.type);
 			report.setContent(request.content);
+			report.setEmail(request.email);
 			report.setUser(state.getUser());
 			report.setTimestamp(System.currentTimeMillis());
 			report.setResolved(false);

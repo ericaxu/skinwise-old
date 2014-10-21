@@ -96,7 +96,7 @@ public abstract class Permissible extends BaseModel {
 	public static class REPORT {
 		public static final String ALL = "REPORT.*";
 		public static final String VIEW = "REPORT.VIEW";
-		public static final String DELETE = "REPORT.DELETE";
+		public static final String RESOLVE = "REPORT.RESOLVE";
 	}
 
 	public static class USER {

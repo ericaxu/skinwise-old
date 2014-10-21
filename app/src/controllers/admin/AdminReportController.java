@@ -21,20 +21,20 @@ public class AdminReportController extends Controller {
 		public long id;
 		public String path;
 		public String type;
-		public String title;
+		public String email;
 		public String content;
 		public String reported_by;
 		public boolean resolved;
 		public long timestamp;
 
 		public ResponseReportObject(long id, String path,
-		                            String type, String title,
+		                            String type, String email,
 		                            String content, String reported_by,
 		                            boolean resolved, long timestamp) {
 			this.id = id;
 			this.path = path;
 			this.type = type;
-			this.title = title;
+			this.email = email;
 			this.content = content;
 			this.reported_by = reported_by;
 			this.resolved = resolved;
@@ -93,22 +93,23 @@ public class AdminReportController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_report_delete() {
+	public static Result api_report_resolve() {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.REPORT.DELETE);
+			state.requirePermission(Permissible.REPORT.RESOLVE);
 
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Report result = Report.byId(request.id);
 			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+				throw new BadRequestException(Response.NOT_FOUND, "Report " + request.id + " not found");
 			}
 
-			result.delete();
+			result.setResolved(true);
+			result.save();
 
-			return Api.write(new InfoResponse("Successfully deleted report " + result.getTitle()));
+			return Api.write(new InfoResponse("Report " + request.id + " resolved"));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -136,7 +137,7 @@ public class AdminReportController extends Controller {
 				object.getId(),
 				object.getPath(),
 				object.getType(),
-				object.getTitle(),
+				object.getEmail(),
 				object.getContent(),
 				object.getUserName(),
 				object.isResolved(),

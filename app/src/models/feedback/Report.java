@@ -18,8 +18,8 @@ public class Report extends BaseModel {
 	@Column(length = 255)
 	private String type;
 
-	@Column(length = 1023)
-	private String title;
+	@Column(length = 255)
+	private String email;
 
 	@Lob
 	private String content;
@@ -43,8 +43,8 @@ public class Report extends BaseModel {
 		return type;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getEmail() {
+		return email;
 	}
 
 	public String getContent() {
@@ -73,8 +73,8 @@ public class Report extends BaseModel {
 		this.type = type;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public void setContent(String content) {
