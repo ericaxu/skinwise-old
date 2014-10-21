@@ -81,11 +81,17 @@ function showInfo(message) {
 function productResultHTML(product) {
     var $list_item = $('<li/>', {class: 'product'});
     var $link = $('<a/>', {href: '/product/' + product.id});
-    $link.append($('<img/>', {
+    var $img = $('<img/>', {
         class: 'product_pic',
-        src: product.image,
+        src: product.image ? '' : SW_PLACEHOLDER_URL,
         alt: product.brand + ' ' + product.name
-    }));
+    });
+    // check if image is ok
+    if (product.image) {
+        checkImage($img, product.image);
+    }
+
+    $link.append($img);
     $link.append($('<div/>', {class: 'product_brand', text: product.brand}));
     $link.append($('<div/>', {class: 'product_name', text: product.name}));
 

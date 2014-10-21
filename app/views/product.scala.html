@@ -7,15 +7,15 @@
 <div class="product_detail">
     <div class="picture">
         @if(product.getImage.length > 0) {
-            <img src="@product.getImage" alt="@product.getBrandName + ' ' + product.getName"/>
+            <img src="" alt="@product.getBrandName + ' ' + product.getName"/>
         } else {
-            <img src='@routes.Assets.at("/public", "images/placeholder.png")' alt="No Image Available"/>
+            <img src="" alt="No Image Available"/>
         }
     </div>
 
     <div class="ingredient_container">
-        <h1 class="name">by @product.getName</h1>
-        <h3 class="brand">@product.getBrandName</h3>
+        <h1 class="name">@product.getName</h1>
+        <h3 class="brand">by @product.getBrandName</h3>
         @if(product.hasDescription) {
             <div class="claim">
                 <h3>What It Does</h3>
@@ -88,6 +88,7 @@
 } {
 
 <script>
+    checkImage($('.picture img'), '@product.getImage');
     postToAPI('/product/ingredientinfo', {
         id: @product.getId
     }, getIngredientInfoSuccess);

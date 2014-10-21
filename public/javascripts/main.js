@@ -126,6 +126,26 @@ function getContainingProductsSuccess(response) {
     }
 }
 
+function checkImage($element, url) {
+    $('<img/>').attr('src', url)
+        .load(function() {
+            if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+                $element.attr({
+                    src: SW_PLACEHOLDER_URL,
+                    alt: 'No Image Available'
+                });
+            } else {
+                $element.attr('src', url);
+            }
+        })
+        .error(function() {
+            $element.attr({
+                src: SW_PLACEHOLDER_URL,
+                alt: 'No Image Available'
+            });
+        });
+}
+
 $(document).ready(function () {
     setupIngredientInfobox();
     setupFunctionInfobox();
