@@ -32,8 +32,7 @@ class SearchEngine[T] {
   }
 
   def update(name: String) = {
-    // Not case-sensitive.
-    val words = MemCache.Matcher.splitIngredients(name).toList
+    val words = MemCache.Matcher.splitIngredient(name).toList
 
     val wordPositionMap = new mutable.HashMap[String, Int]
     words.zipWithIndex foreach { case (word, index) =>
@@ -77,8 +76,7 @@ class SearchEngine[T] {
   }
 
   def partialSearch(query: String, limit: Int): java.util.List[T] = {
-    // Not case-sensitive.
-    val queryWords = MemCache.Matcher.splitIngredients(query).toList
+    val queryWords = MemCache.Matcher.splitIngredient(query).toList
     if (queryWords.length > 0) {
       val fullWords = queryWords.dropRight(1)
       val partialWord = queryWords.last
@@ -118,7 +116,7 @@ class SearchEngine[T] {
   }
 
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
-    val queryWords = MemCache.Matcher.splitIngredients(query).toList
+    val queryWords = MemCache.Matcher.splitIngredient(query).toList
     val matches = queryWords
       .map(queryWord => Levenshtein.getMatches(queryWord, trie, 100))
       .flatten
