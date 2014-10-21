@@ -17,6 +17,7 @@ import src.models.Page;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
+import src.models.data.IngredientName;
 import views.html.ingredient;
 
 import java.util.ArrayList;
@@ -75,34 +76,6 @@ public class IngredientController extends Controller {
 		public int count;
 	}
 
-	public static class ResponseFunctionObject {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseFunctionObject(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseFunction extends Response {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseFunction(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseFunctions extends Response {
-		public List<ResponseFunctionObject> results = new ArrayList<>();
-	}
-
 	public static Result ingredient(long id) {
 		ResponseState state = new ResponseState(session());
 
@@ -112,14 +85,6 @@ public class IngredientController extends Controller {
 		}
 
 		return ok(ingredient.render(state, result));
-	}
-
-	public static Result ingredient_search(String query) {
-		ResponseState state = new ResponseState(session());
-
-		//TODO
-
-		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -184,6 +149,33 @@ public class IngredientController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_ingredient_name_unmatched() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
+
+			List<IngredientName> result = IngredientName.unmatched(new Page(request.page));
+
+			Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
+
+			for (IngredientName object : result) {
+				response.results.add(new Api.ResponseNamedModelObject(
+						object.getId(),
+						object.getName(),
+						object.getDescription()
+				));
+			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_function_byid() {
 		ResponseState state = new ResponseState(session());
 
@@ -205,7 +197,7 @@ public class IngredientController extends Controller {
 				}
 			}
 
-			ResponseFunction response = new ResponseFunction(
+			Api.ResponseNamedModel response = new Api.ResponseNamedModel(
 					result.getId(),
 					result.getName(),
 					result.getDescription()
@@ -222,13 +214,13 @@ public class IngredientController extends Controller {
 	public static Result api_functions() {
 		Collection<Function> result = App.cache().functions.all();
 
-		ResponseFunctions response = new ResponseFunctions();
+		Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
 
-		for (Function function : result) {
-			response.results.add(new ResponseFunctionObject(
-					function.getId(),
-					function.getName(),
-					function.getDescription()
+		for (Function object : result) {
+			response.results.add(new Api.ResponseNamedModelObject(
+					object.getId(),
+					object.getName(),
+					object.getDescription()
 			));
 		}
 

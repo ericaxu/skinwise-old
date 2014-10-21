@@ -93,62 +93,6 @@ public class ProductController extends Controller {
 		public int count;
 	}
 
-	public static class ResponseBrand extends Response {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseBrand(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseBrandObject {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseBrandObject(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseBrands extends Response {
-		public List<ResponseBrandObject> results = new ArrayList<>();
-	}
-
-	public static class ResponseType extends Response {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseType(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseTypeObject {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseTypeObject(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
-	public static class ResponseTypes extends Response {
-		public List<ResponseTypeObject> results = new ArrayList<>();
-	}
-
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
@@ -238,10 +182,10 @@ public class ProductController extends Controller {
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_brands() {
-		ResponseBrands response = new ResponseBrands();
+		Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
 
 		for (Brand brand : App.cache().brands.all()) {
-			response.results.add(new ResponseBrandObject(
+			response.results.add(new Api.ResponseNamedModelObject(
 					brand.getId(),
 					brand.getName(),
 					brand.getDescription()
@@ -263,7 +207,7 @@ public class ProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
 			}
 
-			ResponseBrand response = new ResponseBrand(
+			Api.ResponseNamedModel response = new Api.ResponseNamedModel(
 					result.getId(),
 					result.getName(),
 					result.getDescription()
@@ -278,10 +222,10 @@ public class ProductController extends Controller {
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_types() {
-		ResponseTypes response = new ResponseTypes();
+		Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
 
 		for (ProductType type : App.cache().types.all()) {
-			response.results.add(new ResponseTypeObject(
+			response.results.add(new Api.ResponseNamedModelObject(
 					type.getId(),
 					type.getName(),
 					type.getDescription()
@@ -303,7 +247,7 @@ public class ProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Type " + request.id + " not found");
 			}
 
-			ResponseType response = new ResponseType(
+			Api.ResponseNamedModel response = new Api.ResponseNamedModel(
 					result.getId(),
 					result.getName(),
 					result.getDescription()

@@ -1,5 +1,6 @@
 package src.controllers.admin;
 
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.controllers.api.Api;
@@ -16,10 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminReportController extends Controller {
-	public static class ResponseReportList extends Response {
-		public List<ResponseReportObject> result = new ArrayList<>();
-	}
-
 	public static class ResponseReportObject {
 		public long id;
 		public String path;
@@ -45,6 +42,11 @@ public class AdminReportController extends Controller {
 		}
 	}
 
+	public static class ResponseReportList extends Response {
+		public List<ResponseReportObject> result = new ArrayList<>();
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_report_list() {
 		ResponseState state = new ResponseState(session());
 
@@ -67,6 +69,7 @@ public class AdminReportController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_report_byid() {
 		ResponseState state = new ResponseState(session());
 
@@ -89,6 +92,7 @@ public class AdminReportController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_report_delete() {
 		ResponseState state = new ResponseState(session());
 
@@ -111,6 +115,7 @@ public class AdminReportController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_analytics() {
 		ResponseState state = new ResponseState(session());
 
@@ -138,5 +143,4 @@ public class AdminReportController extends Controller {
 				object.getTimestamp()
 		);
 	}
-
 }

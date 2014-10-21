@@ -13,6 +13,8 @@ import src.util.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Api {
 	private static final String TAG = "API";
@@ -35,6 +37,35 @@ public class Api {
 
 	public static class RequestGetByIdAndPage extends RequestGetById {
 		public int page;
+	}
+
+	public static class ResponseNamedModel extends Response {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseNamedModel(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
+	public static class ResponseNamedModelObject {
+		public long id;
+		public String name;
+		public String description;
+
+		public ResponseNamedModelObject(long id, String name, String description) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+		}
+	}
+
+	public static class ResponseNamedModelList extends Response {
+		public List<ResponseNamedModelObject> results = new ArrayList<>();
+		public int count;
 	}
 
 	public static <T extends Request> T read(Http.Context context, Class<? extends T> clazz)

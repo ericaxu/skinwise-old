@@ -1,6 +1,7 @@
 package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
+import src.models.Page;
 
 import javax.persistence.*;
 import java.util.List;
@@ -49,12 +50,7 @@ public class IngredientName extends NamedModel {
 				.findUnique();
 	}
 
-	public static List<IngredientName> search(String query, int limit, int page) {
-		return find.where()
-				.like("name", query)
-				.orderBy("name")
-				.findPagingList(limit)
-				.getPage(page)
-				.getList();
+	public static List<IngredientName> unmatched(Page page) {
+		return page.apply(find.where().isNull("ingredient").query());
 	}
 }

@@ -1,5 +1,6 @@
 package src.controllers.admin;
 
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.App;
@@ -44,6 +45,7 @@ public class AdminIngredientController extends Controller {
 		public String name;
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_ingredient_update() {
 		ResponseState state = new ResponseState(session());
 
@@ -85,6 +87,7 @@ public class AdminIngredientController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_ingredient_name_update() {
 		ResponseState state = new ResponseState(session());
 
@@ -104,9 +107,15 @@ public class AdminIngredientController extends Controller {
 				}
 			}
 
-			Ingredient ingredient = Ingredient.byId(request.ingredient_id);
-			if (ingredient == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
+			Ingredient ingredient;
+			if (request.ingredient_id == BaseModel.NEW_ID) {
+				ingredient = null;
+			}
+			else {
+				ingredient = Ingredient.byId(request.ingredient_id);
+				if (ingredient == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
+				}
 			}
 
 			result.setIngredient(ingredient);
@@ -120,6 +129,7 @@ public class AdminIngredientController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_function_update() {
 		ResponseState state = new ResponseState(session());
 

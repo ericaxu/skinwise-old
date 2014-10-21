@@ -1,5 +1,6 @@
 package src.controllers.admin;
 
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.App;
@@ -42,6 +43,7 @@ public class AdminProductController extends Controller {
 		public String image;
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_product_update() {
 		ResponseState state = new ResponseState(session());
 
@@ -85,6 +87,7 @@ public class AdminProductController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_brand_update() {
 		ResponseState state = new ResponseState(session());
 
@@ -115,6 +118,7 @@ public class AdminProductController extends Controller {
 		}
 	}
 
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_type_update() {
 		ResponseState state = new ResponseState(session());
 
