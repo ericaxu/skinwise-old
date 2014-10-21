@@ -27,6 +27,7 @@ public class Util {
 	public static void writeAll(String file, String data) throws IOException {
 		File f = new File(file);
 		if (!f.exists()) {
+			f.mkdirs();
 			f.createNewFile();
 		}
 		Files.write(Paths.get(file), data.getBytes(UTF8), StandardOpenOption.TRUNCATE_EXISTING);
