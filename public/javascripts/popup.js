@@ -135,6 +135,11 @@ function setupFeedbackCall() {
     $('#feedback_btn').on('click', function (e) {
         cleanupErrors();
 
+        if ($('#feedback_email').val() === '') {
+            showFeedbackErrorMsg('We need your email address to get back to you :)');
+            return;
+        }
+
         if ($('#feedback_type').val() === 'none') {
             showFeedbackErrorMsg('Please select a type!');
             return;
@@ -147,6 +152,7 @@ function setupFeedbackCall() {
 
         $(this).val('Sending...');
         postToAPI('/feedback/report', {
+            email: $('#feedback_email').val(),
             path: location.href,
             type: $('#feedback_type').val(),
             content: $('#feedback_message').val()
@@ -164,8 +170,9 @@ function feedbackSuccess(response) {
 }
 
 function setupFeedbackPopup() {
-    $('.feedback_link').on('click', function () {
+    $('.feedback_link').on('click', function (e) {
         $('.feedback.popup').show();
+        e.preventDefault();
     });
 
     setupFeedbackCall();

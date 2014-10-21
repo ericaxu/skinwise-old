@@ -11,19 +11,13 @@
                     <div id="feedback_error" class="error_msg">Error</div>
 
                     <div class="labels">
-                        @if(state.getUser == null) {
-                            <label for="feedback_name">Name:</label>
-                            <label for="feedback_email">Email:</label>
-                        }
+                        <label for="feedback_email">Email:</label>
                         <label for="feedback_type">Type:</label>
                         <label for="feedback_message">Feedback:</label>
                     </div>
 
                     <div class="inputs">
-                        @if(state.getUser == null) {
-                            <input type="text" id="feedback_name" required/>
-                            <input type="email" id="feedback_email" required/>
-                        }
+                        <input type="email" id="feedback_email" required/>
                         <select id="feedback_type">
                             <option value="none">Choose type&hellip;</option>
                             <option value="question">Question / Need Help</option>

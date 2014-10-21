@@ -38,7 +38,7 @@ POST        /api/product/type/byid                  src.controllers.data.Product
 POST        /api/product/ingredientinfo             src.controllers.data.ProductController.api_ingredient_info()
 
 # User API
-POST        /api/user/signup                        src.controllers.UserController.api_signup()
+#POST        /api/user/signup                        src.controllers.UserController.api_signup()
 POST        /api/user/login                         src.controllers.UserController.api_login()
 POST        /api/user/logout                        src.controllers.UserController.api_logout()
 

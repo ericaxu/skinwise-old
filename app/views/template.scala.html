@@ -34,11 +34,11 @@
             </li>
         </ul>
         <ul class="user_nav horizontal">
+            <li class="feedback_link"><a href="#">Feedback</a></li>
             @if(state.getUser() == null) {
                 <!--<li id="signup_link"><a href="#">Sign up</a></li>-->
-                <li id="login_link"><a href="#">Sign in</a></li>
+                @*<li id="login_link"><a href="#">Sign in</a></li>*@
             } else {
-                <li class="feedback_link"><a href="#">Feedback</a></li>
                 @if(state.userHasPermission(src.models.Permissible.ALL)) {
                     <li><a href="/admin">Admin</a></li>
                     <li><a href="/admin/content">Content</a></li>
@@ -91,9 +91,7 @@
     @popups.login()
     @popups.forgot_password()
     @popups.confirm()
-    @if(state.getUser != null) {
-        @popups.feedback(state)
-    }
+    @popups.feedback(state)
     @popups.add_filter()
 
     <script>
