@@ -150,6 +150,7 @@ function setupFeedbackCall() {
             return;
         }
 
+        setFeedbackEmail($('#feedback_email').val());
         $(this).val('Sending...');
         postToAPI('/feedback/report', {
             email: $('#feedback_email').val(),
@@ -171,6 +172,7 @@ function feedbackSuccess(response) {
 
 function setupFeedbackPopup() {
     $('.feedback_link').on('click', function (e) {
+        $('#feedback_email').val(getFeedbackEmail());
         $('.feedback.popup').show();
         e.preventDefault();
     });

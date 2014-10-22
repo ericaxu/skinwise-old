@@ -163,6 +163,14 @@ function setLastSearchedCatgory(category) {
     localStorage.setItem('last_searched_category', category);
 }
 
+function getFeedbackEmail() {
+    return localStorage.getItem('feedback_email') || '';
+}
+
+function setFeedbackEmail(email) {
+    localStorage.setItem('feedback_email', email);
+}
+
 function getChebkexIds(filter_type) {
     var results = [];
     $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
