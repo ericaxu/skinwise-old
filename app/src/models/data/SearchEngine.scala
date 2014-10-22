@@ -105,7 +105,7 @@ class SearchEngine[T] {
         val distances = List.fill(matches.length)(0.0)
         matches.zip(distances)
       case None =>
-        Levenshtein.getMatches(queryWord, trie, 100)
+        Levenshtein.findMatches(queryWord, trie, 100)
     }
   }
 
@@ -166,11 +166,11 @@ class SearchEngine[T] {
 
 object Levenshtein {
 
-  def getMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
+  def findMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
     val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
 
     val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
-    getMatches(query, dict, maxResults, results, Nil, initialRow)
+    findMatches(query, dict, maxResults, results, Nil, initialRow)
 
     val resultList: List[(String, Double)] = results.dequeueAll
     resultList.reverse
@@ -180,7 +180,7 @@ object Levenshtein {
   // query by computing the Damereau-Levenshtein distance. This is computed
   // efficiently by having each node in the trie correspond to a row in the
   // dynamic table.
-  def getMatches(query: String,
+  def findMatches(query: String,
                  dict: Trie,
                  maxResults: Int,
                  results: mutable.PriorityQueue[(String, Double)],
@@ -225,15 +225,14 @@ object Levenshtein {
         nextRow(0) = currentChars.length
 
         remainingRows match {
-          case Nil => {
+          case Nil =>
             for (i <- 1 to query.length) {
               nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
               // Favor first-letter matches.
               else if (i == 1) min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 2
               else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
             }
-          }
-          case transposeRow :: _ => {
+          case transposeRow :: _ =>
             // If we've already built a row (other than the default row), we can
             // look for adjacent character transposition.
             for (i <- 1 to query.length) {
@@ -243,10 +242,9 @@ object Levenshtein {
               if (i > 1 && query(i - 1) == currentChars.head && query(i - 2) == char)
                 nextRow(i) = min(nextRow(i), transposeRow(i - 2)) + 1
             }
-          }
         }
 
-        getMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
+        findMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
       }
     }
     case Nil => Unit
