@@ -1,13 +1,13 @@
 function ingredientResultHTML(ing) {
-    var $list_item = $('<li/>', { class: 'ingredient_item' });
+    var $list_item = $('<li/>', {class: 'ingredient_item'});
     $list_item.append('<h2 class="name"><a href="/ingredient/' + ing.id + '">' + ing.name + '</a></h2>');
-    var functions = $('<p/>', { class: 'functions' });
+    var functions = $('<p/>', {class: 'functions'});
 
     for (var j = 0; j < ing.functions.length; j++) {
         var id = ing.functions[j];
         if (SW.FUNC[id]) {
             var name = fullyCapitalize(SW.FUNC[id].name);
-            functions.append($('<span/>', { class: 'function neutral'}).text(fullyCapitalize(SW.FUNC[id].name)).data('id', id));
+            functions.append($('<span/>', {class: 'function neutral'}).text(fullyCapitalize(SW.FUNC[id].name)).data('id', id));
         }
     }
 
@@ -51,7 +51,7 @@ function fetchNextPage() {
         postToAPI('/ingredient/filter', {
             functions: getChebkexIds('function'),
             page: SW.ING_FETCH.CUR_PAGE + 1
-        }, function (response) {
+        }, function(response) {
             $('#loading_spinner').hide();
             SW.ING_FETCH.LOADING = false;
             SW.ING_FETCH.CUR_PAGE += 1;
@@ -74,7 +74,7 @@ function refetch() {
     postToAPI('/ingredient/filter', {
         functions: getChebkexIds('function'),
         page: 0
-    }, function (response) {
+    }, function(response) {
         $('#loading_spinner').hide();
         SW.ING_FETCH.LOADING = false;
         SW.ING_FETCH.CUR_PAGE = 0;
@@ -101,9 +101,9 @@ function loadFilters() {
 
 function setupDeleteButtons() {
     $(document).on('mouseenter', '.filter_option', function() {
-        $(this).find('.delete_btn').show();
+        $(this).find('.delete_btn').css('visibility', 'visible');
     }).on('mouseleave', '.filter_option', function() {
-        $(this).find('.delete_btn').hide();
+        $(this).find('.delete_btn').css('visibility', 'hidden');
     });
 
     $(document).on('click', '.delete_btn', function() {
@@ -118,16 +118,24 @@ $(document).on('ready', function() {
     new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
     var nav_height = $('nav').height();
 
-    $('.open_add_filter_popup').on('click', function () {
+    $('.open_add_filter_popup').on('click', function() {
         $('#add_filter_btn').data('type', $(this).data('type'));
         enableAutocomplete($(this).data('type'), '#add_filter', '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER);
         $('.add_filter.popup').show();
     });
 
-    $('#add_filter_btn').on('click', function () {
+    $('#add_filter_btn').on('click', function() {
+        cleanupErrors();
+
         // TODO: check if the id is valid
         var id = $('#add_filter').data('id');
         var name = $('#add_filter').val();
+
+        if (id === undefined || id === '') {
+            showAddFilterError('We can\' recognize this filter :(');
+            return;
+        }
+
         addIngredientFilter($(this).data('type'), id, name);
         loadFilters();
 

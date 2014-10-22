@@ -97,6 +97,10 @@ function showFeedbackErrorMsg(message) {
     $('#feedback_error').text(message).show();
 }
 
+function showAddFilterError(message) {
+    $('#add_filter_error').text(message).show();
+}
+
 function loginError(status) {
     $('#login_btn').val('Sign in');
     if (status.code == 'Unauthorized') {
