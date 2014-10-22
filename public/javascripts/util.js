@@ -213,13 +213,13 @@ function enableAutocomplete(type, selector, append_to, limit) {
         appendTo: append_to,
 
         select: function (event, ui) {
-            log('select');
             event.preventDefault();
             $(selector).val(ui.item.label).data('id', ui.item.value);
             // To fix add filter auto complete
             enableAutocomplete(type, selector, append_to, limit);
         },
 
+        // Default behavior is to replace input with mouseover value; we don't want that
         focus: function (event, ui) {
             event.preventDefault();
         },

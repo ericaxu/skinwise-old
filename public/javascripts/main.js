@@ -1,22 +1,22 @@
 function setupIngredientInfobox() {
     var $ingredient = $('.ingredient');
 
-    $ingredient.on('mouseenter', function (e) {
+    $ingredient.on('mouseenter', function(e) {
         var id = $(this).data('id');
         clearTimeout(SW.ING_BOX.DISMISS_TIMEOUT_ID);
         clearTimeout(SW.ING_BOX.TIMEOUT_ID);
         SW.ING_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.ING[id]) {
                 var ingredient_data = SW.ING[id];
-                var ingredient_info = $('<div/>').on('click', function (e) {
+                var ingredient_info = $('<div/>').on('click', function(e) {
                     e.stopPropagation();
                 });
-                var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
+                var close_button = $('<span/>', {class: 'close_btn'}).on('click', function() {
                     $('.ingredient_infobox').remove();
                 })
                 ingredient_info.append(close_button);
-                ingredient_info.append($('<h2/>', { text: ingredient_data.name }));
-                var functions = $('<p/>', { class: 'functions' });
+                ingredient_info.append($('<h2/>', {text: ingredient_data.name}));
+                var functions = $('<p/>', {class: 'functions'});
                 for (var i = 0; i < ingredient_data.functions.length; i++) {
                     var func_id = ingredient_data.functions[i];
                     if (SW.FUNC[func_id]) {
@@ -28,9 +28,9 @@ function setupIngredientInfobox() {
                 }
                 ingredient_info.append(functions);
                 ingredient_info.appendTo('body');
-                ingredient_info.append($('<p/>', { text: ingredient_data.description }));
+                ingredient_info.append($('<p/>', {text: ingredient_data.description}));
                 $('.ingredient_infobox').remove();
-                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 5 });
+                ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: e.pageX + 5});
             }
         }, SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
@@ -50,30 +50,30 @@ function setupIngredientInfobox() {
         }, SW.ING_BOX.DISMISS_TIMEOUT);
     });
 
-    $(document).on('click', function () {
+    $(document).on('click', function() {
         $('.ingredient_infobox').remove();
     });
 }
 
 function setupFunctionInfobox() {
-    $(document).on('mouseenter', '.function', function (e) {
+    $(document).on('mouseenter', '.function', function(e) {
         var id = $(this).data('id');
         clearTimeout(SW.FUNC_BOX.DISMISS_TIMEOUT_ID);
         SW.FUNC_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.FUNC[id]) {
                 var func_data = SW.FUNC[id];
-                var func_info = $('<div/>').on('click', function (e) {
+                var func_info = $('<div/>').on('click', function(e) {
                     e.stopPropagation();
                 });
-                var close_button = $('<span/>', { class: 'close_btn' }).on('click', function () {
+                var close_button = $('<span/>', {class: 'close_btn'}).on('click', function() {
                     $('.function_infobox').remove();
                 })
                 func_info.append(close_button);
-                func_info.append($('<h2/>', { text: func_data.name }));
+                func_info.append($('<h2/>', {text: func_data.name}));
                 func_info.appendTo('body');
-                func_info.append($('<p/>', { text: func_data.description }));
+                func_info.append($('<p/>', {text: func_data.description}));
                 $('.function_infobox').remove();
-                func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: e.pageX + 10 });
+                func_info.addClass('function_infobox').show().offset({top: e.pageY + 10, left: e.pageX + 10});
             }
         }, SW.FUNC_BOX.TIMEOUT);
     }).on('mouseleave', '.function', function() {
@@ -94,7 +94,7 @@ function setupFunctionInfobox() {
         }, SW.FUNC_BOX.DISMISS_TIMEOUT);
     });
 
-    $(document).on('click', function () {
+    $(document).on('click', function() {
         $('.function_infobox').remove();
     });
 }
@@ -128,7 +128,7 @@ function getContainingProductsSuccess(response) {
     }
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
 
@@ -145,9 +145,30 @@ $(document).ready(function () {
     $('#nav_searchbar_btn').on('click', function() {
         // TODO: check if id is valid
         var id = $('#nav_searchbar').data('id');
-        if (id !== '') {
+        if (id !== undefined && id !== '') {
             location.href = '/' + $('#search_category_select').val() + '/' + id;
+        } else if ($('.search_container .ui-autocomplete').is(':visible')) {
+            log('visible ac');
+            $('.search_container .ui-autocomplete .ui-menu-item:first-child').trigger('click');
+            log($('#nav_searchbar').val());
+            id = $('#nav_searchbar').data('id');
+            location.href = '/' + $('#search_category_select').val() + '/' + id;
+        } else {
+            var query = $('#nav_searchbar').val();
+            postToAPI('/autocomplete', {
+                type: $('#search_category_select').val(),
+                query: query
+            }, function(response) {
+                if (response.results.length > 0) {
+                    var id = response.results[0].id;
+                    location.href = '/' + $('#search_category_select').val() + '/' + id;
+                }
+            });
         }
+    });
+
+    $('#nav_searchbar').on('focus', function() {
+        $(this).autocomplete('search');
     });
 
     $(document).on('keyup', function(e) {
@@ -159,17 +180,17 @@ $(document).ready(function () {
 
     postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
 
-    $('.profile_add_input').on('focus', function () {
+    $('.profile_add_input').on('focus', function() {
         $(this).next().show();
-    }).on('blur', function () {
+    }).on('blur', function() {
         if ($(this).val() === '') {
             $(this).next().hide();
         }
     });
 
-    $('.expand_subnav').on('mouseenter', function () {
+    $('.expand_subnav').on('mouseenter', function() {
         $('.sub_navbar').fadeIn(SW.CONFIG.SUBNAV_FADE_IN);
-    }).on('mouseleave', function () {
+    }).on('mouseleave', function() {
         $('.sub_navbar').fadeOut(SW.CONFIG.SUBNAV_FADE_OUT);
     });
 });
