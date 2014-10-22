@@ -28,7 +28,7 @@ public class AdminProductController extends Controller {
 
 	public static class RequestProductUpdate extends Request {
 		public long id;
-		public long brand_id;
+//		public long brand_id;
 		@NotNull
 		public String line;
 		@NotEmpty
@@ -36,11 +36,9 @@ public class AdminProductController extends Controller {
 		@NotNull
 		public String description;
 		@NotNull
-		public String ingredients;
-		@NotNull
-		public String key_ingredients;
-		@NotNull
 		public String image;
+		@NotNull
+		public long popularity;
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -62,23 +60,24 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-			Brand brand = cache.brands.get(request.brand_id);
-			if (brand == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
-			}
+//			Brand brand = cache.brands.get(request.brand_id);
+//			if (brand == null) {
+//				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
+//			}
 
 			result.setLine(request.line);
 			result.setDescription(request.description);
 			result.setImage(request.image);
+			result.setPopularity(request.popularity);
 
-			cache.matcher.cache(cache.ingredient_names.all());
-			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);
-			List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(request.key_ingredients);
-			cache.matcher.clear();
+//			cache.matcher.cache(cache.ingredient_names.all());
+//			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);
+//			List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(request.key_ingredients);
+//			cache.matcher.clear();
 
-			result.setIngredientList(ingredients, key_ingredients);
+//			result.setIngredientList(ingredients, key_ingredients);
 
-			cache.products.updateAndSave(result, brand, request.name);
+			cache.products.updateAndSave(result, result.getBrand(), request.name);
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
 		}

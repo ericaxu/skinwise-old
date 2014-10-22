@@ -32,6 +32,8 @@ public class AdminIngredientController extends Controller {
 		public String name;
 		@NotEmpty
 		public String cas_number;
+		@NotNull
+		public long popularity;
 		@NotEmpty
 		public String description;
 		@NotNull
@@ -76,6 +78,7 @@ public class AdminIngredientController extends Controller {
 
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
+			result.setPopularity(request.popularity);
 			result.setFunctions(functions);
 
 			App.cache().ingredients.updateNameAndSave(result, request.name);

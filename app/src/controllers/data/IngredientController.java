@@ -33,16 +33,18 @@ public class IngredientController extends Controller {
 		public String description;
 		public List<String> functions;
 		public List<String> names;
+		public long popularity;
 
 		public ResponseIngredient(long id, String name,
 		                          String cas_number, String description,
-		                          List<String> functions, List<String> names) {
+		                          List<String> functions, List<String> names, long popularity) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
 			this.description = description;
 			this.functions = functions;
 			this.names = names;
+			this.popularity = popularity;
 		}
 	}
 
@@ -103,7 +105,8 @@ public class IngredientController extends Controller {
 					result.getCas_number(),
 					result.getDescription(),
 					result.getFunctionsString(),
-					result.getNamesString()
+					result.getNamesString(),
+					result.getPopularity()
 			);
 
 			return Api.write(response);

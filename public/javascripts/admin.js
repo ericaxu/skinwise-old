@@ -189,6 +189,7 @@ function ingredientLoadSuccess(response) {
     $('#edit_ingredient_id').val(response.id);
     $('#edit_ingredient_name').val(response.name).data('original', response.name);
     $('#edit_ingredient_cas_number').val(response.cas_number);
+    $('#edit_ingredient_popularity').val(response.popularity);
     $('#edit_ingredient_description').val(response.description);
     $('#edit_ingredient_functions').val(response.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
     $('#edit_ingredient').show();
@@ -204,6 +205,7 @@ function setupIngredientEditSaveCall() {
             id: ingredient_id,
             name: $('#edit_ingredient_name').val(),
             cas_number: $('#edit_ingredient_cas_number').val(),
+            popularity: $('#edit_ingredient_popularity').val(),
             description: $('#edit_ingredient_description').val(),
             functions: $('#edit_ingredient_functions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
         };
@@ -260,6 +262,7 @@ function productLoadSuccess(response) {
     $('#edit_product_brand').val(response.brand);
     $('#edit_product_line').val(response.line);
     $('#edit_product_image').val(response.image);
+    $('#edit_product_popularity').val(response.popularity);
     $('#edit_product_description').val(response.description);
     $('#edit_product').show();
 }
@@ -275,6 +278,8 @@ function setupProductEditSaveCall() {
             name: $('#edit_product_name').val(),
             brand: $('#edit_product_brand').val(),
             line: $('#edit_product_line').val(),
+            image: $('#edit_product_image').val(),
+            popularity: $('#edit_product_popularity').val(),
             description: $('#edit_product_description').val()
         };
 

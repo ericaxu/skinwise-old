@@ -30,14 +30,16 @@ public class ProductController extends Controller {
 		public String name;
 		public String description;
 		public String image;
+		public long popularity;
 
-		public ResponseProduct(long id, String brand, String type, String name, String description, String image) {
+		public ResponseProduct(long id, String brand, String type, String name, String description, String image, long popularity) {
 			this.id = id;
 			this.brand = brand;
 			this.type = type;
 			this.name = name;
 			this.description = description;
 			this.image = image;
+			this.popularity = popularity;
 		}
 	}
 
@@ -121,7 +123,8 @@ public class ProductController extends Controller {
 					result.getTypeName(),
 					result.getName(),
 					result.getDescription(),
-					result.getImage()
+					result.getImage(),
+					result.getPopularity()
 			);
 
 			return Api.write(response);
