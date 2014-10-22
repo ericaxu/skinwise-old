@@ -1,6 +1,7 @@
 package src.models.data
 
 import src.models.MemCache
+import src.util.ScalaUtils._
 
 import scala.Array._
 import scala.collection.JavaConversions._
@@ -18,7 +19,9 @@ import scala.math._
 
 class SearchEngine[T] {
   val wordToNames = new mutable.HashMap[String, mutable.Set[String]]()
+    .withDefaultValue(mutable.Set.empty[String])
   val nameToWords = new mutable.HashMap[String, mutable.HashMap[String, Int]]()
+    .withDefaultValue(mutable.HashMap.empty[String, Int])
   var trie: Trie = _
   var namesToObjs: java.util.Map[String, T] = _
 
@@ -56,13 +59,13 @@ class SearchEngine[T] {
     val completedWords = trie.getAllWithPrefix(partialWord)
     completedWords foreach { completedWord =>
       val score = if (completedWord == partialWord) 1.0 else 0.5
-      wordToNames.getOrElse(completedWord, mutable.Set.empty[String]) foreach { name =>
+      wordToNames(completedWord) foreach { name =>
         nameToScore.put(name, max(nameToScore(name), score))
       }
     }
 
     fullWords foreach { word =>
-      wordToNames.getOrElse(word, mutable.Set.empty[String]) foreach { name =>
+      wordToNames(word) foreach { name =>
         nameToScore(name) += 1
       }
     }
@@ -94,6 +97,18 @@ class SearchEngine[T] {
     }
   }
 
+  def fullSearchMatches(queryWord: String) : List[(String, Double)] = {
+    toInt(queryWord) match {
+      case Some(int) =>
+        val matches = wordToNames(queryWord).toList
+        // Exact matches have distance of 0
+        val distances = List.fill(matches.length)(0.0)
+        matches.zip(distances)
+      case None =>
+        Levenshtein.getMatches(queryWord, trie, 100)
+    }
+  }
+
   // Calculate the penalty as a function of the query length and the edit distance. Lower is better.
   //
   // The score is a function of the query length since the lower the query, the more tolerance
@@ -117,9 +132,7 @@ class SearchEngine[T] {
 
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
     val queryWords = MemCache.Matcher.splitIngredient(query).toList
-    val matches = queryWords
-      .map(queryWord => Levenshtein.getMatches(queryWord, trie, 100))
-      .flatten
+    val matches = queryWords.map(fullSearchMatches).flatten
     val scores = mutable.HashMap[String, Double]()
 
     matches foreach { case (result, distance) =>
