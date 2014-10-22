@@ -81,6 +81,8 @@ function setupFunctionInfobox() {
         SW.FUNC_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
             $('.function_infobox').remove();
         }, SW.FUNC_BOX.DISMISS_TIMEOUT);
+    }).on('click', '.function', function(e) {
+        e.stopPropagation();
     });
 
     // Dismiss infobox after leaving it for a while
