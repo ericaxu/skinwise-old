@@ -108,12 +108,11 @@ $(document).on('ready', function () {
     $('#add_filter_btn').on('click', function () {
         cleanupErrors();
 
-        // TODO: check if the id is valid
         var id = $('#add_filter').data('id');
         var name = $('#add_filter').val();
 
         if (id === undefined || id === '') {
-            showAddFilterError('We can\' recognize this filter :(');
+            showAddFilterError('We can\'t recognize this filter :(');
             return;
         }
 

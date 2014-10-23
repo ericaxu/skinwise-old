@@ -481,9 +481,10 @@ function listenForEnter() {
 
 function feedbackHTML(feedback) {
     var $div = $('<div/>', { class: 'feedback_item' });
-    $div.append($('<h2/>').text(SW.FEEDBACK[feedback.type]({ user: feedback.reported_by })));
+    $div.append($('<h2/>').text(SW.FEEDBACK[feedback.type]({ user: feedback.reported_by || 'Someone' })));
     $div.append($('<p/>').text(feedback.content));
-    $div.append($('<p/>').html('Happened ' + getReadableTime(feedback.timestamp) + ' at <a href="' + feedback.path + '">' + feedback.path + '</a>'));
+    $div.append($('<p/>').html('Reach me at <span class="emphasis">' + feedback.email + '</span>'));
+    $div.append($('<p/>').html('Reported ' + getReadableTime(feedback.timestamp) + ' at <a href="' + feedback.path + '">' + feedback.path + '</a>'));
 
 
     return $div;

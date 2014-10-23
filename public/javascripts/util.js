@@ -171,6 +171,7 @@ function setFeedbackEmail(email) {
     localStorage.setItem('feedback_email', email);
 }
 
+// Get an array of checked ids for a filter type
 function getChebkexIds(filter_type) {
     var results = [];
     $('.' + filter_type + '_filters input[type="checkbox"]:checked').each(function () {
@@ -180,6 +181,7 @@ function getChebkexIds(filter_type) {
     return results;
 }
 
+// Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter, type) {
     var $option = $('<div/>', {class: 'filter_option'});
     var id = type + '_filter_' + filter.id;
