@@ -46,6 +46,10 @@ public class AdminReportController extends Controller {
 		public List<ResponseReportObject> results = new ArrayList<>();
 	}
 
+	public static class RequestReports extends Api.RequestGetAllByPage {
+		public boolean resolved;
+	}
+
 	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_report_list() {
 		ResponseState state = new ResponseState(session());
@@ -53,9 +57,9 @@ public class AdminReportController extends Controller {
 		try {
 			state.requirePermission(Permissible.REPORT.VIEW);
 
-			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
+			RequestReports request = Api.read(ctx(), RequestReports.class);
 
-			List<Report> reports = Report.all(new Page(request.page));
+			List<Report> reports = Report.all(new Page(request.page), request.resolved);
 
 			ResponseReportList response = new ResponseReportList();
 			for (Report report : reports) {

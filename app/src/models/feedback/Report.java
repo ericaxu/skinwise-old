@@ -119,7 +119,7 @@ public class Report extends BaseModel {
 		return find.byId(id);
 	}
 
-	public static List<Report> all(Page page) {
-		return page.apply(find.where().eq("resolved", false).query());
+	public static List<Report> all(Page page, boolean resolved) {
+		return page.apply(find.where().eq("resolved", resolved).order().desc("timestamp"));
 	}
 }
