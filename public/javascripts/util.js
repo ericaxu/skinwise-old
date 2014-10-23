@@ -134,13 +134,8 @@ function addFilter(key, item) {
     localStorage.setItem(key, JSON.stringify(filters));
 }
 
-function getProductFilters(key) {
-    return JSON.parse(localStorage.getItem('product_' + key) || '[]');
-}
-
-
-function getIngredientFilters(key) {
-    return JSON.parse(localStorage.getItem('ingredient_' + key) || '[]');
+function getSavedFilters(type, key) {
+    return JSON.parse(localStorage.getItem(type + '_' + key) || '[]');
 }
 
 function removeFilter(key, id) {

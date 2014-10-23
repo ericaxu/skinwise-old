@@ -72,3 +72,8 @@ SW.FEEDBACK = {
     suggestion: _.template('<%= user %> thinks we should build this.'),
     other: _.template('<%= user %> has feedback for us.')
 }
+
+SW.FILTER_TYPES = {
+    product: ['type', 'brand', 'ingredient'],
+    ingredient: ['function']
+}
