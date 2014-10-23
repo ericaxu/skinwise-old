@@ -1,5 +1,6 @@
 package src.models.data;
 
+import src.App;
 import src.models.BaseModel;
 
 import javax.persistence.*;
@@ -8,13 +9,9 @@ import java.util.Comparator;
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
 public class ProductIngredient extends BaseModel {
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
+	private long product_id;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "ingredient_name_id", referencedColumnName = "id")
-	private IngredientName ingredient_name;
+	private long ingredient_name_id;
 
 	private int item_order;
 	private boolean is_key;
@@ -22,11 +19,11 @@ public class ProductIngredient extends BaseModel {
 	//Getters
 
 	public Product getProduct() {
-		return product;
+		return App.cache().products.get(product_id);
 	}
 
 	public IngredientName getIngredient_name() {
-		return ingredient_name;
+		return App.cache().ingredient_names.get(ingredient_name_id);
 	}
 
 	public boolean isIs_key() {
@@ -40,11 +37,11 @@ public class ProductIngredient extends BaseModel {
 	//Setters
 
 	public void setProduct(Product product) {
-		this.product = product;
+		this.product_id = BaseModel.getIdIfExists(product);
 	}
 
 	public void setIngredient_name(IngredientName ingredient_name) {
-		this.ingredient_name = ingredient_name;
+		this.ingredient_name_id = BaseModel.getIdIfExists(ingredient_name);
 	}
 
 	public void setIs_key(boolean is_key) {

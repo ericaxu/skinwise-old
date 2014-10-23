@@ -1,5 +1,7 @@
 package src.models.data;
 
+import src.App;
+import src.models.BaseModel;
 import src.models.Page;
 import src.util.Util;
 
@@ -14,24 +16,15 @@ import java.util.Set;
 public class Product extends NamedModel {
 	private long popularity;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "brand_id", referencedColumnName = "id")
-	private Brand brand;
+	private long brand_id;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "type_id", referencedColumnName = "id")
-	private ProductType type;
+	private long product_type_id;
 
 	@Column(length = 1023)
 	private String line;
 
 	@Column(length = 1023)
 	private String image;
-
-	//Relation table
-
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "product")
-	private List<ProductIngredient> ingredient_links = new ArrayList<>();
 
 	//Getters
 
@@ -40,11 +33,11 @@ public class Product extends NamedModel {
 	}
 
 	public Brand getBrand() {
-		return brand;
+		return App.cache().brands.get(brand_id);
 	}
 
 	public ProductType getType() {
-		return type;
+		return App.cache().types.get(product_type_id);
 	}
 
 	public String getLine() {
@@ -56,7 +49,8 @@ public class Product extends NamedModel {
 	}
 
 	public List<ProductIngredient> getIngredientLinks() {
-		return ingredient_links;
+		// TODO: Relation
+		return null;
 	}
 
 	//Setters
@@ -66,11 +60,11 @@ public class Product extends NamedModel {
 	}
 
 	public void setBrand(Brand brand) {
-		this.brand = brand;
+		this.brand_id = BaseModel.getIdIfExists(brand);
 	}
 
 	public void setType(ProductType type) {
-		this.type = type;
+		this.product_type_id = BaseModel.getIdIfExists(type);
 	}
 
 	public void setLine(String line) {
@@ -82,7 +76,7 @@ public class Product extends NamedModel {
 	}
 
 	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
-		this.ingredient_links = ingredient_links;
+		// TODO: Relation
 		ingredients_cache = null;
 		key_ingredients_cache = null;
 	}
@@ -90,17 +84,17 @@ public class Product extends NamedModel {
 	//Others
 
 	public String getBrandName() {
-		if (brand == null) {
+		if (getBrand() == null) {
 			return "";
 		}
-		return brand.getName();
+		return getBrand().getName();
 	}
 
 	public String getTypeName() {
-		if (type == null) {
+		if (getType() == null) {
 			return "";
 		}
-		return type.getName();
+		return getType().getName();
 	}
 
 	private transient List<IngredientName> ingredients_cache;
