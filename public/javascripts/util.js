@@ -207,19 +207,19 @@ String.prototype.regexIndexOf = function(regex, startpos) {
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
 
-function enableAutocomplete(type, selector, append_to, limit) {
-    log('enable autocomplete');
-    if ($(selector).hasClass('ui-autocomplete-input')) {
-        $(selector).autocomplete('destroy');
+function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
+    // If already intialized autocomplete on it, destroy prev instance and create a new one
+    if ($selector.hasClass('ui-autocomplete-input')) {
+        $selector.autocomplete('destroy');
     }
-    $(selector).autocomplete({
+    $selector.autocomplete({
         appendTo: append_to,
 
         select: function (event, ui) {
             event.preventDefault();
-            $(selector).val(ui.item.label).data('id', ui.item.value);
+            $selector.val(ui.item.label).data('id', ui.item.value);
             // To fix add filter auto complete
-            enableAutocomplete(type, selector, append_to, limit);
+            enableAutocomplete(type, $selector, append_to, limit);
         },
 
         // Default behavior is to replace input with mouseover value; we don't want that
@@ -233,20 +233,26 @@ function enableAutocomplete(type, selector, append_to, limit) {
                 type: type,
                 query: query
             }, function (api_response) {
-                var data = [];
-                var length = Math.min(api_response.results.length, limit || Number.MAX_VALUE)
-                for (var i = 0; i < length; i++) {
-                    var item = api_response.results[i];
-                    data.push({
-                        label: fullyCapitalize(item.name),
-                        value: item.id
-                    });
+                if (api_response.results.length > 0) {
+                    var data = [];
+                    var length = Math.min(api_response.results.length, limit || Number.MAX_VALUE);
+                    for (var i = 0; i < length; i++) {
+                        var item = api_response.results[i];
+                        data.push({
+                            label: fullyCapitalize(item.name),
+                            value: item.id
+                        });
+                    }
+                    $no_result_el.hide();
+                    response(data);
+                } else {
+                    response([]);
+                    $no_result_el.show();
                 }
-                response(data);
             });
         }
     }).autocomplete('instance')._renderItem = function (ul, item) {
-        var query = $(selector).val().toLowerCase();
+        var query = $selector.val().toLowerCase();
 
         var words = query.split(/[^a-zA-Z0-9]/);
 
@@ -310,8 +316,20 @@ function enableAutocomplete(type, selector, append_to, limit) {
             .appendTo(ul);
     };
 
-    $(selector).off('change').on('change', function () {
-        $(this).data('id', '');
+    $selector.data('old_val', $selector.val());
+
+    $selector.off('propertychange keyup input paste').on('propertychange keyup input paste', function() {
+        if ($(this).data('old_val') !== $(this).val()) {
+            // Updated stored value
+            $(this).data('old_val', $(this).val());
+            $(this).data('id', '');
+
+            // Don't show "No results found" when user deletes her query
+            if ($(this).val() === '') {
+                $no_result_el.hide();
+            }
+
+        }
     });
 }
 

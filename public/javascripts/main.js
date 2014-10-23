@@ -132,48 +132,54 @@ $(document).ready(function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
 
-    $('#search_category_select').val(getLastSearchedCatgory());
+    var $search_select = $('#search_category_select');
+    var $nav_search = $('#nav_searchbar');
 
-    enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
+    $search_select.val(getLastSearchedCatgory());
 
-    $('#search_category_select').on('change', function() {
+    enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
+
+    $search_select.on('change', function() {
         setLastSearchedCatgory($(this).val());
-        enableAutocomplete($('#search_category_select').val(), '#nav_searchbar', '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
+        enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
         $('#nav_searchbar').val('');
     });
 
     $('#nav_searchbar_btn').on('click', function() {
-        // TODO: check if id is valid
-        var id = $('#nav_searchbar').data('id');
+        var id = $nav_search.data('id');
+        // Go to page if id is present
         if (id !== undefined && id !== '') {
-            location.href = '/' + $('#search_category_select').val() + '/' + id;
-        } else if ($('.search_container .ui-autocomplete').is(':visible')) {
-            log('visible ac');
+            location.href = '/' + $search_select.val() + '/' + id;
+        }
+        // If autocomplete is showing results, use the first one
+        else if ($('.search_container .ui-autocomplete').is(':visible')) {
             $('.search_container .ui-autocomplete .ui-menu-item:first-child').trigger('click');
-            log($('#nav_searchbar').val());
-            id = $('#nav_searchbar').data('id');
-            location.href = '/' + $('#search_category_select').val() + '/' + id;
-        } else {
-            var query = $('#nav_searchbar').val();
+            id = $nav_search.data('id');
+            location.href = '/' + $search_select.val() + '/' + id;
+        }
+        // Last attempt: ask server if there's any match
+        else {
+            var query = $nav_search.val();
             postToAPI('/autocomplete', {
-                type: $('#search_category_select').val(),
+                type: $search_select.val(),
                 query: query
             }, function(response) {
                 if (response.results.length > 0) {
                     var id = response.results[0].id;
-                    location.href = '/' + $('#search_category_select').val() + '/' + id;
+                    location.href = '/' + $search_select.val() + '/' + id;
                 }
             });
         }
     });
 
-    $('#nav_searchbar').on('focus', function() {
+    // Open autocomplete menu when focus on input
+    $nav_search.on('focus', function() {
         $(this).autocomplete('search');
     });
 
     $(document).on('keyup', function(e) {
         // 13 is ENTER
-        if (e.which === 13 && $('#nav_searchbar').is(':focus')) {
+        if (e.which === 13 && $nav_search.is(':focus')) {
             $('#nav_searchbar_btn').trigger('click');
         }
     });

@@ -31,16 +31,15 @@
         <ul class="info_nav horizontal">
             <li><a href="/products">Products</a></li>
             <li><a href="/ingredients">Ingredients</a></li>
-            <!--<li><a href="#">Guides</a></li>-->
             <li class="search_container">
                 @search_icon()
                 <select id="search_category_select">
                     <option value="product" selected>Product</option>
                     <option value="ingredient">Ingredient</option>
                 </select>
-                <!--<span class="down_arrow" id="search_category_arrow"></span>-->
-                <input id="nav_searchbar" type="text" placeholder="Choose category and search&hellip;"/>
-                <input id="nav_searchbar_btn" type="button" value="Go"/>
+            <input id="nav_searchbar" type="text" placeholder="Choose category and search&hellip;"/>
+            <input id="nav_searchbar_btn" type="button" value="Go"/>
+            <div id="nav_searchbar_not_found" class="no_results_found">No results found.</div>
             </li>
         </ul>
         <ul class="user_nav horizontal">
