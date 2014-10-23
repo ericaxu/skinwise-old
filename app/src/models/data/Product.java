@@ -5,7 +5,9 @@ import src.models.BaseModel;
 import src.models.Page;
 import src.util.Util;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

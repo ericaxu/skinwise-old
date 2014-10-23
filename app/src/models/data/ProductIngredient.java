@@ -3,14 +3,14 @@ package src.models.data;
 import src.App;
 import src.models.BaseModel;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Comparator;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
 public class ProductIngredient extends BaseModel {
 	private long product_id;
-
 	private long ingredient_name_id;
 
 	private int item_order;

@@ -18,12 +18,6 @@ public class Ingredient extends NamedModel {
 	@Column(length = 127)
 	private String cas_number;
 
-	//Relation table
-
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinTable(name = FUNCTIONS_JOINTABLE)
-	private Set<Function> functions = new HashSet<>();
-
 	//Non-columns
 
 	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
@@ -44,7 +38,8 @@ public class Ingredient extends NamedModel {
 	}
 
 	public Set<Function> getFunctions() {
-		return functions;
+		// TODO: Relation
+		return null;
 	}
 
 	//Setters
@@ -62,7 +57,7 @@ public class Ingredient extends NamedModel {
 	}
 
 	public void setFunctions(Set<Function> functions) {
-		this.functions = functions;
+		// TODO: Relation
 	}
 
 	//Others

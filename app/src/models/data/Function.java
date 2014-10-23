@@ -1,7 +1,7 @@
 package src.models.data;
 
-import javax.persistence.*;
-import java.util.HashSet;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
 
@@ -9,15 +9,11 @@ import java.util.Set;
 @Table(name = Function.TABLENAME)
 public class Function extends NamedModel {
 
-	//Relation table
-
-	@ManyToMany(mappedBy = "functions", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	private Set<Ingredient> ingredients = new HashSet<>();
-
 	//Getters
 
 	public Set<Ingredient> getIngredients() {
-		return ingredients;
+		// TODO: Relation
+		return null;
 	}
 
 	//Setters
