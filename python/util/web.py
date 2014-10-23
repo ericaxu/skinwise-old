@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.parse
 
 from util import parser
 
@@ -8,6 +9,7 @@ class Crawler(object):
 
 	def crawl_selective(self, key, url, regex):
 		def selective_callback(data):
+			data = parser.strip_newline(data)
 			return parser.regex_find(regex, data, 1)
 
 		for retry in range(0, 2):
@@ -28,5 +30,11 @@ class Crawler(object):
 		return data
 
 	def _crawl(self, url):
-		with urllib.request.urlopen(url) as f:
-			return f.read().decode('UTF-8')
+		try:
+			with urllib.request.urlopen(url) as f:
+				return f.read().decode('UTF-8')
+		except:
+			return None
+
+def urlencode(input):
+	return urllib.parse.quote_plus(input)

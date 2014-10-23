@@ -10,6 +10,9 @@ def get_regex(regex):
 def strip_tags(input):
 	return regex_remove(r'<[^>]*?>', input).strip()
 
+def strip_newline(input):
+	return regex_remove('[\u000A\u000B\u000C\u000D\u0085\u2028\u2029]', input).strip()
+
 def regex_remove(regex, input):
 	return regex_replace(regex, '', input)
 
@@ -39,7 +42,7 @@ def regex_find(regex, input, group=None):
 def regex_find_all(regex, input):
 	return get_regex(regex).findall(input)
 
-def rotate_array(array, col_key, col_value):
+def array_rotate(array, col_key, col_value):
 	result = dict()
 	for item in array:
 		result[item[col_key]] = item[col_value]

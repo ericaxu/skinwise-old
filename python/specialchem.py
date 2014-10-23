@@ -42,7 +42,7 @@ for id in search_ids:
 	ingredient['name'] = parser.strip_tags(ingredient_data[0])
 
 	ingredient_data = parser.regex_find_all(r'<td id="([^"]*)"[^>]*>(.*?)<\/td>', table_html)
-	ingredient_data = parser.rotate_array(ingredient_data, 0, 1)
+	ingredient_data = parser.array_rotate(ingredient_data, 0, 1)
 
 	ingredient['cas_no'] = parser.strip_tags(ingredient_data['inci_CASNumber'])
 	ingredient['ec_no'] = parser.strip_tags(ingredient_data['inci_EINECS_ELINCS'])

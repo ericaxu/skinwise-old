@@ -8,15 +8,24 @@ from util import (web, db, parser, util)
 db = db.DB("cache/paula.cache.db")
 crawler = web.Crawler(db)
 
-file_products = "data/products.json.txt"
+file_products_json = "data/products.json.txt"
 url_product_page = "http://www.paulaschoice.com/beautypedia-skin-care-reviews/by-brand/%s"
 url_product_list = "http://www.paulaschoice.com/beautypedia-skin-care-reviews?sort=product&direction=asc&pageSize=100&pageNumber=%d"
-url_product_list = "http://127.0.0.1/cache.php?file=paula/list/%d.html"
 
 replace_dict = {
 	r'aqua \(water\) eau\)': "aqua (water) eau",
 	r', iron oxides\)\.': ", iron oxides."
 }
+# $replace_rules_str = array(
+# 	"aqua (water) eau)" => "aqua (water) eau",
+# 	", iron oxides)." => ", iron oxides.",
+# 	"active ingredients:" => ",",
+# 	"other ingredients:" => ",",
+# 	"active:" => ",",
+# 	"other:" => ",",
+# 	"(and)" => ",",
+# 	";" => ","
+# );
 
 print("Searching product urls")
 
@@ -47,11 +56,11 @@ for i in range(1, numpages):
 		urls.append(product_link)
 
 db.commit()
-urls = util.list_unique(urls);
+urls = util.list_unique(urls)
 
 print("Fetching products")
 
-products = list();
+products = list()
 
 for url in urls:
 	page_html = crawler.crawl_selective(key="product/%s" % url, url=url_product_page % url, regex=r'id="main"(.*?)Skip to Top')
@@ -80,7 +89,7 @@ for url in urls:
 	product_key_ingredients = parser.regex_replace_dict(replace_dict, product_key_ingredients)
 	product_other_ingredients = parser.regex_replace_dict(replace_dict, product_other_ingredients)
 
-	product = collections.OrderedDict();
+	product = collections.OrderedDict()
 	product["name"] = html.unescape(product_name)
 	product["brand"] = html.unescape(product_brand)
 	product["type"] = html.unescape(product_category)
@@ -89,9 +98,9 @@ for url in urls:
 	product["ingredients"] = html.unescape(product_other_ingredients)
 	products.append(product)
 
-result = collections.OrderedDict();
-result["products"] = products;
+result = collections.OrderedDict()
+result["products"] = products
 
-util.json_write(result, file_products)
+util.json_write(result, file_products_json)
 
-parser.print_count(products, "Products");
+parser.print_count(products, "Products")
