@@ -485,18 +485,28 @@ function feedbackHTML(feedback) {
     $div.append($('<p/>').text(feedback.content));
     $div.append($('<p/>').html('Reach me at <span class="emphasis">' + feedback.email + '</span>'));
     $div.append($('<p/>').html('Reported ' + getReadableTime(feedback.timestamp) + ' at <a href="' + feedback.path + '">' + feedback.path + '</a>'));
-
+    var $mark_resolved = $('<input/>', {
+        type: 'button',
+        value: 'Mark resolved'
+    }).on('click', function() {
+        postToAPI('/admin/report/resolve', {
+            id: feedback.id
+        }, fetchFeedback, null, 'Marking feedback resolved...');
+    });
+    $div.append($('<p/>').append($mark_resolved));
 
     return $div;
 }
 
 function fetchFeedback() {
-    postToAPI('/admin/report/list', {}, loadFeedback);
+    postToAPI('/admin/report/list', {}, loadFeedback, null, 'Fetching feedback...');
 }
 
 function loadFeedback(response) {
+    var $container = $('.feedback_container');
+    $container.empty();
     for (var i = 0; i < response.results.length; i++) {
-        $('.feedback_container').append(feedbackHTML(response.results[i]));
+        $container.append(feedbackHTML(response.results[i]));
     }
 }
 
@@ -605,7 +615,12 @@ $(document).ready(function() {
 
     setupDatabaseManager();
 
-    fetchFeedback();
+    $('#refresh_feedback_btn').on('click', function() {
+        if ($(this).val() === 'Load') {
+            $(this).val('Refresh');
+        }
+        fetchFeedback();
+    });
 
     listenForEnter();
 });
