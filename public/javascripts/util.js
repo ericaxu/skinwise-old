@@ -182,11 +182,12 @@ function getChebkexIds(filter_type) {
 
 function getFilterHTML(filter, type) {
     var $option = $('<div/>', {class: 'filter_option'});
+    var id = type + '_filter_' + filter.id;
     $option.append($('<input/>', {
         type: 'checkbox',
-        id: filter.name
+        id: id
     }).data('id', filter.id));
-    $option.append($('<label/>', {for: filter.name}).text(filter.name));
+    $option.append($('<label/>', {for: id}).text(filter.name));
     $option.append($('<span/>', {class: 'delete_btn'}).data('type', type));
 
     return $option;
