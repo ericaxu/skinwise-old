@@ -16,3 +16,4 @@ dist
 /conf/evolutions
 /php/cache
 *.pyc
+*.cache.db
