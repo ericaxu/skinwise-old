@@ -111,6 +111,7 @@ function refetch(type) {
 }
 
 function loadFilters(type) {
+    log(type);
     var filter_types = SW.FILTER_TYPES[type] || [];
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
@@ -125,7 +126,7 @@ function loadFilters(type) {
     }
 }
 
-function setupDeleteButtons() {
+function setupDeleteButtons(type) {
     $(document).on('mouseenter', '.filter_option', function () {
         $(this).find('.delete_btn').css('visibility', 'visible');
     }).on('mouseleave', '.filter_option', function () {
@@ -164,7 +165,10 @@ function initBrowse(type) {
                 return;
             }
 
-            addProductFilter($(this).data('type'), id, name);
+            addFilter(type, $(this).data('type'), {
+                id: id,
+                name: name
+            });
             loadFilters(type);
 
             // reset
@@ -172,7 +176,7 @@ function initBrowse(type) {
             $('.popup').hide();
         });
 
-        setupDeleteButtons();
+        setupDeleteButtons(type);
         loadFilters(type);
         fetchNextPage(type);
 

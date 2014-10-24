@@ -100,20 +100,6 @@ function productResultHTML(product) {
     return $list_item;
 }
 
-function addProductFilter(filter_type, id, name) {
-    addFilter('product_' + filter_type, {
-        id: id,
-        name: name
-    });
-}
-
-function addIngredientFilter(filter_type, id, name) {
-    addFilter('ingredient_' + filter_type, {
-        id: id,
-        name: name
-    });
-}
-
 function removeProductFilter(filter_type, id) {
     removeFilter('product_' + filter_type, id);
 }
@@ -122,7 +108,8 @@ function removeIngredientFilter(filter_type, id) {
     removeFilter('ingredient_' + filter_type, id);
 }
 
-function addFilter(key, item) {
+function addFilter(filter_type, key, item) {
+    var key = filter_type + '_' + key;
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
     var id = item.id;
     for (var i = 0; i < filters.length; i++) {
@@ -214,7 +201,7 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
             event.preventDefault();
             $selector.val(ui.item.label).data('id', ui.item.value);
             // To fix add filter auto complete
-            enableAutocomplete(type, $selector, append_to, limit);
+            enableAutocomplete(type, $selector, append_to, limit, $no_result_el);
         },
 
         // Default behavior is to replace input with mouseover value; we don't want that
