@@ -38,3 +38,4 @@ class Crawler(object):
 
 def urlencode(input):
 	return urllib.parse.quote_plus(input)
+	

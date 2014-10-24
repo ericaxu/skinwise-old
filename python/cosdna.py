@@ -2,6 +2,7 @@
 import collections
 import urllib
 import html
+import sys
 
 from util import (web, db, parser, util)
 
@@ -18,7 +19,6 @@ print("Searching ingredient urls")
 data = util.json_read(file_data_json, dict())
 
 if not data['ingredients']:
-	import sys
 	sys.exit(0)
 
 mapping = collections.OrderedDict()

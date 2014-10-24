@@ -73,6 +73,9 @@ for url in urls:
 	product_brand = parser.regex_find(r'<div class="brand">by <a[^>]*>(.*?)<\/a>', page_table, 1)
 	product_brand = parser.strip_tags(product_brand)
 
+	if not product_name or not product_brand:
+		continue
+
 	product_claims = parser.regex_find(r'<div id="[^"]*pnlTabBodyClaims"[^>]*>(.*?)<\/div>', page_table, 1)
 	product_claims = parser.strip_tags(product_claims)
 
@@ -90,16 +93,16 @@ for url in urls:
 	product_other_ingredients = parser.regex_replace_dict(replace_dict, product_other_ingredients)
 
 	product = collections.OrderedDict()
-	product["name"] = html.unescape(product_name)
-	product["brand"] = html.unescape(product_brand)
-	product["type"] = html.unescape(product_category)
-	product["description"] = html.unescape(product_claims)
+	product['name'] = html.unescape(product_name)
+	product['brand'] = html.unescape(product_brand)
+	product['type'] = html.unescape(product_category)
+	product['description'] = html.unescape(product_claims)
 	product["key_ingredients"] = html.unescape(product_key_ingredients)
-	product["ingredients"] = html.unescape(product_other_ingredients)
+	product['ingredients'] = html.unescape(product_other_ingredients)
 	products.append(product)
 
 result = collections.OrderedDict()
-result["products"] = products
+result['products'] = products
 
 util.json_write(result, file_products_json)
 

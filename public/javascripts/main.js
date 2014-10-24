@@ -141,7 +141,7 @@ $(document).ready(function() {
 
     $search_select.on('change', function() {
         setLastSearchedCatgory($(this).val());
-        enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
+        enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
         $('#nav_searchbar').val('');
     });
 
