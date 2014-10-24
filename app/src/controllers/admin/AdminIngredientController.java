@@ -79,7 +79,7 @@ public class AdminIngredientController extends Controller {
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
 			result.setPopularity(request.popularity);
-			result.setFunctions(functions);
+			result.saveFunctions(functions);
 
 			App.cache().ingredients.updateNameAndSave(result, request.name);
 

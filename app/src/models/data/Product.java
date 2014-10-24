@@ -8,10 +8,7 @@ import src.util.Util;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -27,6 +24,11 @@ public class Product extends NamedModel {
 
 	@Column(length = 1023)
 	private String image;
+
+	//Cached
+	private transient List<ProductIngredient> pairs;
+	private transient List<IngredientName> ingredients;
+	private transient List<IngredientName> key_ingredients;
 
 	//Getters
 
@@ -48,11 +50,6 @@ public class Product extends NamedModel {
 
 	public String getImage() {
 		return image;
-	}
-
-	public List<ProductIngredient> getIngredientLinks() {
-		// TODO: Relation
-		return null;
 	}
 
 	//Setters
@@ -77,10 +74,70 @@ public class Product extends NamedModel {
 		this.image = image;
 	}
 
-	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
-		// TODO: Relation
-		ingredients_cache = null;
-		key_ingredients_cache = null;
+	//Cached getter/setters
+
+	private List<ProductIngredient> getPairs() {
+		if (pairs == null) {
+			pairs = ProductIngredient.byProductId(this.getId());
+		}
+		return pairs;
+	}
+
+	public List<ProductIngredient> getIngredientLinks() {
+		return getPairs();
+	}
+
+	public List<IngredientName> getIngredients() {
+		if (ingredients == null) {
+			List<ProductIngredient> pairs = getPairs();
+			ingredients = new ArrayList<>();
+			for (ProductIngredient pair : pairs) {
+				if (!pair.isIs_key()) {
+					key_ingredients.add(pair.getIngredient_name());
+				}
+			}
+		}
+		return ingredients;
+	}
+
+	public List<IngredientName> getKey_ingredients() {
+		if (key_ingredients == null) {
+			List<ProductIngredient> pairs = getPairs();
+			key_ingredients = new ArrayList<>();
+			for (ProductIngredient pair : pairs) {
+				if (pair.isIs_key()) {
+					key_ingredients.add(pair.getIngredient_name());
+				}
+			}
+		}
+		return key_ingredients;
+	}
+
+	public void saveIngredients(List<IngredientName> newIngredients,
+	                            List<IngredientName> newKeyIngredients) {
+		List<ProductIngredient> oldPairs = getPairs();
+		for (ProductIngredient oldPair : oldPairs) {
+			oldPair.delete();
+		}
+		pairs.clear();
+		ingredients = new ArrayList<>();
+		key_ingredients = new ArrayList<>();
+
+		refreshIngredientList(ingredients, newIngredients, false);
+		refreshIngredientList(key_ingredients, newKeyIngredients, true);
+	}
+
+	private void refreshIngredientList(List<IngredientName> oldList, List<IngredientName> newList, boolean is_key) {
+		for (int i = 0; i < newList.size(); i++) {
+			oldList.add(newList.get(i));
+			ProductIngredient pair = new ProductIngredient();
+			pair.setIngredient_name(newList.get(i));
+			pair.setProduct(this);
+			pair.setIs_key(is_key);
+			pair.setItem_order(i);
+			pair.save();
+			pairs.add(pair);
+		}
 	}
 
 	//Others
@@ -99,75 +156,11 @@ public class Product extends NamedModel {
 		return getType().getName();
 	}
 
-	private transient List<IngredientName> ingredients_cache;
-	private transient List<IngredientName> key_ingredients_cache;
-
-	public List<IngredientName> getIngredients() {
-		if (ingredients_cache == null) {
-			ingredients_cache = new ArrayList<>();
-			List<ProductIngredient> list = getIngredientLinks();
-			Collections.sort(list, ProductIngredient.sorter);
-			for (ProductIngredient link : list) {
-				if (!link.isIs_key()) {
-					ingredients_cache.add(link.getIngredient_name());
-				}
-			}
-		}
-		return ingredients_cache;
-	}
-
-	public List<IngredientName> getKey_ingredients() {
-		if (key_ingredients_cache == null) {
-			key_ingredients_cache = new ArrayList<>();
-			List<ProductIngredient> list = getIngredientLinks();
-			Collections.sort(list, ProductIngredient.sorter);
-			for (ProductIngredient link : list) {
-				if (link.isIs_key()) {
-					key_ingredients_cache.add(link.getIngredient_name());
-				}
-			}
-		}
-		return key_ingredients_cache;
-	}
-
-	public void setIngredientList(List<IngredientName> ingredients,
-	                              List<IngredientName> key_ingredients) {
-
-		List<ProductIngredient> old_links = getIngredientLinks();
-		for (ProductIngredient link : old_links) {
-			link.delete();
-		}
-
-		List<ProductIngredient> ingredient_links = new ArrayList<>();
-		int i = 0;
-
-		for (IngredientName ingredient : ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(this);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(false);
-			item.setItem_order(i);
-			i++;
-			ingredient_links.add(item);
-		}
-
-		for (IngredientName ingredient : key_ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(this);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(true);
-			item.setItem_order(i);
-			i++;
-			ingredient_links.add(item);
-		}
-
-		setIngredientLinks(ingredient_links);
-	}
-
 	@Override
 	public void refresh() {
-		ingredients_cache = null;
-		key_ingredients_cache = null;
+		pairs = null;
+		ingredients = null;
+		key_ingredients = null;
 		super.refresh();
 	}
 

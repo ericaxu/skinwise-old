@@ -14,6 +14,10 @@ public class ProductType extends NamedModel {
 	public static final String TABLENAME = "product_type";
 	public static Model.Finder<Long, ProductType> find = new Model.Finder<>(Long.class, ProductType.class);
 
+	public static List<ProductType> all() {
+		return find.all();
+	}
+
 	public static ProductType byId(long id) {
 		return find.byId(id);
 	}
@@ -22,9 +26,5 @@ public class ProductType extends NamedModel {
 		return find.where()
 				.eq("name", name)
 				.findUnique();
-	}
-
-	public static List<ProductType> all() {
-		return find.all();
 	}
 }

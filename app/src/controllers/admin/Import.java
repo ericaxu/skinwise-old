@@ -244,7 +244,7 @@ public class Import {
 		result.setName(object.name);
 		result.setCas_number(object.cas_no);
 		result.setDescription(object.description);
-		result.setFunctions(functionList);
+		result.saveFunctions(functionList);
 
 		result.save();
 
@@ -288,7 +288,7 @@ public class Import {
 
 		result.setType(type);
 		result.setDescription(object.description);
-		result.setIngredientList(ingredients, key_ingredients);
+		result.saveIngredients(ingredients, key_ingredients);
 		result.setImage(object.image);
 
 		cache.products.updateAndSave(result, brand, object.name);

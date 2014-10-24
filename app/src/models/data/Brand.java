@@ -12,6 +12,10 @@ public class Brand extends NamedModel {
 	public static final String TABLENAME = "brand";
 	public static Finder<Long, Brand> find = new Finder<>(Long.class, Brand.class);
 
+	public static List<Brand> all() {
+		return find.all();
+	}
+
 	public static Brand byId(long id) {
 		return find.byId(id);
 	}
@@ -20,9 +24,5 @@ public class Brand extends NamedModel {
 		return find.where()
 				.eq("name", name)
 				.findUnique();
-	}
-
-	public static List<Brand> all() {
-		return find.all();
 	}
 }

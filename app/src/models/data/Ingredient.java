@@ -13,10 +13,15 @@ import java.util.Set;
 @Entity
 @Table(name = Ingredient.TABLENAME)
 public class Ingredient extends NamedModel {
+
 	private long popularity;
 
 	@Column(length = 127)
 	private String cas_number;
+
+	//Cached
+	private transient List<IngredientFunction> pairs;
+	private transient Set<Function> functions;
 
 	//Non-columns
 
@@ -37,11 +42,6 @@ public class Ingredient extends NamedModel {
 		return names;
 	}
 
-	public Set<Function> getFunctions() {
-		// TODO: Relation
-		return null;
-	}
-
 	//Setters
 
 	public void setPopularity(long popularity) {
@@ -56,8 +56,41 @@ public class Ingredient extends NamedModel {
 		this.names = names;
 	}
 
-	public void setFunctions(Set<Function> functions) {
-		// TODO: Relation
+	//Cached getter/setters
+
+	private List<IngredientFunction> getPairs() {
+		if (pairs == null) {
+			pairs = IngredientFunction.byFunctionId(this.getId());
+		}
+		return pairs;
+	}
+
+	public Set<Function> getFunctions() {
+		if (functions == null) {
+			List<IngredientFunction> pairs = getPairs();
+			functions = new HashSet<>();
+			for (IngredientFunction pair : pairs) {
+				functions.add(pair.getFunction());
+			}
+		}
+		return functions;
+	}
+
+	public void saveFunctions(Set<Function> newFunctions) {
+		List<IngredientFunction> oldPairs = getPairs();
+		for (IngredientFunction oldPair : oldPairs) {
+			oldPair.delete();
+		}
+		pairs.clear();
+		functions = new HashSet<>();
+		for (Function newFunction : newFunctions) {
+			functions.add(newFunction);
+			IngredientFunction pair = new IngredientFunction();
+			pair.setFunction(newFunction);
+			pair.setIngredient(this);
+			pair.save();
+			pairs.add(pair);
+		}
 	}
 
 	//Others

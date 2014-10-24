@@ -6,6 +6,7 @@ import src.models.BaseModel;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Comparator;
+import java.util.List;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
@@ -55,6 +56,20 @@ public class ProductIngredient extends BaseModel {
 	//Static
 
 	public static final String TABLENAME = "product_ingredient";
+
+	public static Finder<Long, ProductIngredient> find = new Finder<>(Long.class, ProductIngredient.class);
+
+	public static List<ProductIngredient> all() {
+		return find.all();
+	}
+
+	public static List<ProductIngredient> byProductId(long product_id) {
+		return find.where().eq("product_id", product_id).findList();
+	}
+
+	public static List<ProductIngredient> byIngredientNameId(long ingredient_name_id) {
+		return find.where().eq("ingredient_name_id", ingredient_name_id).findList();
+	}
 
 	public static final Sorter sorter = new Sorter();
 
