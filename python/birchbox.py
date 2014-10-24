@@ -46,12 +46,14 @@ while(i):
 		description = parser.strip_tags(parser.regex_find(r'<span itemprop="description"><p>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How it Works</h4>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How to Use</h4>(.*?)</p>', product_info, 1))
+		image = parser.strip_tags(parser.regex_find(r'<img itemprop="image" src="(.*?)"', product_info, 1))
 		product = collections.OrderedDict()
 		product["id"] = _id
 		product["name"] = html.unescape(name)
 		product["brand"] = html.unescape(brand)
 		product["description"] = html.unescape(description)
 		product["ingredients"] = html.unescape(ingredient)
+		product["image"] = image
 		products[_id] = product
 
 	i += 1
