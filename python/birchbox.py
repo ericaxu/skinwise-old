@@ -17,17 +17,19 @@ i = 1
 while(i):
 	print ("On page %d."%i)
 	product_list = list()
+	# get list of products
 	try:
 		list_page = crawler.crawl_selective(key="list/%d"%i, url=url_product_list % i, 
 			regex = r'<div class="mod bbox-mod-counter">(.*?)<div id="meta-data-stub" ')
 	except: # if no more page to crawl
 		break
 
-	# if (i>2): break
+	if (i>2): break
 
 	number_displayed = list(map(int, parser.regex_find(r'<!-- Display start and end if page mode -->(.*?) of', 
 						list_page, 1).split(" &ndash; ")))
-	for j in range(1, number_displayed[1]-number_displayed[0]+1):
+	# go through products
+	for j in range(1, number_displayed[1]-number_displayed[0]+2):
 		product_url = parser.regex_find(r'data-pos="%d"[^>]*data-product-ids[^>]*/shop/skincare/(.*?)"' % j, 
 						list_page, 1)
 		product_list.append(product_url)
@@ -38,13 +40,12 @@ while(i):
 		_id = parser.strip_tags(parser.regex_find(r'data-product-id="(.*?)"', product_info, 1))
 		name = parser.strip_tags(parser.regex_find(r'data-product-name="(.*?)"', product_info, 1))
 		brand = parser.strip_tags(parser.regex_find(r'data-brand-name="(.*?)">', product_info, 1))
+		ingredient = parser.regex_find(r'<div class="bbox-target"><p>(.*?)</p>', product_info, 1)
+		if not brand or not ingredient:
+			continue
 		description = parser.strip_tags(parser.regex_find(r'<span itemprop="description"><p>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How it Works</h4>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How to Use</h4>(.*?)</p>', product_info, 1))
-		try:
-			ingredient = parser.regex_find(r'<div class="bbox-target"><p>(.*?)</p>', product_info, 1)
-		except:
-			continue
 		product = collections.OrderedDict()
 		product["id"] = _id
 		product["name"] = html.unescape(name)
