@@ -4,40 +4,75 @@
 .products_list, .ingredients_list {
     clear: both;
 }
-
-.filter_area {
+.filter_container {
+    clear: both;
+    border: 1px solid @border;
+    padding: 20px 30px;
 }
 
 .filter_section {
-    float: left;
-    max-width: 300px;
-    margin-right: 50px;
+    display: inline-block;
+    vertical-align: top;
+    max-width: 250px;
+    margin-right: 30px;
+
+    .filter_header {
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        margin-top: 0;
+        display: inline;
+    }
+
+    .open_add_filter_popup {
+        position: relative;
+        top: 1px;
+        right: 2px;
+        padding: 5px;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 }
 
 .filter_option {
+    display: inline-block;
     position: relative;
-    margin-bottom: 4px;
+    margin: 0 10px 8px 0;
     border: 2px solid @nav_bg;
-    padding: 2px 20px 2px 6px;
+    padding: 2px 24px 2px 6px;
     cursor: pointer;
+
+    &:hover {
+        background: @neutral;
+    }
 
     &.selected {
         background: @nav_bg;
         color: @light_text;
+
+        .delete_btn:hover {
+            color: @hover_light_text;
+        }
     }
 
     .delete_btn {
         position: absolute;
-        top: 1.5px;
-        right: 0;
+        top: -1px;
+        right: 2px;
         margin-left: 5px;
         padding: 1px 3px;
         font-size: 22px;
-        font-family: "Proxima Nova Light";
+        font-weight: bolder;
         cursor: pointer;
 
         &::before {
             content: "\D7";
+        }
+
+        &:hover {
+            color: @hover_dark_text;
         }
     }
 }
@@ -52,15 +87,29 @@
     margin: 0 auto;
 }
 
+.result_summary, .end_of_results, .filter_toggle_link {
+    font-size: 20px;
+}
+
+.result_summary {
+    float: left;
+}
+
+.filter_toggle_link {
+    position: relative;
+    top: 1px;
+    float: right;
+    background: @bg;
+    padding: 5px 10px;
+    border: 1px solid @border;
+    border-bottom: none;
+    cursor: pointer;
+}
+
 .end_of_results {
     display: none;
     margin-top: 50px;
     text-align: center;
-    font-size: 22px;
-}
-
-.result_summary {
-    font-size: 22px;
 }
 
 footer {

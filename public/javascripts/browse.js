@@ -128,7 +128,8 @@ function loadFilters(type) {
 
 function setupDeleteButtons(type) {
 
-    $(document).on('click', '.delete_btn', function () {
+    $(document).on('click', '.delete_btn', function (e) {
+        e.stopPropagation();
         confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
             removeProductFilter($(this).data('type'), $(this).parent().data('id'));
             loadFilters(type);

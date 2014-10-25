@@ -156,7 +156,7 @@ function setFeedbackEmail(email) {
 // Get an array of checked ids for a filter type
 function getSelectedFilters(filter_type) {
     var results = [];
-    $('.' + filter_type + '_filter.filter_option.selected').each(function () {
+    $('.' + filter_type + '_filters .filter_option.selected').each(function () {
         results.push($(this).data('id'));
     });
 
@@ -165,7 +165,7 @@ function getSelectedFilters(filter_type) {
 
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter, type) {
-    var $option = $('<div/>', { class: 'filter_option ' + type + '_filter' }).text(filter.name).data('id', filter.id);
+    var $option = $('<div/>', { class: 'filter_option' }).text(filter.name).data('id', filter.id);
     $option.append($('<span/>', { class: 'delete_btn' }).data('type', type));
 
     return $option;
