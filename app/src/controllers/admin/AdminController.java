@@ -11,7 +11,7 @@ import src.controllers.util.ResponseState;
 import src.models.Permissible;
 import src.util.Logger;
 import views.html.admin;
-import views.html.content_admin;
+import views.html.editor;
 
 public class AdminController extends Controller {
 	private static final String TAG = "AdminController";
@@ -26,14 +26,14 @@ public class AdminController extends Controller {
 		return ok(admin.render(state));
 	}
 
-	public static Result content() {
+	public static Result editor() {
 		ResponseState state = new ResponseState(session());
 
 		if (!state.userHasPermission(Permissible.ADMIN.VIEW)) {
 			return ErrorController.notfound();
 		}
 
-		return ok(content_admin.render(state));
+		return ok(editor.render(state));
 	}
 
 	public static Result api_import_db() {

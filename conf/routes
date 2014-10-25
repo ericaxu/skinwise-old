@@ -56,7 +56,7 @@ POST        /api/feedback/analytics                 src.controllers.feedback.Ana
 
 # Admin console
 GET         /admin                                  src.controllers.admin.AdminController.home()
-GET         /admin/content                          src.controllers.admin.AdminController.content()
+GET         /editor                                 src.controllers.admin.AdminController.editor()
 POST        /api/admin/import                       src.controllers.admin.AdminController.api_import_db()
 POST        /api/admin/export                       src.controllers.admin.AdminController.api_export_db()
 

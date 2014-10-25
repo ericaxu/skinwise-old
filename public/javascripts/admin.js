@@ -497,7 +497,7 @@ function unmatchedHTML(alias) {
     var $input_container = $('<div/>', { id: 'unmatched_' + alias.id });
     var $ingredient_search = $('<input/>');
     enableAutocomplete('ingredient', $ingredient_search, '#' + 'unmatched_' + alias.id)
-    var $mar = $('<input/>', {
+    var $mark_resolved = $('<input/>', {
         type: 'button',
         value: 'Mark resolved'
     }).on('click', function() {
@@ -505,7 +505,7 @@ function unmatchedHTML(alias) {
             id: feedback.id
         }, fetchFeedback, null, 'Marking feedback resolved...');
     });
-    $div.append($('<p/>').append($mark_resolved));
+    //$div.append($('<p/>').append($mark_resolved));
 
     return $div;
 }
