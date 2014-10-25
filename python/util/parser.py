@@ -102,6 +102,13 @@ def array_rotate(array, col_key, col_value):
 		result[item[col_key]] = item[col_value]
 	return result
 
+def strip_brand(brand_name, prod_name):
+	prod_name_lowCase = prod_name.lower()
+	for i, c in enumerate(brand_name.lower()+"  "):
+		if c != prod_name_lowCase[i]:
+			break
+	return prod_name[i:]
+
 def print_count(list, title):
 	"""
 	print the length of the list as "Title: count"

@@ -40,9 +40,10 @@ while(i):
 		_id = parser.strip_tags(parser.regex_find(r'data-product-id="(.*?)"', product_info, 1))
 		name = parser.strip_tags(parser.regex_find(r'data-product-name="(.*?)"', product_info, 1))
 		brand = parser.strip_tags(parser.regex_find(r'data-brand-name="(.*?)">', product_info, 1))
-		ingredient = parser.regex_find(r'<div class="bbox-target"><p>(.*?)</p>', product_info, 1)
+		ingredient = parser.strip_tags(parser.regex_find(r'<div class="bbox-target"><p>(.*?)</p>', product_info, 1))
 		if not brand or not ingredient:
 			continue
+		name = parser.strip_brand(brand, name)
 		description = parser.strip_tags(parser.regex_find(r'<span itemprop="description"><p>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How it Works</h4>(.*?)</p>', product_info, 1))
 		description += "<br>" + parser.strip_tags(parser.regex_find(r'How to Use</h4>(.*?)</p>', product_info, 1))
