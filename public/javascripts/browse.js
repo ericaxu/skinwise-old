@@ -147,7 +147,6 @@ function initBrowse(type) {
         $('.open_add_filter_popup').on('click', function () {
             $('#add_filter_btn').data('type', $(this).data('type'));
             enableAutocomplete($(this).data('type'), $('#add_filter'), '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $('#add_filter_not_found'));
-            $('.filter_area').hide();
             $('.add_filter.popup').show();
         });
 

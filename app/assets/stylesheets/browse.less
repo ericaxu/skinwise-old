@@ -40,12 +40,16 @@
 
     .open_add_filter_popup {
         position: relative;
-        top: 1px;
+        top: 0.5px;
         right: 2px;
         padding: 5px;
         font-size: 22px;
         font-weight: bold;
         cursor: pointer;
+
+        &:hover {
+            color: @hover_dark_text;
+        }
     }
 }
 
@@ -167,4 +171,9 @@ footer {
 .chevron.bottom:before {
     top: 5px;
     transform: rotate(135deg);
+}
+
+.add_filter.popup {
+    position: relative;
+    z-index: 1;
 }
