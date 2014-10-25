@@ -76,8 +76,8 @@ public class Product extends NamedModel {
 	//Ingredients
 
 	private transient List<ProductIngredient> pairs;
-	private transient List<IngredientName> ingredients;
-	private transient List<IngredientName> key_ingredients;
+	private transient List<Alias> ingredients;
+	private transient List<Alias> key_ingredients;
 
 	private List<ProductIngredient> getPairs() {
 		if (pairs == null) {
@@ -90,34 +90,34 @@ public class Product extends NamedModel {
 		return getPairs();
 	}
 
-	public List<IngredientName> getIngredients() {
+	public List<Alias> getIngredients() {
 		if (ingredients == null) {
 			List<ProductIngredient> pairs = getPairs();
 			ingredients = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (!pair.isIs_key()) {
-					ingredients.add(pair.getIngredient_name());
+					ingredients.add(pair.getAlias());
 				}
 			}
 		}
 		return ingredients;
 	}
 
-	public List<IngredientName> getKey_ingredients() {
+	public List<Alias> getKey_ingredients() {
 		if (key_ingredients == null) {
 			List<ProductIngredient> pairs = getPairs();
 			key_ingredients = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (pair.isIs_key()) {
-					key_ingredients.add(pair.getIngredient_name());
+					key_ingredients.add(pair.getAlias());
 				}
 			}
 		}
 		return key_ingredients;
 	}
 
-	public void saveIngredients(List<IngredientName> newIngredients,
-	                            List<IngredientName> newKeyIngredients) {
+	public void saveIngredients(List<Alias> newIngredients,
+	                            List<Alias> newKeyIngredients) {
 		List<ProductIngredient> oldPairs = getPairs();
 		for (ProductIngredient oldPair : oldPairs) {
 			oldPair.delete();
@@ -130,10 +130,10 @@ public class Product extends NamedModel {
 		refreshIngredientList(newKeyIngredients, true);
 	}
 
-	private void refreshIngredientList(List<IngredientName> newList, boolean is_key) {
+	private void refreshIngredientList(List<Alias> newList, boolean is_key) {
 		for (int i = 0; i < newList.size(); i++) {
 			ProductIngredient pair = new ProductIngredient();
-			pair.setIngredient_name(newList.get(i));
+			pair.setAlias(newList.get(i));
 			pair.setProduct(this);
 			pair.setIs_key(is_key);
 			pair.setItem_order(i);
@@ -200,16 +200,16 @@ public class Product extends NamedModel {
 			if (needAnd) {
 				query += " AND ";
 			}
-			List<Long> ingredient_name_ids = new ArrayList<>();
+			List<Long> alias_ids = new ArrayList<>();
 			for (long ingredient_id : ingredients) {
-				Set<IngredientName> names = App.cache().ingredients.get(ingredient_id).getNames();
-				for (IngredientName name : names) {
-					ingredient_name_ids.add(name.getId());
+				Set<Alias> aliases = App.cache().ingredients.get(ingredient_id).getNames();
+				for (Alias alias : aliases) {
+					alias_ids.add(alias.getId());
 				}
 			}
-			Long[] list = ingredient_name_ids.toArray(new Long[ingredient_name_ids.size()]);
+			Long[] list = alias_ids.toArray(new Long[alias_ids.size()]);
 
-			query += " aux.ingredient_name_id IN (" + Util.joinString(",", list) + ") " +
+			query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
 					"GROUP BY main.id " +
 					"HAVING count(*) = " + ingredients.length + " ";
 		}

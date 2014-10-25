@@ -12,7 +12,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.models.MemCache;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.data.Alias;
 import src.models.util.NamedModel;
 import src.models.data.Product;
 
@@ -90,7 +90,7 @@ public class DataController extends Controller {
 					result = cache.types.search(request.query, numResults, false);
 					break;
 				case INGREDIENT:
-					result = cache.ingredient_names.search(request.query, numResults, false);
+					result = cache.alias.search(request.query, numResults, false);
 					break;
 				case PRODUCT:
 					result = cache.products.search(request.query, numResults, false);
@@ -103,8 +103,8 @@ public class DataController extends Controller {
 					String name = object.getName();
 
 					//Ingredient names, we want ingredient ID instead, or skip if not associated
-					if (object instanceof IngredientName) {
-						Ingredient ingredient = ((IngredientName) object).getIngredient();
+					if (object instanceof Alias) {
+						Ingredient ingredient = ((Alias) object).getIngredient();
 						if (ingredient == null) {
 							continue;
 						}

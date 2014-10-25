@@ -17,7 +17,7 @@ import src.models.Page;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.data.Alias;
 import views.html.ingredient;
 
 import java.util.ArrayList;
@@ -159,11 +159,11 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
 
-			List<IngredientName> result = IngredientName.unmatched(new Page(request.page));
+			List<Alias> result = Alias.unmatched(new Page(request.page));
 
 			Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
 
-			for (IngredientName object : result) {
+			for (Alias object : result) {
 				response.results.add(new Api.ResponseNamedModelObject(
 						object.getId(),
 						object.getName(),

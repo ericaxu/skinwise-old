@@ -67,9 +67,9 @@ public class AdminProductController extends Controller {
 			result.setImage(request.image);
 			result.setPopularity(request.popularity);
 
-//			cache.matcher.cache(cache.ingredient_names.all());
-//			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);
-//			List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(request.key_ingredients);
+//			cache.matcher.cache(cache.alias.all());
+//			List<IngredientName> ingredients = cache.matcher.matchAllAliases(request.ingredients);
+//			List<IngredientName> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
 //			cache.matcher.clear();
 
 //			result.setIngredientList(ingredients, key_ingredients);

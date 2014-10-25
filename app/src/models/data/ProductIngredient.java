@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = ProductIngredient.TABLENAME)
 public class ProductIngredient extends BaseModel implements Relation {
 	private long product_id;
-	private long ingredient_name_id;
+	private long alias_id;
 
 	private int item_order;
 	private boolean is_key;
@@ -24,8 +24,8 @@ public class ProductIngredient extends BaseModel implements Relation {
 		return App.cache().products.get(product_id);
 	}
 
-	public IngredientName getIngredient_name() {
-		return App.cache().ingredient_names.get(ingredient_name_id);
+	public Alias getAlias() {
+		return App.cache().alias.get(alias_id);
 	}
 
 	public boolean isIs_key() {
@@ -43,7 +43,7 @@ public class ProductIngredient extends BaseModel implements Relation {
 
 	@Override
 	public long getRightId() {
-		return ingredient_name_id;
+		return alias_id;
 	}
 	//Setters
 
@@ -51,8 +51,8 @@ public class ProductIngredient extends BaseModel implements Relation {
 		this.product_id = BaseModel.getIdIfExists(product);
 	}
 
-	public void setIngredient_name(IngredientName ingredient_name) {
-		this.ingredient_name_id = BaseModel.getIdIfExists(ingredient_name);
+	public void setAlias(Alias alias) {
+		this.alias_id = BaseModel.getIdIfExists(alias);
 	}
 
 	public void setIs_key(boolean is_key) {
@@ -77,8 +77,8 @@ public class ProductIngredient extends BaseModel implements Relation {
 		return find.where().eq("product_id", product_id).findList();
 	}
 
-	public static List<ProductIngredient> byIngredientNameId(long ingredient_name_id) {
-		return find.where().eq("ingredient_name_id", ingredient_name_id).findList();
+	public static List<ProductIngredient> byAliasId(long alias_id) {
+		return find.where().eq("alias_id", alias_id).findList();
 	}
 
 	public static final Sorter sorter = new Sorter();

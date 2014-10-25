@@ -17,7 +17,7 @@ import src.models.util.BaseModel;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.data.Alias;
 
 import java.util.HashSet;
 import java.util.List;
@@ -99,12 +99,12 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
 
-			IngredientName result;
+			Alias result;
 			if (request.id == BaseModel.NEW_ID) {
-				result = new IngredientName();
+				result = new Alias();
 			}
 			else {
-				result = App.cache().ingredient_names.get(request.id);
+				result = App.cache().alias.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
 				}
@@ -123,7 +123,7 @@ public class AdminIngredientController extends Controller {
 
 			result.setIngredient(ingredient);
 
-			App.cache().ingredient_names.updateNameAndSave(result, request.name);
+			App.cache().alias.updateNameAndSave(result, request.name);
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}

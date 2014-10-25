@@ -18,8 +18,6 @@ public class Export {
 		DBFormat result = new DBFormat();
 		MemCache cache = App.cache();
 
-		cache.init();
-
 		Logger.debug(TAG, "Exporting functions");
 		for (Function object : cache.functions.all()) {
 			result.ingredient_functions.add(export(object));
@@ -64,7 +62,7 @@ public class Export {
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
-		for (IngredientName name : object.getNames()) {
+		for (Alias name : object.getNames()) {
 			result.names.add(name.getName());
 		}
 		Collections.sort(result.functions);
@@ -94,11 +92,11 @@ public class Export {
 		result.description = object.getDescription();
 		result.image = object.getImage();
 		List<String> key_ingredients = new ArrayList<>();
-		for (IngredientName ing : object.getKey_ingredients()) {
+		for (Alias ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());
 		}
 		List<String> ingredients = new ArrayList<>();
-		for (IngredientName ing : object.getIngredients()) {
+		for (Alias ing : object.getIngredients()) {
 			ingredients.add(ing.getName());
 		}
 		result.key_ingredients = StringUtils.join(key_ingredients, ',');

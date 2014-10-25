@@ -101,7 +101,7 @@ public class Ingredient extends NamedModel {
 
 	//Names
 
-	public Set<IngredientName> getNames() {
+	public Set<Alias> getNames() {
 		return App.cache().getNamesForIngredient(this.getId());
 	}
 
@@ -111,7 +111,7 @@ public class Ingredient extends NamedModel {
 
 	public List<String> getNamesString() {
 		List<String> result = new ArrayList<>();
-		for (IngredientName name : this.getNames()) {
+		for (Alias name : this.getNames()) {
 			result.add(name.getName());
 		}
 		return result;

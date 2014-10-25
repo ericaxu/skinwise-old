@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = IngredientName.TABLENAME)
-public class IngredientName extends NamedModel {
+@Table(name = Alias.TABLENAME)
+public class Alias extends NamedModel {
 
 	private long ingredient_id;
 
@@ -53,7 +53,7 @@ public class IngredientName extends NamedModel {
 
 	private List<ProductIngredient> getPairs() {
 		if (pairs == null) {
-			pairs = ProductIngredient.byIngredientNameId(this.getId());
+			pairs = ProductIngredient.byAliasId(this.getId());
 		}
 		return pairs;
 	}
@@ -71,22 +71,22 @@ public class IngredientName extends NamedModel {
 
 	//Static
 
-	public static final String TABLENAME = "ingredient_name";
+	public static final String TABLENAME = "alias";
 
-	public static NamedFinder<IngredientName> find = new NamedFinder<>(IngredientName.class);
+	public static NamedFinder<Alias> find = new NamedFinder<>(Alias.class);
 
-	public static Set<IngredientName> byIngredientId(long ingredient_id) {
-		List<IngredientName> result = find.where()
+	public static Set<Alias> byIngredientId(long ingredient_id) {
+		List<Alias> result = find.where()
 				.eq("ingredient_id", ingredient_id)
 				.findList();
-		Set<IngredientName> results = new HashSet<>();
-		for (IngredientName ingredientName : result) {
-			results.add(App.cache().ingredient_names.get(ingredientName.getId()));
+		Set<Alias> results = new HashSet<>();
+		for (Alias alias : result) {
+			results.add(App.cache().alias.get(alias.getId()));
 		}
 		return results;
 	}
 
-	public static List<IngredientName> unmatched(Page page) {
+	public static List<Alias> unmatched(Page page) {
 		return page.apply(find.where().eq("ingredient_id", 0).query());
 	}
 }

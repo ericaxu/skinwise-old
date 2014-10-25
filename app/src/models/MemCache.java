@@ -380,18 +380,18 @@ public class MemCache {
 		public abstract List<? extends Relation> all();
 	}
 
-	private static class ProductIngredientGetter extends RGetter<Product, IngredientName> {
-		public Set<IngredientName> byLeft(long left_id) {
+	private static class ProductIngredientGetter extends RGetter<Product, Alias> {
+		public Set<Alias> byLeft(long left_id) {
 			List<ProductIngredient> result = ProductIngredient.byProductId(left_id);
-			Set<IngredientName> set = new HashSet<>();
+			Set<Alias> set = new HashSet<>();
 			for (ProductIngredient relation : result) {
-				set.add(relation.getIngredient_name());
+				set.add(relation.getAlias());
 			}
 			return set;
 		}
 
 		public Set<Product> byRight(long right_id) {
-			List<ProductIngredient> result = ProductIngredient.byIngredientNameId(right_id);
+			List<ProductIngredient> result = ProductIngredient.byAliasId(right_id);
 			Set<Product> set = new HashSet<>();
 			for (ProductIngredient relation : result) {
 				set.add(relation.getProduct());
@@ -406,31 +406,31 @@ public class MemCache {
 
 	public static class Matcher {
 		private MemCache cache;
-		public Map<IngredientName, Set<String>> ingredient_name_word_index = new HashMap<>();
+		public Map<Alias, Set<String>> alias_word_index = new HashMap<>();
 
 		public Matcher(MemCache cache) {
 			this.cache = cache;
 		}
 
-		private void cacheIngredientName(IngredientName name) {
+		private void cacheAlias(Alias name) {
 			String key = name.getName().toLowerCase();
 			String[] words = key.split("[^a-zA-Z0-9]");
 			Set<String> set = new HashSet<>(Arrays.asList(words));
 			set.remove("");
-			ingredient_name_word_index.put(name, set);
+			alias_word_index.put(name, set);
 		}
 
-		public void cache(Collection<IngredientName> names) {
+		public void cache(Collection<Alias> names) {
 			clear();
-			for (IngredientName name : names) {
-				cacheIngredientName(name);
+			for (Alias name : names) {
+				cacheAlias(name);
 			}
 		}
 
 		public void clear() {
-			cache.ingredient_names.search.reset();
+			cache.alias.search.reset();
 			cache.lock.readLock().lock();
-			ingredient_name_word_index.clear();
+			alias_word_index.clear();
 			cache.lock.readLock().unlock();
 		}
 
@@ -465,12 +465,12 @@ public class MemCache {
 			return result;
 		}
 
-		public List<IngredientName> matchAllIngredientNames(String input) {
-			List<IngredientName> matches = new ArrayList<>();
-			Set<IngredientName> matchSet = new HashSet<>();
+		public List<Alias> matchAllAliases(String input) {
+			List<Alias> matches = new ArrayList<>();
+			Set<Alias> matchSet = new HashSet<>();
 			List<String> ingredients = splitIngredients(input);
 			for (String ingredient : ingredients) {
-				IngredientName name = matchIngredientName(ingredient);
+				Alias name = matchAlias(ingredient);
 				if (!matchSet.contains(name)) {
 					matches.add(name);
 					matchSet.add(name);
@@ -479,15 +479,15 @@ public class MemCache {
 			return matches;
 		}
 
-		public IngredientName matchIngredientName(String input) {
-			IngredientName name = App.cache().ingredient_names.get(input);
+		public Alias matchAlias(String input) {
+			Alias name = App.cache().alias.get(input);
 			if (name != null) {
 				return name;
 			}
 
 			/*
 			String[] words = input.toLowerCase().split("[^a-zA-Z0-9]");
-			for (Map.Entry<IngredientName, Set<String>> entry : ingredient_name_word_index.entrySet()) {
+			for (Map.Entry<IngredientName, Set<String>> entry : alias_word_index.entrySet()) {
 				boolean allmatch = true;
 				for (String word : words) {
 					if (Objects.equals(word, "")) {
@@ -505,7 +505,7 @@ public class MemCache {
 			}
 			*/
 
-			List<IngredientName> result = cache.ingredient_names.search(input, 1, true);
+			List<Alias> result = cache.alias.search(input, 1, true);
 			if (!result.isEmpty()) {
 				name = result.get(0);
 			}
@@ -578,11 +578,11 @@ public class MemCache {
 		}
 	}
 
-	private TLongObjectMap<Set<IngredientName>> name_map;
+	private TLongObjectMap<Set<Alias>> name_map;
 
-	public Set<IngredientName> getNamesForIngredient(long ingredient_id) {
+	public Set<Alias> getNamesForIngredient(long ingredient_id) {
 		if (!name_map.containsKey(ingredient_id)) {
-			name_map.put(ingredient_id, IngredientName.byIngredientId(ingredient_id));
+			name_map.put(ingredient_id, Alias.byIngredientId(ingredient_id));
 		}
 		return name_map.get(ingredient_id);
 	}
@@ -592,8 +592,8 @@ public class MemCache {
 	public NamedIndex<Brand> brands;
 	public NamedIndex<ProductType> types;
 	public NamedIndex<Ingredient> ingredients;
-	public NamedIndex<IngredientName> ingredient_names;
-	public RTableIdx<Product, IngredientName> product_ingredient;
+	public NamedIndex<Alias> alias;
+	public RTableIdx<Product, Alias> product_ingredient;
 	public ProductIndex products;
 	public Matcher matcher;
 
@@ -603,10 +603,10 @@ public class MemCache {
 		brands = new NamedIndex<>(lock, Brand.find, Brand.find);
 		types = new NamedIndex<>(lock, ProductType.find, ProductType.find);
 		ingredients = new NamedIndex<>(lock, Ingredient.find, Ingredient.find);
-		ingredient_names = new NamedIndex<>(lock, IngredientName.find, IngredientName.find);
+		alias = new NamedIndex<>(lock, Alias.find, Alias.find);
 		products = new ProductIndex(lock, Product.find, Product.find);
 		product_ingredient = new RTableIdx<>(lock, new ProductIngredientGetter(),
-				Product.find, IngredientName.find);
+				Product.find, Alias.find);
 		matcher = new Matcher(this);
 		name_map = new TLongObjectHashMap<>();
 	}
@@ -618,7 +618,7 @@ public class MemCache {
 		brands.cache();
 		types.cache();
 		ingredients.cache();
-		ingredient_names.cache();
+		alias.cache();
 		products.cache();
 		product_ingredient.cache();
 		name_map.clear();

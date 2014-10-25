@@ -278,8 +278,8 @@ public class ProductController extends Controller {
 			List<ProductIngredient> links = result.getIngredientLinks();
 
 			for (ProductIngredient link : links) {
-				if (link.getIngredient_name().getIngredient() != null) {
-					ingredients.add(link.getIngredient_name().getIngredient());
+				if (link.getAlias().getIngredient() != null) {
+					ingredients.add(link.getAlias().getIngredient());
 				}
 			}
 

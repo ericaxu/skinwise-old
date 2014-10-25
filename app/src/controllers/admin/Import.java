@@ -89,17 +89,17 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Importing product ingredients");
-		List<IngredientName> pending = new ArrayList<>();
+		List<Alias> pending = new ArrayList<>();
 
 		//First pass
 		Logger.debug(TAG, "Ingredient names - first pass");
 		for (String string : allIngredients) {
-			IngredientName name = cache.matcher.matchIngredientName(string);
+			Alias name = cache.matcher.matchAlias(string);
 
 			if (name != null && !name.getName().equalsIgnoreCase(string)) {
 				Ingredient ingredient = name.getIngredient();
 				if (ingredient != null) {
-					name = new IngredientName();
+					name = new Alias();
 					name.setIngredient(ingredient);
 					name.setName(string);
 					pending.add(name);
@@ -109,22 +109,22 @@ public class Import {
 
 		//Spill to DB
 		Logger.debug(TAG, "Ingredient names - spill");
-		for (IngredientName name : pending) {
+		for (Alias name : pending) {
 			name.save();
-			cache.ingredient_names.update(name);
+			cache.alias.update(name);
 		}
 
 		//Second pass
 		Logger.debug(TAG, "Ingredient names - second pass");
 		for (String string : allIngredients) {
-			IngredientName name = cache.matcher.matchIngredientName(string);
+			Alias name = cache.matcher.matchAlias(string);
 
 			if (name == null) {
-				name = new IngredientName();
+				name = new Alias();
 			}
 			else if (!name.getName().equalsIgnoreCase(string)) {
 				Ingredient ingredient = name.getIngredient();
-				name = new IngredientName();
+				name = new Alias();
 				name.setIngredient(ingredient);
 			}
 			else {
@@ -132,7 +132,7 @@ public class Import {
 			}
 			name.setName(string);
 			name.save();
-			cache.ingredient_names.update(name);
+			cache.alias.update(name);
 		}
 
 		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
@@ -192,11 +192,11 @@ public class Import {
 	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
 		//Remove duplicates
 		for (String name : object.names) {
-			IngredientName ingredientName = cache.ingredient_names.get(name);
-			if (ingredientName == null) {
+			Alias alias = cache.alias.get(name);
+			if (alias == null) {
 				continue;
 			}
-			Ingredient ingredient = ingredientName.getIngredient();
+			Ingredient ingredient = alias.getIngredient();
 			if (ingredient != null && !Objects.equals(ingredient.getName(), object.name)) {
 				//Logger.debug(TAG, "Duplicate ingredient " +
 				//		object.name + " | " + ingredient.getName());
@@ -256,9 +256,9 @@ public class Import {
 	}
 
 	private static void createIngredientName(String name, Ingredient ingredient, MemCache cache) {
-		IngredientName result = cache.ingredient_names.get(name);
+		Alias result = cache.alias.get(name);
 		if (result == null) {
-			result = new IngredientName();
+			result = new Alias();
 		}
 		result.setName(name);
 		Ingredient old = result.getIngredient();
@@ -269,12 +269,12 @@ public class Import {
 		result.setIngredient(ingredient);
 		result.save();
 
-		cache.ingredient_names.update(result);
+		cache.alias.update(result);
 	}
 
 	private static void createProduct(DBFormat.ProductObject object, MemCache cache) {
-		List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(object.ingredients);
-		List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(object.key_ingredients);
+		List<Alias> ingredients = cache.matcher.matchAllAliases(object.ingredients);
+		List<Alias> key_ingredients = cache.matcher.matchAllAliases(object.key_ingredients);
 
 		Brand brand = cache.brands.get(object.brand);
 		ProductType type = cache.types.get(object.type);
