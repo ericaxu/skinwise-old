@@ -98,7 +98,7 @@ public class ProductController extends Controller {
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
-		Product result = App.cache().products.get(product_id, true);
+		Product result = App.cache().products.get(product_id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -112,7 +112,7 @@ public class ProductController extends Controller {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id, true);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
@@ -268,7 +268,7 @@ public class ProductController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id, true);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}

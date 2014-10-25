@@ -203,7 +203,7 @@ public class Import {
 
 				//Attach alt names to ingredient
 				for (String name2 : object.names) {
-					createIngredientName(name2, ingredient, cache);
+					createAlias(name2, ingredient, cache);
 				}
 				//Attach info if possible
 				if (ingredient.getCas_number().isEmpty()) {
@@ -236,7 +236,6 @@ public class Import {
 
 		if (result == null) {
 			result = new Ingredient();
-			result.newlyCreated();
 		}
 
 		result.setName(object.name);
@@ -245,28 +244,30 @@ public class Import {
 
 		result.save();
 
-		result.saveFunctions(functionList);
-
 		cache.ingredients.update(result);
 
-		createIngredientName(object.name, result, cache);
+		result.saveFunctions(functionList);
+
+		createAlias(object.name, result, cache);
 
 		for (String name : object.names) {
-			createIngredientName(name, result, cache);
+			createAlias(name, result, cache);
 		}
 	}
 
-	private static void createIngredientName(String name, Ingredient ingredient, MemCache cache) {
-		Alias result = cache.alias.get(name);
+	private static void createAlias(String alias, Ingredient ingredient, MemCache cache) {
+		Alias result = cache.alias.get(alias);
 		if (result == null) {
 			result = new Alias();
 		}
-		result.setName(name);
+
 		Ingredient old = result.getIngredient();
 		if (old != null && !old.equals(ingredient)) {
-			Logger.debug(TAG, "Ingredient name attached to multiple ingredients! " +
+			Logger.debug(TAG, alias + " attached to multiple ingredients " +
 					ingredient.getName() + " | " + old.getName());
 		}
+
+		result.setName(alias);
 		result.setIngredient(ingredient);
 		result.save();
 
@@ -280,17 +281,21 @@ public class Import {
 		Brand brand = cache.brands.get(object.brand);
 		ProductType type = cache.types.get(object.type);
 
-		Product result = cache.products.get(brand, object.name);
+		Product result = cache.products.get(brand.getId(), object.name);
 		if (result == null) {
 			result = new Product();
-			result.newlyCreated();
 		}
 
-		result.setType(type);
+		String oldName = result.getName();
+		long oldBrandId = result.getBrand_id();
+		result.setName(object.name);
+		result.setBrand(brand);
 		result.setDescription(object.description);
 		result.setImage(object.image);
 
-		cache.products.updateAndSave(result, brand, object.name);
+		result.save();
+
+		cache.products.update(result, oldBrandId, oldName);
 
 		result.saveIngredients(ingredients, key_ingredients);
 	}

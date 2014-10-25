@@ -81,7 +81,7 @@ public class IngredientController extends Controller {
 	public static Result ingredient(long id) {
 		ResponseState state = new ResponseState(session());
 
-		Ingredient result = App.cache().ingredients.get(id, true);
+		Ingredient result = App.cache().ingredients.get(id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -94,7 +94,7 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Ingredient result = App.cache().ingredients.get(request.id, true);
+			Ingredient result = App.cache().ingredients.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}

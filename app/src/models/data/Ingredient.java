@@ -3,6 +3,7 @@ package src.models.data;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.Page;
+import src.models.util.BaseModel;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 import src.util.Util;
@@ -101,8 +102,8 @@ public class Ingredient extends NamedModel {
 
 	//Names
 
-	public Set<Alias> getNames() {
-		return App.cache().getNamesForIngredient(this.getId());
+	public List<Alias> getNames() {
+		return App.cache().ingredient_aliases.getManyObject(this.getId());
 	}
 
 	public String getDisplayName() {
@@ -115,10 +116,6 @@ public class Ingredient extends NamedModel {
 			result.add(name.getName());
 		}
 		return result;
-	}
-
-	public void newlyCreated() {
-		ingredient_functions = new ArrayList<>();
 	}
 
 	//Static

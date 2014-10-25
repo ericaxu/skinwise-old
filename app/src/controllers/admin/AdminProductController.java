@@ -13,19 +13,19 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.util.BaseModel;
 import src.models.MemCache;
 import src.models.Permissible;
 import src.models.data.Brand;
 import src.models.data.Product;
 import src.models.data.ProductType;
+import src.models.util.BaseModel;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
 
 	public static class RequestProductUpdate extends Request {
 		public long id;
-//		public long brand_id;
+		public long brand_id;
 		@NotNull
 		public String line;
 		@NotEmpty
@@ -57,24 +57,30 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-//			Brand brand = cache.brands.get(request.brand_id);
-//			if (brand == null) {
-//				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
-//			}
+			Brand brand = cache.brands.get(request.brand_id);
+			if (brand == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
+			}
 
+			String oldName = result.getName();
+			long oldBrandId = result.getBrand_id();
+			result.setName(request.name);
+			result.setBrand(brand);
 			result.setLine(request.line);
 			result.setDescription(request.description);
 			result.setImage(request.image);
 			result.setPopularity(request.popularity);
 
-//			cache.matcher.cache(cache.alias.all());
-//			List<IngredientName> ingredients = cache.matcher.matchAllAliases(request.ingredients);
-//			List<IngredientName> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
-//			cache.matcher.clear();
+			result.save();
 
-//			result.setIngredientList(ingredients, key_ingredients);
+			cache.products.update(result, oldBrandId, oldName);
 
-			cache.products.updateAndSave(result, result.getBrand(), request.name);
+			//			cache.matcher.cache(cache.alias.all());
+			//			List<IngredientName> ingredients = cache.matcher.matchAllAliases(request.ingredients);
+			//			List<IngredientName> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
+			//			cache.matcher.clear();
+
+			//			result.setIngredientList(ingredients, key_ingredients);
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
 		}
@@ -103,9 +109,13 @@ public class AdminProductController extends Controller {
 				}
 			}
 
-			result.setDescription(request.description);
+			String oldName = result.getName();
 
-			App.cache().brands.updateNameAndSave(result, request.name);
+			result.setName(request.name);
+			result.setDescription(request.description);
+			result.save();
+
+			App.cache().brands.update(result, oldName);
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
 		}
@@ -134,9 +144,13 @@ public class AdminProductController extends Controller {
 				}
 			}
 
-			result.setDescription(request.description);
+			String oldName = result.getName();
 
-			App.cache().types.updateNameAndSave(result, request.name);
+			result.setName(request.name);
+			result.setDescription(request.description);
+			result.save();
+
+			App.cache().types.update(result, oldName);
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}

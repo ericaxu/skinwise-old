@@ -2,8 +2,8 @@ package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.util.BaseModel;
 import src.models.Page;
+import src.models.util.BaseModel;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 
@@ -19,37 +19,41 @@ public class Alias extends NamedModel {
 
 	private long ingredient_id;
 
-	//Cached
-	private transient List<ProductIngredient> pairs;
-	private transient Set<Product> products;
+	//Get/Set
 
-	//Getters
-
-	public String getDisplayName() {
-		return WordUtils.capitalizeFully(getName());
+	public long getIngredient_id() {
+		return ingredient_id;
 	}
+
+	public void setIngredient_id(long ingredient_id) {
+		if (ingredient_id != this.ingredient_id) {
+			App.cache().ingredient_aliases.remove(this);
+			this.ingredient_id = ingredient_id;
+			App.cache().ingredient_aliases.add(this);
+		}
+	}
+
+	//Relations
 
 	public Ingredient getIngredient() {
 		return App.cache().ingredients.get(ingredient_id);
 	}
 
-	//Setters
-
 	public void setIngredient(Ingredient ingredient) {
-		long new_id = BaseModel.getIdIfExists(ingredient);
-		if (new_id != ingredient_id) {
-			if (!BaseModel.isIdNull(ingredient_id)) {
-				// Remove old ingredient from mapping in cache.
-				App.cache().getNamesForIngredient(ingredient_id).remove(this);
-			}
-			if (!BaseModel.isIdNull(new_id)) {
-				App.cache().getNamesForIngredient(new_id).add(this);
-			}
-		}
-		this.ingredient_id = new_id;
+		long id = BaseModel.getIdIfExists(ingredient);
+		setIngredient_id(id);
+	}
+
+	//Others
+
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(getName());
 	}
 
 	//Cached getter/setters
+
+	private transient List<ProductIngredient> pairs;
+	private transient Set<Product> products;
 
 	private List<ProductIngredient> getPairs() {
 		if (pairs == null) {
@@ -70,21 +74,8 @@ public class Alias extends NamedModel {
 	}
 
 	//Static
-
 	public static final String TABLENAME = "alias";
-
 	public static NamedFinder<Alias> find = new NamedFinder<>(Alias.class);
-
-	public static Set<Alias> byIngredientId(long ingredient_id) {
-		List<Alias> result = find.where()
-				.eq("ingredient_id", ingredient_id)
-				.findList();
-		Set<Alias> results = new HashSet<>();
-		for (Alias alias : result) {
-			results.add(App.cache().alias.get(alias.getId()));
-		}
-		return results;
-	}
 
 	public static List<Alias> unmatched(Page page) {
 		return page.apply(find.where().eq("ingredient_id", 0).query());

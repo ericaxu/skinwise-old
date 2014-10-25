@@ -40,6 +40,7 @@ public class App {
 			backup.kill();
 		}
 		backup = null;
+		System.gc();
 	}
 
 	public static MemCache cache() {

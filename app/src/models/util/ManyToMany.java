@@ -1,6 +1,6 @@
 package src.models.util;
 
-public interface Relation {
+public interface ManyToMany {
 	public long getLeftId();
 
 	public long getRightId();

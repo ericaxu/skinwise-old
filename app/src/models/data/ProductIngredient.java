@@ -2,16 +2,17 @@ package src.models.data;
 
 import src.App;
 import src.models.util.BaseModel;
-import src.models.util.Relation;
+import src.models.util.ManyToMany;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
-public class ProductIngredient extends BaseModel implements Relation {
+public class ProductIngredient extends BaseModel implements ManyToMany {
 	private long product_id;
 	private long alias_id;
 
@@ -74,10 +75,16 @@ public class ProductIngredient extends BaseModel implements Relation {
 	}
 
 	public static List<ProductIngredient> byProductId(long product_id) {
+		if(BaseModel.isIdNull(product_id)) {
+			return new ArrayList<>();
+		}
 		return find.where().eq("product_id", product_id).findList();
 	}
 
 	public static List<ProductIngredient> byAliasId(long alias_id) {
+		if(BaseModel.isIdNull(alias_id)) {
+			return new ArrayList<>();
+		}
 		return find.where().eq("alias_id", alias_id).findList();
 	}
 

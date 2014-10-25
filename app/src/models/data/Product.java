@@ -1,5 +1,9 @@
 package src.models.data;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import src.App;
 import src.models.Page;
 import src.models.util.BaseModel;
@@ -12,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -35,12 +38,12 @@ public class Product extends NamedModel {
 		return popularity;
 	}
 
-	public Brand getBrand() {
-		return App.cache().brands.get(brand_id);
+	public long getBrand_id() {
+		return brand_id;
 	}
 
-	public ProductType getType() {
-		return App.cache().types.get(product_type_id);
+	public long getProduct_type_id() {
+		return product_type_id;
 	}
 
 	public String getLine() {
@@ -57,12 +60,12 @@ public class Product extends NamedModel {
 		this.popularity = popularity;
 	}
 
-	public void setBrand(Brand brand) {
-		this.brand_id = BaseModel.getIdIfExists(brand);
+	public void setBrand_id(long brand_id) {
+		this.brand_id = brand_id;
 	}
 
-	public void setType(ProductType type) {
-		this.product_type_id = BaseModel.getIdIfExists(type);
+	public void setProduct_type_id(long product_type_id) {
+		this.product_type_id = product_type_id;
 	}
 
 	public void setLine(String line) {
@@ -71,6 +74,24 @@ public class Product extends NamedModel {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	//Relations
+
+	public Brand getBrand() {
+		return App.cache().brands.get(brand_id);
+	}
+
+	public ProductType getType() {
+		return App.cache().types.get(product_type_id);
+	}
+
+	public void setBrand(Brand brand) {
+		setBrand_id(BaseModel.getIdIfExists(brand));
+	}
+
+	public void setType(ProductType type) {
+		setProduct_type_id(BaseModel.getIdIfExists(type));
 	}
 
 	//Ingredients
@@ -144,10 +165,6 @@ public class Product extends NamedModel {
 
 	//Others
 
-	public void newlyCreated() {
-		pairs = new ArrayList<>();
-	}
-
 	public String getBrandName() {
 		if (getBrand() == null) {
 			return "";
@@ -173,11 +190,10 @@ public class Product extends NamedModel {
 	//Static
 
 	public static final String TABLENAME = "product";
-
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredients, Page page) {
-		if (brands.length == 0 && types.length == 0 && ingredients.length == 0) {
+	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, Page page) {
+		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0) {
 			return page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 
@@ -200,26 +216,32 @@ public class Product extends NamedModel {
 			needAnd = true;
 		}
 
-		if (ingredients.length > 0) {
+		if (ingredient_ids.length > 0) {
 			if (needAnd) {
 				query += " AND ";
 			}
-			List<Long> alias_ids = new ArrayList<>();
-			for (long ingredient_id : ingredients) {
-				Set<Alias> aliases = App.cache().ingredients.get(ingredient_id).getNames();
+			TLongSet alias_ids = new TLongHashSet();
+			for (long ingredient_id : ingredient_ids) {
+				List<Alias> aliases = App.cache().ingredients.get(ingredient_id).getNames();
 				for (Alias alias : aliases) {
 					alias_ids.add(alias.getId());
 				}
 			}
-			Long[] list = alias_ids.toArray(new Long[alias_ids.size()]);
+			long[] list = alias_ids.toArray();
 
 			query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
 					"GROUP BY main.id " +
-					"HAVING count(*) = " + ingredients.length + " ";
+					"HAVING count(*) = " + ingredient_ids.length + " ";
 		}
 
 		query += " ORDER BY main.popularity DESC, main.id ASC ";
 
-		return page.apply(find, query);
+		List<Product> result = page.apply(find, query);
+
+		TLongList resultIds = new TLongArrayList();
+		for (Product p : result) {
+			resultIds.add(p.getId());
+		}
+		return App.cache().products.getList(resultIds.toArray());
 	}
 }

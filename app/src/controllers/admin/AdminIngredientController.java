@@ -13,11 +13,11 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.util.BaseModel;
 import src.models.Permissible;
+import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.Alias;
+import src.models.util.BaseModel;
 
 import java.util.HashSet;
 import java.util.List;
@@ -76,12 +76,17 @@ public class AdminIngredientController extends Controller {
 				functions.add(function);
 			}
 
+			String oldName = result.getName();
+
+			result.setName(request.name);
 			result.setCas_number(request.cas_number);
 			result.setDescription(request.description);
 			result.setPopularity(request.popularity);
-			result.saveFunctions(functions);
+			result.save();
 
-			App.cache().ingredients.updateNameAndSave(result, request.name);
+			App.cache().ingredients.update(result, oldName);
+
+			result.saveFunctions(functions);
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
 		}
@@ -121,9 +126,13 @@ public class AdminIngredientController extends Controller {
 				}
 			}
 
-			result.setIngredient(ingredient);
+			String oldName = result.getName();
 
-			App.cache().alias.updateNameAndSave(result, request.name);
+			result.setName(request.name);
+			result.setIngredient(ingredient);
+			result.save();
+
+			App.cache().alias.update(result, oldName);
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}
@@ -151,10 +160,13 @@ public class AdminIngredientController extends Controller {
 					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
 				}
 			}
+			String oldName = result.getName();
 
+			result.setName(request.name);
 			result.setDescription(request.description);
+			result.save();
 
-			App.cache().functions.updateNameAndSave(result, request.name);
+			App.cache().functions.update(result, oldName);
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}

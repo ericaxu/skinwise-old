@@ -1,236 +1,41 @@
 package src.models;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
 import src.models.util.BaseModel;
+import src.models.util.ManyToMany;
 import src.models.util.NamedModel;
-import src.models.util.Relation;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MemCache {
-	public static class NamedIndex<T extends NamedModel> extends Idx<T> {
-		private Map<String, T> names;
-		private Searchable<T> search;
 
-		public NamedIndex(ReadWriteLock lock, NamedGetter<T> ngetter, Getter<T> igetter) {
-			super(lock, igetter);
-			this.names = new HashMap<>();
-			this.search = new Searchable<>(this.names, lock);
-		}
+	//Index
 
-		protected String key(T input) {
-			return input.getName().toLowerCase();
-		}
-
-		@Override
-		protected void cache(List<T> list) {
-			lock.writeLock().lock();
-			try {
-				super.cache(list);
-				names.clear();
-				search.reset();
-				for (T object : list) {
-					names.put(key(object), object);
-				}
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public List<T> search(String query, int limit, boolean fullSearch) {
-			return search.search(query, limit, fullSearch);
-		}
-
-		public void updateNameAndSave(T object, String name) {
-			lock.writeLock().lock();
-			try {
-				if (!Objects.equals(object.getName(), name)) {
-					names.remove(key(object));
-					object.setName(name);
-					search.reset();
-				}
-				object.save();
-				update(object);
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		@Override
-		public void update(T object) {
-			String key = key(object);
-			lock.writeLock().lock();
-			try {
-				super.update(object);
-				names.put(key, object);
-				search.update(key);
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public T get(String name) {
-			lock.readLock().lock();
-			try {
-				String key = name.toLowerCase();
-				if (names.containsKey(key)) {
-					return names.get(key);
-				}
-				return null;
-			}
-			finally {
-				lock.readLock().unlock();
-			}
-		}
-	}
-
-	public static class ProductIndex extends NamedIndex<Product> {
-		private Map<Brand, Map<String, Product>> products;
-
-		public ProductIndex(ReadWriteLock lock, NamedGetter<Product> ngetter, Getter<Product> igetter) {
-			super(lock, ngetter, igetter);
-			this.products = new HashMap<>();
-		}
-
-		@Override
-		protected String key(Product input) {
-			return (input.getBrandName() + " " + input.getName()).toLowerCase();
-		}
-
-		@Override
-		protected void cache(List<Product> list) {
-			lock.writeLock().lock();
-			try {
-				super.cache(list);
-				products.clear();
-				Collection<Brand> brands = App.cache().brands.all();
-
-				for (Brand brand : brands) {
-					products.put(brand, new HashMap<>());
-				}
-
-				for (Product object : list) {
-					getOrCreateMap(object.getBrand()).put(super.key(object), object);
-				}
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public void updateAndSave(Product object, Brand brand, String name) {
-			lock.writeLock().lock();
-			try {
-				if (object.getBrand() != null && object.getName() != null) {
-					if (!Objects.equals(object.getBrand(), brand) || !Objects.equals(object.getName(), name)) {
-						getOrCreateMap(object.getBrand()).remove(super.key(object));
-					}
-				}
-				object.setBrand(brand);
-				super.updateNameAndSave(object, name);
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		@Override
-		public void update(Product object) {
-			lock.writeLock().lock();
-			try {
-				super.update(object);
-				products.get(object.getBrand()).put(super.key(object), object);
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public Product get(Brand brand, String name) {
-			lock.readLock().lock();
-			try {
-				String key = name.toLowerCase();
-				Map<String, Product> map = getOrCreateMap(brand);
-				if (map.containsKey(key)) {
-					return map.get(key);
-				}
-				return null;
-			}
-			finally {
-				lock.readLock().unlock();
-			}
-		}
-
-		private Map<String, Product> getOrCreateMap(Brand brand) {
-			if (brand == null) {
-				return null;
-			}
-			Map<String, Product> map = products.get(brand);
-			if (map == null) {
-				map = new HashMap<>();
-				products.put(brand, map);
-			}
-			return map;
-		}
-	}
-
-	public static class Idx<T extends BaseModel> {
+	public static class BaseIndex<T extends BaseModel> {
 		protected ReadWriteLock lock;
-		private TLongObjectMap<T> index;
-		private List<T> all;
 		private Getter<T> getter;
+		//Containers
+		private TLongObjectMap<T> index;
+		private Set<T> all;
 
-		public Idx(ReadWriteLock lock, Getter<T> getter) {
-			this.lock = lock;
-			this.index = new TLongObjectHashMap<>();
+		public BaseIndex(Getter<T> getter) {
+			this.lock = new ReentrantReadWriteLock();
 			this.getter = getter;
+			this.index = new TLongObjectHashMap<>();
+			this.all = new HashSet<>();
 		}
 
-		public void cache() {
-			lock.writeLock().lock();
-			try {
-				cache(getter.all());
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
+		//Get
 
-		protected void cache(List<T> list) {
-			lock.writeLock().lock();
-			try {
-				index.clear();
-				all = list;
-				for (T object : list) {
-					index.put(object.getId(), object);
-				}
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public void update(T item) {
-			lock.writeLock().lock();
-			try {
-				index.put(item.getId(), item);
-				all.add(item);
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
-		}
-
-		public Collection<T> all() {
+		public Set<T> all() {
 			lock.readLock().lock();
 			try {
 				return all;
@@ -241,27 +46,115 @@ public class MemCache {
 		}
 
 		public T get(long id) {
-			return get(id, false);
-		}
-
-		public T get(long id, boolean update) {
 			lock.readLock().lock();
 			try {
-				T result;
-				if (index.containsKey(id)) {
-					result = index.get(id);
-					if (update) {
-						result.syncRefresh();
-					}
-					return result;
+				return _get(id);
+			}
+			finally {
+				lock.readLock().unlock();
+			}
+		}
+
+		public List<T> getList(long[] ids) {
+			lock.readLock().lock();
+			try {
+				List<T> result = new ArrayList<>();
+				for (long id : ids) {
+					result.add(_get(id));
 				}
-				if (update) {
-					result = getter.byId(id);
-					if (result == null) {
-						return null;
+				return result;
+			}
+			finally {
+				lock.readLock().unlock();
+			}
+		}
+
+		public Set<T> getSet(long[] ids) {
+			return new HashSet<>(getList(ids));
+		}
+
+		//Set
+
+		public void cache() {
+			List<T> list = getter.all();
+			lock.writeLock().lock();
+			try {
+				_cache(list);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void update(T object) {
+			lock.writeLock().lock();
+			try {
+				_update(object);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		//Internals
+
+		private T _get(long id) {
+			if (BaseModel.isIdNull(id)) {
+				return null;
+			}
+			return index.get(id);
+		}
+
+		protected void _cache(List<T> list) {
+			index.clear();
+			all.clear();
+			for (T object : list) {
+				_update(object);
+			}
+		}
+
+		private void _update(T object) {
+			index.put(object.getId(), object);
+			all.add(object);
+		}
+	}
+
+	public static class NamedIndex<T extends NamedModel> extends BaseIndex<T> {
+		private Searchable<T> search;
+		//Containers
+		private Map<String, T> index;
+
+		public NamedIndex(Getter<T> getter) {
+			super(getter);
+			this.index = new HashMap<>();
+			this.search = new Searchable<>(this.index);
+		}
+
+		//Get
+
+		public List<T> search(String query, int limit, boolean fullSearch) {
+			lock.writeLock().lock();
+			try {
+				List<T> searchResult = search.search(query, limit, fullSearch);
+				List<T> result = new ArrayList<>();
+				for (T object : searchResult) {
+					if (object != null) {
+						result.add(object);
 					}
-					update(result);
-					return result;
+				}
+				return result;
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public T get(String name) {
+			lock.readLock().lock();
+			try {
+				String key = _key(name);
+				if (index.containsKey(key)) {
+					return index.get(key);
 				}
 			}
 			finally {
@@ -269,18 +162,266 @@ public class MemCache {
 			}
 			return null;
 		}
+
+		//Set
+
+		public void update(T object, String oldName) {
+			String oldKey = _key(oldName);
+			String newKey = _key(object);
+			lock.writeLock().lock();
+			try {
+				if (oldKey != null && !Objects.equals(newKey, oldKey)) {
+					index.remove(oldKey);
+					search.reset();
+				}
+				update(object);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		@Override
+		public void update(T object) {
+			String key = _key(object);
+			lock.writeLock().lock();
+			try {
+				super.update(object);
+				index.put(key, object);
+				search.update(key);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void resetSearch() {
+			lock.writeLock().lock();
+			try {
+				search.reset();
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		//Internals
+
+		@Override
+		protected void _cache(List<T> list) {
+			super._cache(list);
+			search.reset();
+			index.clear();
+			for (T object : list) {
+				index.put(_key(object), object);
+			}
+		}
+
+		protected String _key(T object) {
+			return _key(object.getName());
+		}
+
+		protected String _key(String name) {
+			if (name == null) {
+				return null;
+			}
+			return name.toLowerCase();
+		}
 	}
 
-	public static class RTableIdx<L extends BaseModel, R extends BaseModel> {
-		protected ReadWriteLock lock;
-		private TLongObjectMap<Set<R>> left_index;
-		private TLongObjectMap<Set<L>> right_index;
+	public static class ProductIndex extends NamedIndex<Product> {
+		private TLongObjectMap<Map<String, Product>> products;
+
+		public ProductIndex(Getter<Product> getter) {
+			super(getter);
+			this.products = new TLongObjectHashMap<>();
+		}
+
+		//Get
+
+		public Product get(long brandId, String name) {
+			String key = super._key(name);
+			lock.readLock().lock();
+			try {
+				Map<String, Product> map = _getMap(brandId);
+				if (map.containsKey(key)) {
+					return map.get(key);
+				}
+			}
+			finally {
+				lock.readLock().unlock();
+			}
+			return null;
+		}
+
+		//Set
+
+		public void update(Product object, long oldBrandId, String oldName) {
+			String oldKey = super._key(oldName);
+			String newKey = super._key(object.getName());
+			lock.writeLock().lock();
+			try {
+				if ((!BaseModel.isIdNull(oldBrandId) && oldBrandId != object.getBrand_id()) ||
+						(oldKey != null && !Objects.equals(oldKey, newKey))) {
+					_getMap(oldBrandId).remove(oldKey);
+				}
+				super.update(object, oldName);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		@Override
+		public void update(Product object) {
+			String key = super._key(object.getName());
+			lock.writeLock().lock();
+			try {
+				super.update(object);
+				Map<String, Product> map = _getMap(object.getBrand_id());
+				if (map != null) {
+					map.put(key, object);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		//Internals
+
+		@Override
+		protected String _key(Product input) {
+			return (input.getBrandName() + " " + input.getName()).toLowerCase();
+		}
+
+		@Override
+		protected void _cache(List<Product> list) {
+			super._cache(list);
+			products.clear();
+			Collection<Brand> brands = App.cache().brands.all();
+
+			for (Brand brand : brands) {
+				products.put(brand.getId(), new HashMap<>());
+			}
+
+			for (Product object : list) {
+				Map<String, Product> map = _getMap(object.getBrand_id());
+				if (map != null) {
+					map.put(super._key(object), object);
+				}
+			}
+		}
+
+		private Map<String, Product> _getMap(long brandId) {
+			if (BaseModel.isIdNull(brandId)) {
+				return null;
+			}
+			Map<String, Product> map = products.get(brandId);
+			if (map == null) {
+				map = new HashMap<>();
+				products.put(brandId, map);
+			}
+			return map;
+		}
+	}
+
+	public static class OneToManyIndex<M extends BaseModel> {
+		private ReadWriteLock lock;
+		private Getter<M> getter;
+		private OneToManyGetter<M> relation_getter;
+		//Containers
+		private TLongObjectMap<TLongList> index;
+
+		public OneToManyIndex(OneToManyGetter<M> relation_getter, Getter<M> getter) {
+			this.lock = new ReentrantReadWriteLock();
+			this.relation_getter = relation_getter;
+			this.getter = getter;
+			this.index = new TLongObjectHashMap<>();
+		}
+
+		//Get
+
+		public List<M> getManyObject(long one_id) {
+			TLongList many_id_set = _getMany(one_id);
+			List<M> result = new ArrayList<>();
+			for (long id : many_id_set.toArray()) {
+				result.add(getter.byId(id));
+			}
+			return result;
+		}
+
+		//Set
+
+		public void cache() {
+			lock.writeLock().lock();
+			try {
+				_cache(getter.all());
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void add(M object) {
+			lock.writeLock().lock();
+			try {
+				_add(object.getId(), relation_getter.getOneId(object));
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void remove(M object) {
+			lock.writeLock().lock();
+			try {
+				_remove(object.getId(), relation_getter.getOneId(object));
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		//Internals
+
+		protected void _cache(List<M> list) {
+			index.clear();
+			for (M object : list) {
+				_add(object.getId(), relation_getter.getOneId(object));
+			}
+		}
+
+		public void _add(long manyId, long oneId) {
+			if (!BaseModel.isIdNull(oneId) && !BaseModel.isIdNull(manyId)) {
+				_getMany(oneId).add(manyId);
+			}
+		}
+
+		public void _remove(long manyId, long oneId) {
+			if (!BaseModel.isIdNull(oneId) && !BaseModel.isIdNull(manyId)) {
+				_getMany(oneId).remove(manyId);
+			}
+		}
+
+		public TLongList _getMany(long oneId) {
+			if (!index.containsKey(oneId)) {
+				index.put(oneId, new TLongArrayList());
+			}
+			return index.get(oneId);
+		}
+	}
+
+	public static class ManyToManyIndex<L extends BaseModel, R extends BaseModel> {
+		private ReadWriteLock lock;
+		private TLongObjectMap<TLongList> left_index;
+		private TLongObjectMap<TLongList> right_index;
 		private RGetter<L, R> getter;
 		private Getter<L> left_getter;
 		private Getter<R> right_getter;
 
-		public RTableIdx(ReadWriteLock lock, RGetter<L, R> getter, Getter<L> l_getter, Getter<R> r_getter) {
-			this.lock = lock;
+		public ManyToManyIndex(RGetter<L, R> getter, Getter<L> l_getter, Getter<R> r_getter) {
+			this.lock = new ReentrantReadWriteLock();
 			this.left_index = new TLongObjectHashMap<>();
 			this.right_index = new TLongObjectHashMap<>();
 			this.getter = getter;
@@ -298,16 +439,13 @@ public class MemCache {
 			}
 		}
 
-		protected void cache(List<? extends Relation> list) {
+		protected void cache(List<? extends ManyToMany> list) {
 			lock.writeLock().lock();
 			try {
 				left_index.clear();
 				right_index.clear();
-				for (Relation object : list) {
-					L left = left_getter.byId(object.getLeftId());
-					R right = right_getter.byId(object.getRightId());
-					getL(left.getId(), false).add(right);
-					getR(right.getId(), false).add(left);
+				for (ManyToMany object : list) {
+					add(object);
 				}
 			}
 			finally {
@@ -315,52 +453,36 @@ public class MemCache {
 			}
 		}
 
-		public void remove(Relation object) {
-			L left = left_getter.byId(object.getLeftId());
-			R right = right_getter.byId(object.getRightId());
-			getL(left.getId(), true).remove(right);
-			getR(right.getId(), true).remove(left);
+		public void remove(ManyToMany object) {
+			long left = object.getLeftId();
+			long right = object.getRightId();
+			getL(left).remove(right);
+			getR(right).remove(left);
 		}
 
-		public void add(Relation object) {
-			L left = left_getter.byId(object.getLeftId());
-			R right = right_getter.byId(object.getRightId());
-			getL(left.getId(), true).add(right);
-			getR(right.getId(), true).add(left);
+		public void add(ManyToMany object) {
+			long left = object.getLeftId();
+			long right = object.getRightId();
+			getL(left).add(right);
+			getR(right).add(left);
 		}
 
-		public Set<L> getR(long right_id) {
-			return getR(right_id, true);
-		}
-
-		public Set<R> getL(long left_id) {
-			return getL(left_id, true);
-		}
-
-		private Set<L> getR(long right_id, boolean fetch) {
+		private TLongList getR(long right_id) {
 			if (!right_index.containsKey(right_id)) {
-				if (fetch) {
-					right_index.put(right_id, getter.byRight(right_id));
-				}
-				else {
-					right_index.put(right_id, new HashSet<L>());
-				}
+				right_index.put(right_id, new TLongArrayList());
 			}
 			return right_index.get(right_id);
 		}
 
-		private Set<R> getL(long left_id, boolean fetch) {
+		private TLongList getL(long left_id) {
 			if (!left_index.containsKey(left_id)) {
-				if (fetch) {
-					left_index.put(left_id, getter.byLeft(left_id));
-				}
-				else {
-					left_index.put(left_id, new HashSet<R>());
-				}
+				left_index.put(left_id, new TLongArrayList());
 			}
 			return left_index.get(left_id);
 		}
 	}
+
+	//Getters
 
 	public static interface Getter<T extends BaseModel> {
 		public List<T> all();
@@ -372,12 +494,23 @@ public class MemCache {
 		public T byName(String name);
 	}
 
+	private static interface OneToManyGetter<M extends BaseModel> {
+		public long getOneId(M object);
+	}
+
 	private static abstract class RGetter<L extends BaseModel, R extends BaseModel> {
 		public abstract Set<R> byLeft(long left_id);
 
 		public abstract Set<L> byRight(long right_id);
 
-		public abstract List<? extends Relation> all();
+		public abstract List<? extends ManyToMany> all();
+	}
+
+	private static class IngredientAliasGetter implements OneToManyGetter<Alias> {
+		@Override
+		public long getOneId(Alias object) {
+			return object.getIngredient_id();
+		}
 	}
 
 	private static class ProductIngredientGetter extends RGetter<Product, Alias> {
@@ -399,16 +532,21 @@ public class MemCache {
 			return set;
 		}
 
-		public List<? extends Relation> all() {
+		public List<? extends ManyToMany> all() {
 			return ProductIngredient.all();
 		}
 	}
 
+	//Matching
+
 	public static class Matcher {
+		private ReadWriteLock lock;
 		private MemCache cache;
+		//Containers
 		public Map<Alias, Set<String>> alias_word_index = new HashMap<>();
 
 		public Matcher(MemCache cache) {
+			this.lock = new ReentrantReadWriteLock();
 			this.cache = cache;
 		}
 
@@ -428,10 +566,9 @@ public class MemCache {
 		}
 
 		public void clear() {
-			cache.alias.search.reset();
-			cache.lock.readLock().lock();
+			lock.writeLock().lock();
 			alias_word_index.clear();
-			cache.lock.readLock().unlock();
+			lock.writeLock().unlock();
 		}
 
 		public static List<String> splitIngredients(String ingredient_string) {
@@ -514,114 +651,78 @@ public class MemCache {
 		}
 	}
 
-	public static class Searchable<T extends NamedModel> {
+	public static class Searchable<T> {
 		private Map<String, T> names;
-		private ReadWriteLock lock;
 		private SearchEngine<T> search;
 
-		public Searchable(Map<String, T> names, ReadWriteLock lock) {
+		public Searchable(Map<String, T> names) {
 			this.names = names;
-			this.lock = lock;
 		}
 
 		public List<T> search(String query, int limit, boolean fullSearch) {
 			query = query.toLowerCase();
 			List<T> result;
-			lock.writeLock().lock();
-			try {
-				if (search == null) {
-					search = new SearchEngine<>();
-					search.init(names);
-				}
-				if (fullSearch) {
-					result = search.fullSearch(query, limit);
-				}
-				else {
-					result = search.partialSearch(query, limit);
-				}
+			if (search == null) {
+				search = new SearchEngine<>();
+				search.init(names);
 			}
-			finally {
-				lock.writeLock().unlock();
+			if (fullSearch) {
+				result = search.fullSearch(query, limit);
 			}
-			if (result == null || result.isEmpty()) {
-				return new ArrayList<>();
+			else {
+				result = search.partialSearch(query, limit);
 			}
-			List<T> filteredResult = new ArrayList<>();
-			for (T object : result) {
-				if (object != null) {
-					filteredResult.add(object);
-				}
+			if (result == null) {
+				result = new ArrayList<>();
 			}
-			return filteredResult;
+			return result;
 		}
 
 		public void update(String key) {
-			lock.writeLock().lock();
-			try {
-				if (search != null) {
-					search.update(key);
-				}
-			}
-			finally {
-				lock.writeLock().unlock();
+			if (search != null) {
+				search.update(key);
 			}
 		}
 
 		public void reset() {
-			lock.writeLock().lock();
-			try {
-				search = null;
-			}
-			finally {
-				lock.writeLock().unlock();
-			}
+			search = null;
 		}
 	}
 
-	private TLongObjectMap<Set<Alias>> name_map;
+	//MemCache
 
-	public Set<Alias> getNamesForIngredient(long ingredient_id) {
-		if (!name_map.containsKey(ingredient_id)) {
-			name_map.put(ingredient_id, Alias.byIngredientId(ingredient_id));
-		}
-		return name_map.get(ingredient_id);
-	}
-
-	private ReadWriteLock lock;
 	public NamedIndex<Function> functions;
 	public NamedIndex<Brand> brands;
 	public NamedIndex<ProductType> types;
 	public NamedIndex<Ingredient> ingredients;
 	public NamedIndex<Alias> alias;
-	public RTableIdx<Product, Alias> product_ingredient;
 	public ProductIndex products;
+	public ManyToManyIndex<Product, Alias> product_ingredient;
+	public OneToManyIndex<Alias> ingredient_aliases;
 	public Matcher matcher;
 
 	public MemCache() {
-		lock = new ReentrantReadWriteLock();
-		functions = new NamedIndex<>(lock, Function.find, Function.find);
-		brands = new NamedIndex<>(lock, Brand.find, Brand.find);
-		types = new NamedIndex<>(lock, ProductType.find, ProductType.find);
-		ingredients = new NamedIndex<>(lock, Ingredient.find, Ingredient.find);
-		alias = new NamedIndex<>(lock, Alias.find, Alias.find);
-		products = new ProductIndex(lock, Product.find, Product.find);
-		product_ingredient = new RTableIdx<>(lock, new ProductIngredientGetter(),
+		functions = new NamedIndex<>(Function.find);
+		brands = new NamedIndex<>(Brand.find);
+		types = new NamedIndex<>(ProductType.find);
+		ingredients = new NamedIndex<>(Ingredient.find);
+		alias = new NamedIndex<>(Alias.find);
+		products = new ProductIndex(Product.find);
+		ingredient_aliases = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
+		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter(),
 				Product.find, Alias.find);
 		matcher = new Matcher(this);
-		name_map = new TLongObjectHashMap<>();
 	}
 
 	public void init() {
-		System.gc();
-		lock.writeLock().lock();
 		functions.cache();
 		brands.cache();
 		types.cache();
 		ingredients.cache();
 		alias.cache();
 		products.cache();
+		ingredient_aliases.cache();
 		product_ingredient.cache();
-		name_map.clear();
-		lock.writeLock().unlock();
+		System.gc();
 	}
 }
