@@ -206,13 +206,13 @@ function initBrowse(type) {
                 var list_height = $('.ingredients_list').height();
             }
 
-            if (list_height + $('#logo').height() + nav_height > $(window).height()) {
-                if ($(window).scrollTop() >= 100 - nav_height) {
-                    $('.filter_area').addClass('sticky');
-                } else {
-                    $('.filter_area').removeClass('sticky');
-                }
-            }
+            //if (list_height + $('#logo').height() + nav_height > $(window).height()) {
+            //    if ($(window).scrollTop() >= 100 - nav_height) {
+            //        $('.filter_area').addClass('sticky');
+            //    } else {
+            //        $('.filter_area').removeClass('sticky');
+            //    }
+            //}
         });
     });
 }
