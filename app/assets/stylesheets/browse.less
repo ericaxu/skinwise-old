@@ -2,29 +2,16 @@
 @import "util/_colors";
 
 .products_list, .ingredients_list {
-    width: 70%;
-    float: right;
+    clear: both;
 }
 
 .filter_area {
-    float: left;
-    width: 25%;
-    margin-right: 3%;
-    padding-right: 1%;
-    border-right: 1px solid @border;
-}
-
-.filter_area.sticky {
-    position: fixed;
-    top: 100px;
-    height: 80%;
-    width: 19%;
-    border-right: none;
-    overflow-y: auto;
 }
 
 .filter_section {
-    margin-top: 40px;
+    float: left;
+    max-width: 300px;
+    margin-right: 50px;
 }
 
 .filter_option {
