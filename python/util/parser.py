@@ -102,17 +102,17 @@ def array_rotate(array, col_key, col_value):
 		result[item[col_key]] = item[col_value]
 	return result
 
-def strip_brand(brand_name, prod_name):
-	prod_name_lowCase = prod_name.lower()
-	for i, c in enumerate(brand_name.lower()+"  "):
-		if c != prod_name_lowCase[i]:
+def strip_brand(brand, name):
+	"""strip the brand name off a product name"""
+	tmp_name = name.lower()
+	i = 0
+	for i, c in enumerate(brand.lower() + "  "):
+		if c != tmp_name[i]:
 			break
-	return prod_name[i:]
+	return name[i:]
 
 def print_count(list, title):
-	"""
-	print the length of the list as "Title: count"
-	"""
+	"""print the length of the list as "Title: count" """
 	print('%s: %d' % (title, len(list)))
 
 def str_capitalize(input):
@@ -120,7 +120,9 @@ def str_capitalize(input):
 	return " ".join(word.capitalize() for word in input.split())
 
 def good_key(name):
+	"""Make a uniquely identifiable key for things like ingredients"""
 	return regex_replace(r'[^0-9a-zA-Z ]', ' ', name).strip().lower()
 
 def product_key(brand, name):
+	"""Make a uniquely identifiable key for products"""
 	return good_key("%s %s" % (brand, name))
