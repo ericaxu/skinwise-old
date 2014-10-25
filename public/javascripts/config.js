@@ -77,3 +77,5 @@ SW.FILTER_TYPES = {
     product: ['type', 'brand', 'ingredient'],
     ingredient: ['function']
 }
+
+SW.BACK_TO_TOP_THRESHOLD = 300;

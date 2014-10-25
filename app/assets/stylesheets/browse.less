@@ -181,3 +181,30 @@ footer {
     position: relative;
     z-index: 1;
 }
+
+#back_to_top {
+    display: none;
+    position: fixed;
+    right: 50px;
+    bottom: 20px;
+    padding: 8px 10px;
+    background: @neutral;
+    border-radius: 16px;
+    font-family: "Proxima Nova Light";
+    cursor: pointer;
+
+    &:hover {
+        background: @nav_bg;
+        color: @light_text;
+    }
+
+    .chevron {
+        position: relative;
+        bottom: 2px;
+        right: 3px;
+
+        &::before {
+            border-width: 2px 2px 0 0;
+        }
+    }
+}
