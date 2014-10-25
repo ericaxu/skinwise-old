@@ -62,14 +62,14 @@ function fetchNextPage(type) {
 
         if (type === 'ingredient') {
             postToAPI('/ingredient/filter', {
-                functions: getChebkexIds('function'),
+                functions: getSelectedFilters('function'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         } else if (type === 'product') {
             postToAPI('/product/filter', {
-                types: getChebkexIds('type'),
-                brands: getChebkexIds('brand'),
-                ingredients: getChebkexIds('ingredient'),
+                types: getSelectedFilters('type'),
+                brands: getSelectedFilters('brand'),
+                ingredients: getSelectedFilters('ingredient'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         }
@@ -96,15 +96,15 @@ function refetch(type) {
     if (type === 'product') {
         $('.products_list ul').empty();
         postToAPI('/product/filter', {
-            types: getChebkexIds('type'),
-            brands: getChebkexIds('brand'),
-            ingredients: getChebkexIds('ingredient'),
+            types: getSelectedFilters('type'),
+            brands: getSelectedFilters('brand'),
+            ingredients: getSelectedFilters('ingredient'),
             page: 0
         }, refetch_callback);
     } else if (type === 'ingredient') {
         $('.ingredients_list ul').empty();
         postToAPI('/ingredient/filter', {
-            functions: getChebkexIds('function'),
+            functions: getSelectedFilters('function'),
             page: 0
         }, refetch_callback);
     }
@@ -127,9 +127,6 @@ function loadFilters(type) {
 }
 
 function setupDeleteButtons(type) {
-    $(document).on('click', '.filter_option', function () {
-        $(this).toggleClass('selected');
-    });
 
     $(document).on('click', '.delete_btn', function () {
         confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
@@ -178,7 +175,8 @@ function initBrowse(type) {
         loadFilters(type);
         fetchNextPage(type);
 
-        $(document).on('change', '.filter_option input[type="checkbox"]', function() {
+        $(document).on('click', '.filter_option', function () {
+            $(this).toggleClass('selected');
             refetch(type);
         });
 
