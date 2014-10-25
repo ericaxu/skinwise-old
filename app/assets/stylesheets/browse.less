@@ -7,14 +7,26 @@
 .filter_container {
     display: none;
     clear: both;
+    background: @bg;
     border: 1px solid @border;
     padding: 20px 30px;
+}
+
+.filter_area {
+    padding: 20px 0;
+    z-index: 1;
+
+    &.sticky {
+        position: fixed;
+        top: 50px;
+        max-height: 400px;
+    }
 }
 
 .filter_section {
     display: inline-block;
     vertical-align: top;
-    max-width: 250px;
+    width: 30%;
     margin-right: 30px;
 
     .filter_header {
@@ -41,17 +53,19 @@
     display: inline-block;
     position: relative;
     margin: 0 10px 8px 0;
-    border: 2px solid @nav_bg;
+    border: 2px solid @border;
+    color: @border;
     padding: 2px 24px 2px 6px;
     cursor: pointer;
 
     &:hover {
-        background: @neutral;
+        background: lighten(@neutral, 50);
     }
 
     &.selected {
         background: @nav_bg;
         color: @light_text;
+        border-color: @nav_bg;
 
         .delete_btn:hover {
             color: @hover_light_text;
@@ -91,6 +105,11 @@
 
 .result_summary, .end_of_results, .filter_toggle_link {
     font-size: 20px;
+}
+
+.result_summary {
+    background: @bg;
+    padding: 5px 10px 6px 10px;
 }
 
 .result_summary {

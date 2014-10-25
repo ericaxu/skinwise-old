@@ -6,12 +6,14 @@ function setupPopups() {
     // Closing popup
     $('.wrapper, .close_btn, #cancel_btn').on('click', function (e) {
         $('.popup').hide();
+        $('.filter_area').show();
     });
 
     // Allow user to close popup with ESC key
     $(document).keydown(function (e) {
         if (e.keyCode == 27) {
             $('.popup, .ingredient_infobox').hide();
+            $('.filter_area').show();
         }
     });
 
