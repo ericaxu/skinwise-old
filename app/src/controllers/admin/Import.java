@@ -236,6 +236,7 @@ public class Import {
 
 		if (result == null) {
 			result = new Ingredient();
+			result.newlyCreated();
 		}
 
 		result.setName(object.name);
@@ -282,6 +283,7 @@ public class Import {
 		Product result = cache.products.get(brand, object.name);
 		if (result == null) {
 			result = new Product();
+			result.newlyCreated();
 		}
 
 		result.setType(type);

@@ -117,6 +117,10 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
+	public void newlyCreated() {
+		ingredient_functions = new ArrayList<>();
+	}
+
 	//Static
 
 	public static final String TABLENAME = "ingredient";

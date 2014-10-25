@@ -144,6 +144,10 @@ public class Product extends NamedModel {
 
 	//Others
 
+	public void newlyCreated() {
+		pairs = new ArrayList<>();
+	}
+
 	public String getBrandName() {
 		if (getBrand() == null) {
 			return "";
