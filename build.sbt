@@ -15,9 +15,7 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-javaOptions ++= Seq("-Xms512M", "-Xmx2G",
-  "-XX:+CMSClassUnloadingEnabled", "-XX:+CMSPermGenSweepingEnabled",
-  "-XX:MaxMetaspaceSize=512m")
+javaOptions ++= Seq("-Xms512M", "-Xmx2G",  "-XX:+CMSClassUnloadingEnabled")
 
 scalacOptions ++= Seq("-feature")
 

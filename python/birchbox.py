@@ -6,12 +6,14 @@ db = db.DB("cache/birchbox.cache.db")
 crawler = web.Crawler(db)
 
 #File out
-file_products_json = "data/products.birchbox.json.txt"
+file_products_birchbox_json = "data/products.birchbox.json.txt"
 #Crawled URLs
 url_product_page = "https://www.birchbox.com/shop/skincare/%s"
 url_product_list = "https://www.birchbox.com/shop/skincare?p=%s"
 
-product_list = list()
+print("Searching product urls")
+
+urls = list()
 i = 1
 while i:
 	print ("On page %d."%i)
@@ -28,20 +30,20 @@ while i:
 		break
 
 	table_html = parser.regex_find(r'<!-- product_sort -->(.*?)<!-- END catalog/product/list.phtml -->', list_page, 1)
-# TODO
+
 
 	# go through products
-	for j in range(1, number_displayed[1]-number_displayed[0]+2):
-		product_url = parser.regex_find(r'data-pos="%d"[^>]*data-product-ids[^>]*/shop/skincare/(.*?)"' % j, 
-						list_page, 1)
-		product_list.append(product_url)
-
+	result = parser.regex_find_all(r'<a class="product_name[^>]*href="http://www.birchbox.com/shop/skincare/([^"]*)"[^>]*>', list_page)
+	urls.extend(result)
 	i += 1
+
+print("Fetching products")
 
 result = dict()
 result["products"] = dict()
-for p_url in product_list:
-	product_info = crawler.crawl_selective(key="product/%s"%p_url, url=url_product_page % p_url, 
+
+for url in urls:
+	product_info = crawler.crawl_selective(key="product/%s" % url, url=url_product_page % url, 
 		regex = r'<div class="product-detail-page"(.*?)<div class="content-block shipping-note well">')
 	_id = parser.strip_tags(parser.regex_find(r'data-product-id="(.*?)"', product_info, 1))
 	name = parser.strip_tags(parser.regex_find(r'data-product-name="(.*?)"', product_info, 1))
@@ -58,13 +60,13 @@ for p_url in product_list:
 	# product["id"] = _id
 	product["name"] = web.html_unescape(name)
 	product["brand"] = web.html_unescape(brand)
-	product["description"] = web.html_unescape(description)
+	product["description"] = "" # web.html_unescape(description)
 	product["ingredients"] = web.html_unescape(ingredient)
 	product["image"] = image
 
 	key = parser.product_key(product['brand'], product['name'])
 	result["products"][key] = product
 
-util.json_write(result, file_products_json)
+util.json_write(result, file_products_birchbox_json)
 
 parser.print_count(result["products"], "Products")
