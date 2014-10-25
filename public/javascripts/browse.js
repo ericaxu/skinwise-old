@@ -181,6 +181,18 @@ function initBrowse(type) {
             refetch(type);
         });
 
+        $('.filter_toggle_link').on('click', function() {
+            if ($(this).hasClass('open')) {
+                $(this).removeClass('open');
+                $(this).find('.chevron').removeClass('top').addClass('bottom');
+                $('.filter_container').hide();
+            } else {
+                $(this).addClass('open');
+                $(this).find('.chevron').removeClass('bottom').addClass('top');
+                $('.filter_container').show();
+            }
+        });
+
         $(window).on('scroll', function () {
             // Check if we are at bottom of page
             if ($(window).scrollTop() + $(window).height() > $(document).height() - nav_height &&
