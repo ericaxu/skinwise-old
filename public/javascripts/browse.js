@@ -111,7 +111,6 @@ function refetch(type) {
 }
 
 function loadFilters(type) {
-    log(type);
     var filter_types = SW.FILTER_TYPES[type] || [];
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
@@ -165,6 +164,7 @@ function initBrowse(type) {
                 id: id,
                 name: name
             });
+
             loadFilters(type);
 
             // reset

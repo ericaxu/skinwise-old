@@ -2,34 +2,39 @@
 
 @template("Browse Ingredients - Skin Wise", state) {
 
-<link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/browse.css")'>
+    <link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/browse.css")'>
 
 } {
 
-<div class="filter_area section">
-    <div class="result_summary"></div>
+    <div class="filter_area">
+        <div class="result_summary"></div>
 
-    <h2>Filters</h2>
+        <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
 
-    <div class="filter_section">
-        <h3>Function</h3>
-        <div class="function_filters"></div>
-        <input type="button" class="open_add_filter_popup" value="Add filter" data-type="function"/>
+        <div class="filter_container">
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Function</h3>
+                    <span class="open_add_filter_popup" data-type="function">+</span>
+                </div>
+                <div class="function_filters"></div>
+            </div>
+        </div>
+
     </div>
-</div>
 
-<div class="ingredients_list">
-    <ul></ul>
-    <div class="end_of_results">No more results.</div>
-    <div id="loading_spinner"></div>
-</div>
+    <div class="ingredients_list">
+        <ul></ul>
+        <div class="end_of_results">No more results.</div>
+        <div id="loading_spinner"></div>
+    </div>
 
 } {
 
-<script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
-<script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
-<script>
-    initBrowse('ingredient');
-</script>
+    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
+    <script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
+    <script>
+    initBrowse ( 'ingredient' ) ;
+    </script>
 
 }
