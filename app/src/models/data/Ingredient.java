@@ -37,12 +37,7 @@ public class Ingredient extends NamedModel {
 	}
 
 	public Set<IngredientName> getNames() {
-		TLongSet name_ids = App.cache().getNamesForIngredient(this.getId());
-		Set<IngredientName> names = new HashSet<>();
-		for (long name_id : name_ids.toArray()) {
-			names.add(App.cache().ingredient_names.get(name_id));
-		}
-		return names;
+		return App.cache().getNamesForIngredient(this.getId());
 	}
 
 	//Setters

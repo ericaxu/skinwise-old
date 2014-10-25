@@ -556,11 +556,11 @@ public class MemCache {
 		}
 	}
 
-	private TLongObjectMap<TLongSet> name_map;
+	private TLongObjectMap<Set<IngredientName>> name_map;
 
-	public TLongSet getNamesForIngredient(long ingredient_id) {
+	public Set<IngredientName> getNamesForIngredient(long ingredient_id) {
 		if (!name_map.containsKey(ingredient_id)) {
-			name_map.put(ingredient_id, new TLongHashSet());
+			name_map.put(ingredient_id, new HashSet<>());
 		}
 		return name_map.get(ingredient_id);
 	}

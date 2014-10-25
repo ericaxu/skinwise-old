@@ -40,10 +40,10 @@ public class IngredientName extends NamedModel {
 		if (new_id != ingredient_id) {
 			if (!BaseModel.isIdNull(ingredient_id)) {
 				// Remove old ingredient from mapping in cache.
-				App.cache().getNamesForIngredient(ingredient_id).remove(this.getId());
+				App.cache().getNamesForIngredient(ingredient_id).remove(this);
 			}
 			if (!BaseModel.isIdNull(new_id)) {
-				App.cache().getNamesForIngredient(new_id).add(this.getId());
+				App.cache().getNamesForIngredient(new_id).add(this);
 			}
 		}
 		this.ingredient_id = new_id;
