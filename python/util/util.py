@@ -26,7 +26,7 @@ def json_encode(input):
 	"""
 	encode json with multiline formatting
 	"""
-	return json.dumps(input, indent='\t')
+	return json.dumps(input, indent='\t', sort_keys=True)
 
 def json_decode(input):
 	"""
@@ -40,6 +40,15 @@ def mkdir(dir):
 	"""
 	if not os.path.exists(dir):
 		os.makedirs(dir)
+
+def swap_files(from_file, to_file):
+	"""
+	delete to_file and rename from_file to to_file
+	"""
+	if os.path.exists(to_file):
+		os.remove(to_file)
+	if os.path.exists(from_file):
+		os.rename(from_file, to_file)
 
 def list_unique(input):
 	"""

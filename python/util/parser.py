@@ -114,3 +114,13 @@ def print_count(list, title):
 	print the length of the list as "Title: count"
 	"""
 	print('%s: %d' % (title, len(list)))
+
+def str_capitalize(input):
+	"""Capitalize every word in the input"""
+	return " ".join(word.capitalize() for word in input.split())
+
+def good_key(name):
+	return regex_replace(r'[^0-9a-zA-Z ]', ' ', name).strip().lower()
+
+def product_key(brand, name):
+	return good_key("%s %s" % (brand, name))

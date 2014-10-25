@@ -1,5 +1,6 @@
 import urllib.request
 import urllib.parse
+import html
 
 from util import parser
 
@@ -51,3 +52,5 @@ def urlencode(input):
 	"""Encode the input in url format (e.g. " " => "%20") """
 	return urllib.parse.quote_plus(input)
 	
+def html_unescape(input):
+	return html.unescape(input)
