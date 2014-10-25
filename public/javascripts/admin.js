@@ -18,7 +18,9 @@ function hideEdit() {
 
 function setupDatabaseManager() {
     $('#import_btn').on('click', function () {
-        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+        confirmAction('import to database', function() {
+            postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+        });
     });
     $('#export_btn').on('click', function () {
         postToAPI('/admin/export', {}, null, null, 'Exporting database...');
@@ -449,31 +451,6 @@ function setupTypeEditSaveCall() {
         };
 
         postToAPI('/admin/producttype/update', new_type_info, null, null, 'Updating type...');
-    });
-}
-
-function setupDatabaseManager() {
-    $('#import_btn').on('click', function () {
-        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
-    });
-    $('#export_btn').on('click', function () {
-        postToAPI('/admin/export', {}, null, null, 'Exporting database...');
-    });
-}
-
-function listenForEnter() {
-    $("input").focus(function () {
-        $(this).addClass('focused');
-    }).blur(function () {
-        $(this).removeClass('focused');
-    });
-
-    $(document.body).on('keyup', function (e) {
-        // 13 is ENTER
-        if (e.which === 13 && $('.focused').length > 0) {
-            var btn_id = $('.focused').attr('id') + '_btn';
-            $('#' + btn_id).click();
-        }
     });
 }
 
