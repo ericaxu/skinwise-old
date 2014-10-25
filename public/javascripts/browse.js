@@ -127,15 +127,13 @@ function loadFilters(type) {
 }
 
 function setupDeleteButtons(type) {
-    $(document).on('mouseenter', '.filter_option', function () {
-        $(this).find('.delete_btn').css('visibility', 'visible');
-    }).on('mouseleave', '.filter_option', function () {
-        $(this).find('.delete_btn').css('visibility', 'hidden');
+    $(document).on('click', '.filter_option', function () {
+        $(this).toggleClass('selected');
     });
 
     $(document).on('click', '.delete_btn', function () {
-        confirmAction('delete filter "' + $(this).parent().find('label').text() + '"', $.proxy(function () {
-            removeProductFilter($(this).data('type'), $(this).parent().find('input[type="checkbox"]').data('id'));
+        confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
+            removeProductFilter($(this).data('type'), $(this).parent().data('id'));
             loadFilters(type);
         }, this));
     });

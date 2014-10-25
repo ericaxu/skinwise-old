@@ -15,17 +15,32 @@
 }
 
 .filter_option {
+    position: relative;
     margin-bottom: 4px;
+    border: 2px solid @nav_bg;
+    padding: 2px 20px 2px 6px;
+    cursor: pointer;
 
-    label {
-        margin-left: 3px;
+    &.selected {
+        background: @nav_bg;
+        color: @light_text;
+    }
+
+    .delete_btn {
+        position: absolute;
+        top: 1.5px;
+        right: 0;
+        margin-left: 5px;
+        padding: 1px 3px;
+        font-size: 22px;
+        font-family: "Proxima Nova Light";
         cursor: pointer;
-        &:hover {
-            text-decoration: underline;
+
+        &::before {
+            content: "\D7";
         }
     }
 }
-
 
 #loading_spinner {
     display: none;
@@ -45,7 +60,6 @@
 }
 
 .result_summary {
-    margin-bottom: 40px;
     font-size: 22px;
 }
 
@@ -55,20 +69,4 @@ footer {
 
 .open_add_filter_popup {
     margin-top: 10px;
-}
-
-.delete_btn {
-    visibility: hidden;
-    position: relative;
-    top: 1.5px;
-    margin-left: 5px;
-    padding: 1px 3px;
-    color: @error;
-    font-size: 20px;
-    font-family: "Proxima Nova Light";
-    cursor: pointer;
-
-    &::before {
-        content: "\D7";
-    }
 }
