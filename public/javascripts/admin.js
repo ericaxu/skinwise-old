@@ -18,7 +18,9 @@ function hideEdit() {
 
 function setupDatabaseManager() {
     $('#import_btn').on('click', function () {
-        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+        confirmAction('import to database', function() {
+            postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
+        });
     });
     $('#export_btn').on('click', function () {
         postToAPI('/admin/export', {}, null, null, 'Exporting database...');
@@ -452,31 +454,6 @@ function setupTypeEditSaveCall() {
     });
 }
 
-function setupDatabaseManager() {
-    $('#import_btn').on('click', function () {
-        postToAPI('/admin/import', {}, null, null, 'Importing data to database...');
-    });
-    $('#export_btn').on('click', function () {
-        postToAPI('/admin/export', {}, null, null, 'Exporting database...');
-    });
-}
-
-function listenForEnter() {
-    $("input").focus(function () {
-        $(this).addClass('focused');
-    }).blur(function () {
-        $(this).removeClass('focused');
-    });
-
-    $(document.body).on('keyup', function (e) {
-        // 13 is ENTER
-        if (e.which === 13 && $('.focused').length > 0) {
-            var btn_id = $('.focused').attr('id') + '_btn';
-            $('#' + btn_id).click();
-        }
-    });
-}
-
 // FEEDBACK
 
 function feedbackHTML(feedback) {
@@ -507,6 +484,43 @@ function loadFeedback(response) {
     $container.empty();
     for (var i = 0; i < response.results.length; i++) {
         $container.append(feedbackHTML(response.results[i]));
+    }
+}
+
+
+// UNMATCHED ALIAS
+
+function unmatchedHTML(alias) {
+    var $div = $('<div/>', { class: 'unmatched_alias_item' });
+    $div.append($('<h2/>').text(alias.name));
+    $div.append($('<p/>').text(alias.description || ''));
+    var $input_container = $('<div/>', { id: 'unmatched_' + alias.id });
+    var $ingredient_search = $('<input/>');
+    enableAutocomplete('ingredient', $ingredient_search, '#' + 'unmatched_' + alias.id)
+    var $mar = $('<input/>', {
+        type: 'button',
+        value: 'Mark resolved'
+    }).on('click', function() {
+        postToAPI('/admin/report/resolve', {
+            id: feedback.id
+        }, fetchFeedback, null, 'Marking feedback resolved...');
+    });
+    $div.append($('<p/>').append($mark_resolved));
+
+    return $div;
+}
+
+function fetchUnmatched() {
+    postToAPI('/ingredient/unmatched', {
+        page: 1
+    }, loadUnmatched, null, 'Fetching unmatched alias...');
+}
+
+function loadUnmatched(response) {
+    var $container = $('.unmatched_container');
+    $container.empty();
+    for (var i = 0; i < response.results.length; i++) {
+        $container.append(unmatchedHTML(response.results[i]));
     }
 }
 
@@ -620,6 +634,13 @@ $(document).ready(function() {
             $(this).val('Refresh');
         }
         fetchFeedback();
+    });
+
+    $('#refresh_unmatched_btn').on('click', function() {
+        if ($(this).val() === 'Load') {
+            $(this).val('Refresh');
+        }
+        fetchUnmatched();
     });
 
     listenForEnter();

@@ -2,46 +2,58 @@
 
 @template("Browse Products - Skin Wise", state) {
 
-<link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/browse.css")'>
+    <link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/browse.css")'>
 
 } {
 
-<div class="filter_area section">
-    <div class="result_summary"></div>
+    <div class="product_filter filter_area">
+        <div class="result_summary"></div>
 
-    <h2>Filters</h2>
+        <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
 
-    <div class="filter_section">
-        <h3>Type</h3>
-        <div class="type_filters"></div>
-        <input type="button" class="open_add_filter_popup" value="Add filter" data-type="type"/>
+        <div class="filter_container">
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Type</h3>
+                    <span class="open_add_filter_popup" data-type="type">+</span>
+                </div>
+                <div class="type_filters"></div>
+            </div>
+
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Brand</h3>
+                    <span class="open_add_filter_popup" data-type="brand">+</span>
+                </div>
+                <div class="brand_filters"></div>
+            </div>
+
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Ingredients</h3>
+                    <span class="open_add_filter_popup" data-type="ingredient">+</span>
+                </div>
+                <div class="ingredient_filters"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="products_list">
+        <ul class="horizontal">
+        </ul>
     </div>
 
-    <div class="filter_section">
-        <h3>Brand</h3>
-        <div class="brand_filters"></div>
-        <input type="button" class="open_add_filter_popup" value="Add filter" data-type="brand"/>
+    <div id="back_to_top">
+        <span class="chevron top"></span>
+        Back to Top
     </div>
-
-    <div class="filter_section">
-        <h3>Ingredient</h3>
-        <div class="ingredient_filters"></div>
-        <input type="button" class="open_add_filter_popup" value="Add filter" data-type="ingredient"/>
-    </div>
-
-</div>
-<div class="products_list">
-    <ul class="horizontal">
-        <li class="stretch"></li>
-    </ul>
-</div>
 
 } {
 
-<script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
-<script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
-<script>
-    initBrowse('product');
-</script>
+    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
+    <script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
+    <script>
+    initBrowse ( 'product' ) ;
+    </script>
 
 }

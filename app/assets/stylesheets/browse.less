@@ -2,43 +2,111 @@
 @import "util/_colors";
 
 .products_list, .ingredients_list {
-    width: 70%;
-    float: right;
+    clear: both;
+    padding-top: 10px;
+}
+
+.ingredient_item {
+    padding: 0 10px 20px 10px;
+    border-bottom: 1px solid @border;
+}
+
+.filter_container {
+    display: none;
+    clear: both;
+    background: @bg;
+    border: 1px solid @border;
+    padding: 20px 30px;
 }
 
 .filter_area {
-    float: left;
-    width: 25%;
-    margin-right: 3%;
-    padding-right: 1%;
-    border-right: 1px solid @border;
-}
+    padding: 20px 0;
+    z-index: 1;
 
-.filter_area.sticky {
-    position: fixed;
-    top: 100px;
-    height: 80%;
-    width: 19%;
-    border-right: none;
-    overflow-y: auto;
+    &.sticky {
+        position: fixed;
+        top: 50px;
+        max-height: 400px;
+    }
 }
 
 .filter_section {
-    margin-top: 40px;
-}
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+    margin-right: 30px;
 
-.filter_option {
-    margin-bottom: 4px;
+    .filter_header {
+        margin-bottom: 10px;
+    }
 
-    label {
-        margin-left: 3px;
+    h3 {
+        margin-top: 0;
+        display: inline;
+    }
+
+    .open_add_filter_popup {
+        position: relative;
+        top: 0.5px;
+        right: 2px;
+        padding: 5px;
+        font-size: 22px;
+        font-weight: bold;
         cursor: pointer;
+
         &:hover {
-            text-decoration: underline;
+            color: @hover_dark_text;
         }
     }
 }
 
+.ingredient_filter .filter_section {
+    width: 100%;
+}
+
+.filter_option {
+    display: inline-block;
+    position: relative;
+    margin: 0 10px 8px 0;
+    border: 2px solid @border;
+    color: @border;
+    padding: 2px 24px 2px 6px;
+    cursor: pointer;
+
+    &:hover {
+        background: lighten(@neutral, 50);
+    }
+
+    &.selected {
+        background: @nav_bg;
+        color: @light_text;
+        border-color: @nav_bg;
+
+        .delete_btn:hover {
+            color: @hover_light_text;
+        }
+    }
+
+    .delete_btn {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        margin-left: 5px;
+        padding: 1px 3px;
+        font-size: 22px;
+        font-weight: bold;
+        font-family: "Proxima Nova Light", sans-serif;
+        cursor: pointer;
+
+        &::before {
+            content: "\D7";
+        }
+
+        &:hover {
+            color: @hover_dark_text;
+        }
+    }
+}
 
 #loading_spinner {
     display: none;
@@ -50,16 +118,38 @@
     margin: 0 auto;
 }
 
+.result_summary, .end_of_results, .filter_toggle_link {
+    font-size: 20px;
+}
+
+.result_summary {
+    background: @bg;
+    padding: 5px 10px 6px 10px;
+}
+
+.result_summary {
+    float: left;
+}
+
+.filter_toggle_link {
+    position: relative;
+    top: 1px;
+    float: right;
+    background: @bg;
+    padding: 5px 20px 5px 15px;
+    border: 1px solid @border;
+    cursor: pointer;
+
+    &.open {
+        border-bottom: none;
+
+    }
+}
+
 .end_of_results {
     display: none;
     margin-top: 50px;
     text-align: center;
-    font-size: 22px;
-}
-
-.result_summary {
-    margin-bottom: 40px;
-    font-size: 22px;
 }
 
 footer {
@@ -70,18 +160,58 @@ footer {
     margin-top: 10px;
 }
 
-.delete_btn {
-    visibility: hidden;
+
+.chevron::before {
+    border-style: solid;
+    border-width: 3px 3px 0 0;
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
     position: relative;
-    top: 1.5px;
-    margin-left: 5px;
-    padding: 1px 3px;
-    color: @error;
-    font-size: 20px;
+    left: 4px;
+    vertical-align: top;
+    margin: 0 5px;
+}
+
+.chevron.top:before {
+    top: 9px;
+    transform: rotate(-45deg);
+}
+
+.chevron.bottom:before {
+    top: 5px;
+    transform: rotate(135deg);
+}
+
+.add_filter.popup {
+    position: relative;
+    z-index: 1;
+}
+
+#back_to_top {
+    display: none;
+    position: fixed;
+    right: 50px;
+    bottom: 20px;
+    padding: 8px 10px;
+    background: @neutral;
+    border-radius: 16px;
     font-family: "Proxima Nova Light";
     cursor: pointer;
 
-    &::before {
-        content: "\D7";
+    &:hover {
+        background: @nav_bg;
+        color: @light_text;
+    }
+
+    .chevron {
+        position: relative;
+        bottom: 2px;
+        right: 3px;
+
+        &::before {
+            border-width: 2px 2px 0 0;
+        }
     }
 }

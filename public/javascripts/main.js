@@ -128,10 +128,22 @@ function getContainingProductsSuccess(response) {
     }
 }
 
-$(document).ready(function() {
-    setupIngredientInfobox();
-    setupFunctionInfobox();
+function attachScrollHandler () {
+    var $to_top = $('#back_to_top');
+    $(window).on('scroll', function() {
+        if ($(document).scrollTop() > SW.BACK_TO_TOP_THRESHOLD) {
+            $to_top.fadeIn();
+        } else {
+            $to_top.fadeOut();
+        }
+    });
+    $to_top.on('click', function (e) {
+        e.preventDefault();
+        $('body').animate({ scrollTop: 0 }, 100);
+    });
+}
 
+function setupNavSearchAutocomplete() {
     var $search_select = $('#search_category_select');
     var $nav_search = $('#nav_searchbar');
 
@@ -183,6 +195,14 @@ $(document).ready(function() {
             $('#nav_searchbar_btn').trigger('click');
         }
     });
+}
+
+
+$(document).ready(function() {
+    setupIngredientInfobox();
+    setupFunctionInfobox();
+    attachScrollHandler();
+    setupNavSearchAutocomplete();
 
     postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
 

@@ -62,14 +62,14 @@ function fetchNextPage(type) {
 
         if (type === 'ingredient') {
             postToAPI('/ingredient/filter', {
-                functions: getChebkexIds('function'),
+                functions: getSelectedFilters('function'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         } else if (type === 'product') {
             postToAPI('/product/filter', {
-                types: getChebkexIds('type'),
-                brands: getChebkexIds('brand'),
-                ingredients: getChebkexIds('ingredient'),
+                types: getSelectedFilters('type'),
+                brands: getSelectedFilters('brand'),
+                ingredients: getSelectedFilters('ingredient'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         }
@@ -96,22 +96,21 @@ function refetch(type) {
     if (type === 'product') {
         $('.products_list ul').empty();
         postToAPI('/product/filter', {
-            types: getChebkexIds('type'),
-            brands: getChebkexIds('brand'),
-            ingredients: getChebkexIds('ingredient'),
+            types: getSelectedFilters('type'),
+            brands: getSelectedFilters('brand'),
+            ingredients: getSelectedFilters('ingredient'),
             page: 0
         }, refetch_callback);
     } else if (type === 'ingredient') {
         $('.ingredients_list ul').empty();
         postToAPI('/ingredient/filter', {
-            functions: getChebkexIds('function'),
+            functions: getSelectedFilters('function'),
             page: 0
         }, refetch_callback);
     }
 }
 
 function loadFilters(type) {
-    log(type);
     var filter_types = SW.FILTER_TYPES[type] || [];
     for (var i = 0; i < filter_types.length; i++) {
         var filter_type = filter_types[i];
@@ -127,15 +126,11 @@ function loadFilters(type) {
 }
 
 function setupDeleteButtons(type) {
-    $(document).on('mouseenter', '.filter_option', function () {
-        $(this).find('.delete_btn').css('visibility', 'visible');
-    }).on('mouseleave', '.filter_option', function () {
-        $(this).find('.delete_btn').css('visibility', 'hidden');
-    });
 
-    $(document).on('click', '.delete_btn', function () {
-        confirmAction('delete filter "' + $(this).parent().find('label').text() + '"', $.proxy(function () {
-            removeProductFilter($(this).data('type'), $(this).parent().find('input[type="checkbox"]').data('id'));
+    $(document).on('click', '.delete_btn', function (e) {
+        e.stopPropagation();
+        confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
+            removeProductFilter($(this).data('type'), $(this).parent().data('id'));
             loadFilters(type);
         }, this));
     });
@@ -169,6 +164,7 @@ function initBrowse(type) {
                 id: id,
                 name: name
             });
+
             loadFilters(type);
 
             // reset
@@ -180,8 +176,21 @@ function initBrowse(type) {
         loadFilters(type);
         fetchNextPage(type);
 
-        $(document).on('change', '.filter_option input[type="checkbox"]', function() {
+        $(document).on('click', '.filter_option', function () {
+            $(this).toggleClass('selected');
             refetch(type);
+        });
+
+        $('.filter_toggle_link').on('click', function() {
+            if ($(this).hasClass('open')) {
+                $(this).removeClass('open');
+                $(this).find('.chevron').removeClass('top').addClass('bottom');
+                $('.filter_container').hide();
+            } else {
+                $(this).addClass('open');
+                $(this).find('.chevron').removeClass('bottom').addClass('top');
+                $('.filter_container').show();
+            }
         });
 
         $(window).on('scroll', function () {
@@ -197,13 +206,13 @@ function initBrowse(type) {
                 var list_height = $('.ingredients_list').height();
             }
 
-            if (list_height + $('#logo').height() + nav_height > $(window).height()) {
-                if ($(window).scrollTop() >= 100 - nav_height) {
-                    $('.filter_area').addClass('sticky');
-                } else {
-                    $('.filter_area').removeClass('sticky');
-                }
-            }
+            //if (list_height + $('#logo').height() + nav_height > $(window).height()) {
+            //    if ($(window).scrollTop() >= 100 - nav_height) {
+            //        $('.filter_area').addClass('sticky');
+            //    } else {
+            //        $('.filter_area').removeClass('sticky');
+            //    }
+            //}
         });
     });
 }
