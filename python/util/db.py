@@ -8,6 +8,11 @@ from util import gz
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 class DB(object):
+	"""
+	The DB object manages a connection to the sqlite3 database
+
+	It allows reading and writing, as well as compressing the data object using gzip
+	"""
 	def __init__(self, file):
 		self.conn = sqlite3.connect(file)
 		self.url_cache_table = "url_cache"
@@ -17,6 +22,7 @@ class DB(object):
 		self._register_signal()
 
 	def _register_signal(self):
+		"""Registers an exit handler to commit & close so we don't lose data"""
 		def signal_handler(signal, frame):
 			sys.exit(0)
 
@@ -45,6 +51,7 @@ class DB(object):
 		self.commit()
 
 	def read_cache(self, key):
+		"""Read an entry from the cache, or None if not found"""
 		c = self._cursor()
 		c.execute('SELECT * FROM url_cache WHERE key=?', (key,))
 		result = c.fetchone()
@@ -53,6 +60,7 @@ class DB(object):
 		return None
 
 	def write_cache(self, key, data):
+		"""Write an entry to the cache"""
 		time = current_milli_time()
 		c = self._cursor()
 		data = gz.zip(data)

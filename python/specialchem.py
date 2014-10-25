@@ -1,4 +1,3 @@
-
 import collections
 
 from util import (web, db, parser, util)
@@ -6,12 +5,11 @@ from util import (web, db, parser, util)
 db = db.DB("cache/specialchem.cache.db")
 crawler = web.Crawler(db)
 
+file_data_json = "data/data.json.txt"
 url_search = "http://www.specialchem4cosmetics.com/services/inci/index.aspx?p=%d"
 url_search = "http://127.0.0.1/cache.php?file=specialchem/search/%d.html"
 url_ingredient = "http://www.specialchem4cosmetics.com/services/inci/ingredient.aspx?id=%s"
 url_ingredient = "http://127.0.0.1/cache.php?file=specialchem/ingredient/%s.html"
-
-file_data_json = "data/data.json.txt"
 
 print("Searching ingredient IDs")
 
