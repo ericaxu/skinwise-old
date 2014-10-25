@@ -105,7 +105,6 @@ def array_rotate(array, col_key, col_value):
 def strip_brand(brand, name):
 	"""strip the brand name off a product name"""
 	tmp_name = name.lower()
-	i = 0
 	for i, c in enumerate(brand.lower() + "  "):
 		if c != tmp_name[i]:
 			break
