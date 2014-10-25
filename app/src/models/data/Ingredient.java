@@ -1,7 +1,10 @@
 package src.models.data;
 
+import gnu.trove.set.TLongSet;
 import org.apache.commons.lang3.text.WordUtils;
+import src.App;
 import src.models.Page;
+import src.util.Logger;
 import src.util.Util;
 
 import javax.persistence.*;
@@ -23,11 +26,6 @@ public class Ingredient extends NamedModel {
 	private transient List<IngredientFunction> pairs;
 	private transient Set<Function> functions;
 
-	//Non-columns
-
-	@OneToMany(mappedBy = "ingredient", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-	private Set<IngredientName> names = new HashSet<>();
-
 	//Getters
 
 	public long getPopularity() {
@@ -39,6 +37,11 @@ public class Ingredient extends NamedModel {
 	}
 
 	public Set<IngredientName> getNames() {
+		TLongSet name_ids = App.cache().getNamesForIngredient(this.getId());
+		Set<IngredientName> names = new HashSet<>();
+		for (long name_id : name_ids.toArray()) {
+			names.add(App.cache().ingredient_names.get(name_id));
+		}
 		return names;
 	}
 
@@ -50,10 +53,6 @@ public class Ingredient extends NamedModel {
 
 	public void setCas_number(String cas_number) {
 		this.cas_number = cas_number;
-	}
-
-	public void setNames(Set<IngredientName> names) {
-		this.names = names;
 	}
 
 	//Cached getter/setters
@@ -117,7 +116,7 @@ public class Ingredient extends NamedModel {
 
 	public List<String> getNamesString() {
 		List<String> result = new ArrayList<>();
-		for (IngredientName name : names) {
+		for (IngredientName name : this.getNames()) {
 			result.add(name.getName());
 		}
 		return result;

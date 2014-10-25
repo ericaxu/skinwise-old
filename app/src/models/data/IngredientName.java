@@ -1,7 +1,12 @@
 package src.models.data;
 
+import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
+import scala.Console;
+import src.App;
+import src.models.BaseModel;
 import src.models.Page;
+import src.util.Logger;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,14 +17,11 @@ import java.util.Set;
 @Table(name = IngredientName.TABLENAME)
 public class IngredientName extends NamedModel {
 
+	private long ingredient_id;
+
 	//Cached
 	private transient List<ProductIngredient> pairs;
 	private transient Set<Product> products;
-
-	//Non-columns
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
-	private Ingredient ingredient;
 
 	//Getters
 
@@ -28,13 +30,23 @@ public class IngredientName extends NamedModel {
 	}
 
 	public Ingredient getIngredient() {
-		return ingredient;
+		return App.cache().ingredients.get(ingredient_id);
 	}
 
 	//Setters
 
 	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
+		long new_id = BaseModel.getIdIfExists(ingredient);
+		if (new_id != ingredient_id) {
+			if (!BaseModel.isIdNull(ingredient_id)) {
+				// Remove old ingredient from mapping in cache.
+				App.cache().getNamesForIngredient(ingredient_id).remove(this.getId());
+			}
+			if (!BaseModel.isIdNull(new_id)) {
+				App.cache().getNamesForIngredient(new_id).add(this.getId());
+			}
+		}
+		this.ingredient_id = new_id;
 	}
 
 	//Cached getter/setters
@@ -95,6 +107,6 @@ public class IngredientName extends NamedModel {
 	}
 
 	public static List<IngredientName> unmatched(Page page) {
-		return page.apply(find.where().isNull("ingredient").query());
+		return page.apply(find.where().eq("ingredient_id", 0).query());
 	}
 }

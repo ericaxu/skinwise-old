@@ -26,4 +26,8 @@ public abstract class BaseModel extends Model {
 		}
 		return object.getId();
 	}
+
+	public static boolean isIdNull(long id) {
+		return id <= 0;
+	}
 }

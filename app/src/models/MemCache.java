@@ -1,5 +1,9 @@
 package src.models;
 
+import gnu.trove.map.TLongObjectMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
@@ -552,6 +556,15 @@ public class MemCache {
 		}
 	}
 
+	private TLongObjectMap<TLongSet> name_map;
+
+	public TLongSet getNamesForIngredient(long ingredient_id) {
+		if (!name_map.containsKey(ingredient_id)) {
+			name_map.put(ingredient_id, new TLongHashSet());
+		}
+		return name_map.get(ingredient_id);
+	}
+
 	private ReadWriteLock lock;
 	public NamedIndex<Function> functions;
 	public NamedIndex<Brand> brands;
@@ -560,6 +573,7 @@ public class MemCache {
 	public NamedIndex<IngredientName> ingredient_names;
 	public ProductIndex products;
 	public Matcher matcher;
+
 
 	public MemCache() {
 		lock = new ReentrantReadWriteLock();
@@ -570,6 +584,8 @@ public class MemCache {
 		ingredient_names = new NamedIndex<>(lock, new IngredientNameGetter());
 		products = new ProductIndex(lock, new ProductGetter());
 		matcher = new Matcher(this);
+
+		name_map = new TLongObjectHashMap<>();
 	}
 
 	public void init() {
