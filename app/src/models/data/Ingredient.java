@@ -1,13 +1,13 @@
 package src.models.data;
 
-import gnu.trove.set.TLongSet;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.Page;
-import src.util.Logger;
 import src.util.Util;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,10 +22,6 @@ public class Ingredient extends NamedModel {
 	@Column(length = 127)
 	private String cas_number;
 
-	//Cached
-	private transient List<IngredientFunction> pairs;
-	private transient Set<Function> functions;
-
 	//Getters
 
 	public long getPopularity() {
@@ -34,10 +30,6 @@ public class Ingredient extends NamedModel {
 
 	public String getCas_number() {
 		return cas_number;
-	}
-
-	public Set<IngredientName> getNames() {
-		return App.cache().getNamesForIngredient(this.getId());
 	}
 
 	//Setters
@@ -50,47 +42,43 @@ public class Ingredient extends NamedModel {
 		this.cas_number = cas_number;
 	}
 
-	//Cached getter/setters
+	//Functions
 
-	private List<IngredientFunction> getPairs() {
-		if (pairs == null) {
-			pairs = IngredientFunction.byFunctionId(this.getId());
+	private transient List<IngredientFunction> ingredient_functions;
+	private transient Set<Function> functions;
+
+	private List<IngredientFunction> getIngredient_functions() {
+		if (ingredient_functions == null) {
+			ingredient_functions = IngredientFunction.byIngredientId(this.getId());
 		}
-		return pairs;
+		return ingredient_functions;
 	}
 
 	public Set<Function> getFunctions() {
 		if (functions == null) {
-			List<IngredientFunction> pairs = getPairs();
+			getIngredient_functions();
 			functions = new HashSet<>();
-			for (IngredientFunction pair : pairs) {
-				functions.add(pair.getFunction());
+			for (IngredientFunction ingredient_function : ingredient_functions) {
+				functions.add(ingredient_function.getFunction());
 			}
 		}
 		return functions;
 	}
 
-	public void saveFunctions(Set<Function> newFunctions) {
-		List<IngredientFunction> oldPairs = getPairs();
-		for (IngredientFunction oldPair : oldPairs) {
-			oldPair.delete();
+	public void saveFunctions(Set<Function> input) {
+		getIngredient_functions();
+		for (IngredientFunction ingredient_function : ingredient_functions) {
+			ingredient_function.delete();
 		}
-		pairs.clear();
-		functions = new HashSet<>();
-		for (Function newFunction : newFunctions) {
-			functions.add(newFunction);
-			IngredientFunction pair = new IngredientFunction();
-			pair.setFunction(newFunction);
-			pair.setIngredient(this);
-			pair.save();
-			pairs.add(pair);
+		ingredient_functions.clear();
+		for (Function function : input) {
+			IngredientFunction ingredient_function = new IngredientFunction();
+			ingredient_function.setFunction(function);
+			ingredient_function.setIngredient(this);
+			ingredient_function.save();
+			ingredient_functions.add(ingredient_function);
 		}
-	}
-
-	//Others
-
-	public String getDisplayName() {
-		return WordUtils.capitalizeFully(getName());
+		functions = input;
 	}
 
 	public List<String> getFunctionsString() {
@@ -109,6 +97,16 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
+	//Names
+
+	public Set<IngredientName> getNames() {
+		return App.cache().getNamesForIngredient(this.getId());
+	}
+
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(getName());
+	}
+
 	public List<String> getNamesString() {
 		List<String> result = new ArrayList<>();
 		for (IngredientName name : this.getNames()) {
@@ -120,7 +118,6 @@ public class Ingredient extends NamedModel {
 	//Static
 
 	public static final String TABLENAME = "ingredient";
-	public static final String FUNCTIONS_JOINTABLE = "ingredient_function";
 
 	public static Finder<Long, Ingredient> find = new Finder<>(Long.class, Ingredient.class);
 
@@ -144,13 +141,18 @@ public class Ingredient extends NamedModel {
 		}
 
 		String query = "SELECT DISTINCT main.id as id, main.popularity " +
-				"FROM " + TABLENAME + " main JOIN " + FUNCTIONS_JOINTABLE + " aux " +
+				"FROM " + TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux " +
 				"ON main.id = aux.ingredient_id WHERE " +
 				"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
 				"GROUP BY main.id " +
 				"HAVING count(*) = " + functions.length + " " +
 				"ORDER BY main.popularity DESC, main.id ASC ";
 
-		return page.apply(find, query);
+		List<Ingredient> filterList = page.apply(find, query);
+		List<Ingredient> result = new ArrayList<>();
+		for (Ingredient ingredient : filterList) {
+			result.add(App.cache().ingredients.get(ingredient.getId()));
+		}
+		return result;
 	}
 }

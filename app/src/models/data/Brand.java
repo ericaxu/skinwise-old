@@ -8,9 +8,8 @@ import java.util.List;
 @Table(name = Brand.TABLENAME)
 public class Brand extends NamedModel {
 	//Static
-
 	public static final String TABLENAME = "brand";
-	public static Finder<Long, Brand> find = new Finder<>(Long.class, Brand.class);
+	private static Finder<Long, Brand> find = new Finder<>(Long.class, Brand.class);
 
 	public static List<Brand> all() {
 		return find.all();

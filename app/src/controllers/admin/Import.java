@@ -43,7 +43,6 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Looking through products");
-		cache.matcher.cache(cache.ingredient_names.all());
 
 		Set<String> allIngredients = new HashSet<>();
 		Set<String> brands = new HashSet<>();
@@ -112,7 +111,7 @@ public class Import {
 		Logger.debug(TAG, "Ingredient names - spill");
 		for (IngredientName name : pending) {
 			name.save();
-			App.cache().ingredient_names.update(name);
+			cache.ingredient_names.update(name);
 		}
 
 		//Second pass
@@ -133,7 +132,7 @@ public class Import {
 			}
 			name.setName(string);
 			name.save();
-			App.cache().ingredient_names.update(name);
+			cache.ingredient_names.update(name);
 		}
 
 		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
@@ -142,9 +141,7 @@ public class Import {
 		for (DBFormat.ProductObject object : input.products) {
 			createProduct(object, cache);
 		}
-
 		cache.matcher.clear();
-		cache.init();
 	}
 
 	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {
@@ -244,9 +241,10 @@ public class Import {
 		result.setName(object.name);
 		result.setCas_number(object.cas_no);
 		result.setDescription(object.description);
-		result.saveFunctions(functionList);
 
 		result.save();
+
+		result.saveFunctions(functionList);
 
 		cache.ingredients.update(result);
 
@@ -288,9 +286,10 @@ public class Import {
 
 		result.setType(type);
 		result.setDescription(object.description);
-		result.saveIngredients(ingredients, key_ingredients);
 		result.setImage(object.image);
 
 		cache.products.updateAndSave(result, brand, object.name);
+
+		result.saveIngredients(ingredients, key_ingredients);
 	}
 }

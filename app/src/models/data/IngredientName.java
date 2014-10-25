@@ -1,14 +1,12 @@
 package src.models.data;
 
-import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
-import scala.Console;
 import src.App;
 import src.models.BaseModel;
 import src.models.Page;
-import src.util.Logger;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,6 +102,17 @@ public class IngredientName extends NamedModel {
 		return find.where()
 				.eq("name", name)
 				.findUnique();
+	}
+
+	public static Set<IngredientName> byIngredientId(long ingredient_id) {
+		List<IngredientName> result = find.where()
+				.eq("ingredient_id", ingredient_id)
+				.findList();
+		Set<IngredientName> results = new HashSet<>();
+		for (IngredientName ingredientName : result) {
+			results.add(App.cache().ingredient_names.get(ingredientName.getId()));
+		}
+		return results;
 	}
 
 	public static List<IngredientName> unmatched(Page page) {

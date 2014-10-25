@@ -2,8 +2,6 @@ package src.models;
 
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import gnu.trove.set.TLongSet;
-import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
@@ -184,13 +182,13 @@ public class MemCache {
 
 	public static class Idx<T extends BaseModel> {
 		protected ReadWriteLock lock;
-		private Map<Long, T> index;
+		private TLongObjectMap<T> index;
 		private List<T> all;
 		private Getter<T> getter;
 
 		public Idx(ReadWriteLock lock, Getter<T> getter) {
 			this.lock = lock;
-			this.index = new HashMap<>();
+			this.index = new TLongObjectHashMap<>();
 			this.getter = getter;
 		}
 
@@ -560,7 +558,7 @@ public class MemCache {
 
 	public Set<IngredientName> getNamesForIngredient(long ingredient_id) {
 		if (!name_map.containsKey(ingredient_id)) {
-			name_map.put(ingredient_id, new HashSet<>());
+			name_map.put(ingredient_id, IngredientName.byIngredientId(ingredient_id));
 		}
 		return name_map.get(ingredient_id);
 	}
@@ -573,7 +571,6 @@ public class MemCache {
 	public NamedIndex<IngredientName> ingredient_names;
 	public ProductIndex products;
 	public Matcher matcher;
-
 
 	public MemCache() {
 		lock = new ReentrantReadWriteLock();
@@ -597,6 +594,7 @@ public class MemCache {
 		ingredients.cache();
 		ingredient_names.cache();
 		products.cache();
+		name_map.clear();
 		lock.writeLock().unlock();
 	}
 }

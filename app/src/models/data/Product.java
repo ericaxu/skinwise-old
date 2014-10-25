@@ -8,7 +8,9 @@ import src.util.Util;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -24,11 +26,6 @@ public class Product extends NamedModel {
 
 	@Column(length = 1023)
 	private String image;
-
-	//Cached
-	private transient List<ProductIngredient> pairs;
-	private transient List<IngredientName> ingredients;
-	private transient List<IngredientName> key_ingredients;
 
 	//Getters
 
@@ -74,7 +71,11 @@ public class Product extends NamedModel {
 		this.image = image;
 	}
 
-	//Cached getter/setters
+	//Ingredients
+
+	private transient List<ProductIngredient> pairs;
+	private transient List<IngredientName> ingredients;
+	private transient List<IngredientName> key_ingredients;
 
 	private List<ProductIngredient> getPairs() {
 		if (pairs == null) {
@@ -93,7 +94,7 @@ public class Product extends NamedModel {
 			ingredients = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (!pair.isIs_key()) {
-					key_ingredients.add(pair.getIngredient_name());
+					ingredients.add(pair.getIngredient_name());
 				}
 			}
 		}
@@ -120,16 +121,15 @@ public class Product extends NamedModel {
 			oldPair.delete();
 		}
 		pairs.clear();
-		ingredients = new ArrayList<>();
-		key_ingredients = new ArrayList<>();
+		ingredients = newIngredients;
+		key_ingredients = newKeyIngredients;
 
-		refreshIngredientList(ingredients, newIngredients, false);
-		refreshIngredientList(key_ingredients, newKeyIngredients, true);
+		refreshIngredientList(newIngredients, false);
+		refreshIngredientList(newKeyIngredients, true);
 	}
 
-	private void refreshIngredientList(List<IngredientName> oldList, List<IngredientName> newList, boolean is_key) {
+	private void refreshIngredientList(List<IngredientName> newList, boolean is_key) {
 		for (int i = 0; i < newList.size(); i++) {
-			oldList.add(newList.get(i));
 			ProductIngredient pair = new ProductIngredient();
 			pair.setIngredient_name(newList.get(i));
 			pair.setProduct(this);
@@ -206,7 +206,7 @@ public class Product extends NamedModel {
 			if (needAnd) {
 				query += " AND ";
 			}
-			query += " main.type_id IN (" + Util.joinString(",", types) + ") ";
+			query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
 			needAnd = true;
 		}
 

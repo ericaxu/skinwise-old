@@ -1,7 +1,5 @@
 package src.models.data;
 
-import play.db.ebean.Model;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.List;
@@ -10,9 +8,8 @@ import java.util.List;
 @Table(name = ProductType.TABLENAME)
 public class ProductType extends NamedModel {
 	//Static
-
 	public static final String TABLENAME = "product_type";
-	public static Model.Finder<Long, ProductType> find = new Model.Finder<>(Long.class, ProductType.class);
+	private static Finder<Long, ProductType> find = new Finder<>(Long.class, ProductType.class);
 
 	public static List<ProductType> all() {
 		return find.all();
