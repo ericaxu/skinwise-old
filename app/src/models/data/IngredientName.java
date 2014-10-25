@@ -2,8 +2,10 @@ package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.Page;
+import src.models.util.NamedFinder;
+import src.models.util.NamedModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -67,42 +69,11 @@ public class IngredientName extends NamedModel {
 		return products;
 	}
 
-	public void saveProducts(Set<Product> newProducts) {
-		List<ProductIngredient> oldPairs = getPairs();
-		for (ProductIngredient oldPair : oldPairs) {
-			oldPair.delete();
-		}
-		pairs.clear();
-		products = new HashSet<>();
-		for (Product newProduct : newProducts) {
-			products.add(newProduct);
-			ProductIngredient pair = new ProductIngredient();
-			pair.setIngredient_name(this);
-			pair.setProduct(newProduct);
-			pair.save();
-			pairs.add(pair);
-		}
-	}
-
 	//Static
 
 	public static final String TABLENAME = "ingredient_name";
 
-	public static Finder<Long, IngredientName> find = new Finder<>(Long.class, IngredientName.class);
-
-	public static List<IngredientName> all() {
-		return find.all();
-	}
-
-	public static IngredientName byId(long id) {
-		return find.byId(id);
-	}
-
-	public static IngredientName byName(String name) {
-		return find.where()
-				.eq("name", name)
-				.findUnique();
-	}
+	public static NamedFinder<IngredientName> find = new NamedFinder<>(IngredientName.class);
 
 	public static Set<IngredientName> byIngredientId(long ingredient_id) {
 		List<IngredientName> result = find.where()

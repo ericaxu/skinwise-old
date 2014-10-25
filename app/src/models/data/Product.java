@@ -1,8 +1,10 @@
 package src.models.data;
 
 import src.App;
-import src.models.BaseModel;
 import src.models.Page;
+import src.models.util.BaseModel;
+import src.models.util.NamedFinder;
+import src.models.util.NamedModel;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -168,23 +170,7 @@ public class Product extends NamedModel {
 
 	public static final String TABLENAME = "product";
 
-	public static Finder<Long, Product> find = new Finder<>(Long.class, Product.class);
-
-	public static List<Product> all() {
-		return find.all();
-
-	}
-
-	public static Product byId(long id) {
-		return find.byId(id);
-	}
-
-	public static Product byBrandAndName(Brand brand, String name) {
-		return find.where()
-				.eq("brand", brand)
-				.eq("name", name)
-				.findUnique();
-	}
+	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
 	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredients, Page page) {
 		if (brands.length == 0 && types.length == 0 && ingredients.length == 0) {
@@ -216,7 +202,7 @@ public class Product extends NamedModel {
 			}
 			List<Long> ingredient_name_ids = new ArrayList<>();
 			for (long ingredient_id : ingredients) {
-				Set<IngredientName> names = Ingredient.byId(ingredient_id).getNames();
+				Set<IngredientName> names = App.cache().ingredients.get(ingredient_id).getNames();
 				for (IngredientName name : names) {
 					ingredient_name_ids.add(name.getId());
 				}

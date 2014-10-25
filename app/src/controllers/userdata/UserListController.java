@@ -2,6 +2,7 @@ package src.controllers.userdata;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
@@ -32,7 +33,7 @@ public class UserListController extends Controller {
 
 			RequestAdd request = Api.read(ctx(), RequestAdd.class);
 
-			Ingredient ingredient = Ingredient.byId(request.id);
+			Ingredient ingredient = App.cache().ingredients.get(request.id);
 			if (ingredient == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}
@@ -88,7 +89,7 @@ public class UserListController extends Controller {
 
 			RequestAdd request = Api.read(ctx(), RequestAdd.class);
 
-			Product product = Product.byId(request.id);
+			Product product = App.cache().products.get(request.id);
 			if (product == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}

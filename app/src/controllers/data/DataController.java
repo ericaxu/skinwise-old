@@ -13,7 +13,7 @@ import src.controllers.api.response.Response;
 import src.models.MemCache;
 import src.models.data.Ingredient;
 import src.models.data.IngredientName;
-import src.models.data.NamedModel;
+import src.models.util.NamedModel;
 import src.models.data.Product;
 
 import java.util.ArrayList;

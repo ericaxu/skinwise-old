@@ -1,4 +1,4 @@
-package src.models;
+package src.models.util;
 
 import play.db.ebean.Model;
 

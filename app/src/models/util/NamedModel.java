@@ -1,6 +1,4 @@
-package src.models.data;
-
-import src.models.BaseModel;
+package src.models.util;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

@@ -13,7 +13,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
@@ -61,7 +61,7 @@ public class AdminIngredientController extends Controller {
 				result = new Ingredient();
 			}
 			else {
-				result = Ingredient.byId(request.id);
+				result = App.cache().ingredients.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.id + " not found");
 				}
@@ -104,7 +104,7 @@ public class AdminIngredientController extends Controller {
 				result = new IngredientName();
 			}
 			else {
-				result = IngredientName.byId(request.id);
+				result = App.cache().ingredient_names.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
 				}
@@ -115,7 +115,7 @@ public class AdminIngredientController extends Controller {
 				ingredient = null;
 			}
 			else {
-				ingredient = Ingredient.byId(request.ingredient_id);
+				ingredient = App.cache().ingredients.get(request.ingredient_id);
 				if (ingredient == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
 				}
@@ -146,7 +146,7 @@ public class AdminIngredientController extends Controller {
 				result = new Function();
 			}
 			else {
-				result = Function.byId(request.id);
+				result = App.cache().functions.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
 				}

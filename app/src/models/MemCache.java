@@ -5,6 +5,9 @@ import gnu.trove.map.hash.TLongObjectHashMap;
 import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
+import src.models.util.BaseModel;
+import src.models.util.NamedModel;
+import src.models.util.Relation;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -15,8 +18,8 @@ public class MemCache {
 		private Map<String, T> names;
 		private Searchable<T> search;
 
-		public NamedIndex(ReadWriteLock lock, NamedGetter<T> getter) {
-			super(lock, getter);
+		public NamedIndex(ReadWriteLock lock, NamedGetter<T> ngetter, Getter<T> igetter) {
+			super(lock, igetter);
 			this.names = new HashMap<>();
 			this.search = new Searchable<>(this.names, lock);
 		}
@@ -93,8 +96,8 @@ public class MemCache {
 	public static class ProductIndex extends NamedIndex<Product> {
 		private Map<Brand, Map<String, Product>> products;
 
-		public ProductIndex(ReadWriteLock lock, NamedGetter<Product> getter) {
-			super(lock, getter);
+		public ProductIndex(ReadWriteLock lock, NamedGetter<Product> ngetter, Getter<Product> igetter) {
+			super(lock, ngetter, igetter);
 			this.products = new HashMap<>();
 		}
 
@@ -109,7 +112,7 @@ public class MemCache {
 			try {
 				super.cache(list);
 				products.clear();
-				List<Brand> brands = Brand.all();
+				Collection<Brand> brands = App.cache().brands.all();
 
 				for (Brand brand : brands) {
 					products.put(brand, new HashMap<>());
@@ -268,115 +271,136 @@ public class MemCache {
 		}
 	}
 
-	private static abstract class Getter<T extends BaseModel> {
-		public abstract List<T> all();
+	public static class RTableIdx<L extends BaseModel, R extends BaseModel> {
+		protected ReadWriteLock lock;
+		private TLongObjectMap<Set<R>> left_index;
+		private TLongObjectMap<Set<L>> right_index;
+		private RGetter<L, R> getter;
+		private Getter<L> left_getter;
+		private Getter<R> right_getter;
 
-		public abstract T byId(long id);
-	}
-
-	private static abstract class NamedGetter<T extends NamedModel> extends Getter<T> {
-		public abstract T byName(String name);
-	}
-
-	private static class FunctionGetter extends NamedGetter<Function> {
-		@Override
-		public Function byName(String name) {
-			return Function.byName(name);
+		public RTableIdx(ReadWriteLock lock, RGetter<L, R> getter, Getter<L> l_getter, Getter<R> r_getter) {
+			this.lock = lock;
+			this.left_index = new TLongObjectHashMap<>();
+			this.right_index = new TLongObjectHashMap<>();
+			this.getter = getter;
+			this.left_getter = l_getter;
+			this.right_getter = r_getter;
 		}
 
-		@Override
-		public List<Function> all() {
-			return Function.all();
+		public void cache() {
+			lock.writeLock().lock();
+			try {
+				cache(getter.all());
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 
-		@Override
-		public Function byId(long id) {
-			return Function.byId(id);
-		}
-	}
-
-	private static class BrandGetter extends NamedGetter<Brand> {
-		@Override
-		public Brand byName(String name) {
-			return Brand.byName(name);
-		}
-
-		@Override
-		public List<Brand> all() {
-			return Brand.all();
-		}
-
-		@Override
-		public Brand byId(long id) {
-			return Brand.byId(id);
-		}
-	}
-
-	private static class ProductTypeGetter extends NamedGetter<ProductType> {
-		@Override
-		public ProductType byName(String name) {
-			return ProductType.byName(name);
+		protected void cache(List<? extends Relation> list) {
+			lock.writeLock().lock();
+			try {
+				left_index.clear();
+				right_index.clear();
+				for (Relation object : list) {
+					L left = left_getter.byId(object.getLeftId());
+					R right = right_getter.byId(object.getRightId());
+					getL(left.getId(), false).add(right);
+					getR(right.getId(), false).add(left);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 
-		@Override
-		public List<ProductType> all() {
-			return ProductType.all();
+		public void remove(Relation object) {
+			L left = left_getter.byId(object.getLeftId());
+			R right = right_getter.byId(object.getRightId());
+			getL(left.getId(), true).remove(right);
+			getR(right.getId(), true).remove(left);
 		}
 
-		@Override
-		public ProductType byId(long id) {
-			return ProductType.byId(id);
-		}
-	}
-
-	private static class IngredientGetter extends NamedGetter<Ingredient> {
-		@Override
-		public Ingredient byName(String name) {
-			return Ingredient.byName(name);
+		public void add(Relation object) {
+			L left = left_getter.byId(object.getLeftId());
+			R right = right_getter.byId(object.getRightId());
+			getL(left.getId(), true).add(right);
+			getR(right.getId(), true).add(left);
 		}
 
-		@Override
-		public List<Ingredient> all() {
-			return Ingredient.all();
+		public Set<L> getR(long right_id) {
+			return getR(right_id, true);
 		}
 
-		@Override
-		public Ingredient byId(long id) {
-			return Ingredient.byId(id);
-		}
-	}
-
-	private static class IngredientNameGetter extends NamedGetter<IngredientName> {
-		@Override
-		public IngredientName byName(String name) {
-			return IngredientName.byName(name);
+		public Set<R> getL(long left_id) {
+			return getL(left_id, true);
 		}
 
-		@Override
-		public List<IngredientName> all() {
-			return IngredientName.all();
+		private Set<L> getR(long right_id, boolean fetch) {
+			if (!right_index.containsKey(right_id)) {
+				if (fetch) {
+					right_index.put(right_id, getter.byRight(right_id));
+				}
+				else {
+					right_index.put(right_id, new HashSet<L>());
+				}
+			}
+			return right_index.get(right_id);
 		}
 
-		@Override
-		public IngredientName byId(long id) {
-			return IngredientName.byId(id);
+		private Set<R> getL(long left_id, boolean fetch) {
+			if (!left_index.containsKey(left_id)) {
+				if (fetch) {
+					left_index.put(left_id, getter.byLeft(left_id));
+				}
+				else {
+					left_index.put(left_id, new HashSet<R>());
+				}
+			}
+			return left_index.get(left_id);
 		}
 	}
 
-	private static class ProductGetter extends NamedGetter<Product> {
-		@Override
-		public List<Product> all() {
-			return Product.all();
+	public static interface Getter<T extends BaseModel> {
+		public List<T> all();
+
+		public T byId(Long id);
+	}
+
+	public static interface NamedGetter<T extends NamedModel> {
+		public T byName(String name);
+	}
+
+	private static abstract class RGetter<L extends BaseModel, R extends BaseModel> {
+		public abstract Set<R> byLeft(long left_id);
+
+		public abstract Set<L> byRight(long right_id);
+
+		public abstract List<? extends Relation> all();
+	}
+
+	private static class ProductIngredientGetter extends RGetter<Product, IngredientName> {
+		public Set<IngredientName> byLeft(long left_id) {
+			List<ProductIngredient> result = ProductIngredient.byProductId(left_id);
+			Set<IngredientName> set = new HashSet<>();
+			for (ProductIngredient relation : result) {
+				set.add(relation.getIngredient_name());
+			}
+			return set;
 		}
 
-		@Override
-		public Product byId(long id) {
-			return Product.byId(id);
+		public Set<Product> byRight(long right_id) {
+			List<ProductIngredient> result = ProductIngredient.byIngredientNameId(right_id);
+			Set<Product> set = new HashSet<>();
+			for (ProductIngredient relation : result) {
+				set.add(relation.getProduct());
+			}
+			return set;
 		}
 
-		@Override
-		public Product byName(String name) {
-			return null;
+		public List<? extends Relation> all() {
+			return ProductIngredient.all();
 		}
 	}
 
@@ -569,19 +593,21 @@ public class MemCache {
 	public NamedIndex<ProductType> types;
 	public NamedIndex<Ingredient> ingredients;
 	public NamedIndex<IngredientName> ingredient_names;
+	public RTableIdx<Product, IngredientName> product_ingredient;
 	public ProductIndex products;
 	public Matcher matcher;
 
 	public MemCache() {
 		lock = new ReentrantReadWriteLock();
-		functions = new NamedIndex<>(lock, new FunctionGetter());
-		brands = new NamedIndex<>(lock, new BrandGetter());
-		types = new NamedIndex<>(lock, new ProductTypeGetter());
-		ingredients = new NamedIndex<>(lock, new IngredientGetter());
-		ingredient_names = new NamedIndex<>(lock, new IngredientNameGetter());
-		products = new ProductIndex(lock, new ProductGetter());
+		functions = new NamedIndex<>(lock, Function.find, Function.find);
+		brands = new NamedIndex<>(lock, Brand.find, Brand.find);
+		types = new NamedIndex<>(lock, ProductType.find, ProductType.find);
+		ingredients = new NamedIndex<>(lock, Ingredient.find, Ingredient.find);
+		ingredient_names = new NamedIndex<>(lock, IngredientName.find, IngredientName.find);
+		products = new ProductIndex(lock, Product.find, Product.find);
+		product_ingredient = new RTableIdx<>(lock, new ProductIngredientGetter(),
+				Product.find, IngredientName.find);
 		matcher = new Matcher(this);
-
 		name_map = new TLongObjectHashMap<>();
 	}
 
@@ -594,6 +620,7 @@ public class MemCache {
 		ingredients.cache();
 		ingredient_names.cache();
 		products.cache();
+		product_ingredient.cache();
 		name_map.clear();
 		lock.writeLock().unlock();
 	}

@@ -13,15 +13,12 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.MemCache;
 import src.models.Permissible;
 import src.models.data.Brand;
-import src.models.data.IngredientName;
 import src.models.data.Product;
 import src.models.data.ProductType;
-
-import java.util.List;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
@@ -52,7 +49,7 @@ public class AdminProductController extends Controller {
 
 			MemCache cache = App.cache();
 
-			Product result = Product.byId(request.id);
+			Product result = cache.products.get(request.id);
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Product();
 			}
@@ -100,7 +97,7 @@ public class AdminProductController extends Controller {
 				result = new Brand();
 			}
 			else {
-				result = Brand.byId(request.id);
+				result = App.cache().brands.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
 				}
@@ -131,7 +128,7 @@ public class AdminProductController extends Controller {
 				result = new ProductType();
 			}
 			else {
-				result = ProductType.byId(request.id);
+				result = App.cache().types.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
 				}

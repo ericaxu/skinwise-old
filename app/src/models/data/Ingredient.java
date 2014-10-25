@@ -3,6 +3,8 @@ package src.models.data;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.Page;
+import src.models.util.NamedFinder;
+import src.models.util.NamedModel;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -119,21 +121,7 @@ public class Ingredient extends NamedModel {
 
 	public static final String TABLENAME = "ingredient";
 
-	public static Finder<Long, Ingredient> find = new Finder<>(Long.class, Ingredient.class);
-
-	public static List<Ingredient> all() {
-		return find.all();
-	}
-
-	public static Ingredient byId(long id) {
-		return find.byId(id);
-	}
-
-	public static Ingredient byName(String name) {
-		return find.where()
-				.eq("name", name)
-				.findUnique();
-	}
+	public static NamedFinder<Ingredient> find = new NamedFinder<>(Ingredient.class);
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
 		if (functions.length == 0) {

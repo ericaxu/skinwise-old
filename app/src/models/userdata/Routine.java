@@ -1,6 +1,6 @@
 package src.models.userdata;
 
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.user.User;
 
 import javax.persistence.*;

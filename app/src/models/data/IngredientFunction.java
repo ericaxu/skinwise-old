@@ -1,7 +1,8 @@
 package src.models.data;
 
 import src.App;
-import src.models.BaseModel;
+import src.models.util.BaseFinder;
+import src.models.util.BaseModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -37,7 +38,7 @@ public class IngredientFunction extends BaseModel {
 
 	public static final String TABLENAME = "ingredient_function";
 
-	public static Finder<Long, IngredientFunction> find = new Finder<>(Long.class, IngredientFunction.class);
+	private static BaseFinder<IngredientFunction> find = new BaseFinder<>(IngredientFunction.class);
 
 	public static List<IngredientFunction> all() {
 		return find.all();

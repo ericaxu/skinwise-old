@@ -11,7 +11,7 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.MemCache;
 import src.models.Page;
 import src.models.Permissible;

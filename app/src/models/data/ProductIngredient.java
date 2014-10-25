@@ -1,7 +1,8 @@
 package src.models.data;
 
 import src.App;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
+import src.models.util.Relation;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
-public class ProductIngredient extends BaseModel {
+public class ProductIngredient extends BaseModel implements Relation {
 	private long product_id;
 	private long ingredient_name_id;
 
@@ -35,6 +36,15 @@ public class ProductIngredient extends BaseModel {
 		return item_order;
 	}
 
+	@Override
+	public long getLeftId() {
+		return product_id;
+	}
+
+	@Override
+	public long getRightId() {
+		return ingredient_name_id;
+	}
 	//Setters
 
 	public void setProduct(Product product) {
