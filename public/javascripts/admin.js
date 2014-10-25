@@ -510,6 +510,43 @@ function loadFeedback(response) {
     }
 }
 
+
+// UNMATCHED ALIAS
+
+function unmatchedHTML(alias) {
+    var $div = $('<div/>', { class: 'unmatched_alias_item' });
+    $div.append($('<h2/>').text(alias.name));
+    $div.append($('<p/>').text(alias.description || ''));
+    var $input_container = $('<div/>', { id: 'unmatched_' + alias.id });
+    var $ingredient_search = $('<input/>');
+    enableAutocomplete('ingredient', $ingredient_search, '#' + 'unmatched_' + alias.id)
+    var $mar = $('<input/>', {
+        type: 'button',
+        value: 'Mark resolved'
+    }).on('click', function() {
+        postToAPI('/admin/report/resolve', {
+            id: feedback.id
+        }, fetchFeedback, null, 'Marking feedback resolved...');
+    });
+    $div.append($('<p/>').append($mark_resolved));
+
+    return $div;
+}
+
+function fetchUnmatched() {
+    postToAPI('/ingredient/unmatched', {
+        page: 1
+    }, loadUnmatched, null, 'Fetching unmatched alias...');
+}
+
+function loadUnmatched(response) {
+    var $container = $('.unmatched_container');
+    $container.empty();
+    for (var i = 0; i < response.results.length; i++) {
+        $container.append(unmatchedHTML(response.results[i]));
+    }
+}
+
 // Get a human friendly description of a timestamp that's relative to current time
 function getReadableTime(timestamp) {
     var now = Date.now();
@@ -620,6 +657,13 @@ $(document).ready(function() {
             $(this).val('Refresh');
         }
         fetchFeedback();
+    });
+
+    $('#refresh_unmatched_btn').on('click', function() {
+        if ($(this).val() === 'Load') {
+            $(this).val('Refresh');
+        }
+        fetchUnmatched();
     });
 
     listenForEnter();
