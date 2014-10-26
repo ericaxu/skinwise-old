@@ -92,7 +92,7 @@ function fetchNextPage(type) {
             postToAPI('/product/filter', {
                 types: getSelectedFilters('type'),
                 brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-                ingredients: getSelectedFilters('ingredient'),
+                ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         }
@@ -121,7 +121,7 @@ function refetch(type) {
         postToAPI('/product/filter', {
             types: getSelectedFilters('type'),
             brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-            ingredients: getSelectedFilters('ingredient'),
+            ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
             page: 0
         }, refetch_callback);
     } else if (type === 'ingredient') {
