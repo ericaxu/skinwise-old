@@ -9,9 +9,9 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.Page;
-import src.models.Permissible;
 import src.models.feedback.Report;
+import src.models.user.Permissible;
+import src.models.util.Page;
 
 import java.util.ArrayList;
 import java.util.List;

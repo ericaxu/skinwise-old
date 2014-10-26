@@ -2,10 +2,10 @@ package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.Page;
 import src.models.util.BaseModel;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
+import src.models.util.Page;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -20,7 +20,7 @@ public class Alias extends NamedModel {
 	private transient long ingredient_id_old = 0;
 	private transient boolean ingredient_id_changed = false;
 
-	//Get/Set
+	//Getters
 
 	public long getIngredient_id() {
 		//Changed, let's still use the old value until the new one is flushed to DB.
@@ -29,6 +29,8 @@ public class Alias extends NamedModel {
 		}
 		return ingredient_id;
 	}
+
+	//Setters
 
 	public void setIngredient_id(long ingredient_id) {
 		if (ingredient_id == this.ingredient_id) {

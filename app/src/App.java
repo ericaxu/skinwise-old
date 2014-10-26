@@ -1,7 +1,7 @@
 package src;
 
 import src.models.MemCache;
-import src.models.Permissible;
+import src.models.user.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
 import src.util.Backup;

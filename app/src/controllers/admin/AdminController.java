@@ -8,7 +8,7 @@ import src.controllers.api.request.BadRequestException;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.util.ResponseState;
-import src.models.Permissible;
+import src.models.user.Permissible;
 import src.util.Logger;
 import views.html.admin;
 import views.html.editor;

@@ -14,10 +14,10 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.MemCache;
-import src.models.Permissible;
 import src.models.data.Brand;
 import src.models.data.Product;
 import src.models.data.ProductType;
+import src.models.user.Permissible;
 import src.models.util.BaseModel;
 
 public class AdminProductController extends Controller {

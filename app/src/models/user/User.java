@@ -1,8 +1,7 @@
 package src.models.user;
 
 import play.db.ebean.Model;
-import src.models.Page;
-import src.models.Permissible;
+import src.models.util.Page;
 import src.util.BCrypt;
 
 import javax.persistence.*;

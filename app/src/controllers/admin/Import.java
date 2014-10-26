@@ -295,6 +295,7 @@ public class Import {
 		ConcurrentMap<String, Alias> results = new ConcurrentHashMap<>();
 
 		int threads = Runtime.getRuntime().availableProcessors() - 1;
+		Logger.debug(TAG, "Using " + threads + " threads to match ingredients");
 		JoinableExecutor executor = new JoinableExecutor(Executors.newFixedThreadPool(threads));
 
 		for (String name : ingredients) {

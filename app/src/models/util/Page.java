@@ -1,4 +1,4 @@
-package src.models;
+package src.models.util;
 
 import com.avaje.ebean.PagingList;
 import com.avaje.ebean.Query;
@@ -34,7 +34,7 @@ public class Page {
 	public static int sqlCount(String query) throws SQLException {
 		Connection connection = DB.getConnection();
 		Statement statement = connection.createStatement();
-		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ") AS t");
+		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ") AS c");
 		result_set.next();
 		int count = result_set.getInt("COUNT(*)");
 		result_set.close();

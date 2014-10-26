@@ -5,10 +5,10 @@ import gnu.trove.list.TLongList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
-import src.models.Page;
 import src.models.util.BaseModel;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
+import src.models.util.Page;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -78,25 +78,27 @@ public class Product extends NamedModel {
 		this.image = image;
 	}
 
-	//Relations
+	//Brand relations
 
 	public Brand getBrand() {
 		return App.cache().brands.get(brand_id);
-	}
-
-	public ProductType getType() {
-		return App.cache().types.get(product_type_id);
 	}
 
 	public void setBrand(Brand brand) {
 		setBrand_id(BaseModel.getIdIfExists(brand));
 	}
 
+	//ProductType relations
+
+	public ProductType getType() {
+		return App.cache().types.get(product_type_id);
+	}
+
 	public void setType(ProductType type) {
 		setProduct_type_id(BaseModel.getIdIfExists(type));
 	}
 
-	//Ingredients
+	//Aliases relations
 
 	private transient List<Alias> ingredients_cache;
 	private transient List<Alias> ingredients_new;

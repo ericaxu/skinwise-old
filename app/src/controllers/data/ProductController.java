@@ -13,8 +13,8 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.MemCache;
-import src.models.Page;
 import src.models.data.*;
+import src.models.util.Page;
 import views.html.product;
 
 import java.util.ArrayList;

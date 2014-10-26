@@ -5,9 +5,9 @@ import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.Page;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
+import src.models.util.Page;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -148,6 +148,7 @@ public class Ingredient extends NamedModel {
 			Ebean.endTransaction();
 		}
 	}
+
 	//Static
 
 	public static final String TABLENAME = "ingredient";

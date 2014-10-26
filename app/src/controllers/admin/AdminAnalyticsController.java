@@ -7,8 +7,8 @@ import src.controllers.api.request.BadRequestException;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.Permissible;
 import src.models.feedback.Analytics;
+import src.models.user.Permissible;
 import src.models.user.User;
 
 import java.util.List;

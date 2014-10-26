@@ -6,7 +6,7 @@ import src.controllers.api.Api;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.Permissible;
+import src.models.user.Permissible;
 import src.util.Logger;
 import views.html.error.error404;
 import views.html.error.error500;

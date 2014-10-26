@@ -7,7 +7,6 @@ import src.models.util.ManyToMany;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -74,19 +73,5 @@ public class IngredientFunction extends BaseModel implements ManyToMany {
 
 	public static List<IngredientFunction> all() {
 		return find.all();
-	}
-
-	public static List<IngredientFunction> byIngredientId(long ingredient_id) {
-		if (BaseModel.isIdNull(ingredient_id)) {
-			return new ArrayList<>();
-		}
-		return find.where().eq("ingredient_id", ingredient_id).findList();
-	}
-
-	public static List<IngredientFunction> byFunctionId(long function_id) {
-		if (BaseModel.isIdNull(function_id)) {
-			return new ArrayList<>();
-		}
-		return find.where().eq("function_id", function_id).findList();
 	}
 }

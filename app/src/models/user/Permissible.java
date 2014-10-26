@@ -1,4 +1,4 @@
-package src.models;
+package src.models.user;
 
 import src.models.util.BaseModel;
 
@@ -85,13 +85,11 @@ public abstract class Permissible extends BaseModel {
 
 	public static class INGREDIENT {
 		public static final String ALL = "INGREDIENT.*";
-		public static final String VIEW = "INGREDIENT.VIEW";
 		public static final String EDIT = "INGREDIENT.EDIT";
 	}
 
 	public static class PRODUCT {
 		public static final String ALL = "PRODUCT.*";
-		public static final String VIEW = "PRODUCT.VIEW";
 		public static final String EDIT = "PRODUCT.EDIT";
 	}
 
@@ -99,11 +97,6 @@ public abstract class Permissible extends BaseModel {
 		public static final String ALL = "REPORT.*";
 		public static final String VIEW = "REPORT.VIEW";
 		public static final String RESOLVE = "REPORT.RESOLVE";
-	}
-
-	public static class USER {
-		public static final String ALL = "USER.*";
-		public static final String FEEDBACK = "USER.FEEDBACK";
 	}
 
 	public static boolean hasPermission(Set<String> permissions, String permission) {

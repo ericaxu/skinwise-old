@@ -12,7 +12,7 @@ import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.api.response.ResponseMessage;
 import src.controllers.util.ResponseState;
-import src.models.Permissible;
+import src.models.user.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
 

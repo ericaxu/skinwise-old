@@ -1,3 +1,5 @@
+@import src.models.user.Permissible
+
 @(title: String, state: src.controllers.util.ResponseState)(head: => Html)(body: => Html)(scripts: => Html)
 
 <!DOCTYPE html>
@@ -48,7 +50,7 @@
                 <!--<li id="signup_link"><a href="#">Sign up</a></li>-->
                 @*<li id="login_link"><a href="#">Sign in</a></li>*@
             } else {
-                @if(state.userHasPermission(src.models.Permissible.ALL)) {
+                @if(state.userHasPermission(Permissible.ALL)) {
                     <li><a href="/admin">Admin</a></li>
                     <li><a href="/editor">Editor</a></li>
                 }

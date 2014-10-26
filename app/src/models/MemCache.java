@@ -689,7 +689,6 @@ public class MemCache {
 	}
 
 	//MemCache
-
 	public NamedIndex<Function> functions;
 	public NamedIndex<Brand> brands;
 	public NamedIndex<ProductType> types;
@@ -697,12 +696,10 @@ public class MemCache {
 	public NamedIndex<Alias> alias;
 	public ProductIndex products;
 
-	//Relations
 	public OneToManyIndex<Alias> ingredient_alias;
 	public ManyToManyIndex<IngredientFunction> ingredient_function;
 	public ManyToManyIndex<ProductIngredient> product_ingredient;
 
-	//Others
 	public Matcher matcher;
 
 	public MemCache() {
@@ -731,6 +728,7 @@ public class MemCache {
 		ingredient_alias.cache();
 		ingredient_function.cache();
 		product_ingredient.cache();
+
 		System.gc();
 	}
 }

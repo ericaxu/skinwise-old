@@ -13,10 +13,10 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.Permissible;
 import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
+import src.models.user.Permissible;
 import src.models.util.BaseModel;
 
 import java.util.HashSet;
