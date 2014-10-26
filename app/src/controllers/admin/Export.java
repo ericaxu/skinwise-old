@@ -62,7 +62,7 @@ public class Export {
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
-		for (Alias name : object.getNames()) {
+		for (Alias name : object.getAliases()) {
 			result.names.add(name.getName());
 		}
 		Collections.sort(result.functions);

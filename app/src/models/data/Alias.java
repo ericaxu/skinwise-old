@@ -17,22 +17,35 @@ import java.util.Set;
 public class Alias extends NamedModel {
 
 	private long ingredient_id;
+	private transient long ingredient_id_old = 0;
+	private transient boolean ingredient_id_changed = false;
 
 	//Get/Set
 
 	public long getIngredient_id() {
+		//Changed, let's still use the old value until the new one is flushed to DB.
+		if (ingredient_id_changed) {
+			return ingredient_id_old;
+		}
 		return ingredient_id;
 	}
 
 	public void setIngredient_id(long ingredient_id) {
-		if (ingredient_id != this.ingredient_id) {
-			App.cache().ingredient_alias.remove(this);
+		if (ingredient_id == this.ingredient_id) {
+			//Nothing changed, switch back to unchanged if necessary
+			ingredient_id_changed = false;
+		}
+		else {
+			//Changed, keep a copy of old value
+			if (!ingredient_id_changed) {
+				ingredient_id_old = this.ingredient_id;
+			}
 			this.ingredient_id = ingredient_id;
-			App.cache().ingredient_alias.add(this);
+			ingredient_id_changed = true;
 		}
 	}
 
-	//ManyToOne Relations
+	//Ingredient relation
 
 	public Ingredient getIngredient() {
 		return App.cache().ingredients.get(ingredient_id);
@@ -43,7 +56,7 @@ public class Alias extends NamedModel {
 		setIngredient_id(id);
 	}
 
-	//ManyToMany Relations
+	//Products relation
 
 	public Set<ProductIngredient> getPairs() {
 		return App.cache().product_ingredient.getR(this.getId());
@@ -53,6 +66,20 @@ public class Alias extends NamedModel {
 
 	public String getDisplayName() {
 		return WordUtils.capitalizeFully(getName());
+	}
+
+	@Override
+	public void save() {
+		if (ingredient_id_changed) {
+			App.cache().ingredient_alias.remove(getId(), ingredient_id_old);
+		}
+
+		super.save();
+
+		if (ingredient_id_changed) {
+			App.cache().ingredient_alias.add(getId(), ingredient_id);
+			ingredient_id_changed = false;
+		}
 	}
 
 	//Static

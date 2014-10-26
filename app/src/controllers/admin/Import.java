@@ -100,8 +100,8 @@ public class Import {
 				Ingredient ingredient = name.getIngredient();
 				if (ingredient != null) {
 					name = new Alias();
-					name.setIngredient(ingredient);
 					name.setName(string);
+					name.setIngredient(ingredient);
 					pending.add(name);
 				}
 			}
@@ -117,22 +117,23 @@ public class Import {
 		//Second pass
 		Logger.debug(TAG, "Ingredient names - second pass");
 		for (String string : allIngredients) {
-			Alias name = cache.matcher.matchAlias(string);
+			Alias alias = cache.matcher.matchAlias(string);
 
-			if (name == null) {
-				name = new Alias();
+			if (alias == null) {
+				alias = new Alias();
 			}
-			else if (!name.getName().equalsIgnoreCase(string)) {
-				Ingredient ingredient = name.getIngredient();
-				name = new Alias();
-				name.setIngredient(ingredient);
+			else if (!alias.getName().equalsIgnoreCase(string)) {
+				alias = new Alias();
+				Ingredient ingredient = alias.getIngredient();
+				alias.setIngredient(ingredient);
 			}
 			else {
 				continue;
 			}
-			name.setName(string);
-			name.save();
-			cache.alias.update(name);
+
+			alias.setName(string);
+			alias.save();
+			cache.alias.update(alias);
 		}
 
 		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
@@ -240,12 +241,11 @@ public class Import {
 		result.setName(object.name);
 		result.setCas_number(object.cas_no);
 		result.setDescription(object.description);
+		result.setFunctions(functionList);
 
 		result.save();
 
 		cache.ingredients.update(result);
-
-		result.saveFunctions(functionList);
 
 		createAlias(object.name, result, cache);
 
