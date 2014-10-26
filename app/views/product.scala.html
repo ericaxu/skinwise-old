@@ -15,7 +15,7 @@
 
     <div class="ingredient_container">
         <h1 class="name">@product.getName</h1>
-        <h3 class="brand">by @product.getBrandName</h3>
+        <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
         @if(product.hasDescription) {
             <div class="claim">
                 <h3>What It Does</h3>
