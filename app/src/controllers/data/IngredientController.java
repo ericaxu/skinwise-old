@@ -32,18 +32,18 @@ public class IngredientController extends Controller {
 		public String cas_number;
 		public String description;
 		public List<String> functions;
-		public List<String> names;
+		public List<String> aliases;
 		public long popularity;
 
 		public ResponseIngredient(long id, String name,
 		                          String cas_number, String description,
-		                          List<String> functions, List<String> names, long popularity) {
+		                          List<String> functions, List<String> aliases, long popularity) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
 			this.description = description;
 			this.functions = functions;
-			this.names = names;
+			this.aliases = aliases;
 			this.popularity = popularity;
 		}
 	}
@@ -59,17 +59,17 @@ public class IngredientController extends Controller {
 		public String cas_number;
 		public String description;
 		public long[] functions;
-		public List<String> names;
+		public List<String> aliases;
 
 		public ResponseIngredientObject(long id, String name,
 		                                String cas_number, String description,
-		                                long[] functions, List<String> names) {
+		                                long[] functions, List<String> aliases) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
 			this.description = description;
 			this.functions = functions;
-			this.names = names;
+			this.aliases = aliases;
 		}
 	}
 
@@ -153,7 +153,7 @@ public class IngredientController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_ingredient_name_unmatched() {
+	public static Result api_alias_unmatched() {
 		ResponseState state = new ResponseState(session());
 
 		try {

@@ -18,7 +18,6 @@ import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
 import src.models.util.BaseModel;
-import src.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +39,7 @@ public class AdminIngredientController extends Controller {
 		public List<String> functions;
 	}
 
-	public static class RequestIngredientNameUpdate extends Request {
+	public static class RequestAliasUpdate extends Request {
 		public long id;
 		public long ingredient_id;
 		@NotEmpty
@@ -98,13 +97,13 @@ public class AdminIngredientController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_ingredient_name_update() {
+	public static Result api_alias_update() {
 		ResponseState state = new ResponseState(session());
 
 		try {
 			state.requirePermission(Permissible.INGREDIENT.EDIT);
 
-			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
+			RequestAliasUpdate request = Api.read(ctx(), RequestAliasUpdate.class);
 
 			Alias result;
 			if (request.id == BaseModel.NEW_ID) {
