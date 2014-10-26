@@ -30,7 +30,9 @@ function getFilterHTML(filter_obj, filter_key, type) {
             confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
                 removeFilter(type, filter_key, filter_obj.id);
                 $option.remove();
-                refetch(type);
+                if ($option.hasClass('selected')) {
+                    refetch(type);
+                }
             }, this));
         }));
 
@@ -85,7 +87,7 @@ function fetchNextPage(type) {
         } else if (type === 'product') {
             postToAPI('/product/filter', {
                 types: getSelectedFilters('type'),
-                brands: getSelectedFilters('brand'),
+                brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
                 ingredients: getSelectedFilters('ingredient'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
@@ -114,7 +116,7 @@ function refetch(type) {
         $('.products_list ul').empty();
         postToAPI('/product/filter', {
             types: getSelectedFilters('type'),
-            brands: getSelectedFilters('brand'),
+            brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
             ingredients: getSelectedFilters('ingredient'),
             page: 0
         }, refetch_callback);
