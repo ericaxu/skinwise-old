@@ -30,7 +30,9 @@ function setupIngredientInfobox() {
                 ingredient_info.appendTo('body');
                 ingredient_info.append($('<p/>', {text: ingredient_data.description}));
                 $('.ingredient_infobox').remove();
-                ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: e.pageX + 5});
+                log(e.pageX + 10, $(document).width() - 400);
+                var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
+                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
             }
         }, SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
@@ -73,7 +75,10 @@ function setupFunctionInfobox() {
                 func_info.appendTo('body');
                 func_info.append($('<p/>', {text: func_data.description}));
                 $('.function_infobox').remove();
-                func_info.addClass('function_infobox').show().offset({top: e.pageY + 10, left: e.pageX + 10});
+
+                log(e.pageX + 10, $(document).width());
+                var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
+                func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
             }
         }, SW.FUNC_BOX.TIMEOUT);
     }).on('mouseleave', '.function', function() {
