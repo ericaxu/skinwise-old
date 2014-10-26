@@ -47,9 +47,9 @@ public class ProductController extends Controller {
 		public long id;
 		public String name;
 		public String description;
-		public List<Long> functions;
+		public long[] functions;
 
-		public ResponseIngredientObject(long id, String name, String description, List<Long> functions) {
+		public ResponseIngredientObject(long id, String name, String description, long[] functions) {
 			this.id = id;
 			this.name = name;
 			this.description = description;
@@ -98,7 +98,7 @@ public class ProductController extends Controller {
 	public static Result product(long product_id) {
 		ResponseState state = new ResponseState(session());
 
-		Product result = App.cache().products.get(product_id, true);
+		Product result = App.cache().products.get(product_id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -112,7 +112,7 @@ public class ProductController extends Controller {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id, true);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
@@ -268,18 +268,18 @@ public class ProductController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Product result = App.cache().products.get(request.id, true);
+			Product result = App.cache().products.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Product not found");
 			}
 
 			Set<Ingredient> ingredients = new HashSet<>();
 
-			List<ProductIngredient> links = result.getIngredientLinks();
+			List<ProductIngredient> links = result.getProductIngredients();
 
 			for (ProductIngredient link : links) {
-				if (link.getIngredient_name().getIngredient() != null) {
-					ingredients.add(link.getIngredient_name().getIngredient());
+				if (link.getAlias().getIngredient() != null) {
+					ingredients.add(link.getAlias().getIngredient());
 				}
 			}
 
@@ -289,7 +289,7 @@ public class ProductController extends Controller {
 						ingredient.getId(),
 						WordUtils.capitalizeFully(ingredient.getName()),
 						ingredient.getDescription(),
-						ingredient.getFunctionIds()
+						ingredient.getFunctionIds().toArray()
 				));
 			}
 

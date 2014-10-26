@@ -1,6 +1,6 @@
 package src.models.feedback;
 
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.user.User;
 
 import javax.persistence.Column;

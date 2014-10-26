@@ -1,32 +1,32 @@
 package src.models.data;
 
-import src.models.BaseModel;
+import src.App;
+import src.models.util.BaseFinder;
+import src.models.util.BaseModel;
+import src.models.util.ManyToMany;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Comparator;
+import java.util.List;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
-public class ProductIngredient extends BaseModel {
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
-
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "ingredient_name_id", referencedColumnName = "id")
-	private IngredientName ingredient_name;
+public class ProductIngredient extends BaseModel implements ManyToMany {
+	private long product_id;
+	private long alias_id;
 
 	private int item_order;
 	private boolean is_key;
 
 	//Getters
 
-	public Product getProduct() {
-		return product;
+	public long getProduct_id() {
+		return product_id;
 	}
 
-	public IngredientName getIngredient_name() {
-		return ingredient_name;
+	public long getAlias_id() {
+		return alias_id;
 	}
 
 	public boolean isIs_key() {
@@ -39,12 +39,12 @@ public class ProductIngredient extends BaseModel {
 
 	//Setters
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProduct_id(long product_id) {
+		this.product_id = product_id;
 	}
 
-	public void setIngredient_name(IngredientName ingredient_name) {
-		this.ingredient_name = ingredient_name;
+	public void setAlias_id(long alias_id) {
+		this.alias_id = alias_id;
 	}
 
 	public void setIs_key(boolean is_key) {
@@ -55,9 +55,45 @@ public class ProductIngredient extends BaseModel {
 		this.item_order = item_order;
 	}
 
+	//Relations
+
+	public Product getProduct() {
+		return App.cache().products.get(product_id);
+	}
+
+	public Alias getAlias() {
+		return App.cache().alias.get(alias_id);
+	}
+
+	public void setProduct(Product product) {
+		setProduct_id(BaseModel.getIdIfExists(product));
+	}
+
+	public void setAlias(Alias alias) {
+		setAlias_id(BaseModel.getIdIfExists(alias));
+	}
+
+	//ManyToMany relations
+
+	@Override
+	public long getLeftId() {
+		return getProduct_id();
+	}
+
+	@Override
+	public long getRightId() {
+		return getAlias_id();
+	}
+
 	//Static
 
 	public static final String TABLENAME = "product_ingredient";
+
+	public static BaseFinder<ProductIngredient> find = new BaseFinder<>(ProductIngredient.class);
+
+	public static List<ProductIngredient> all() {
+		return find.all();
+	}
 
 	public static final Sorter sorter = new Sorter();
 

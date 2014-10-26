@@ -2,6 +2,7 @@ package src.controllers.userdata;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import src.App;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotEmpty;
@@ -10,10 +11,10 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
 import src.models.data.Product;
 import src.models.userdata.Routine;
 import src.models.userdata.RoutineItem;
+import src.models.util.BaseModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class RoutineController extends Controller {
 
 			List<RoutineItem> items = new ArrayList<>();
 			for (long product_id : request.product_ids) {
-				Product product = Product.byId(product_id);
+				Product product = App.cache().products.get(product_id);
 				if (product == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Product " + product_id + " not found");
 				}

@@ -13,11 +13,12 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
 import src.models.Permissible;
+import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.util.BaseModel;
+import src.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,13 +29,12 @@ public class AdminIngredientController extends Controller {
 
 	public static class RequestIngredientUpdate extends Request {
 		public long id;
-		@NotEmpty
-		public String name;
-		@NotEmpty
-		public String cas_number;
-		@NotNull
 		public long popularity;
 		@NotEmpty
+		public String name;
+		@NotNull
+		public String cas_number;
+		@NotNull
 		public String description;
 		@NotNull
 		public List<String> functions;
@@ -61,7 +61,7 @@ public class AdminIngredientController extends Controller {
 				result = new Ingredient();
 			}
 			else {
-				result = Ingredient.byId(request.id);
+				result = App.cache().ingredients.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.id + " not found");
 				}
@@ -76,12 +76,19 @@ public class AdminIngredientController extends Controller {
 				functions.add(function);
 			}
 
-			result.setCas_number(request.cas_number);
-			result.setDescription(request.description);
-			result.setPopularity(request.popularity);
-			result.setFunctions(functions);
+			String oldName = result.getName();
 
-			App.cache().ingredients.updateNameAndSave(result, request.name);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setCas_number(request.cas_number);
+				result.setDescription(request.description);
+				result.setPopularity(request.popularity);
+				result.save();
+
+				App.cache().ingredients.update(result, oldName);
+
+				result.saveFunctions(functions);
+			}
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
 		}
@@ -99,12 +106,12 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientNameUpdate request = Api.read(ctx(), RequestIngredientNameUpdate.class);
 
-			IngredientName result;
+			Alias result;
 			if (request.id == BaseModel.NEW_ID) {
-				result = new IngredientName();
+				result = new Alias();
 			}
 			else {
-				result = IngredientName.byId(request.id);
+				result = App.cache().alias.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
 				}
@@ -115,15 +122,21 @@ public class AdminIngredientController extends Controller {
 				ingredient = null;
 			}
 			else {
-				ingredient = Ingredient.byId(request.ingredient_id);
+				ingredient = App.cache().ingredients.get(request.ingredient_id);
 				if (ingredient == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
 				}
 			}
 
-			result.setIngredient(ingredient);
+			String oldName = result.getName();
 
-			App.cache().ingredient_names.updateNameAndSave(result, request.name);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setIngredient(ingredient);
+				result.save();
+
+				App.cache().alias.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}
@@ -146,15 +159,20 @@ public class AdminIngredientController extends Controller {
 				result = new Function();
 			}
 			else {
-				result = Function.byId(request.id);
+				result = App.cache().functions.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
 				}
 			}
+			String oldName = result.getName();
 
-			result.setDescription(request.description);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
 
-			App.cache().functions.updateNameAndSave(result, request.name);
+				App.cache().functions.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}

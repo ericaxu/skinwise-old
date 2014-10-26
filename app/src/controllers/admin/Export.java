@@ -18,8 +18,6 @@ public class Export {
 		DBFormat result = new DBFormat();
 		MemCache cache = App.cache();
 
-		cache.init();
-
 		Logger.debug(TAG, "Exporting functions");
 		for (Function object : cache.functions.all()) {
 			result.ingredient_functions.add(export(object));
@@ -31,12 +29,8 @@ public class Export {
 		}
 
 		Logger.debug(TAG, "Exporting ingredients");
-		IngredientRelations relations = new IngredientRelations();
-		relations.cacheIngredients(cache.ingredients.all(),
-				cache.ingredient_names.all(),
-				cache.functions.all());
 		for (Ingredient object : cache.ingredients.all()) {
-			result.ingredients.add(export(object, relations));
+			result.ingredients.add(export(object));
 		}
 
 		Logger.debug(TAG, "Exporting product types");
@@ -60,13 +54,17 @@ public class Export {
 		return result;
 	}
 
-	public static DBFormat.IngredientObject export(Ingredient object, IngredientRelations relations) {
+	public static DBFormat.IngredientObject export(Ingredient object) {
 		DBFormat.IngredientObject result = new DBFormat.IngredientObject();
 		result.name = object.getName();
 		result.cas_no = object.getCas_number();
 		result.description = object.getDescription();
-		result.functions.addAll(relations.getIngredientFunctions(object));
-		result.names.addAll(relations.getIngredientNames(object));
+		for (Function function : object.getFunctions()) {
+			result.functions.add(function.getName());
+		}
+		for (Alias name : object.getNames()) {
+			result.names.add(name.getName());
+		}
 		Collections.sort(result.functions);
 		Collections.sort(result.names);
 		return result;
@@ -94,64 +92,15 @@ public class Export {
 		result.description = object.getDescription();
 		result.image = object.getImage();
 		List<String> key_ingredients = new ArrayList<>();
-		for (IngredientName ing : object.getKey_ingredients()) {
+		for (Alias ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());
 		}
 		List<String> ingredients = new ArrayList<>();
-		for (IngredientName ing : object.getIngredients()) {
+		for (Alias ing : object.getIngredients()) {
 			ingredients.add(ing.getName());
 		}
 		result.key_ingredients = StringUtils.join(key_ingredients, ',');
 		result.ingredients = StringUtils.join(ingredients, ',');
 		return result;
-	}
-
-	public static class IngredientRelations {
-		public Map<Ingredient, List<IngredientName>> ingredient_to_names = new HashMap<>();
-		public Map<Ingredient, List<Function>> ingredient_to_function = new HashMap<>();
-
-		private void cacheIngredientName(IngredientName name) {
-			String key = name.getName().toLowerCase();
-			String[] words = key.split("[^a-zA-Z0-9]");
-			Set<String> set = new HashSet<>(Arrays.asList(words));
-			set.remove("");
-		}
-
-		public void cacheIngredients(Collection<Ingredient> ingredients,
-		                             Collection<IngredientName> names,
-		                             Collection<Function> functions) {
-			for (Ingredient i : ingredients) {
-				ingredient_to_function.put(i, new ArrayList<>());
-				ingredient_to_names.put(i, new ArrayList<>());
-			}
-
-			for (IngredientName name : names) {
-				if (name.getIngredient() != null) {
-					ingredient_to_names.get(name.getIngredient()).add(name);
-				}
-			}
-
-			for (Function func : functions) {
-				for (Ingredient i : func.getIngredients()) {
-					ingredient_to_function.get(i).add(func);
-				}
-			}
-		}
-
-		public List<String> getIngredientNames(Ingredient ingredient) {
-			List<String> result = new ArrayList<>();
-			for (IngredientName name : ingredient_to_names.get(ingredient)) {
-				result.add(name.getName());
-			}
-			return result;
-		}
-
-		public List<String> getIngredientFunctions(Ingredient ingredient) {
-			List<String> result = new ArrayList<>();
-			for (Function func : ingredient_to_function.get(ingredient)) {
-				result.add(func.getName());
-			}
-			return result;
-		}
 	}
 }

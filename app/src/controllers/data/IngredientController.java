@@ -11,13 +11,13 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
+import src.models.util.BaseModel;
 import src.models.MemCache;
 import src.models.Page;
 import src.models.Permissible;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.IngredientName;
+import src.models.data.Alias;
 import views.html.ingredient;
 
 import java.util.ArrayList;
@@ -58,12 +58,12 @@ public class IngredientController extends Controller {
 		public String name;
 		public String cas_number;
 		public String description;
-		public List<Long> functions;
+		public long[] functions;
 		public List<String> names;
 
 		public ResponseIngredientObject(long id, String name,
 		                                String cas_number, String description,
-		                                List<Long> functions, List<String> names) {
+		                                long[] functions, List<String> names) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
@@ -81,7 +81,7 @@ public class IngredientController extends Controller {
 	public static Result ingredient(long id) {
 		ResponseState state = new ResponseState(session());
 
-		Ingredient result = App.cache().ingredients.get(id, true);
+		Ingredient result = App.cache().ingredients.get(id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
@@ -94,7 +94,7 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
-			Ingredient result = App.cache().ingredients.get(request.id, true);
+			Ingredient result = App.cache().ingredients.get(request.id);
 			if (result == null) {
 				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
 			}
@@ -140,7 +140,7 @@ public class IngredientController extends Controller {
 						ingredient.getDisplayName(),
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
-						ingredient.getFunctionIds(),
+						ingredient.getFunctionIds().toArray(),
 						ingredient.getNamesString()
 				));
 			}
@@ -159,11 +159,11 @@ public class IngredientController extends Controller {
 		try {
 			Api.RequestGetAllByPage request = Api.read(ctx(), Api.RequestGetAllByPage.class);
 
-			List<IngredientName> result = IngredientName.unmatched(new Page(request.page));
+			List<Alias> result = Alias.unmatched(new Page(request.page));
 
 			Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
 
-			for (IngredientName object : result) {
+			for (Alias object : result) {
 				response.results.add(new Api.ResponseNamedModelObject(
 						object.getId(),
 						object.getName(),

@@ -1,9 +1,18 @@
 package src.models.data;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
+import src.App;
 import src.models.Page;
+import src.models.util.BaseModel;
+import src.models.util.NamedFinder;
+import src.models.util.NamedModel;
 import src.util.Util;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +23,9 @@ import java.util.Set;
 public class Product extends NamedModel {
 	private long popularity;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "brand_id", referencedColumnName = "id")
-	private Brand brand;
+	private long brand_id;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "type_id", referencedColumnName = "id")
-	private ProductType type;
+	private long product_type_id;
 
 	@Column(length = 1023)
 	private String line;
@@ -28,23 +33,18 @@ public class Product extends NamedModel {
 	@Column(length = 1023)
 	private String image;
 
-	//Relation table
-
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "product")
-	private List<ProductIngredient> ingredient_links = new ArrayList<>();
-
 	//Getters
 
 	public long getPopularity() {
 		return popularity;
 	}
 
-	public Brand getBrand() {
-		return brand;
+	public long getBrand_id() {
+		return brand_id;
 	}
 
-	public ProductType getType() {
-		return type;
+	public long getProduct_type_id() {
+		return product_type_id;
 	}
 
 	public String getLine() {
@@ -55,22 +55,18 @@ public class Product extends NamedModel {
 		return image;
 	}
 
-	public List<ProductIngredient> getIngredientLinks() {
-		return ingredient_links;
-	}
-
 	//Setters
 
 	public void setPopularity(long popularity) {
 		this.popularity = popularity;
 	}
 
-	public void setBrand(Brand brand) {
-		this.brand = brand;
+	public void setBrand_id(long brand_id) {
+		this.brand_id = brand_id;
 	}
 
-	public void setType(ProductType type) {
-		this.type = type;
+	public void setProduct_type_id(long product_type_id) {
+		this.product_type_id = product_type_id;
 	}
 
 	public void setLine(String line) {
@@ -81,166 +77,162 @@ public class Product extends NamedModel {
 		this.image = image;
 	}
 
-	public void setIngredientLinks(List<ProductIngredient> ingredient_links) {
-		this.ingredient_links = ingredient_links;
-		ingredients_cache = null;
-		key_ingredients_cache = null;
+	//Relations
+
+	public Brand getBrand() {
+		return App.cache().brands.get(brand_id);
+	}
+
+	public ProductType getType() {
+		return App.cache().types.get(product_type_id);
+	}
+
+	public void setBrand(Brand brand) {
+		setBrand_id(BaseModel.getIdIfExists(brand));
+	}
+
+	public void setType(ProductType type) {
+		setProduct_type_id(BaseModel.getIdIfExists(type));
+	}
+
+	//Ingredients
+
+	private transient List<Alias> ingredients;
+	private transient List<Alias> key_ingredients;
+
+	public List<ProductIngredient> getProductIngredients() {
+		Set<ProductIngredient> result = App.cache().product_ingredient.getL(getId());
+		List<ProductIngredient> list = new ArrayList<>(result);
+		Collections.sort(list, ProductIngredient.sorter);
+		return list;
+	}
+
+	public List<Alias> getIngredients() {
+		if (ingredients == null) {
+			List<ProductIngredient> pairs = getProductIngredients();
+			ingredients = new ArrayList<>();
+			for (ProductIngredient pair : pairs) {
+				if (!pair.isIs_key()) {
+					ingredients.add(pair.getAlias());
+				}
+			}
+		}
+		return ingredients;
+	}
+
+	public List<Alias> getKey_ingredients() {
+		if (key_ingredients == null) {
+			List<ProductIngredient> pairs = getProductIngredients();
+			key_ingredients = new ArrayList<>();
+			for (ProductIngredient pair : pairs) {
+				if (pair.isIs_key()) {
+					key_ingredients.add(pair.getAlias());
+				}
+			}
+		}
+		return key_ingredients;
+	}
+
+	public void saveIngredients(List<Alias> newIngredients,
+	                            List<Alias> newKeyIngredients) {
+		List<ProductIngredient> pairs = getProductIngredients();
+		for (ProductIngredient pair : pairs) {
+			pair.delete();
+			App.cache().product_ingredient.remove(pair);
+		}
+
+		ingredients = newIngredients;
+		key_ingredients = newKeyIngredients;
+
+		refreshIngredientList(newIngredients, false);
+		refreshIngredientList(newKeyIngredients, true);
+	}
+
+	private void refreshIngredientList(List<Alias> list, boolean is_key) {
+		for (int i = 0; i < list.size(); i++) {
+			ProductIngredient pair = new ProductIngredient();
+			pair.setAlias(list.get(i));
+			pair.setProduct(this);
+			pair.setIs_key(is_key);
+			pair.setItem_order(i);
+			pair.save();
+			App.cache().product_ingredient.add(pair);
+		}
 	}
 
 	//Others
 
 	public String getBrandName() {
-		if (brand == null) {
+		if (getBrand() == null) {
 			return "";
 		}
-		return brand.getName();
+		return getBrand().getName();
 	}
 
 	public String getTypeName() {
-		if (type == null) {
+		if (getType() == null) {
 			return "";
 		}
-		return type.getName();
-	}
-
-	private transient List<IngredientName> ingredients_cache;
-	private transient List<IngredientName> key_ingredients_cache;
-
-	public List<IngredientName> getIngredients() {
-		if (ingredients_cache == null) {
-			ingredients_cache = new ArrayList<>();
-			List<ProductIngredient> list = getIngredientLinks();
-			Collections.sort(list, ProductIngredient.sorter);
-			for (ProductIngredient link : list) {
-				if (!link.isIs_key()) {
-					ingredients_cache.add(link.getIngredient_name());
-				}
-			}
-		}
-		return ingredients_cache;
-	}
-
-	public List<IngredientName> getKey_ingredients() {
-		if (key_ingredients_cache == null) {
-			key_ingredients_cache = new ArrayList<>();
-			List<ProductIngredient> list = getIngredientLinks();
-			Collections.sort(list, ProductIngredient.sorter);
-			for (ProductIngredient link : list) {
-				if (link.isIs_key()) {
-					key_ingredients_cache.add(link.getIngredient_name());
-				}
-			}
-		}
-		return key_ingredients_cache;
-	}
-
-	public void setIngredientList(List<IngredientName> ingredients,
-	                              List<IngredientName> key_ingredients) {
-
-		List<ProductIngredient> old_links = getIngredientLinks();
-		for (ProductIngredient link : old_links) {
-			link.delete();
-		}
-
-		List<ProductIngredient> ingredient_links = new ArrayList<>();
-		int i = 0;
-
-		for (IngredientName ingredient : ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(this);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(false);
-			item.setItem_order(i);
-			i++;
-			ingredient_links.add(item);
-		}
-
-		for (IngredientName ingredient : key_ingredients) {
-			ProductIngredient item = new ProductIngredient();
-			item.setProduct(this);
-			item.setIngredient_name(ingredient);
-			item.setIs_key(true);
-			item.setItem_order(i);
-			i++;
-			ingredient_links.add(item);
-		}
-
-		setIngredientLinks(ingredient_links);
+		return getType().getName();
 	}
 
 	@Override
 	public void refresh() {
-		ingredients_cache = null;
-		key_ingredients_cache = null;
+		ingredients = null;
+		key_ingredients = null;
 		super.refresh();
 	}
 
 	//Static
 
 	public static final String TABLENAME = "product";
+	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static Finder<Long, Product> find = new Finder<>(Long.class, Product.class);
-
-	public static List<Product> all() {
-		return find.all();
-
-	}
-
-	public static Product byId(long id) {
-		return find.byId(id);
-	}
-
-	public static Product byBrandAndName(Brand brand, String name) {
-		return find.where()
-				.eq("brand", brand)
-				.eq("name", name)
-				.findUnique();
-	}
-
-	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredients, Page page) {
-		if (brands.length == 0 && types.length == 0 && ingredients.length == 0) {
-			return page.apply(find.order().desc("popularity").order().asc("id"));
+	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, Page page) {
+		List<Product> result;
+		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0) {
+			result = page.apply(find.order().desc("popularity").order().asc("id"));
 		}
+		else {
+			String query = "SELECT DISTINCT main.id as id, main.popularity " +
+					"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
+					"ON main.id = aux.product_id WHERE ";
 
-		String query = "SELECT DISTINCT main.id as id, main.popularity " +
-				"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
-				"ON main.id = aux.product_id WHERE ";
+			boolean needAnd = false;
 
-		boolean needAnd = false;
-
-		if (brands.length > 0) {
-			query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
-			needAnd = true;
-		}
-
-		if (types.length > 0) {
-			if (needAnd) {
-				query += " AND ";
+			if (brands.length > 0) {
+				query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
+				needAnd = true;
 			}
-			query += " main.type_id IN (" + Util.joinString(",", types) + ") ";
-			needAnd = true;
-		}
 
-		if (ingredients.length > 0) {
-			if (needAnd) {
-				query += " AND ";
-			}
-			List<Long> ingredient_name_ids = new ArrayList<>();
-			for (long ingredient_id : ingredients) {
-				Set<IngredientName> names = Ingredient.byId(ingredient_id).getNames();
-				for (IngredientName name : names) {
-					ingredient_name_ids.add(name.getId());
+			if (types.length > 0) {
+				if (needAnd) {
+					query += " AND ";
 				}
+				query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
+				needAnd = true;
 			}
-			Long[] list = ingredient_name_ids.toArray(new Long[ingredient_name_ids.size()]);
 
-			query += " aux.ingredient_name_id IN (" + Util.joinString(",", list) + ") " +
-					"GROUP BY main.id " +
-					"HAVING count(*) = " + ingredients.length + " ";
+			if (ingredient_ids.length > 0) {
+				if (needAnd) {
+					query += " AND ";
+				}
+				TLongSet alias_ids = new TLongHashSet();
+				for (long ingredient_id : ingredient_ids) {
+					TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+					alias_ids.addAll(aliases);
+				}
+				long[] list = alias_ids.toArray();
+
+				query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
+						"GROUP BY main.id " +
+						"HAVING count(*) = " + ingredient_ids.length + " ";
+			}
+
+			query += " ORDER BY main.popularity DESC, main.id ASC ";
+			result = page.apply(find, query);
 		}
 
-		query += " ORDER BY main.popularity DESC, main.id ASC ";
-
-		return page.apply(find, query);
+		return App.cache().products.getList(App.cache().products.getIds(result));
 	}
 }

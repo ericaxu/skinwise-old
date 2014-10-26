@@ -13,13 +13,13 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.BaseModel;
 import src.models.MemCache;
 import src.models.Permissible;
+import src.models.data.Alias;
 import src.models.data.Brand;
-import src.models.data.IngredientName;
 import src.models.data.Product;
 import src.models.data.ProductType;
+import src.models.util.BaseModel;
 
 import java.util.List;
 
@@ -28,7 +28,8 @@ public class AdminProductController extends Controller {
 
 	public static class RequestProductUpdate extends Request {
 		public long id;
-//		public long brand_id;
+		public long brand_id;
+		public long popularity;
 		@NotNull
 		public String line;
 		@NotEmpty
@@ -37,8 +38,10 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
-		@NotNull
-		public long popularity;
+//		@NotNull
+//		public String ingredients;
+//		@NotNull
+//		public String key_ingredients;
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -52,32 +55,42 @@ public class AdminProductController extends Controller {
 
 			MemCache cache = App.cache();
 
-			Product result = Product.byId(request.id);
+			Product result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Product();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			else {
+				result = cache.products.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+				}
 			}
 
-//			Brand brand = cache.brands.get(request.brand_id);
-//			if (brand == null) {
-//				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
-//			}
+			Brand brand = cache.brands.get(request.brand_id);
+			if (brand == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
+			}
 
-			result.setLine(request.line);
-			result.setDescription(request.description);
-			result.setImage(request.image);
-			result.setPopularity(request.popularity);
+//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
+//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
 
-//			cache.matcher.cache(cache.ingredient_names.all());
-//			List<IngredientName> ingredients = cache.matcher.matchAllIngredientNames(request.ingredients);
-//			List<IngredientName> key_ingredients = cache.matcher.matchAllIngredientNames(request.key_ingredients);
-//			cache.matcher.clear();
+			String oldName = result.getName();
+			long oldBrandId = result.getBrand_id();
 
-//			result.setIngredientList(ingredients, key_ingredients);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setBrand(brand);
+				result.setLine(request.line);
+				result.setDescription(request.description);
+				result.setImage(request.image);
+				result.setPopularity(request.popularity);
 
-			cache.products.updateAndSave(result, result.getBrand(), request.name);
+				result.save();
+
+				cache.products.update(result, oldBrandId, oldName);
+
+//				result.saveIngredients(ingredients, key_ingredients);
+			}
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
 		}
@@ -91,7 +104,7 @@ public class AdminProductController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.INGREDIENT.EDIT);
+			state.requirePermission(Permissible.PRODUCT.EDIT);
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
@@ -100,15 +113,21 @@ public class AdminProductController extends Controller {
 				result = new Brand();
 			}
 			else {
-				result = Brand.byId(request.id);
+				result = App.cache().brands.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
 				}
 			}
 
-			result.setDescription(request.description);
+			String oldName = result.getName();
 
-			App.cache().brands.updateNameAndSave(result, request.name);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
+
+				App.cache().brands.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
 		}
@@ -122,7 +141,7 @@ public class AdminProductController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.INGREDIENT.EDIT);
+			state.requirePermission(Permissible.PRODUCT.EDIT);
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
@@ -131,15 +150,21 @@ public class AdminProductController extends Controller {
 				result = new ProductType();
 			}
 			else {
-				result = ProductType.byId(request.id);
+				result = App.cache().types.get(request.id);
 				if (result == null) {
 					throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
 				}
 			}
 
-			result.setDescription(request.description);
+			String oldName = result.getName();
 
-			App.cache().types.updateNameAndSave(result, request.name);
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
+
+				App.cache().types.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}

@@ -1,5 +1,7 @@
 package src.models;
 
+import src.models.util.BaseModel;
+
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import java.util.Arrays;
