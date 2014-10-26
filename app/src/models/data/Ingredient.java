@@ -67,7 +67,7 @@ public class Ingredient extends NamedModel {
 	}
 
 	public void saveFunctions(Set<Function> input) {
-		Set<IngredientFunction> ingredient_functions = getIngredient_functions();
+		Set<IngredientFunction> ingredient_functions = new HashSet<>(getIngredient_functions());
 		for (IngredientFunction ingredient_function : ingredient_functions) {
 			ingredient_function.delete();
 			App.cache().ingredient_function.remove(ingredient_function);

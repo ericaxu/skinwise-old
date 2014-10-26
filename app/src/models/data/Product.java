@@ -135,7 +135,7 @@ public class Product extends NamedModel {
 
 	public void saveIngredients(List<Alias> newIngredients,
 	                            List<Alias> newKeyIngredients) {
-		List<ProductIngredient> pairs = getProductIngredients();
+		List<ProductIngredient> pairs = new ArrayList<>(App.cache().product_ingredient.getL(getId()));
 		for (ProductIngredient pair : pairs) {
 			pair.delete();
 			App.cache().product_ingredient.remove(pair);
