@@ -207,7 +207,7 @@ function initBrowse(type) {
 
         $(window).on('scroll', function () {
             // Check if we are at bottom of page
-            if ($(window).scrollTop() + $(window).height() > $(document).height() - nav_height &&
+            if ($(window).scrollTop() + $(window).height() + SW.REFETCH_DISTANCE_THRESHOLD > $(document).height() - nav_height &&
                 SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {
                 fetchNextPage(type);
             }

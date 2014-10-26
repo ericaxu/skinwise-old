@@ -13,6 +13,8 @@ SW.CONFIG.DEFAULT_NOTICE_TIMEOUT = 5000;
 
 SW.CONFIG.CONTAINING_PRODUCT_NUM = 3;
 
+SW.REFETCH_DISTANCE_THRESHOLD = 500;
+
 /* Templates */
 SW.TEMPALTES = {};
 SW.TEMPALTES.NOTICE = _.template('<div class="<%= type %>"><span class="close_btn"></span><p class="message"><%= message %></p></div>')

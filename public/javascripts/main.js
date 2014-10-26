@@ -139,7 +139,7 @@ function attachScrollHandler () {
         if ($(document).scrollTop() > SW.BACK_TO_TOP_THRESHOLD) {
             $to_top.fadeIn();
         } else {
-            $to_top.fadeOut();
+            $to_top.fadeOut(200);
         }
     });
     $to_top.on('click', function (e) {
