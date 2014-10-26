@@ -105,7 +105,7 @@ public class IngredientController extends Controller {
 					result.getCas_number(),
 					result.getDescription(),
 					result.getFunctionsString(),
-					result.getNamesString(),
+					result.getAliasesString(),
 					result.getPopularity()
 			);
 
@@ -141,7 +141,7 @@ public class IngredientController extends Controller {
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray(),
-						ingredient.getNamesString()
+						ingredient.getAliasesString()
 				));
 			}
 

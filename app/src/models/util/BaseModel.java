@@ -22,7 +22,7 @@ public abstract class BaseModel extends Model {
 
 	public static long getIdIfExists(BaseModel object) {
 		if (object == null) {
-			return -1;
+			return 0;
 		}
 		return object.getId();
 	}

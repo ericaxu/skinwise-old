@@ -12,10 +12,10 @@
 
         <div class="section">
             <h1 class="name">@ingredient.getDisplayName</h1>
-            @if(ingredient.getNamesString.size > 0) {
+            @if(ingredient.getAliasesString.size > 0) {
                 <div class="alternate_names">
                     Also known as
-                    @Util.joinString(", ", ingredient.getNamesString.map{WordUtils.capitalizeFully(_)}
+                    @Util.joinString(", ", ingredient.getAliasesString.map{WordUtils.capitalizeFully(_)}
                             .filter{_.toLowerCase != ingredient.getName.toLowerCase})
                 </div>
             }

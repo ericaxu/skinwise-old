@@ -382,19 +382,27 @@ public class MemCache {
 		}
 
 		public void add(M object) {
+			add(object.getId(), relation_getter.getOneId(object));
+		}
+
+		public void remove(M object) {
+			remove(object.getId(), relation_getter.getOneId(object));
+		}
+
+		public void add(long manyId, long oneId) {
 			lock.writeLock().lock();
 			try {
-				_add(object.getId(), relation_getter.getOneId(object));
+				_add(manyId, oneId);
 			}
 			finally {
 				lock.writeLock().unlock();
 			}
 		}
 
-		public void remove(M object) {
+		public void remove(long manyId, long oneId) {
 			lock.writeLock().lock();
 			try {
-				_remove(object.getId(), relation_getter.getOneId(object));
+				_remove(manyId, oneId);
 			}
 			finally {
 				lock.writeLock().unlock();

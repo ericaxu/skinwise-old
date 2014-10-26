@@ -1,5 +1,6 @@
 package src.models.data;
 
+import com.avaje.ebean.Ebean;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import org.apache.commons.lang3.text.WordUtils;
@@ -46,42 +47,25 @@ public class Ingredient extends NamedModel {
 		this.cas_number = cas_number;
 	}
 
-	//Functions
+	//Functions relation
 
 	private Set<IngredientFunction> getIngredient_functions() {
 		return App.cache().ingredient_function.getL(getId());
 	}
 
-	private transient Set<Function> functions;
+	private transient Set<Function> functions_cache;
+	private transient Set<Function> functions_new;
 
 	public Set<Function> getFunctions() {
-		if (functions == null) {
+		if (functions_cache == null) {
 			Set<IngredientFunction> ingredient_functions = getIngredient_functions();
-			functions = new HashSet<>();
+			functions_cache = new HashSet<>();
 			for (IngredientFunction ingredient_function : ingredient_functions) {
-				functions.add(ingredient_function.getFunction());
+				functions_cache.add(ingredient_function.getFunction());
 			}
 		}
 
-		return functions;
-	}
-
-	public void saveFunctions(Set<Function> input) {
-		Set<IngredientFunction> ingredient_functions = new HashSet<>(getIngredient_functions());
-		for (IngredientFunction ingredient_function : ingredient_functions) {
-			ingredient_function.delete();
-			App.cache().ingredient_function.remove(ingredient_function);
-		}
-
-		functions = input;
-
-		for (Function function : input) {
-			IngredientFunction ingredient_function = new IngredientFunction();
-			ingredient_function.setFunction(function);
-			ingredient_function.setIngredient(this);
-			ingredient_function.save();
-			App.cache().ingredient_function.add(ingredient_function);
-		}
+		return functions_cache;
 	}
 
 	public List<String> getFunctionsString() {
@@ -100,24 +84,77 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
-	//Names
+	public void setFunctions(Set<Function> input) {
+		functions_new = input;
+	}
 
-	public List<Alias> getNames() {
+	//ALiases relation
+
+	public List<Alias> getAliases() {
 		return App.cache().ingredient_alias.getManyObject(this.getId());
 	}
 
-	public String getDisplayName() {
-		return WordUtils.capitalizeFully(getName());
-	}
-
-	public List<String> getNamesString() {
+	public List<String> getAliasesString() {
 		List<String> result = new ArrayList<>();
-		for (Alias name : this.getNames()) {
+		for (Alias name : this.getAliases()) {
 			result.add(name.getName());
 		}
 		return result;
 	}
 
+	//Others
+
+	public String getDisplayName() {
+		return WordUtils.capitalizeFully(getName());
+	}
+
+	@Override
+	public void save() {
+		Ebean.beginTransaction();
+		try {
+			super.save();
+
+			if (functions_new != null) {
+				//Commit to DB first
+
+				List<IngredientFunction> ingredient_functions_old = new ArrayList<>(getIngredient_functions());
+				for (IngredientFunction ingredient_function : ingredient_functions_old) {
+					ingredient_function.delete();
+				}
+
+				List<IngredientFunction> ingredient_functions_new = new ArrayList<>();
+				for (Function function : functions_new) {
+					IngredientFunction ingredient_function = new IngredientFunction();
+					ingredient_function.setFunction(function);
+					ingredient_function.setIngredient(this);
+					ingredient_function.save();
+					ingredient_functions_new.add(ingredient_function);
+				}
+
+				//Commit to memcache
+				for (IngredientFunction ingredient_function : ingredient_functions_old) {
+					App.cache().ingredient_function.remove(ingredient_function);
+				}
+
+				for (IngredientFunction ingredient_function : ingredient_functions_new) {
+					App.cache().ingredient_function.add(ingredient_function);
+				}
+
+				//Update cache
+				functions_cache = functions_new;
+				functions_new = null;
+			}
+
+			Ebean.commitTransaction();
+		}
+
+		finally
+
+		{
+			Ebean.endTransaction();
+		}
+
+	}
 	//Static
 
 	public static final String TABLENAME = "ingredient";
