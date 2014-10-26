@@ -30,6 +30,7 @@ function setupForgotPasswordPopup() {
         e.preventDefault();
         $('.popup').hide();
         $('.forgot_password.popup').show();
+        $('#forgot_password_email').focus();
     })
 }
 
@@ -37,6 +38,7 @@ function setupLoginPopup() {
     $('#login_link').on('click', function (e) {
         $('.popup').hide();
         $('.login.popup').show();
+        $('#login_email').focus();
         e.preventDefault();
     });
 
@@ -112,6 +114,7 @@ function setupSignupPopup() {
     $('#signup_link').on('click', function (e) {
         $('.popup').hide();
         $('.signup.popup').show();
+        $('#signup_name').focus();
         e.preventDefault();
     });
 
@@ -178,6 +181,7 @@ function setupFeedbackPopup() {
     $('.feedback_link').on('click', function (e) {
         $('#feedback_email').val(getFeedbackEmail());
         $('.feedback.popup').show();
+        $('#feedback_email').focus();
         e.preventDefault();
     });
 
