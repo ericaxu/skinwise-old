@@ -50,8 +50,6 @@ function routineItemHTML(product) {
 }
 
 function routineHTML(routine, is_new) {
-
-    console.log(routine);
     var $div = $('<div/>', { class: is_new ? 'column editing' : 'column' });
     var $routine = $('<div/>', { class: 'section' });
     $routine.append($('<h2/>', { text: routine.name }));

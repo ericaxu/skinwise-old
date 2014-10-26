@@ -111,29 +111,18 @@ function refetch(type) {
 }
 
 function loadFilters(type) {
-    var filter_types = SW.FILTER_TYPES[type] || [];
-    for (var i = 0; i < filter_types.length; i++) {
-        var filter_type = filter_types[i];
-        var saved_filters = getSavedFilters(type, filter_type);
+    var filter_keys = SW.FILTER_TYPES[type] || [];
+    for (var i = 0; i < filter_keys.length; i++) {
+        var filter_key = filter_keys[i];
+        var saved_filters = getSavedFilters(type, filter_key);
 
-        var $filters = $('.' + filter_type + '_filters');
+        var $filters = $('.' + filter_key + '_filters');
         $filters.empty();
         for (var j = 0; j < saved_filters.length; j++) {
             var filter = saved_filters[j];
-            $filters.append(getFilterHTML(filter, filter_type));
+            $filters.append(getFilterHTML(filter, filter_key, type));
         }
     }
-}
-
-function setupDeleteButtons(type) {
-
-    $(document).on('click', '.delete_btn', function (e) {
-        e.stopPropagation();
-        confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
-            removeProductFilter($(this).data('type'), $(this).parent().data('id'));
-            loadFilters(type);
-        }, this));
-    });
 }
 
 function initBrowse(type) {
@@ -161,19 +150,22 @@ function initBrowse(type) {
                 return;
             }
 
-            addFilter(type, $(this).data('type'), {
+            log(id, name);
+            var filter_key = $(this).data('type');
+            var new_filter =  {
                 id: id,
                 name: name
-            });
+            };
+            addFilter(type, filter_key, new_filter);
 
-            loadFilters(type);
+            var $filters = $('.' + filter_key + '_filters');
+            $filters.append(getFilterHTML(new_filter, filter_key, type));
 
             // reset
             $add_filter.val('');
             $('.popup').hide();
         });
 
-        setupDeleteButtons(type);
         loadFilters(type);
         fetchNextPage(type);
 

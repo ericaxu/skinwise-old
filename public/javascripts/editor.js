@@ -238,7 +238,6 @@ function setupCreateBrandCall() {
 }
 
 function brandLoadSuccess(response) {
-    log(response);
     $('#edit_brand_id').val(response.id);
     $('#edit_brand_name').val(response.name).data('original', response.name);
     $('#edit_brand_brand').val(response.brand);

@@ -100,16 +100,8 @@ function productResultHTML(product) {
     return $list_item;
 }
 
-function removeProductFilter(filter_type, id) {
-    removeFilter('product_' + filter_type, id);
-}
-
-function removeIngredientFilter(filter_type, id) {
-    removeFilter('ingredient_' + filter_type, id);
-}
-
-function addFilter(filter_type, key, item) {
-    var key = filter_type + '_' + key;
+function addFilter(type, filter_key, item) {
+    var key = type + '_' + filter_key;
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
     var id = item.id;
     for (var i = 0; i < filters.length; i++) {
@@ -125,9 +117,9 @@ function getSavedFilters(type, key) {
     return JSON.parse(localStorage.getItem(type + '_' + key) || '[]');
 }
 
-function removeFilter(key, id) {
+function removeFilter(type, filter_key, id) {
+    var key = type + '_' + filter_key;
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
-    log(filters);
     if (!filters) return;
     for (var i = 0; i < filters.length; i++) {
         if (id == filters[i].id) {
@@ -164,9 +156,17 @@ function getSelectedFilters(filter_type) {
 }
 
 // Generate the HTML for each filter item, given filter obj and type
-function getFilterHTML(filter, type) {
-    var $option = $('<div/>', { class: 'filter_option' }).text(filter.name).data('id', filter.id);
-    $option.append($('<span/>', { class: 'delete_btn' }).data('type', type));
+function getFilterHTML(filter_obj, filter_key, type) {
+    var $option = $('<div/>', { class: 'filter_option' })
+        .text(filter_obj.name).data('id', filter_obj.id);
+    $option.append($('<span/>', { class: 'delete_btn' })
+        .on('click', function(e) {
+            e.stopPropagation();
+            confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
+                removeFilter(type, filter_key, filter_obj.id);
+                $option.remove();
+            }, this));
+        }));
 
     return $option;
 }
