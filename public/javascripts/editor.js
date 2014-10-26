@@ -35,12 +35,10 @@ function listenForEnter() {
 // INGREDIENTS
 
 function setupIngredientSearchCall() {
+    enableAutocomplete('ingredient', $('#ingredient_by_id'), '#ingredient_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
     $('#ingredient_by_id_btn').on('click', function() {
-        var ingredient_id = $('#ingredient_by_id').val();
-        if (!isInteger(ingredient_id)) {
-            showError('Ingredient ID must be an integer.');
-            return;
-        }
+        var ingredient_id = $('#ingredient_by_id').data('id');
 
         postToAPI('/ingredient/byid', {
             id: ingredient_id
@@ -93,12 +91,10 @@ function setupCreateIngredientCall() {
 // PRODUCT
 
 function setupProductSearchCall() {
+    enableAutocomplete('product', $('#product_by_id'), '#product_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
     $('#product_by_id_btn').on('click', function() {
-        var product_id = $('#product_by_id').val();
-        if (!isInteger(product_id)) {
-            showError('Product ID must be an integer.');
-            return;
-        }
+        var product_id = $('#product_by_id').data('id');
 
         postToAPI('/product/byid', {
             id: product_id
@@ -154,12 +150,10 @@ function setupProductEditSaveCall() {
 // FUNCTION
 
 function setupFunctionSearchCall() {
+    enableAutocomplete('function', $('#function_by_id'), '#function_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
     $('#function_by_id_btn').on('click', function() {
-        var function_id = $('#function_by_id').val();
-        if (!isInteger(function_id)) {
-            showError('Function ID must be an integer.');
-            return;
-        }
+        var function_id = $('#function_by_id').data('id');
 
         postToAPI('/ingredient/function/byid', {
             id: function_id
@@ -206,12 +200,10 @@ function setupFunctionEditSaveCall() {
 // BRAND
 
 function setupBrandSearchCall() {
+    enableAutocomplete('brand', $('#brand_by_id'), '#brand_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
     $('#brand_by_id_btn').on('click', function() {
-        var brand_id = $('#brand_by_id').val();
-        if (!isInteger(brand_id)) {
-            showError('Brand ID must be an integer.');
-            return;
-        }
+        var brand_id = $('#brand_by_id').data('id');
 
         postToAPI('/product/brand/byid', {
             id: brand_id
@@ -264,12 +256,10 @@ function setupBrandEditSaveCall() {
 // PRODUCT TYPE
 
 function setupTypeSearchCall() {
+    enableAutocomplete('type', $('#type_by_id'), '#type_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
     $('#type_by_id_btn').on('click', function() {
-        var type_id = $('#type_by_id').val();
-        if (!isInteger(type_id)) {
-            showError('Type ID must be an integer.');
-            return;
-        }
+        var type_id = $('#type_by_id').data('id');
 
         postToAPI('/product/type/byid', {
             id: type_id
@@ -290,7 +280,6 @@ function setupCreateTypeCall() {
 }
 
 function typeLoadSuccess(response) {
-    log(response);
     $('#edit_type_id').val(response.id);
     $('#edit_type_name').val(response.name).data('original', response.name);
     $('#edit_type_description').val(response.description);

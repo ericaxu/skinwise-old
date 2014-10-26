@@ -219,11 +219,11 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
                             value: item.id
                         });
                     }
-                    $no_result_el.hide();
+                    $no_result_el && $no_result_el.hide();
                     response(data);
                 } else {
                     response([]);
-                    $no_result_el.show();
+                    $no_result_el && $no_result_el.show();
                 }
             });
         }
@@ -302,7 +302,7 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
 
             // Don't show "No results found" when user deletes her query
             if ($(this).val() === '') {
-                $no_result_el.hide();
+                $no_result_el && $no_result_el.hide();
             }
 
         }

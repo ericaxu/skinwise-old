@@ -61,7 +61,8 @@ SW.DEBUG = true;
 
 SW.AUTOCOMPLETE_LIMIT = {
     NAV_SEARCH: 10,
-    ADD_FILTER: 4
+    ADD_FILTER: 4,
+    EDITOR: 5
 }
 
 SW.FEEDBACK = {
