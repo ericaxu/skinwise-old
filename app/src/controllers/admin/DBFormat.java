@@ -2,19 +2,14 @@ package src.controllers.admin;
 
 import src.util.Util;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 public class DBFormat {
-	public List<IngredientObject> ingredients = new ArrayList<>();
-	public List<NamedObject> ingredient_functions = new ArrayList<>();
-	public List<NamedObject> brands = new ArrayList<>();
-	public List<NamedObject> types = new ArrayList<>();
-	public List<ProductObject> products = new ArrayList<>();
-
-	//Currently unused
-	public List<IngredientAbbreviationObject> ingredient_abbreviations = new ArrayList<>();
+	public Map<String, IngredientObject> ingredients = new HashMap<>();
+	public Map<String, NamedObject> ingredient_functions = new HashMap<>();
+	public Map<String, NamedObject> brands = new HashMap<>();
+	public Map<String, NamedObject> types = new HashMap<>();
+	public Map<String, ProductObject> products = new HashMap<>();
 
 	public static class NamedObject {
 		public String name;
@@ -31,7 +26,7 @@ public class DBFormat {
 		public String ec_no;
 		public String restriction;
 		public List<String> functions = new ArrayList<>();
-		public List<String> names = new ArrayList<>();
+		public List<String> alias = new ArrayList<>();
 
 		@Override
 		public void sanitize() {
@@ -42,18 +37,19 @@ public class DBFormat {
 			if (functions == null) {
 				functions = new ArrayList<>();
 			}
-			if (names == null) {
-				names = new ArrayList<>();
+			if (alias == null) {
+				alias = new ArrayList<>();
 			}
 			functions.remove("");
 			functions.remove(null);
-			names.remove("");
-			names.remove(null);
+			alias.remove("");
+			alias.remove(null);
 			functions = new ArrayList<>(new LinkedHashSet<>(functions));
-			names = new ArrayList<>(new LinkedHashSet<>(names));
+			alias = new ArrayList<>(new LinkedHashSet<>(alias));
 		}
 	}
 
+	/*
 	public static class IngredientAbbreviationObject {
 		public String shorthand;
 		public String full;
@@ -63,6 +59,7 @@ public class DBFormat {
 			full = Util.notNull(full);
 		}
 	}
+	*/
 
 	public static class ProductObject extends NamedObject {
 		public String brand;

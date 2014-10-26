@@ -23,25 +23,25 @@ public class Import {
 		MemCache cache = App.cache();
 
 		Logger.debug(TAG, "Importing functions");
-		for (DBFormat.NamedObject object : input.ingredient_functions) {
+		for (DBFormat.NamedObject object : input.ingredient_functions.values()) {
 			object.sanitize();
 			createFunction(object, cache);
 		}
 
 		Logger.debug(TAG, "Importing brands");
-		for (DBFormat.NamedObject object : input.brands) {
+		for (DBFormat.NamedObject object : input.brands.values()) {
 			object.sanitize();
 			createBrand(object, cache);
 		}
 
 		Logger.debug(TAG, "Importing product types");
-		for (DBFormat.NamedObject object : input.types) {
+		for (DBFormat.NamedObject object : input.types.values()) {
 			object.sanitize();
 			createType(object, cache);
 		}
 
 		Logger.debug(TAG, "Importing ingredients");
-		for (DBFormat.IngredientObject object : input.ingredients) {
+		for (DBFormat.IngredientObject object : input.ingredients.values()) {
 			object.sanitize();
 			createIngredient(object, cache);
 		}
@@ -51,7 +51,7 @@ public class Import {
 		Set<String> allIngredients = new HashSet<>();
 		Set<String> brands = new HashSet<>();
 		Set<String> types = new HashSet<>();
-		for (DBFormat.ProductObject object : input.products) {
+		for (DBFormat.ProductObject object : input.products.values()) {
 			object.sanitize();
 
 			brands.add(object.brand);
@@ -128,7 +128,7 @@ public class Import {
 		Logger.debug(TAG, "Matched " + matched + "/" + allIngredients.size() + " ingredients from all products");
 
 		Logger.debug(TAG, "Importing products");
-		for (DBFormat.ProductObject object : input.products) {
+		for (DBFormat.ProductObject object : input.products.values()) {
 			createProduct(object, cache);
 		}
 	}
@@ -180,7 +180,7 @@ public class Import {
 
 	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
 		//Remove duplicates
-		for (String name : object.names) {
+		for (String name : object.alias) {
 			Alias alias = cache.alias.get(name);
 			if (alias == null) {
 				continue;
@@ -191,7 +191,7 @@ public class Import {
 				//		object.name + " | " + ingredient.getName());
 
 				//Attach alt names to ingredient
-				for (String name2 : object.names) {
+				for (String name2 : object.alias) {
 					createAlias(name2, ingredient, cache);
 				}
 				//Attach info if possible
@@ -238,7 +238,7 @@ public class Import {
 
 		createAlias(object.name, result, cache);
 
-		for (String name : object.names) {
+		for (String name : object.alias) {
 			createAlias(name, result, cache);
 		}
 	}

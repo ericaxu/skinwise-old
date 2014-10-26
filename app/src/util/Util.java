@@ -60,4 +60,13 @@ public class Util {
 		result.append(array.get(array.size() - 1));
 		return result.toString();
 	}
+
+	public static String goodKey(String input) {
+		input = input.replace("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
+		return input.replace("\\s+", " ");
+	}
+
+	public static String goodProductKey(String brand, String name) {
+		return goodKey(brand + " " + name);
+	}
 }

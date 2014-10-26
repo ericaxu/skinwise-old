@@ -7,6 +7,7 @@ crawler = web.Crawler(db)
 
 #File in
 file_data_json = "data/data.json.txt"
+file_images_duckduckgo_corrections_json = "data/images.duckduckgo.corrections.json.txt"
 #File out
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 #Crawled URLs
@@ -17,6 +18,8 @@ if 'products' not in data:
 	sys.exit(0)
 
 products = data['products']
+
+image_corrections = util.json_read(file_images_duckduckgo_corrections_json, "{}")
 
 result = dict()
 result['images'] = dict()
@@ -35,19 +38,32 @@ for key, product in products.items():
 	results = result_object['results']
 
 	final_image = None
-	for img in results:
+	if key in image_corrections:
 		image = dict()
-		image['source'] = img['s']
-		image['width'] = int(img['iw'])
-		image['height'] = int(img['ih'])
-		image['url'] = img['j']
-
-		# size chech
-		if image['width'] < 300 and image['height'] < 300:
-			continue
+		image['source'] = "Correction"
+		image['width'] = 0
+		image['height'] = 0
+		image['url'] = image_corrections[key]
 
 		final_image = image
-		break
+	else:
+		for img in results:
+			image = dict()
+			image['source'] = img['s']
+			image['width'] = int(img['iw'])
+			image['height'] = int(img['ih'])
+			image['url'] = img['j']
+
+			# size chech
+			if image['width'] < 300 and image['height'] < 300:
+				continue
+
+			# wordpress
+			if image['url'].find("wp-content") != -1 or image['url'].find("blogspot") != -1:
+				continue
+ 
+			final_image = image
+			break
 
 	if final_image is None:
 		print(query + " not found")

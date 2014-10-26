@@ -45,7 +45,7 @@ public class AdminController extends Controller {
 			Logger.info(TAG, "DB import started");
 
 			try {
-				Import.importDB("php/data/data.json.txt");
+				Import.importDB("python/data/data.json.txt");
 			}
 			catch (Exception e) {
 				Logger.error(TAG, e);
@@ -71,7 +71,7 @@ public class AdminController extends Controller {
 			Logger.info(TAG, "DB export started");
 
 			try {
-				Export.exportDB("php/data/export.json.txt");
+				Export.exportDB("python/data/export.json.txt");
 			}
 			catch (Exception e) {
 				Logger.error(TAG, e);

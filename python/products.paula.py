@@ -5,16 +5,25 @@ from util import (web, db, parser, util)
 db = db.DB("cache/paula.cache.db")
 crawler = web.Crawler(db)
 
+#File in
+file_product_paula_type_corrections_json = "data/products.paula.type.corrections.json.txt"
 #File out
 file_products_paula_json = "data/products.paula.json.txt"
 #Crawled URLs
 url_product_page = "http://www.paulaschoice.com/beautypedia-skin-care-reviews/by-brand/%s"
 url_product_list = "http://www.paulaschoice.com/beautypedia-skin-care-reviews?sort=product&direction=asc&pageSize=100&pageNumber=%d"
 
-replace_dict = {
-	r'aqua \(water\) eau\)': "aqua (water) eau",
-	r', iron oxides\)\.': ", iron oxides."
+ingredient_corrections = {
+	r'Aqua \(Water\) Eau\)': "Aqua (Water) Eau",
+	r', Iron Oxides\)\.': ", Iron Oxides."
 }
+
+description_corrections = {
+	r'>/p>': "",
+	r'/p>': "",
+	r'p>': ""
+}
+
 # $replace_rules_str = array(
 # 	"aqua (water) eau)" => "aqua (water) eau",
 # 	", iron oxides)." => ", iron oxides.",
@@ -59,6 +68,7 @@ urls = util.list_unique(urls)
 
 print("Fetching products")
 
+type_corrections = util.json_read(file_product_paula_type_corrections_json, "{}")
 result = dict()
 result['products'] = dict()
 
@@ -78,6 +88,7 @@ for url in urls:
 
 	product_claims = parser.regex_find(r'<div id="[^"]*pnlTabBodyClaims"[^>]*>(.*?)<\/div>', page_table, 1)
 	product_claims = parser.strip_tags(product_claims)
+	product_claims = parser.regex_replace_dict(description_corrections, product_claims)
 
 	product_ingredients = parser.regex_find(r'<div id="[^"]*pnlTabBodyIngredients"[^>]*>(.*?)<\/div>', page_table, 1)
 
@@ -89,16 +100,19 @@ for url in urls:
 	product_key_ingredients = parser.strip_tags(product_key_ingredients)
 	product_other_ingredients = parser.strip_tags(product_other_ingredients)
 
-	product_key_ingredients = parser.regex_replace_dict(replace_dict, product_key_ingredients)
-	product_other_ingredients = parser.regex_replace_dict(replace_dict, product_other_ingredients)
+	if product_category in type_corrections:
+		product_category = type_corrections[product_category]
+
+	product_key_ingredients = parser.regex_replace_dict(ingredient_corrections, product_key_ingredients)
+	product_other_ingredients = parser.regex_replace_dict(ingredient_corrections, product_other_ingredients)
 
 	product = dict()
 	product['name'] = web.html_unescape(product_name)
 	product['brand'] = web.html_unescape(product_brand)
 	product['type'] = web.html_unescape(product_category)
-	product['description'] = web.html_unescape(product_claims)
-	product["key_ingredients"] = web.html_unescape(product_key_ingredients)
-	product['ingredients'] = web.html_unescape(product_other_ingredients)
+	product['description'] = web.html_unescape(parser.fix_space(product_claims))
+	product["key_ingredients"] = web.html_unescape(parser.fix_space(product_key_ingredients))
+	product['ingredients'] = web.html_unescape(parser.fix_space(product_other_ingredients))
 
 	key = parser.product_key(product['brand'], product['name'])
 

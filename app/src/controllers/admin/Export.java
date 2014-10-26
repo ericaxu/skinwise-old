@@ -22,27 +22,32 @@ public class Export {
 
 		Logger.debug(TAG, "Exporting functions");
 		for (Function object : cache.functions.all()) {
-			result.ingredient_functions.add(export(object));
+			DBFormat.NamedObject resultObject = export(object);
+			result.ingredient_functions.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
 		Logger.debug(TAG, "Exporting brands");
 		for (Brand object : cache.brands.all()) {
-			result.brands.add(export(object));
+			DBFormat.NamedObject resultObject = export(object);
+			result.brands.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
 		Logger.debug(TAG, "Exporting ingredients");
 		for (Ingredient object : cache.ingredients.all()) {
-			result.ingredients.add(export(object));
+			DBFormat.IngredientObject resultObject = export(object);
+			result.ingredients.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
 		Logger.debug(TAG, "Exporting product types");
 		for (ProductType object : cache.types.all()) {
-			result.types.add(export(object));
+			DBFormat.NamedObject resultObject = export(object);
+			result.types.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
 		Logger.debug(TAG, "Exporting products");
 		for (Product object : cache.products.all()) {
-			result.products.add(export(object));
+			DBFormat.ProductObject resultObject = export(object);
+			result.products.put(Util.goodProductKey(resultObject.brand, resultObject.name), resultObject);
 		}
 
 		String json = Json.serialize(result);
@@ -64,11 +69,11 @@ public class Export {
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
-		for (Alias name : object.getAliases()) {
-			result.names.add(name.getName());
+		for (Alias alias : object.getAliases()) {
+			result.alias.add(alias.getName());
 		}
 		Collections.sort(result.functions);
-		Collections.sort(result.names);
+		Collections.sort(result.alias);
 		return result;
 	}
 

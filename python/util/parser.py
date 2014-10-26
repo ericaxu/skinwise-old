@@ -16,6 +16,10 @@ def strip_newline(input):
 	"""strip all unicode newline characters"""
 	return regex_remove('[\u000A\u000B\u000C\u000D\u0085\u2028\u2029]', input).strip()
 
+def fix_space(input):
+	"""Fix multiple spaces"""
+	return regex_replace(r'\s+', " ", input)
+
 def regex_remove(regex, input):
 	"""remove substrings matching regex"""
 	return regex_replace(regex, '', input)
@@ -118,10 +122,13 @@ def str_capitalize(input):
 	"""Capitalize every word in the input"""
 	return " ".join(word.capitalize() for word in input.split())
 
+# This is mapped to the same method in Java
 def good_key(name):
 	"""Make a uniquely identifiable key for things like ingredients"""
-	return regex_replace(r'[^0-9a-zA-Z ]', ' ', name).strip().lower()
+	name = regex_replace(r'[^0-9a-zA-Z ]', ' ', name).strip().lower()
+	return regex_replace(r'\s+', ' ', name)
 
+# This is mapped to the same method in Java
 def product_key(brand, name):
 	"""Make a uniquely identifiable key for products"""
 	return good_key("%s %s" % (brand, name))
