@@ -1,5 +1,6 @@
 package src.models.data;
 
+import com.avaje.ebean.Ebean;
 import gnu.trove.list.TLongList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
@@ -97,8 +98,10 @@ public class Product extends NamedModel {
 
 	//Ingredients
 
-	private transient List<Alias> ingredients;
-	private transient List<Alias> key_ingredients;
+	private transient List<Alias> ingredients_cache;
+	private transient List<Alias> ingredients_new;
+	private transient List<Alias> key_ingredients_cache;
+	private transient List<Alias> key_ingredients_new;
 
 	public List<ProductIngredient> getProductIngredients() {
 		Set<ProductIngredient> result = App.cache().product_ingredient.getL(getId());
@@ -108,56 +111,37 @@ public class Product extends NamedModel {
 	}
 
 	public List<Alias> getIngredients() {
-		if (ingredients == null) {
+		if (ingredients_cache == null) {
 			List<ProductIngredient> pairs = getProductIngredients();
-			ingredients = new ArrayList<>();
+			ingredients_cache = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (!pair.isIs_key()) {
-					ingredients.add(pair.getAlias());
+					ingredients_cache.add(pair.getAlias());
 				}
 			}
 		}
-		return ingredients;
+		return ingredients_cache;
 	}
 
 	public List<Alias> getKey_ingredients() {
-		if (key_ingredients == null) {
+		if (key_ingredients_cache == null) {
 			List<ProductIngredient> pairs = getProductIngredients();
-			key_ingredients = new ArrayList<>();
+			key_ingredients_cache = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (pair.isIs_key()) {
-					key_ingredients.add(pair.getAlias());
+					key_ingredients_cache.add(pair.getAlias());
 				}
 			}
 		}
-		return key_ingredients;
+		return key_ingredients_cache;
 	}
 
-	public void saveIngredients(List<Alias> newIngredients,
-	                            List<Alias> newKeyIngredients) {
-		List<ProductIngredient> pairs = new ArrayList<>(App.cache().product_ingredient.getL(getId()));
-		for (ProductIngredient pair : pairs) {
-			pair.delete();
-			App.cache().product_ingredient.remove(pair);
-		}
-
-		ingredients = newIngredients;
-		key_ingredients = newKeyIngredients;
-
-		refreshIngredientList(newIngredients, false);
-		refreshIngredientList(newKeyIngredients, true);
+	public void setIngredients(List<Alias> ingredients) {
+		this.ingredients_new = ingredients;
 	}
 
-	private void refreshIngredientList(List<Alias> list, boolean is_key) {
-		for (int i = 0; i < list.size(); i++) {
-			ProductIngredient pair = new ProductIngredient();
-			pair.setAlias(list.get(i));
-			pair.setProduct(this);
-			pair.setIs_key(is_key);
-			pair.setItem_order(i);
-			pair.save();
-			App.cache().product_ingredient.add(pair);
-		}
+	public void setKeyIngredients(List<Alias> key_ingredients) {
+		this.key_ingredients_new = key_ingredients;
 	}
 
 	//Others
@@ -177,10 +161,76 @@ public class Product extends NamedModel {
 	}
 
 	@Override
-	public void refresh() {
-		ingredients = null;
-		key_ingredients = null;
-		super.refresh();
+	public void save() {
+		Ebean.beginTransaction();
+		try {
+			super.save();
+
+			boolean ingredients_changed = ingredients_new != null;
+			boolean key_ingredients_changed = key_ingredients_new != null;
+			if (ingredients_changed || key_ingredients_changed) {
+
+				//Commit to DB first
+				List<ProductIngredient> product_ingredients = getProductIngredients();
+				List<ProductIngredient> product_ingredients_old = new ArrayList<>();
+				//Find changed old relations
+				for (ProductIngredient product_ingredient : product_ingredients) {
+					if ((ingredients_changed && !product_ingredient.isIs_key()) ||
+							key_ingredients_changed && product_ingredient.isIs_key()) {
+						product_ingredients_old.add(product_ingredient);
+					}
+				}
+				//Delete old relations
+				for (ProductIngredient product_ingredient : product_ingredients_old) {
+					product_ingredient.delete();
+				}
+				//Create new relations
+				List<ProductIngredient> product_ingredients_new = new ArrayList<>();
+				if (ingredients_changed) {
+					for (int i = 0; i < ingredients_new.size(); i++) {
+						ProductIngredient product_ingredient = createProductIngredient(
+								ingredients_new.get(i), false, i);
+						product_ingredients_new.add(product_ingredient);
+					}
+				}
+				if (key_ingredients_changed) {
+					for (int i = 0; i < key_ingredients_new.size(); i++) {
+						ProductIngredient product_ingredient = createProductIngredient(
+								key_ingredients_new.get(i), true, i);
+						product_ingredients_new.add(product_ingredient);
+					}
+				}
+
+				//Commit to memcache
+				for (ProductIngredient product_ingredient : product_ingredients_old) {
+					App.cache().product_ingredient.remove(product_ingredient);
+				}
+				for (ProductIngredient product_ingredient : product_ingredients_new) {
+					App.cache().product_ingredient.add(product_ingredient);
+				}
+
+				//Update cache
+				ingredients_cache = ingredients_new;
+				key_ingredients_cache = key_ingredients_new;
+				ingredients_new = null;
+				key_ingredients_new = null;
+			}
+
+			Ebean.commitTransaction();
+		}
+		finally {
+			Ebean.endTransaction();
+		}
+	}
+
+	private ProductIngredient createProductIngredient(Alias ingredient, boolean isKey, int order) {
+		ProductIngredient product_ingredient = new ProductIngredient();
+		product_ingredient.setAlias(ingredient);
+		product_ingredient.setProduct(this);
+		product_ingredient.setIs_key(isKey);
+		product_ingredient.setItem_order(order);
+		product_ingredient.save();
+		return product_ingredient;
 	}
 
 	//Static

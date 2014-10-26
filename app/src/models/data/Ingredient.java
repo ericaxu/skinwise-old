@@ -116,12 +116,10 @@ public class Ingredient extends NamedModel {
 
 			if (functions_new != null) {
 				//Commit to DB first
-
 				List<IngredientFunction> ingredient_functions_old = new ArrayList<>(getIngredient_functions());
 				for (IngredientFunction ingredient_function : ingredient_functions_old) {
 					ingredient_function.delete();
 				}
-
 				List<IngredientFunction> ingredient_functions_new = new ArrayList<>();
 				for (Function function : functions_new) {
 					IngredientFunction ingredient_function = new IngredientFunction();
@@ -135,7 +133,6 @@ public class Ingredient extends NamedModel {
 				for (IngredientFunction ingredient_function : ingredient_functions_old) {
 					App.cache().ingredient_function.remove(ingredient_function);
 				}
-
 				for (IngredientFunction ingredient_function : ingredient_functions_new) {
 					App.cache().ingredient_function.add(ingredient_function);
 				}
@@ -147,13 +144,9 @@ public class Ingredient extends NamedModel {
 
 			Ebean.commitTransaction();
 		}
-
-		finally
-
-		{
+		finally {
 			Ebean.endTransaction();
 		}
-
 	}
 	//Static
 

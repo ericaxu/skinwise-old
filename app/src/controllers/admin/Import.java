@@ -291,11 +291,12 @@ public class Import {
 		result.setBrand(brand);
 		result.setDescription(object.description);
 		result.setImage(object.image);
+		result.setIngredients(ingredients);
+		result.setKeyIngredients(key_ingredients);
 
 		result.save();
 
 		cache.products.update(result, oldBrandId, oldName);
 
-		result.saveIngredients(ingredients, key_ingredients);
 	}
 }
