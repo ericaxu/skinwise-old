@@ -199,7 +199,7 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
                     for (var i = 0; i < length; i++) {
                         var item = api_response.results[i];
                         data.push({
-                            label: fullyCapitalize(item.name),
+                            label: type === 'function' ? fullyCapitalize(item.name) : item.name,
                             value: item.id
                         });
                     }
