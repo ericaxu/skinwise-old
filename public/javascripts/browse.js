@@ -20,6 +20,23 @@ function ingredientResultHTML(ing) {
     return $list_item;
 }
 
+// Generate the HTML for each filter item, given filter obj and type
+function getFilterHTML(filter_obj, filter_key, type) {
+    var $option = $('<div/>', { class: 'filter_option' })
+        .text(filter_obj.name).data('id', filter_obj.id);
+    $option.append($('<span/>', { class: 'delete_btn' })
+        .on('click', function(e) {
+            e.stopPropagation();
+            confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
+                removeFilter(type, filter_key, filter_obj.id);
+                $option.remove();
+                refetch(type);
+            }, this));
+        }));
+
+    return $option;
+}
+
 function loadFilterResults(response, type) {
     switch (response.count) {
         case 0:
