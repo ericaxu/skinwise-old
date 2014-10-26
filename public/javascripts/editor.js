@@ -31,6 +31,13 @@ function listenForEnter() {
     });
 }
 
+function getBrandsSuccess(response) {
+    for (var i = 0; i < response.results.length; i++) {
+        var brand = response.results[i];
+        SW.BRANDS[brand.id] = brand.name;
+    }
+}
+
 
 // INGREDIENTS
 
@@ -92,6 +99,7 @@ function setupCreateIngredientCall() {
 
 function setupProductSearchCall() {
     enableAutocomplete('product', $('#product_by_id'), '#product_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+    enableAutocomplete('brand', $('#edit_product_brand'), '#edit_product .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
 
     $('#product_by_id_btn').on('click', function() {
         var product_id = $('#product_by_id').data('id');
@@ -115,10 +123,16 @@ function setupCreateProductCall() {
 }
 
 function productLoadSuccess(response) {
-    log(response);
+    var brand_name = SW.BRANDS[response.brand] || '';
+
+    if (!brand_name) {
+        showError('Brand ID ' + response.brand + ' not found.');
+        return;
+    }
+
     $('#edit_product_id').val(response.id);
     $('#edit_product_name').val(response.name).data('original', response.name);
-    $('#edit_product_brand').val(response.brand);
+    $('#edit_product_brand').val(brand_name).data('id', response.brand);
     $('#edit_product_line').val(response.line);
     $('#edit_product_image').val(response.image);
     $('#edit_product_popularity').val(response.popularity);
@@ -135,7 +149,7 @@ function setupProductEditSaveCall() {
         var new_product_info = {
             id: product_id,
             name: $('#edit_product_name').val(),
-            brand: $('#edit_product_brand').val(),
+            brand: $('#edit_product_brand').data('id'),
             line: $('#edit_product_line').val(),
             image: $('#edit_product_image').val(),
             popularity: $('#edit_product_popularity').val(),
@@ -370,6 +384,8 @@ $(document).ready(function() {
         }
         fetchUnmatched();
     });
+
+    postToAPI('/product/brands', {}, getBrandsSuccess);
 
     listenForEnter();
 });
