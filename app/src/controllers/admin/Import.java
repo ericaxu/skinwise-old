@@ -93,13 +93,11 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Importing product ingredients");
+		List<Alias> pending;
 
 		//First pass
 		Logger.debug(TAG, "Ingredient names - first pass");
-		List<Alias> pending = multithreadedIngredientSearch(allIngredients, cache);
-
-		//Spill to DB
-		Logger.debug(TAG, "Ingredient names - spill");
+		pending = multithreadedIngredientSearch(allIngredients, cache);
 		for (Alias name : pending) {
 			name.save();
 			cache.alias.update(name);
@@ -107,27 +105,27 @@ public class Import {
 
 		//Second pass
 		Logger.debug(TAG, "Ingredient names - second pass");
+		pending = multithreadedIngredientSearch(allIngredients, cache);
+		for (Alias name : pending) {
+			name.save();
+			cache.alias.update(name);
+		}
+
+		//Unmatched
+		int matched = allIngredients.size();
 		for (String string : allIngredients) {
 			Alias alias = cache.matcher.matchAlias(string);
 
 			if (alias == null) {
 				alias = new Alias();
+				alias.setName(string);
+				alias.save();
+				cache.alias.update(alias);
+				matched--;
 			}
-			else if (!alias.getName().equalsIgnoreCase(string)) {
-				alias = new Alias();
-				Ingredient ingredient = alias.getIngredient();
-				alias.setIngredient(ingredient);
-			}
-			else {
-				continue;
-			}
-
-			alias.setName(string);
-			alias.save();
-			cache.alias.update(alias);
 		}
 
-		Logger.debug(TAG, allIngredients.size() + " ingredients from all products");
+		Logger.debug(TAG, "Matched " + matched + "/" + allIngredients.size() + " ingredients from all products");
 
 		Logger.debug(TAG, "Importing products");
 		for (DBFormat.ProductObject object : input.products) {
