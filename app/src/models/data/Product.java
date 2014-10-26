@@ -1,7 +1,6 @@
 package src.models.data;
 
 import gnu.trove.list.TLongList;
-import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
@@ -190,53 +189,50 @@ public class Product extends NamedModel {
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
 	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, Page page) {
+		List<Product> result;
 		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0) {
-			return page.apply(find.order().desc("popularity").order().asc("id"));
+			result = page.apply(find.order().desc("popularity").order().asc("id"));
 		}
+		else {
+			String query = "SELECT DISTINCT main.id as id, main.popularity " +
+					"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
+					"ON main.id = aux.product_id WHERE ";
 
-		String query = "SELECT DISTINCT main.id as id, main.popularity " +
-				"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
-				"ON main.id = aux.product_id WHERE ";
+			boolean needAnd = false;
 
-		boolean needAnd = false;
-
-		if (brands.length > 0) {
-			query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
-			needAnd = true;
-		}
-
-		if (types.length > 0) {
-			if (needAnd) {
-				query += " AND ";
+			if (brands.length > 0) {
+				query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
+				needAnd = true;
 			}
-			query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
-			needAnd = true;
-		}
 
-		if (ingredient_ids.length > 0) {
-			if (needAnd) {
-				query += " AND ";
+			if (types.length > 0) {
+				if (needAnd) {
+					query += " AND ";
+				}
+				query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
+				needAnd = true;
 			}
-			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : ingredient_ids) {
-				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
-				alias_ids.addAll(aliases);
+
+			if (ingredient_ids.length > 0) {
+				if (needAnd) {
+					query += " AND ";
+				}
+				TLongSet alias_ids = new TLongHashSet();
+				for (long ingredient_id : ingredient_ids) {
+					TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+					alias_ids.addAll(aliases);
+				}
+				long[] list = alias_ids.toArray();
+
+				query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
+						"GROUP BY main.id " +
+						"HAVING count(*) = " + ingredient_ids.length + " ";
 			}
-			long[] list = alias_ids.toArray();
 
-			query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
-					"GROUP BY main.id " +
-					"HAVING count(*) = " + ingredient_ids.length + " ";
+			query += " ORDER BY main.popularity DESC, main.id ASC ";
+			result = page.apply(find, query);
 		}
 
-		query += " ORDER BY main.popularity DESC, main.id ASC ";
-
-		List<Product> result = page.apply(find, query);
-
-		TLongList resultIds = new TLongArrayList();
-		for (Product p : result) {
-			resultIds.add(p.getId());
-		}
-		return App.cache().products.getList(resultIds.toArray());
+		return App.cache().products.getList(App.cache().products.getIds(result));
 	}
 }

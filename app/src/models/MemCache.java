@@ -73,6 +73,14 @@ public class MemCache {
 			return new HashSet<>(getList(ids));
 		}
 
+		public long[] getIds(List<T> objects) {
+			TLongList result = new TLongArrayList();
+			for (T object : objects) {
+				result.add(object.getId());
+			}
+			return result.toArray();
+		}
+
 		//Set
 
 		public void cache() {

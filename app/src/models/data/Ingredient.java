@@ -125,23 +125,21 @@ public class Ingredient extends NamedModel {
 	public static NamedFinder<Ingredient> find = new NamedFinder<>(Ingredient.class);
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
+		List<Ingredient> result;
 		if (functions.length == 0) {
-			return page.apply(find.order().desc("popularity").order().asc("id"));
+			result = page.apply(find.order().desc("popularity").order().asc("id"));
 		}
+		else {
+			String query = "SELECT DISTINCT main.id as id, main.popularity " +
+					"FROM " + TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux " +
+					"ON main.id = aux.ingredient_id WHERE " +
+					"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
+					"GROUP BY main.id " +
+					"HAVING count(*) = " + functions.length + " " +
+					"ORDER BY main.popularity DESC, main.id ASC ";
 
-		String query = "SELECT DISTINCT main.id as id, main.popularity " +
-				"FROM " + TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux " +
-				"ON main.id = aux.ingredient_id WHERE " +
-				"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
-				"GROUP BY main.id " +
-				"HAVING count(*) = " + functions.length + " " +
-				"ORDER BY main.popularity DESC, main.id ASC ";
-
-		List<Ingredient> filterList = page.apply(find, query);
-		List<Ingredient> result = new ArrayList<>();
-		for (Ingredient ingredient : filterList) {
-			result.add(App.cache().ingredients.get(ingredient.getId()));
+			result = page.apply(find, query);
 		}
-		return result;
+		return App.cache().ingredients.getList(App.cache().ingredients.getIds(result));
 	}
 }
