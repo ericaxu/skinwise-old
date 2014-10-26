@@ -202,25 +202,7 @@ object Levenshtein {
         results += ((currentChars.reverse.mkString, distance))
       }
 
-      // Make a list of the children of the current node.
-      // If one of the children correspond to the character in the query whose index
-      // is the same as the current depth of the search, we move that children
-      // to the front of the list so that it can be processed first.
-      //
-      // This is an optimization that should allow the algorithm to terminate earlier,
-      // since my processing that children first, we get matches with lower distances
-      // earlier.
-      val pulledNodes = if (currentChars.length >= query.length) dict.nodes.toList
-      else {
-        val char = query(currentChars.length)
-        dict.nodes.get(char) match {
-          case Some(node) => (char, node) :: dict.nodes.toList.filter { case (c, _) => c != char }
-          case None => dict.nodes.toList
-        }
-      }
-
-      // Traverse trie.
-      pulledNodes foreach { case (char, node) =>
+      val trieTraverse : ((Char, Trie)) => Unit = { case (char, node) =>
         val nextRow: Array[Double] = Array.ofDim(query.length + 1)
         nextRow(0) = currentChars.length
 
@@ -246,6 +228,24 @@ object Levenshtein {
 
         findMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
       }
+
+      // Traverse the trie, but start with the children corresponding
+      // to the current character in the query.
+      //
+      // This is an optimization that should allow the algorithm to terminate earlier,
+      // since my processing that children first, we get matches with lower distances
+      // earlier.
+      if (currentChars.length >= query.length) dict.nodes.foreach(trieTraverse)
+      else {
+        val char = query(currentChars.length)
+        dict.nodes.get(char) match {
+          case Some(node) =>
+            trieTraverse(char, node)
+            dict.nodes.filter { case (c, _) => c != char } foreach(trieTraverse)
+          case None => dict.nodes.foreach(trieTraverse)
+        }
+      }
+
     }
     case Nil => Unit
   }
