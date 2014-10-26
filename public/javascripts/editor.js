@@ -149,7 +149,7 @@ function setupProductEditSaveCall() {
         var new_product_info = {
             id: product_id,
             name: $('#edit_product_name').val(),
-            brand: $('#edit_product_brand').data('id'),
+            brand_id: $('#edit_product_brand').data('id'),
             line: $('#edit_product_line').val(),
             image: $('#edit_product_image').val(),
             popularity: $('#edit_product_popularity').val(),

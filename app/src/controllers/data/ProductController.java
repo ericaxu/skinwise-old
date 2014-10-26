@@ -25,14 +25,14 @@ import java.util.Set;
 public class ProductController extends Controller {
 	public static class ResponseProduct extends Response {
 		public long id;
-		public String brand;
+		public long brand;
 		public String type;
 		public String name;
 		public String description;
 		public String image;
 		public long popularity;
 
-		public ResponseProduct(long id, String brand, String type, String name, String description, String image, long popularity) {
+		public ResponseProduct(long id, long brand, String type, String name, String description, String image, long popularity) {
 			this.id = id;
 			this.brand = brand;
 			this.type = type;
@@ -119,7 +119,7 @@ public class ProductController extends Controller {
 
 			Response response = new ResponseProduct(
 					result.getId(),
-					result.getBrandName(),
+					result.getBrand().getId(),
 					result.getTypeName(),
 					result.getName(),
 					result.getDescription(),
