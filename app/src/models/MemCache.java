@@ -141,7 +141,7 @@ public class MemCache {
 		//Get
 
 		public List<T> search(String query, int limit, boolean fullSearch) {
-			lock.writeLock().lock();
+			lock.readLock().lock();
 			try {
 				List<T> searchResult = search.search(query, limit, fullSearch);
 				List<T> result = new ArrayList<>();
@@ -153,7 +153,7 @@ public class MemCache {
 				return result;
 			}
 			finally {
-				lock.writeLock().unlock();
+				lock.readLock().unlock();
 			}
 		}
 
@@ -650,16 +650,20 @@ public class MemCache {
 
 		public List<T> search(String query, int limit, boolean fullSearch) {
 			query = query.toLowerCase();
-			List<T> result;
-			if (search == null) {
-				search = new SearchEngine<>();
-				search.init(names);
+			SearchEngine<T> search_local;
+			synchronized (this) {
+				if (search == null) {
+					search = new SearchEngine<>();
+					search.init(names);
+				}
+				search_local = search;
 			}
+			List<T> result;
 			if (fullSearch) {
-				result = search.fullSearch(query, limit);
+				result = search_local.fullSearch(query, limit);
 			}
 			else {
-				result = search.partialSearch(query, limit);
+				result = search_local.partialSearch(query, limit);
 			}
 			if (result == null) {
 				result = new ArrayList<>();
@@ -668,13 +672,19 @@ public class MemCache {
 		}
 
 		public void update(String key) {
-			if (search != null) {
-				search.update(key);
+			SearchEngine<T> search_local;
+			synchronized (this) {
+				search_local = search;
+			}
+			if (search_local != null) {
+				search_local.update(key);
 			}
 		}
 
 		public void reset() {
-			search = null;
+			synchronized (this) {
+				search = null;
+			}
 		}
 	}
 

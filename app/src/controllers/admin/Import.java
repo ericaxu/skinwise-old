@@ -3,12 +3,16 @@ package src.controllers.admin;
 import src.App;
 import src.models.MemCache;
 import src.models.data.*;
+import src.util.JoinableExecutor;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
 
 public class Import {
 	private static final String TAG = "Import";
@@ -89,23 +93,10 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Importing product ingredients");
-		List<Alias> pending = new ArrayList<>();
 
 		//First pass
 		Logger.debug(TAG, "Ingredient names - first pass");
-		for (String string : allIngredients) {
-			Alias name = cache.matcher.matchAlias(string);
-
-			if (name != null && !name.getName().equalsIgnoreCase(string)) {
-				Ingredient ingredient = name.getIngredient();
-				if (ingredient != null) {
-					name = new Alias();
-					name.setName(string);
-					name.setIngredient(ingredient);
-					pending.add(name);
-				}
-			}
-		}
+		List<Alias> pending = multithreadedIngredientSearch(allIngredients, cache);
 
 		//Spill to DB
 		Logger.debug(TAG, "Ingredient names - spill");
@@ -298,5 +289,49 @@ public class Import {
 
 		cache.products.update(result, oldBrandId, oldName);
 
+	}
+
+	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients, MemCache cache) {
+		ConcurrentMap<String, Alias> results = new ConcurrentHashMap<>();
+
+		int threads = Runtime.getRuntime().availableProcessors() - 1;
+		JoinableExecutor executor = new JoinableExecutor(Executors.newFixedThreadPool(threads));
+
+		for (String name : ingredients) {
+			executor.execute(new IngredientSearch(name, results));
+		}
+
+		try {
+			executor.join();
+		}
+		catch (InterruptedException e) {
+			Logger.error(TAG, e);
+		}
+
+		return new ArrayList<>(results.values());
+	}
+
+	private static class IngredientSearch implements Runnable {
+		private String name;
+		private ConcurrentMap<String, Alias> results;
+
+		public IngredientSearch(String name, ConcurrentMap<String, Alias> results) {
+			this.name = name;
+			this.results = results;
+		}
+
+		@Override
+		public void run() {
+			Alias alias = App.cache().matcher.matchAlias(name);
+			if (alias != null && !alias.getName().equalsIgnoreCase(name)) {
+				Ingredient ingredient = alias.getIngredient();
+				if (ingredient != null) {
+					alias = new Alias();
+					alias.setName(name);
+					alias.setIngredient(ingredient);
+					results.putIfAbsent(name, alias);
+				}
+			}
+		}
 	}
 }
