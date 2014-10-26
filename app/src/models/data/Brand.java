@@ -5,7 +5,6 @@ import src.models.util.NamedModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = Brand.TABLENAME)

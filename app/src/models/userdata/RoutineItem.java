@@ -1,7 +1,7 @@
 package src.models.userdata;
 
-import src.models.util.BaseModel;
 import src.models.data.Product;
+import src.models.util.BaseModel;
 
 import javax.persistence.*;
 

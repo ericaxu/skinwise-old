@@ -97,7 +97,7 @@ class SearchEngine[T] {
     }
   }
 
-  def fullSearchMatches(queryWord: String) : List[(String, Double)] = {
+  def fullSearchMatches(queryWord: String): List[(String, Double)] = {
     toInt(queryWord) match {
       case Some(int) =>
         val matches = wordToNames(queryWord).toList
@@ -181,11 +181,11 @@ object Levenshtein {
   // efficiently by having each node in the trie correspond to a row in the
   // dynamic table.
   def findMatches(query: String,
-                 dict: Trie,
-                 maxResults: Int,
-                 results: mutable.PriorityQueue[(String, Double)],
-                 currentChars: List[Char],
-                 dynamicTable: List[Array[Double]]): Unit = dynamicTable match {
+                  dict: Trie,
+                  maxResults: Int,
+                  results: mutable.PriorityQueue[(String, Double)],
+                  currentChars: List[Char],
+                  dynamicTable: List[Array[Double]]): Unit = dynamicTable match {
     case previousRow :: remainingRows => {
       // The Levenshtein distance for the string built so far traversing the trie
       // is always the last value of the lastest row.
@@ -202,31 +202,32 @@ object Levenshtein {
         results += ((currentChars.reverse.mkString, distance))
       }
 
-      val trieTraverse : ((Char, Trie)) => Unit = { case (char, node) =>
-        val nextRow: Array[Double] = Array.ofDim(query.length + 1)
-        nextRow(0) = currentChars.length
+      val trieTraverse: ((Char, Trie)) => Unit = {
+        case (char, node) =>
+          val nextRow: Array[Double] = Array.ofDim(query.length + 1)
+          nextRow(0) = currentChars.length
 
-        remainingRows match {
-          case Nil =>
-            for (i <- 1 to query.length) {
-              nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
-              // Favor first-letter matches.
-              else if (i == 1) min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 2
-              else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
-            }
-          case transposeRow :: _ =>
-            // If we've already built a row (other than the default row), we can
-            // look for adjacent character transposition.
-            for (i <- 1 to query.length) {
-              nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
-              else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
-              // Tranpose recursive case
-              if (i > 1 && query(i - 1) == currentChars.head && query(i - 2) == char)
-                nextRow(i) = min(nextRow(i), transposeRow(i - 2)) + 1
-            }
-        }
+          remainingRows match {
+            case Nil =>
+              for (i <- 1 to query.length) {
+                nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
+                // Favor first-letter matches.
+                else if (i == 1) min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 2
+                else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
+              }
+            case transposeRow :: _ =>
+              // If we've already built a row (other than the default row), we can
+              // look for adjacent character transposition.
+              for (i <- 1 to query.length) {
+                nextRow(i) = if (query(i - 1) == char) previousRow(i - 1)
+                else min3(nextRow(i - 1), previousRow(i), previousRow(i - 1)) + 1
+                // Tranpose recursive case
+                if (i > 1 && query(i - 1) == currentChars.head && query(i - 2) == char)
+                  nextRow(i) = min(nextRow(i), transposeRow(i - 2)) + 1
+              }
+          }
 
-        findMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
+          findMatches(query, node, maxResults, results, char :: currentChars, nextRow :: dynamicTable)
       }
 
       // Traverse the trie, but start with the children corresponding
@@ -241,7 +242,7 @@ object Levenshtein {
         dict.nodes.get(char) match {
           case Some(node) =>
             trieTraverse(char, node)
-            dict.nodes.filter { case (c, _) => c != char } foreach(trieTraverse)
+            dict.nodes.filter { case (c, _) => c != char } foreach (trieTraverse)
           case None => dict.nodes.foreach(trieTraverse)
         }
       }

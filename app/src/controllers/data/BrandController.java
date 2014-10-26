@@ -4,9 +4,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import src.App;
 import src.controllers.ErrorController;
-import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.data.*;
+import src.models.data.Brand;
 import views.html.brand;
 
 public class BrandController extends Controller {

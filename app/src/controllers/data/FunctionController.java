@@ -4,9 +4,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import src.App;
 import src.controllers.ErrorController;
-import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.data.*;
+import src.models.data.Function;
 import views.html.function;
 
 public class FunctionController extends Controller {

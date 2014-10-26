@@ -1,8 +1,8 @@
 package src.models.feedback;
 
-import src.models.util.BaseModel;
 import src.models.Page;
 import src.models.user.User;
+import src.models.util.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

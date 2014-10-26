@@ -2,11 +2,9 @@ package src.models.data;
 
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
-import src.util.Logger;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = Function.TABLENAME)

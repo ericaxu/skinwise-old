@@ -11,13 +11,13 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.util.BaseModel;
 import src.models.MemCache;
 import src.models.Page;
 import src.models.Permissible;
+import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.data.Alias;
+import src.models.util.BaseModel;
 import views.html.ingredient;
 
 import java.util.ArrayList;

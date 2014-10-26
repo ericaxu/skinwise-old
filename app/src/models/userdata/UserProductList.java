@@ -1,8 +1,8 @@
 package src.models.userdata;
 
-import src.models.util.BaseModel;
 import src.models.data.Product;
 import src.models.user.User;
+import src.models.util.BaseModel;
 
 import javax.persistence.*;
 import java.util.List;

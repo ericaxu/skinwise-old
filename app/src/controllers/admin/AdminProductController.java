@@ -15,13 +15,10 @@ import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.MemCache;
 import src.models.Permissible;
-import src.models.data.Alias;
 import src.models.data.Brand;
 import src.models.data.Product;
 import src.models.data.ProductType;
 import src.models.util.BaseModel;
-
-import java.util.List;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
@@ -38,10 +35,10 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
-//		@NotNull
-//		public String ingredients;
-//		@NotNull
-//		public String key_ingredients;
+		//		@NotNull
+		//		public String ingredients;
+		//		@NotNull
+		//		public String key_ingredients;
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -71,8 +68,8 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
 			}
 
-//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
-//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
+			//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
+			//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
 
 			String oldName = result.getName();
 			long oldBrandId = result.getBrand_id();
@@ -89,7 +86,7 @@ public class AdminProductController extends Controller {
 
 				cache.products.update(result, oldBrandId, oldName);
 
-//				result.saveIngredients(ingredients, key_ingredients);
+				//				result.saveIngredients(ingredients, key_ingredients);
 			}
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
