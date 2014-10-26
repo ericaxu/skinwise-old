@@ -1,0 +1,37 @@
+@(state: src.controllers.util.ResponseState, function: src.models.data.Function)
+
+@import org.apache.commons.lang3.text.WordUtils;
+
+@template(WordUtils.capitalizeFully(function.getName) + " - Skin Wise", state) {
+
+    <link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/browse.css")'>
+
+} {
+
+    <div class="function_detail">
+        <h1>@WordUtils.capitalizeFully(function.getName)</h1>
+        <p>@function.getDescription</p>
+        <div class="result_summary"></div>
+
+        <div class="ingredients_list">
+            <ul></ul>
+            <div class="end_of_results">No more results.</div>
+            <div id="loading_spinner"></div>
+        </div>
+
+        <div id="back_to_top">
+            <span class="chevron top"></span>
+            Back to Top
+        </div>
+    </div>
+
+} {
+
+    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
+    <script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
+    <script>
+    SW.CUR_FUNCTION = @function.getId;
+    initBrowse('ingredient');
+    </script>
+
+}

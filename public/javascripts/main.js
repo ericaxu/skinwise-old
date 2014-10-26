@@ -20,9 +20,10 @@ function setupIngredientInfobox() {
                 for (var i = 0; i < ingredient_data.functions.length; i++) {
                     var func_id = ingredient_data.functions[i];
                     if (SW.FUNC[func_id]) {
-                        functions.append($('<span/>', {
+                        functions.append($('<a/>', {
                             class: 'function neutral',
-                            text: fullyCapitalize(SW.FUNC[func_id].name)
+                            text: fullyCapitalize(SW.FUNC[func_id].name),
+                            href: '/function/' + func_id
                         }).data('id', func_id));
                     }
                 }

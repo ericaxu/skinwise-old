@@ -7,17 +7,17 @@ import src.controllers.ErrorController;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.data.*;
-import views.html.brand;
+import views.html.function;
 
-public class BrandController extends Controller {
-	public static Result brand(long brand_id) {
+public class FunctionController extends Controller {
+	public static Result function(long function_id) {
 		ResponseState state = new ResponseState(session());
 
-		Brand result = App.cache().brands.get(brand_id);
+		Function result = App.cache().functions.get(function_id);
 		if (result == null) {
 			return ErrorController.notfound();
 		}
 
-		return ok(brand.render(state, result));
+		return ok(function.render(state, result));
 	}
 }

@@ -16,6 +16,7 @@ GET         /favicon.ico                         controllers.Assets.at(path="/pu
 GET         /ingredient/:id                      src.controllers.data.IngredientController.ingredient(id : Long)
 GET         /product/:id                         src.controllers.data.ProductController.product(id : Long)
 GET         /brand/:id                           src.controllers.data.BrandController.brand(id: Long)
+GET         /function/:id                        src.controllers.data.FunctionController.function(id: Long)
 
 # Search
 # GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)

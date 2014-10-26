@@ -7,7 +7,11 @@ function ingredientResultHTML(ing) {
         var id = ing.functions[j];
         if (SW.FUNC[id]) {
             var name = fullyCapitalize(SW.FUNC[id].name);
-            functions.append($('<span/>', {class: 'function neutral'}).text(fullyCapitalize(SW.FUNC[id].name)).data('id', id));
+            functions.append($('<a/>', {
+                class: 'function neutral',
+                href: '/function/' + id,
+                text: fullyCapitalize(SW.FUNC[id].name)
+            }).data('id', id));
         }
     }
 
@@ -81,7 +85,7 @@ function fetchNextPage(type) {
 
         if (type === 'ingredient') {
             postToAPI('/ingredient/filter', {
-                functions: getSelectedFilters('function'),
+                functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
                 page: SW.ING_FETCH.CUR_PAGE + 1
             }, fetch_callback);
         } else if (type === 'product') {
@@ -123,7 +127,7 @@ function refetch(type) {
     } else if (type === 'ingredient') {
         $('.ingredients_list ul').empty();
         postToAPI('/ingredient/filter', {
-            functions: getSelectedFilters('function'),
+            functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
             page: 0
         }, refetch_callback);
     }
