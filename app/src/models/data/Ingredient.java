@@ -94,7 +94,7 @@ public class Ingredient extends NamedModel {
 		return App.cache().ingredient_alias.getManyObject(this.getId());
 	}
 
-	public List<String> getNamesString() {
+	public List<String> getAliasesString() {
 		List<String> result = new ArrayList<>();
 		for (Alias name : this.getAliases()) {
 			result.add(name.getName());
