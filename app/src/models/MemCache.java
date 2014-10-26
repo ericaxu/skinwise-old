@@ -24,18 +24,18 @@ public class MemCache {
 		private Getter<T> getter;
 		//Containers
 		private TLongObjectMap<T> index;
-		private Set<T> all;
+		private List<T> all;
 
 		public BaseIndex(Getter<T> getter) {
 			this.lock = new ReentrantReadWriteLock();
 			this.getter = getter;
 			this.index = new TLongObjectHashMap<>();
-			this.all = new HashSet<>();
+			this.all = new ArrayList<>();
 		}
 
 		//Get
 
-		public Set<T> all() {
+		public List<T> all() {
 			lock.readLock().lock();
 			try {
 				return all;
