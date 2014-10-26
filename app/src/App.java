@@ -13,6 +13,7 @@ public class App {
 	private static Backup backup;
 
 	public static void start() {
+		stop();
 		Usergroup admin_group = Usergroup.byName(ADMIN_USER_GROUP);
 		if (admin_group == null) {
 			admin_group = new Usergroup();
@@ -32,6 +33,7 @@ public class App {
 
 		backup = new Backup();
 		backup.start();
+		cache();
 	}
 
 	public static void stop() {
