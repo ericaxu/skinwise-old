@@ -343,12 +343,22 @@ public class MemCache {
 		//Get
 
 		public List<M> getManyObject(long one_id) {
-			TLongList many_id_set = _getMany(one_id);
+			TLongList many_id_set = getMany(one_id);
 			List<M> result = new ArrayList<>();
 			for (long id : many_id_set.toArray()) {
 				result.add(getter.byId(id));
 			}
 			return result;
+		}
+
+		public TLongList getMany(long one_id) {
+			lock.writeLock().lock();
+			try {
+				return _getMany(one_id);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 
 		//Set
@@ -412,73 +422,95 @@ public class MemCache {
 		}
 	}
 
-	public static class ManyToManyIndex<L extends BaseModel, R extends BaseModel> {
+	public static class ManyToManyIndex<T extends ManyToMany> {
 		private ReadWriteLock lock;
-		private TLongObjectMap<TLongList> left_index;
-		private TLongObjectMap<TLongList> right_index;
-		private RGetter<L, R> getter;
-		private Getter<L> left_getter;
-		private Getter<R> right_getter;
+		private TLongObjectMap<Set<T>> left_index;
+		private TLongObjectMap<Set<T>> right_index;
+		private ManyToManyGetter<T> relation_getter;
 
-		public ManyToManyIndex(RGetter<L, R> getter, Getter<L> l_getter, Getter<R> r_getter) {
+		public ManyToManyIndex(ManyToManyGetter<T> relation_getter) {
 			this.lock = new ReentrantReadWriteLock();
+			this.relation_getter = relation_getter;
 			this.left_index = new TLongObjectHashMap<>();
 			this.right_index = new TLongObjectHashMap<>();
-			this.getter = getter;
-			this.left_getter = l_getter;
-			this.right_getter = r_getter;
 		}
+
+		//Getters
+
+		public Set<T> getR(long right_id) {
+			if (!right_index.containsKey(right_id)) {
+				right_index.put(right_id, new HashSet<>());
+			}
+			return right_index.get(right_id);
+		}
+
+		public Set<T> getL(long left_id) {
+			if (!left_index.containsKey(left_id)) {
+				left_index.put(left_id, new HashSet<>());
+			}
+			return left_index.get(left_id);
+		}
+
+		//Setters
 
 		public void cache() {
 			lock.writeLock().lock();
 			try {
-				cache(getter.all());
+				_cache(relation_getter.all());
 			}
 			finally {
 				lock.writeLock().unlock();
 			}
 		}
 
-		protected void cache(List<? extends ManyToMany> list) {
+		public void add(T object) {
+			lock.writeLock().lock();
+			try {
+				_add(object);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		public void remove(T object) {
+			lock.writeLock().lock();
+			try {
+				_remove(object);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		//Internals
+
+		private void _add(T object) {
+			long left = object.getLeftId();
+			long right = object.getRightId();
+			getL(left).add(object);
+			getR(right).add(object);
+		}
+
+		private void _remove(T object) {
+			long left = object.getLeftId();
+			long right = object.getRightId();
+			getL(left).remove(object);
+			getR(right).remove(object);
+		}
+
+		private void _cache(List<T> list) {
 			lock.writeLock().lock();
 			try {
 				left_index.clear();
 				right_index.clear();
-				for (ManyToMany object : list) {
-					add(object);
+				for (T object : list) {
+					_add(object);
 				}
 			}
 			finally {
 				lock.writeLock().unlock();
 			}
-		}
-
-		public void remove(ManyToMany object) {
-			long left = object.getLeftId();
-			long right = object.getRightId();
-			getL(left).remove(right);
-			getR(right).remove(left);
-		}
-
-		public void add(ManyToMany object) {
-			long left = object.getLeftId();
-			long right = object.getRightId();
-			getL(left).add(right);
-			getR(right).add(left);
-		}
-
-		private TLongList getR(long right_id) {
-			if (!right_index.containsKey(right_id)) {
-				right_index.put(right_id, new TLongArrayList());
-			}
-			return right_index.get(right_id);
-		}
-
-		private TLongList getL(long left_id) {
-			if (!left_index.containsKey(left_id)) {
-				left_index.put(left_id, new TLongArrayList());
-			}
-			return left_index.get(left_id);
 		}
 	}
 
@@ -498,12 +530,8 @@ public class MemCache {
 		public long getOneId(M object);
 	}
 
-	private static abstract class RGetter<L extends BaseModel, R extends BaseModel> {
-		public abstract Set<R> byLeft(long left_id);
-
-		public abstract Set<L> byRight(long right_id);
-
-		public abstract List<? extends ManyToMany> all();
+	private static interface ManyToManyGetter<T extends ManyToMany> {
+		public List<T> all();
 	}
 
 	private static class IngredientAliasGetter implements OneToManyGetter<Alias> {
@@ -513,26 +541,14 @@ public class MemCache {
 		}
 	}
 
-	private static class ProductIngredientGetter extends RGetter<Product, Alias> {
-		public Set<Alias> byLeft(long left_id) {
-			List<ProductIngredient> result = ProductIngredient.byProductId(left_id);
-			Set<Alias> set = new HashSet<>();
-			for (ProductIngredient relation : result) {
-				set.add(relation.getAlias());
-			}
-			return set;
+	private static class IngredientFunctionGetter implements ManyToManyGetter<IngredientFunction> {
+		public List<IngredientFunction> all() {
+			return IngredientFunction.all();
 		}
+	}
 
-		public Set<Product> byRight(long right_id) {
-			List<ProductIngredient> result = ProductIngredient.byAliasId(right_id);
-			Set<Product> set = new HashSet<>();
-			for (ProductIngredient relation : result) {
-				set.add(relation.getProduct());
-			}
-			return set;
-		}
-
-		public List<? extends ManyToMany> all() {
+	private static class ProductIngredientGetter implements ManyToManyGetter<ProductIngredient> {
+		public List<ProductIngredient> all() {
 			return ProductIngredient.all();
 		}
 	}
@@ -697,8 +713,13 @@ public class MemCache {
 	public NamedIndex<Ingredient> ingredients;
 	public NamedIndex<Alias> alias;
 	public ProductIndex products;
-	public ManyToManyIndex<Product, Alias> product_ingredient;
-	public OneToManyIndex<Alias> ingredient_aliases;
+
+	//Relations
+	public OneToManyIndex<Alias> ingredient_alias;
+	public ManyToManyIndex<IngredientFunction> ingredient_function;
+	public ManyToManyIndex<ProductIngredient> product_ingredient;
+
+	//Others
 	public Matcher matcher;
 
 	public MemCache() {
@@ -708,9 +729,11 @@ public class MemCache {
 		ingredients = new NamedIndex<>(Ingredient.find);
 		alias = new NamedIndex<>(Alias.find);
 		products = new ProductIndex(Product.find);
-		ingredient_aliases = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
-		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter(),
-				Product.find, Alias.find);
+
+		ingredient_alias = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
+		ingredient_function = new ManyToManyIndex<>(new IngredientFunctionGetter());
+		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter());
+
 		matcher = new Matcher(this);
 	}
 
@@ -721,7 +744,9 @@ public class MemCache {
 		ingredients.cache();
 		alias.cache();
 		products.cache();
-		ingredient_aliases.cache();
+
+		ingredient_alias.cache();
+		ingredient_function.cache();
 		product_ingredient.cache();
 		System.gc();
 	}

@@ -58,12 +58,12 @@ public class IngredientController extends Controller {
 		public String name;
 		public String cas_number;
 		public String description;
-		public List<Long> functions;
+		public long[] functions;
 		public List<String> names;
 
 		public ResponseIngredientObject(long id, String name,
 		                                String cas_number, String description,
-		                                List<Long> functions, List<String> names) {
+		                                long[] functions, List<String> names) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
@@ -140,7 +140,7 @@ public class IngredientController extends Controller {
 						ingredient.getDisplayName(),
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
-						ingredient.getFunctionIds(),
+						ingredient.getFunctionIds().toArray(),
 						ingredient.getNamesString()
 				));
 			}

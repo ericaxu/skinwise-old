@@ -34,6 +34,9 @@ public class Util {
 	}
 
 	public static String joinString(String delimiter, long[] array) {
+		if (array.length == 0) {
+			return "";
+		}
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < array.length - 1; i++) {
 			result.append(array[i]).append(delimiter);
@@ -47,6 +50,9 @@ public class Util {
 	}
 
 	public static <T> String joinString(String delimiter, List<T> array) {
+		if (array.size() == 0) {
+			return "";
+		}
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < array.size() - 1; i++) {
 			result.append(array.get(i)).append(delimiter);

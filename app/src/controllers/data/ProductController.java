@@ -47,9 +47,9 @@ public class ProductController extends Controller {
 		public long id;
 		public String name;
 		public String description;
-		public List<Long> functions;
+		public long[] functions;
 
-		public ResponseIngredientObject(long id, String name, String description, List<Long> functions) {
+		public ResponseIngredientObject(long id, String name, String description, long[] functions) {
 			this.id = id;
 			this.name = name;
 			this.description = description;
@@ -275,7 +275,7 @@ public class ProductController extends Controller {
 
 			Set<Ingredient> ingredients = new HashSet<>();
 
-			List<ProductIngredient> links = result.getIngredientLinks();
+			List<ProductIngredient> links = result.getProductIngredients();
 
 			for (ProductIngredient link : links) {
 				if (link.getAlias().getIngredient() != null) {
@@ -289,7 +289,7 @@ public class ProductController extends Controller {
 						ingredient.getId(),
 						WordUtils.capitalizeFully(ingredient.getName()),
 						ingredient.getDescription(),
-						ingredient.getFunctionIds()
+						ingredient.getFunctionIds().toArray()
 				));
 			}
 

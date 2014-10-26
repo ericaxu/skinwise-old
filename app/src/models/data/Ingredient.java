@@ -1,9 +1,10 @@
 package src.models.data;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.Page;
-import src.models.util.BaseModel;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 import src.util.Util;
@@ -47,41 +48,40 @@ public class Ingredient extends NamedModel {
 
 	//Functions
 
-	private transient List<IngredientFunction> ingredient_functions;
-	private transient Set<Function> functions;
-
-	private List<IngredientFunction> getIngredient_functions() {
-		if (ingredient_functions == null) {
-			ingredient_functions = IngredientFunction.byIngredientId(this.getId());
-		}
-		return ingredient_functions;
+	private Set<IngredientFunction> getIngredient_functions() {
+		return App.cache().ingredient_function.getL(getId());
 	}
+
+	private transient Set<Function> functions;
 
 	public Set<Function> getFunctions() {
 		if (functions == null) {
-			getIngredient_functions();
+			Set<IngredientFunction> ingredient_functions = getIngredient_functions();
 			functions = new HashSet<>();
 			for (IngredientFunction ingredient_function : ingredient_functions) {
 				functions.add(ingredient_function.getFunction());
 			}
 		}
+
 		return functions;
 	}
 
 	public void saveFunctions(Set<Function> input) {
-		getIngredient_functions();
+		Set<IngredientFunction> ingredient_functions = getIngredient_functions();
 		for (IngredientFunction ingredient_function : ingredient_functions) {
 			ingredient_function.delete();
+			App.cache().ingredient_function.remove(ingredient_function);
 		}
-		ingredient_functions.clear();
+
+		functions = input;
+
 		for (Function function : input) {
 			IngredientFunction ingredient_function = new IngredientFunction();
 			ingredient_function.setFunction(function);
 			ingredient_function.setIngredient(this);
 			ingredient_function.save();
-			ingredient_functions.add(ingredient_function);
+			App.cache().ingredient_function.add(ingredient_function);
 		}
-		functions = input;
 	}
 
 	public List<String> getFunctionsString() {
@@ -92,8 +92,8 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
-	public List<Long> getFunctionIds() {
-		List<Long> result = new ArrayList<>();
+	public TLongList getFunctionIds() {
+		TLongList result = new TLongArrayList();
 		for (Function function : getFunctions()) {
 			result.add(function.getId());
 		}
@@ -103,7 +103,7 @@ public class Ingredient extends NamedModel {
 	//Names
 
 	public List<Alias> getNames() {
-		return App.cache().ingredient_aliases.getManyObject(this.getId());
+		return App.cache().ingredient_alias.getManyObject(this.getId());
 	}
 
 	public String getDisplayName() {

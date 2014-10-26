@@ -15,7 +15,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -96,24 +98,19 @@ public class Product extends NamedModel {
 
 	//Ingredients
 
-	private transient List<ProductIngredient> pairs;
 	private transient List<Alias> ingredients;
 	private transient List<Alias> key_ingredients;
 
-	private List<ProductIngredient> getPairs() {
-		if (pairs == null) {
-			pairs = ProductIngredient.byProductId(this.getId());
-		}
-		return pairs;
-	}
-
-	public List<ProductIngredient> getIngredientLinks() {
-		return getPairs();
+	public List<ProductIngredient> getProductIngredients() {
+		Set<ProductIngredient> result = App.cache().product_ingredient.getL(getId());
+		List<ProductIngredient> list = new ArrayList<>(result);
+		Collections.sort(list, ProductIngredient.sorter);
+		return list;
 	}
 
 	public List<Alias> getIngredients() {
 		if (ingredients == null) {
-			List<ProductIngredient> pairs = getPairs();
+			List<ProductIngredient> pairs = getProductIngredients();
 			ingredients = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (!pair.isIs_key()) {
@@ -126,7 +123,7 @@ public class Product extends NamedModel {
 
 	public List<Alias> getKey_ingredients() {
 		if (key_ingredients == null) {
-			List<ProductIngredient> pairs = getPairs();
+			List<ProductIngredient> pairs = getProductIngredients();
 			key_ingredients = new ArrayList<>();
 			for (ProductIngredient pair : pairs) {
 				if (pair.isIs_key()) {
@@ -139,11 +136,12 @@ public class Product extends NamedModel {
 
 	public void saveIngredients(List<Alias> newIngredients,
 	                            List<Alias> newKeyIngredients) {
-		List<ProductIngredient> oldPairs = getPairs();
-		for (ProductIngredient oldPair : oldPairs) {
-			oldPair.delete();
+		List<ProductIngredient> pairs = getProductIngredients();
+		for (ProductIngredient pair : pairs) {
+			pair.delete();
+			App.cache().product_ingredient.remove(pair);
 		}
-		pairs.clear();
+
 		ingredients = newIngredients;
 		key_ingredients = newKeyIngredients;
 
@@ -151,15 +149,15 @@ public class Product extends NamedModel {
 		refreshIngredientList(newKeyIngredients, true);
 	}
 
-	private void refreshIngredientList(List<Alias> newList, boolean is_key) {
-		for (int i = 0; i < newList.size(); i++) {
+	private void refreshIngredientList(List<Alias> list, boolean is_key) {
+		for (int i = 0; i < list.size(); i++) {
 			ProductIngredient pair = new ProductIngredient();
-			pair.setAlias(newList.get(i));
+			pair.setAlias(list.get(i));
 			pair.setProduct(this);
 			pair.setIs_key(is_key);
 			pair.setItem_order(i);
 			pair.save();
-			pairs.add(pair);
+			App.cache().product_ingredient.add(pair);
 		}
 	}
 
@@ -181,7 +179,6 @@ public class Product extends NamedModel {
 
 	@Override
 	public void refresh() {
-		pairs = null;
 		ingredients = null;
 		key_ingredients = null;
 		super.refresh();
@@ -222,10 +219,8 @@ public class Product extends NamedModel {
 			}
 			TLongSet alias_ids = new TLongHashSet();
 			for (long ingredient_id : ingredient_ids) {
-				List<Alias> aliases = App.cache().ingredients.get(ingredient_id).getNames();
-				for (Alias alias : aliases) {
-					alias_ids.add(alias.getId());
-				}
+				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+				alias_ids.addAll(aliases);
 			}
 			long[] list = alias_ids.toArray();
 

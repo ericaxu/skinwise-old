@@ -9,7 +9,6 @@ import src.models.util.NamedModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,13 +26,13 @@ public class Alias extends NamedModel {
 
 	public void setIngredient_id(long ingredient_id) {
 		if (ingredient_id != this.ingredient_id) {
-			App.cache().ingredient_aliases.remove(this);
+			App.cache().ingredient_alias.remove(this);
 			this.ingredient_id = ingredient_id;
-			App.cache().ingredient_aliases.add(this);
+			App.cache().ingredient_alias.add(this);
 		}
 	}
 
-	//Relations
+	//ManyToOne Relations
 
 	public Ingredient getIngredient() {
 		return App.cache().ingredients.get(ingredient_id);
@@ -44,33 +43,16 @@ public class Alias extends NamedModel {
 		setIngredient_id(id);
 	}
 
+	//ManyToMany Relations
+
+	public Set<ProductIngredient> getPairs() {
+		return App.cache().product_ingredient.getR(this.getId());
+	}
+
 	//Others
 
 	public String getDisplayName() {
 		return WordUtils.capitalizeFully(getName());
-	}
-
-	//Cached getter/setters
-
-	private transient List<ProductIngredient> pairs;
-	private transient Set<Product> products;
-
-	private List<ProductIngredient> getPairs() {
-		if (pairs == null) {
-			pairs = ProductIngredient.byAliasId(this.getId());
-		}
-		return pairs;
-	}
-
-	public Set<Product> getProducts() {
-		if (products == null) {
-			List<ProductIngredient> pairs = getPairs();
-			products = new HashSet<>();
-			for (ProductIngredient pair : pairs) {
-				products.add(pair.getProduct());
-			}
-		}
-		return products;
 	}
 
 	//Static
