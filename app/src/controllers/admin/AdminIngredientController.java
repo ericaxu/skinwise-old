@@ -18,6 +18,7 @@ import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
 import src.models.util.BaseModel;
+import src.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,13 +29,12 @@ public class AdminIngredientController extends Controller {
 
 	public static class RequestIngredientUpdate extends Request {
 		public long id;
-		@NotEmpty
-		public String name;
-		@NotEmpty
-		public String cas_number;
-		@NotNull
 		public long popularity;
 		@NotEmpty
+		public String name;
+		@NotNull
+		public String cas_number;
+		@NotNull
 		public String description;
 		@NotNull
 		public List<String> functions;
@@ -78,15 +78,17 @@ public class AdminIngredientController extends Controller {
 
 			String oldName = result.getName();
 
-			result.setName(request.name);
-			result.setCas_number(request.cas_number);
-			result.setDescription(request.description);
-			result.setPopularity(request.popularity);
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setCas_number(request.cas_number);
+				result.setDescription(request.description);
+				result.setPopularity(request.popularity);
+				result.save();
 
-			App.cache().ingredients.update(result, oldName);
+				App.cache().ingredients.update(result, oldName);
 
-			result.saveFunctions(functions);
+				result.saveFunctions(functions);
+			}
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
 		}
@@ -128,11 +130,13 @@ public class AdminIngredientController extends Controller {
 
 			String oldName = result.getName();
 
-			result.setName(request.name);
-			result.setIngredient(ingredient);
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setIngredient(ingredient);
+				result.save();
 
-			App.cache().alias.update(result, oldName);
+				App.cache().alias.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
 		}
@@ -162,11 +166,13 @@ public class AdminIngredientController extends Controller {
 			}
 			String oldName = result.getName();
 
-			result.setName(request.name);
-			result.setDescription(request.description);
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
 
-			App.cache().functions.update(result, oldName);
+				App.cache().functions.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));
 		}

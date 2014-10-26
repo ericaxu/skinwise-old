@@ -15,10 +15,13 @@ import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.MemCache;
 import src.models.Permissible;
+import src.models.data.Alias;
 import src.models.data.Brand;
 import src.models.data.Product;
 import src.models.data.ProductType;
 import src.models.util.BaseModel;
+
+import java.util.List;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
@@ -26,6 +29,7 @@ public class AdminProductController extends Controller {
 	public static class RequestProductUpdate extends Request {
 		public long id;
 		public long brand_id;
+		public long popularity;
 		@NotNull
 		public String line;
 		@NotEmpty
@@ -34,8 +38,10 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
-		@NotNull
-		public long popularity;
+//		@NotNull
+//		public String ingredients;
+//		@NotNull
+//		public String key_ingredients;
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -49,12 +55,15 @@ public class AdminProductController extends Controller {
 
 			MemCache cache = App.cache();
 
-			Product result = cache.products.get(request.id);
+			Product result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Product();
 			}
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			else {
+				result = cache.products.get(request.id);
+				if (result == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+				}
 			}
 
 			Brand brand = cache.brands.get(request.brand_id);
@@ -62,25 +71,26 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
 			}
 
+//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
+//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
+
 			String oldName = result.getName();
 			long oldBrandId = result.getBrand_id();
-			result.setName(request.name);
-			result.setBrand(brand);
-			result.setLine(request.line);
-			result.setDescription(request.description);
-			result.setImage(request.image);
-			result.setPopularity(request.popularity);
 
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setBrand(brand);
+				result.setLine(request.line);
+				result.setDescription(request.description);
+				result.setImage(request.image);
+				result.setPopularity(request.popularity);
 
-			cache.products.update(result, oldBrandId, oldName);
+				result.save();
 
-			//			cache.matcher.cache(cache.alias.all());
-			//			List<IngredientName> ingredients = cache.matcher.matchAllAliases(request.ingredients);
-			//			List<IngredientName> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
-			//			cache.matcher.clear();
+				cache.products.update(result, oldBrandId, oldName);
 
-			//			result.setIngredientList(ingredients, key_ingredients);
+//				result.saveIngredients(ingredients, key_ingredients);
+			}
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));
 		}
@@ -94,7 +104,7 @@ public class AdminProductController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.INGREDIENT.EDIT);
+			state.requirePermission(Permissible.PRODUCT.EDIT);
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
@@ -111,11 +121,13 @@ public class AdminProductController extends Controller {
 
 			String oldName = result.getName();
 
-			result.setName(request.name);
-			result.setDescription(request.description);
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
 
-			App.cache().brands.update(result, oldName);
+				App.cache().brands.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
 		}
@@ -129,7 +141,7 @@ public class AdminProductController extends Controller {
 		ResponseState state = new ResponseState(session());
 
 		try {
-			state.requirePermission(Permissible.INGREDIENT.EDIT);
+			state.requirePermission(Permissible.PRODUCT.EDIT);
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
@@ -146,11 +158,13 @@ public class AdminProductController extends Controller {
 
 			String oldName = result.getName();
 
-			result.setName(request.name);
-			result.setDescription(request.description);
-			result.save();
+			synchronized (result) {
+				result.setName(request.name);
+				result.setDescription(request.description);
+				result.save();
 
-			App.cache().types.update(result, oldName);
+				App.cache().types.update(result, oldName);
+			}
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
 		}

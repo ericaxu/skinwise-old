@@ -558,33 +558,10 @@ public class MemCache {
 	public static class Matcher {
 		private ReadWriteLock lock;
 		private MemCache cache;
-		//Containers
-		public Map<Alias, Set<String>> alias_word_index = new HashMap<>();
 
 		public Matcher(MemCache cache) {
 			this.lock = new ReentrantReadWriteLock();
 			this.cache = cache;
-		}
-
-		private void cacheAlias(Alias name) {
-			String key = name.getName().toLowerCase();
-			String[] words = key.split("[^a-zA-Z0-9]");
-			Set<String> set = new HashSet<>(Arrays.asList(words));
-			set.remove("");
-			alias_word_index.put(name, set);
-		}
-
-		public void cache(Collection<Alias> names) {
-			clear();
-			for (Alias name : names) {
-				cacheAlias(name);
-			}
-		}
-
-		public void clear() {
-			lock.writeLock().lock();
-			alias_word_index.clear();
-			lock.writeLock().unlock();
 		}
 
 		public static List<String> splitIngredients(String ingredient_string) {
@@ -637,26 +614,6 @@ public class MemCache {
 			if (name != null) {
 				return name;
 			}
-
-			/*
-			String[] words = input.toLowerCase().split("[^a-zA-Z0-9]");
-			for (Map.Entry<IngredientName, Set<String>> entry : alias_word_index.entrySet()) {
-				boolean allmatch = true;
-				for (String word : words) {
-					if (Objects.equals(word, "")) {
-						continue;
-					}
-					if (!entry.getValue().contains(word)) {
-						allmatch = false;
-						break;
-					}
-				}
-				if (allmatch) {
-					name = entry.getKey();
-					break;
-				}
-			}
-			*/
 
 			List<Alias> result = cache.alias.search(input, 1, true);
 			if (!result.isEmpty()) {

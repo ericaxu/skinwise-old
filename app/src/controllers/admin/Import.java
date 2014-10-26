@@ -141,7 +141,6 @@ public class Import {
 		for (DBFormat.ProductObject object : input.products) {
 			createProduct(object, cache);
 		}
-		cache.matcher.clear();
 	}
 
 	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {

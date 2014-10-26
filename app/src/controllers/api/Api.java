@@ -98,13 +98,13 @@ public class Api {
 
 			if (field.isAnnotationPresent(NotNull.class) || field.isAnnotationPresent(NotEmpty.class)) {
 				if (data == null) {
-					throw new BadRequestException(Response.INVALID);
+					throw new BadRequestException(Response.INVALID, "Field " + field.getName() + " cannot be null!");
 				}
 			}
 
 			if (field.isAnnotationPresent(NotEmpty.class)) {
 				if (data instanceof String && ((String) data).isEmpty()) {
-					throw new BadRequestException(Response.INVALID);
+					throw new BadRequestException(Response.INVALID, "Field " + field.getName() + " cannot be empty!");
 				}
 			}
 		}
