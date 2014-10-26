@@ -11,10 +11,10 @@ import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.models.MemCache;
-import src.models.data.Ingredient;
 import src.models.data.Alias;
-import src.models.util.NamedModel;
+import src.models.data.Ingredient;
 import src.models.data.Product;
+import src.models.util.NamedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ public class DataController extends Controller {
 		BRAND("brand"),
 		PRODUCT_TYPE("type"),
 		INGREDIENT("ingredient"),
+		ALIAS("alias"),
 		PRODUCT("product");
 
 		private String match;
@@ -90,6 +91,7 @@ public class DataController extends Controller {
 					result = cache.types.search(request.query, numResults, false);
 					break;
 				case INGREDIENT:
+				case ALIAS:
 					result = cache.alias.search(request.query, numResults, false);
 					break;
 				case PRODUCT:
@@ -99,24 +101,22 @@ public class DataController extends Controller {
 
 			if (result != null) {
 				for (NamedModel object : result) {
-					long id = object.getId();
-					String name = object.getName();
+					ResponseDataObject responseDataObject = new ResponseDataObject(object.getId(), object.getName());
 
-					//Ingredient names, we want ingredient ID instead, or skip if not associated
-					if (object instanceof Alias) {
+					//For aliases, we want ingredient ID instead, or skip if not associated
+					if (type == AutocompleteType.INGREDIENT) {
 						Ingredient ingredient = ((Alias) object).getIngredient();
 						if (ingredient == null) {
 							continue;
 						}
-						id = ingredient.getId();
+						responseDataObject.id = ingredient.getId();
 					}
-					//Products, we want to display "Brand - Name"
-					if (object instanceof Product) {
-						name = ((Product) object).getBrandName() + " - " + name;
+					//For products, we want to display "Brand - Name"
+					if (type == AutocompleteType.PRODUCT) {
+						responseDataObject.name = ((Product) object).getBrandName() + " - " + responseDataObject.name;
 					}
-					response.results.add(new ResponseDataObject(
-							id, name
-					));
+
+					response.results.add(responseDataObject);
 				}
 			}
 
