@@ -11,17 +11,13 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.MemCache;
 import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
-import src.models.user.Permissible;
-import src.models.util.BaseModel;
 import src.models.util.Page;
 import views.html.ingredient;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class IngredientController extends Controller {
@@ -76,6 +72,15 @@ public class IngredientController extends Controller {
 	public static class ResponseIngredientFilter extends Response {
 		public List<ResponseIngredientObject> results = new ArrayList<>();
 		public int count;
+	}
+
+	public static class ResponseAliasInfo extends Api.ResponseNamedModel {
+		public ResponseIngredientObject ingredient;
+
+		public ResponseAliasInfo(long id, String name, String description, ResponseIngredientObject ingredient) {
+			super(id, name, description);
+			this.ingredient = ingredient;
+		}
 	}
 
 	public static Result ingredient(long id) {
@@ -153,6 +158,40 @@ public class IngredientController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_alias_byid() {
+		try {
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			Alias result = App.cache().alias.get(request.id);
+			if (result == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
+			}
+
+			Ingredient ingredient = result.getIngredient();
+			ResponseIngredientObject ingredientObject = null;
+			if (ingredient != null) {
+				ingredientObject = new ResponseIngredientObject(
+						ingredient.getId(),
+						ingredient.getName(),
+						ingredient.getCas_number(),
+						ingredient.getDescription(),
+						ingredient.getFunctionIds().toArray(),
+						ingredient.getAliasesString()
+				);
+			}
+
+			ResponseAliasInfo response = new ResponseAliasInfo(result.getId(),
+					result.getName(), result.getDescription(), ingredientObject
+			);
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_alias_unmatched() {
 		ResponseState state = new ResponseState(session());
 
@@ -176,57 +215,5 @@ public class IngredientController extends Controller {
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
 		}
-	}
-
-	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_function_byid() {
-		ResponseState state = new ResponseState(session());
-
-		try {
-			state.requirePermission(Permissible.INGREDIENT.EDIT);
-
-			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
-
-			MemCache cache = App.cache();
-
-			Function result;
-			if (request.id == BaseModel.NEW_ID) {
-				result = new Function();
-			}
-			else {
-				result = cache.functions.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
-				}
-			}
-
-			Api.ResponseNamedModel response = new Api.ResponseNamedModel(
-					result.getId(),
-					result.getName(),
-					result.getDescription()
-			);
-
-			return Api.write(response);
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
-	}
-
-	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_functions() {
-		Collection<Function> result = App.cache().functions.all();
-
-		Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
-
-		for (Function object : result) {
-			response.results.add(new Api.ResponseNamedModelObject(
-					object.getId(),
-					object.getName(),
-					object.getDescription()
-			));
-		}
-
-		return Api.write(response);
 	}
 }
