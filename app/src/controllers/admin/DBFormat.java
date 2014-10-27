@@ -1,16 +1,19 @@
 package src.controllers.admin;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import src.util.Util;
 
 import java.util.*;
 
+@JsonPropertyOrder(alphabetic = true)
 public class DBFormat {
 	public Map<String, IngredientObject> ingredients = new HashMap<>();
-	public Map<String, NamedObject> ingredient_functions = new HashMap<>();
+	public Map<String, NamedObject> functions = new HashMap<>();
 	public Map<String, NamedObject> brands = new HashMap<>();
 	public Map<String, NamedObject> types = new HashMap<>();
 	public Map<String, ProductObject> products = new HashMap<>();
 
+	@JsonPropertyOrder(alphabetic = true)
 	public static class NamedObject {
 		public String name;
 		public String description;
@@ -21,6 +24,7 @@ public class DBFormat {
 		}
 	}
 
+	@JsonPropertyOrder(alphabetic = true)
 	public static class IngredientObject extends NamedObject {
 		public String cas_no;
 		public String ec_no;
@@ -49,18 +53,7 @@ public class DBFormat {
 		}
 	}
 
-	/*
-	public static class IngredientAbbreviationObject {
-		public String shorthand;
-		public String full;
-
-		public void sanitize() {
-			shorthand = Util.notNull(shorthand);
-			full = Util.notNull(full);
-		}
-	}
-	*/
-
+	@JsonPropertyOrder(alphabetic = true)
 	public static class ProductObject extends NamedObject {
 		public String brand;
 		public String type;
@@ -78,4 +71,16 @@ public class DBFormat {
 			image = Util.notNull(image).trim();
 		}
 	}
+
+	/*
+	public static class IngredientAbbreviationObject {
+		public String shorthand;
+		public String full;
+
+		public void sanitize() {
+			shorthand = Util.notNull(shorthand);
+			full = Util.notNull(full);
+		}
+	}
+	*/
 }

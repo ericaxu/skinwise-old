@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
@@ -14,8 +15,10 @@ public class Json {
 
 	static {
 		objectMapper = new ObjectMapper();
-		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+		objectMapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		objectMapper.getFactory().enable(JsonGenerator.Feature.ESCAPE_NON_ASCII);
 	}
 
@@ -25,7 +28,7 @@ public class Json {
 
 	public static String serialize(Object object) {
 		try {
-			return mapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
+			return mapper().writeValueAsString(object);
 		}
 		catch (JsonProcessingException e) {
 			Logger.fatal(TAG, "Json serialization error", e);

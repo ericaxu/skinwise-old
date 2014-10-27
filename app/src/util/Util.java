@@ -27,7 +27,7 @@ public class Util {
 	public static void writeAll(String file, String data) throws IOException {
 		File f = new File(file);
 		if (!f.exists()) {
-			f.mkdirs();
+			f.getParentFile().mkdirs();
 			f.createNewFile();
 		}
 		Files.write(Paths.get(file), data.getBytes(UTF8), StandardOpenOption.TRUNCATE_EXISTING);
@@ -62,8 +62,8 @@ public class Util {
 	}
 
 	public static String goodKey(String input) {
-		input = input.replace("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
-		return input.replace("\\s+", " ");
+		input = input.replaceAll("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
+		return input.replaceAll("\\s+", " ");
 	}
 
 	public static String goodProductKey(String brand, String name) {

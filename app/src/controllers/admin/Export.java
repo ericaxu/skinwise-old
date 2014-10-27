@@ -23,7 +23,7 @@ public class Export {
 		Logger.debug(TAG, "Exporting functions");
 		for (Function object : cache.functions.all()) {
 			DBFormat.NamedObject resultObject = export(object);
-			result.ingredient_functions.put(Util.goodKey(resultObject.name), resultObject);
+			result.functions.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
 		Logger.debug(TAG, "Exporting brands");

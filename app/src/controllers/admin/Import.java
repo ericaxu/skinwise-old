@@ -23,7 +23,7 @@ public class Import {
 		MemCache cache = App.cache();
 
 		Logger.debug(TAG, "Importing functions");
-		for (DBFormat.NamedObject object : input.ingredient_functions.values()) {
+		for (DBFormat.NamedObject object : input.functions.values()) {
 			object.sanitize();
 			createFunction(object, cache);
 		}
