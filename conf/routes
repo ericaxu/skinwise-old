@@ -26,8 +26,8 @@ POST        /api/autocomplete                    src.controllers.data.DataContro
 # Ingredient API
 POST        /api/ingredient/byid                 src.controllers.data.IngredientController.api_ingredient_byid()
 POST        /api/ingredient/filter               src.controllers.data.IngredientController.api_ingredient_filter()
-POST        /api/ingredient/functions            src.controllers.data.IngredientController.api_functions()
-POST        /api/ingredient/function/byid        src.controllers.data.IngredientController.api_function_byid()
+POST        /api/ingredient/functions            src.controllers.data.FunctionController.api_functions()
+POST        /api/ingredient/function/byid        src.controllers.data.FunctionController.api_function_byid()
 POST        /api/ingredient/unmatched            src.controllers.data.IngredientController.api_alias_unmatched()
 
 # Product API
