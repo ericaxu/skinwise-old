@@ -70,6 +70,23 @@ function loadFilterResults(response, type) {
     }
 }
 
+function fetchProducts(page, callback) {
+    postToAPI('/product/filter', {
+        types: getSelectedFilters('type'),
+        brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
+        ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
+        neg_ingredients: [1],
+        page: page
+    }, callback);
+}
+
+function fetchIngredients(page, callback) {
+    postToAPI('/ingredient/filter', {
+        functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
+        page: page
+    }, callback);
+}
+
 function fetchNextPage(type) {
     if (!SW.ING_FETCH.LOADING) {
         $('#loading_spinner').show();
@@ -84,17 +101,9 @@ function fetchNextPage(type) {
         };
 
         if (type === 'ingredient') {
-            postToAPI('/ingredient/filter', {
-                functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
-                page: SW.ING_FETCH.CUR_PAGE + 1
-            }, fetch_callback);
+            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         } else if (type === 'product') {
-            postToAPI('/product/filter', {
-                types: getSelectedFilters('type'),
-                brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-                ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
-                page: SW.ING_FETCH.CUR_PAGE + 1
-            }, fetch_callback);
+            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         }
     }
 }
@@ -118,18 +127,10 @@ function refetch(type) {
 
     if (type === 'product') {
         $('.products_list ul').empty();
-        postToAPI('/product/filter', {
-            types: getSelectedFilters('type'),
-            brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-            ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
-            page: 0
-        }, refetch_callback);
+        fetchProducts(0, refetch_callback);
     } else if (type === 'ingredient') {
         $('.ingredients_list ul').empty();
-        postToAPI('/ingredient/filter', {
-            functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
-            page: 0
-        }, refetch_callback);
+        fetchIngredients(0, refetch_callback);
     }
 }
 

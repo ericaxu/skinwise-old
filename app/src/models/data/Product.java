@@ -240,9 +240,9 @@ public class Product extends NamedModel {
 	public static final String TABLENAME = "product";
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, Page page) {
+	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, long[] neg_ingredient_ids, Page page) {
 		List<Product> result;
-		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0) {
+		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0 && neg_ingredient_ids.length == 0) {
 			result = page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 		else {
@@ -262,6 +262,25 @@ public class Product extends NamedModel {
 					query += " AND ";
 				}
 				query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
+				needAnd = true;
+			}
+
+			if (neg_ingredient_ids.length > 0) {
+				if (needAnd) {
+					query += " AND ";
+				}
+				TLongSet alias_ids = new TLongHashSet();
+				for (long ingredient_id : neg_ingredient_ids) {
+					TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+					alias_ids.addAll(aliases);
+				}
+				long[] list = alias_ids.toArray();
+
+				query += "main.id NOT IN " +
+						"(SELECT aux2.product_id " +
+						"FROM " + ProductIngredient.TABLENAME + " aux2 " +
+						"WHERE aux2.alias_id IN (" + Util.joinString(",", list) + ") )";
+
 				needAnd = true;
 			}
 
