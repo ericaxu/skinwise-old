@@ -11,8 +11,8 @@
             <a href="#" class="tab_title current" data-tab-name="ingredient_tab">Ingredient</a><a href="#" class="tab_title"
         data-tab-name="product_tab">Product</a><a href="#" class="tab_title" data-tab-name="function_tab">Function</a><a
         href="#" class="tab_title" data-tab-name="brand_tab">Brand</a><a href="#" class="tab_title"
-        data-tab-name="type_tab">Type</a><a href="#" class="tab_title"
-        data-tab-name="unmatched_tab">Unmatched</a>
+        data-tab-name="type_tab">Type</a><a href="#" class="tab_title" data-tab-name="unmatched_tab">Unmatched</a><a
+        href="#" class="tab_title" data-tab-name="rematch_tab">Rematch Alias</a>
         </div>
 
         <div class="tab" id="ingredient_tab">
@@ -254,7 +254,6 @@
             </div>
         </div>
 
-
         <div class="tab" id="unmatched_tab">
             <h1>View Unmatched Ingredients</h1>
             <div class="field">
@@ -262,6 +261,28 @@
                 <div class="unmatched_container"></div>
             </div>
         </div>
+
+        <div class="tab" id="rematch_tab">
+            <h1>Rematch Alias to Ingredient</h1>
+            <div class="field">
+                <div class="labels">
+                    <label for="rematch_alias">Alias:</label>
+                    <label for="rematch_ingredient">Ingredient:</label>
+                </div>
+
+                <div class="inputs">
+                    <input type="text" id="rematch_alias"/>
+                    <input type="button" id="rematch_alias_lookup" value="Lookup"/>
+                    <br>
+                    <input type="text" id="rematch_ingredient"/>
+                </div>
+                <p id="alias_match_info"></p>
+            </div>
+            <p>
+                <input id="rematch_btn" class="primary" type="button" value="Update Match"/>
+            </p>
+        </div>
+
 
     </div>
 } {

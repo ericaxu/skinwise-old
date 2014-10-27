@@ -354,6 +354,37 @@ function loadUnmatched(response) {
 }
 
 
+// REMATCH ALIAS
+
+function setupRematch() {
+    enableAutocomplete('alias', $('#rematch_alias'), '#rematch_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+    enableAutocomplete('ingredient', $('#rematch_ingredient'), '#rematch_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
+    $('#rematch_btn').on('click', function() {
+        var request = {
+            id: $('#rematch_alias').data('id'),
+            ingredient_id: $('#rematch_ingredient').data('id'),
+            name: $('#rematch_alias').val()
+        }
+
+        postToAPI('/admin/alias/update', request, function() {
+            $('#rematch_alias, #rematch_ingredient').val('').data('id', null);
+        }, 'Updating alias...');
+    });
+
+    $('#rematch_alias_lookup').on('click', function() {
+        var id = $('#rematch_alias').data('id');
+        postToAPI('/ingredient/byid', {
+            id: id
+        }, function(response) {
+            $('#alias_match_info').empty()
+                .append('Currently matched to <a href="/ingredient/' + id + '">'
+                + fullyCapitalize(response.name) + '</a>');
+        }, null, 'Fetching alias #' + id);
+    });
+}
+
+
 $(document).ready(function() {
     setupTabSystem();
 
@@ -383,6 +414,8 @@ $(document).ready(function() {
         }
         fetchUnmatched();
     });
+
+    setupRematch();
 
     postToAPI('/product/brands', {}, getBrandsSuccess);
 
