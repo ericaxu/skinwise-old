@@ -75,7 +75,7 @@ function fetchProducts(page, callback) {
         types: getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
         ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
-        neg_ingredients: [1],
+        neg_ingredients: getSelectedFilters('neg_ingredient'),
         page: page
     }, callback);
 }
@@ -157,7 +157,10 @@ function initBrowse(type) {
         var nav_height = $('nav').height();
 
         $('.open_add_filter_popup').on('click', function () {
-            $('#add_filter_btn').data('type', $(this).data('type'));
+            $('#add_filter_btn').data({
+                type: $(this).data('type'),
+                filterKey: $(this).data('filterKey')
+            });
             enableAutocomplete($(this).data('type'), $('#add_filter'), '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $('#add_filter_not_found'));
             $('.add_filter.popup').show();
             $('#add_filter').focus();
@@ -174,8 +177,8 @@ function initBrowse(type) {
                 return;
             }
 
-            log(id, name);
-            var filter_key = $(this).data('type');
+            var filter_key = $(this).data('filterKey');
+            log(filter_key, id, name);
             var new_filter =  {
                 id: id,
                 name: name
