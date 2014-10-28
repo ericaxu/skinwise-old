@@ -66,6 +66,7 @@ public class Export {
 		result.name = object.getName();
 		result.cas_no = object.getCas_number();
 		result.description = object.getDescription();
+		result.popularity = object.getPopularity();
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
@@ -106,6 +107,7 @@ public class Export {
 		for (Alias ing : object.getIngredients()) {
 			ingredients.add(ing.getName());
 		}
+		result.popularity = object.getPopularity();
 		result.key_ingredients = StringUtils.join(key_ingredients, ',');
 		result.ingredients = StringUtils.join(ingredients, ',');
 		return result;

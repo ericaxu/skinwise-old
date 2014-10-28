@@ -29,6 +29,7 @@ public class DBFormat {
 		public String cas_no;
 		public String ec_no;
 		public String restriction;
+		public long popularity;
 		public List<String> functions = new ArrayList<>();
 		public List<String> alias = new ArrayList<>();
 
@@ -60,6 +61,7 @@ public class DBFormat {
 		public String key_ingredients;
 		public String ingredients;
 		public String image;
+		public long popularity;
 
 		@Override
 		public void sanitize() {
