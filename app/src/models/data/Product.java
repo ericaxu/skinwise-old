@@ -5,10 +5,7 @@ import gnu.trove.list.TLongList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
-import src.models.util.BaseModel;
-import src.models.util.NamedFinder;
-import src.models.util.NamedModel;
-import src.models.util.Page;
+import src.models.util.*;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -240,51 +237,61 @@ public class Product extends NamedModel {
 	public static final String TABLENAME = "product";
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, Page page) {
-		List<Product> result;
-		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0) {
-			result = page.apply(find.order().desc("popularity").order().asc("id"));
-		}
-		else {
-			String query = "SELECT DISTINCT main.id as id, main.popularity " +
-					"FROM " + TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux " +
-					"ON main.id = aux.product_id WHERE ";
+	public static List<Product> byFilter(long[] brands, long[] neg_brands,
+	                                     long[] types,
+	                                     long[] ingredient_ids, long[] neg_ingredient_ids,
+	                                     Page page) {
+		SelectQuery query = new SelectQuery();
+		query.select("DISTINCT main.id as id, main.popularity");
+		query.from(TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux ON main.id = aux.product_id");
 
-			boolean needAnd = false;
-
-			if (brands.length > 0) {
-				query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
-				needAnd = true;
-			}
-
-			if (types.length > 0) {
-				if (needAnd) {
-					query += " AND ";
-				}
-				query += " main.product_type_id IN (" + Util.joinString(",", types) + ") ";
-				needAnd = true;
-			}
-
-			if (ingredient_ids.length > 0) {
-				if (needAnd) {
-					query += " AND ";
-				}
-				TLongSet alias_ids = new TLongHashSet();
-				for (long ingredient_id : ingredient_ids) {
-					TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
-					alias_ids.addAll(aliases);
-				}
-				long[] list = alias_ids.toArray();
-
-				query += " aux.alias_id IN (" + Util.joinString(",", list) + ") " +
-						"GROUP BY main.id " +
-						"HAVING count(*) = " + ingredient_ids.length + " ";
-			}
-
-			query += " ORDER BY main.popularity DESC, main.id ASC ";
-			result = page.apply(find, query);
+		if (brands.length > 0) {
+			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
 		}
 
-		return App.cache().products.getList(App.cache().products.getIds(result));
+		if (neg_brands.length > 0) {
+			query.where("main.brand_id NOT IN (" + Util.joinString(",", neg_brands) + ")");
+		}
+
+		if (types.length > 0) {
+			query.where("main.product_type_id IN (" + Util.joinString(",", types) + ")");
+		}
+
+		if (ingredient_ids.length > 0) {
+			TLongSet alias_ids = new TLongHashSet();
+			for (long ingredient_id : ingredient_ids) {
+				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+				alias_ids.addAll(aliases);
+			}
+			long[] list = alias_ids.toArray();
+
+			query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
+			query.other("GROUP BY main.id");
+			query.other("HAVING count(*) = " + ingredient_ids.length);
+		}
+
+		query.other("ORDER BY main.popularity DESC, main.id ASC");
+
+		TLongList result = query.execute();
+		TLongSet filter = new TLongHashSet();
+
+		if (neg_ingredient_ids.length > 0) {
+			TLongSet alias_ids = new TLongHashSet();
+			for (long ingredient_id : neg_ingredient_ids) {
+				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+				alias_ids.addAll(aliases);
+			}
+			long[] list = alias_ids.toArray();
+
+			SelectQuery neg_query = new SelectQuery();
+			neg_query.select("DISTINCT aux.product_id as id");
+			neg_query.from(ProductIngredient.TABLENAME + " aux");
+			neg_query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
+
+			filter.addAll(neg_query.execute());
+		}
+		result = page.filter(result, filter);
+
+		return App.cache().products.getList(result.toArray());
 	}
 }

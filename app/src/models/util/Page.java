@@ -2,16 +2,11 @@ package src.models.util;
 
 import com.avaje.ebean.PagingList;
 import com.avaje.ebean.Query;
-import com.avaje.ebean.RawSql;
-import com.avaje.ebean.RawSqlBuilder;
-import play.db.DB;
-import play.db.ebean.Model;
-import src.util.Logger;
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 public class Page {
@@ -31,28 +26,40 @@ public class Page {
 		this.count = 0;
 	}
 
-	public static int sqlCount(String query) throws SQLException {
-		Connection connection = DB.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet result_set = statement.executeQuery("SELECT COUNT(*) FROM (" + query + ") AS c");
-		result_set.next();
-		int count = result_set.getInt("COUNT(*)");
-		result_set.close();
-		connection.close();
-		return count;
-	}
+	public TLongList filter(TLongList input, TLongSet filter) {
+		int start = Math.min(page * size, input.size());
+		int end = Math.min(start + size, input.size());
+		TLongSet all = new TLongHashSet(input.size() + filter.size());
+		all.addAll(input);
+		all.addAll(filter);
+		count = all.size() - filter.size();
 
-	public <I, T> List<T> apply(Model.Finder<I, T> find, String query) {
-		try {
-			count = sqlCount(query);
-		}
-		catch (SQLException e) {
-			Logger.fatal(TAG, "SQL Count Query failed", e);
+		//No result
+		if (start == end) {
+			return new TLongArrayList();
 		}
 
-		RawSql sql = RawSqlBuilder.parse(query).create();
+		//No filter
+		if (filter.isEmpty()) {
+			return input.subList(start, end);
+		}
 
-		return apply(find.setRawSql(sql), false);
+		//With filter
+		TLongList result = new TLongArrayList(end - start);
+		for (long id : input.toArray()) {
+			if (!filter.contains(id)) {
+				start--;
+				end--;
+				//Stop looking when we have enough
+				if (end < 0) {
+					break;
+				}
+				if (start < 0) {
+					result.add(id);
+				}
+			}
+		}
+		return result;
 	}
 
 	public <T> List<T> apply(Query<T> query) {

@@ -3,11 +3,14 @@ package src.models.data;
 import com.avaje.ebean.Ebean;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 import src.models.util.Page;
+import src.models.util.SelectQuery;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -156,21 +159,22 @@ public class Ingredient extends NamedModel {
 	public static NamedFinder<Ingredient> find = new NamedFinder<>(Ingredient.class);
 
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
-		List<Ingredient> result;
-		if (functions.length == 0) {
-			result = page.apply(find.order().desc("popularity").order().asc("id"));
-		}
-		else {
-			String query = "SELECT DISTINCT main.id as id, main.popularity " +
-					"FROM " + TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux " +
-					"ON main.id = aux.ingredient_id WHERE " +
-					"aux.function_id IN (" + Util.joinString(",", functions) + ") " +
-					"GROUP BY main.id " +
-					"HAVING count(*) = " + functions.length + " " +
-					"ORDER BY main.popularity DESC, main.id ASC ";
+		SelectQuery query = new SelectQuery();
+		query.select("DISTINCT main.id as id, main.popularity");
+		query.from(TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux ON main.id = aux.ingredient_id");
 
-			result = page.apply(find, query);
+		if (functions.length > 0) {
+			query.where("aux.function_id IN (" + Util.joinString(",", functions) + ")");
+			query.other("GROUP BY main.id");
+			query.other("HAVING count(*) = " + functions.length);
 		}
-		return App.cache().ingredients.getList(App.cache().ingredients.getIds(result));
+
+		query.other("ORDER BY main.popularity DESC, main.id ASC");
+
+		TLongList result = query.execute();
+		TLongSet filter = new TLongHashSet();
+		result = page.filter(result, filter);
+
+		return App.cache().ingredients.getList(result.toArray());
 	}
 }

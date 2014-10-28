@@ -89,6 +89,7 @@ public class Alias extends NamedModel {
 	public static NamedFinder<Alias> find = new NamedFinder<>(Alias.class);
 
 	public static List<Alias> unmatched(Page page) {
-		return page.apply(find.where().eq("ingredient_id", 0).query());
+		List<Alias> result = page.apply(find.where().eq("ingredient_id", 0).query());
+		return App.cache().alias.getList(App.cache().alias.getIds(result));
 	}
 }

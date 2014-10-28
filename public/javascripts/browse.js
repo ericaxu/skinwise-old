@@ -70,6 +70,24 @@ function loadFilterResults(response, type) {
     }
 }
 
+function fetchProducts(page, callback) {
+    postToAPI('/product/filter', {
+        types: getSelectedFilters('type'),
+        brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
+        neg_brands: getSelectedFilters('neg_brand'),
+        ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
+        neg_ingredients: getSelectedFilters('neg_ingredient'),
+        page: page
+    }, callback);
+}
+
+function fetchIngredients(page, callback) {
+    postToAPI('/ingredient/filter', {
+        functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
+        page: page
+    }, callback);
+}
+
 function fetchNextPage(type) {
     if (!SW.ING_FETCH.LOADING) {
         $('#loading_spinner').show();
@@ -84,17 +102,9 @@ function fetchNextPage(type) {
         };
 
         if (type === 'ingredient') {
-            postToAPI('/ingredient/filter', {
-                functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
-                page: SW.ING_FETCH.CUR_PAGE + 1
-            }, fetch_callback);
+            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         } else if (type === 'product') {
-            postToAPI('/product/filter', {
-                types: getSelectedFilters('type'),
-                brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-                ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
-                page: SW.ING_FETCH.CUR_PAGE + 1
-            }, fetch_callback);
+            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         }
     }
 }
@@ -118,18 +128,10 @@ function refetch(type) {
 
     if (type === 'product') {
         $('.products_list ul').empty();
-        postToAPI('/product/filter', {
-            types: getSelectedFilters('type'),
-            brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
-            ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
-            page: 0
-        }, refetch_callback);
+        fetchProducts(0, refetch_callback);
     } else if (type === 'ingredient') {
         $('.ingredients_list ul').empty();
-        postToAPI('/ingredient/filter', {
-            functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
-            page: 0
-        }, refetch_callback);
+        fetchIngredients(0, refetch_callback);
     }
 }
 
@@ -156,7 +158,10 @@ function initBrowse(type) {
         var nav_height = $('nav').height();
 
         $('.open_add_filter_popup').on('click', function () {
-            $('#add_filter_btn').data('type', $(this).data('type'));
+            $('#add_filter_btn').data({
+                type: $(this).data('type'),
+                filterKey: $(this).data('filterKey')
+            });
             enableAutocomplete($(this).data('type'), $('#add_filter'), '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $('#add_filter_not_found'));
             $('.add_filter.popup').show();
             $('#add_filter').focus();
@@ -173,8 +178,8 @@ function initBrowse(type) {
                 return;
             }
 
-            log(id, name);
-            var filter_key = $(this).data('type');
+            var filter_key = $(this).data('filterKey');
+            log(filter_key, id, name);
             var new_filter =  {
                 id: id,
                 name: name
