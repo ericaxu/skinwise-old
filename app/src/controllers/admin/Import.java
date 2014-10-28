@@ -97,7 +97,7 @@ public class Import {
 
 		//First pass
 		Logger.debug(TAG, "Ingredient names - first pass");
-		pending = multithreadedIngredientSearch(allIngredients, cache);
+		pending = multithreadedIngredientSearch(allIngredients);
 		for (Alias name : pending) {
 			name.save();
 			cache.alias.update(name);
@@ -105,7 +105,7 @@ public class Import {
 
 		//Second pass
 		Logger.debug(TAG, "Ingredient names - second pass");
-		pending = multithreadedIngredientSearch(allIngredients, cache);
+		pending = multithreadedIngredientSearch(allIngredients);
 		for (Alias name : pending) {
 			name.save();
 			cache.alias.update(name);
@@ -278,6 +278,7 @@ public class Import {
 		long oldBrandId = result.getBrand_id();
 		result.setName(object.name);
 		result.setBrand(brand);
+		result.setType(type);
 		result.setDescription(object.description);
 		result.setImage(object.image);
 		result.setIngredients(ingredients);
@@ -289,7 +290,7 @@ public class Import {
 
 	}
 
-	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients, MemCache cache) {
+	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients) {
 		ConcurrentMap<String, Alias> results = new ConcurrentHashMap<>();
 
 		int threads = Runtime.getRuntime().availableProcessors() - 1;

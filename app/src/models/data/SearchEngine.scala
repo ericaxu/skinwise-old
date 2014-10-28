@@ -105,7 +105,7 @@ class SearchEngine[T] {
         val distances = List.fill(matches.length)(0.0)
         matches.zip(distances)
       case None =>
-        Levenshtein.findMatches(queryWord, trie, 100)
+        Levenshtein.findMatches(queryWord, trie, 20)
     }
   }
 
