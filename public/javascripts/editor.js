@@ -374,12 +374,20 @@ function setupRematch() {
 
     $('#rematch_alias_lookup').on('click', function() {
         var id = $('#rematch_alias').data('id');
-        postToAPI('/ingredient/byid', {
+        postToAPI('/ingredient/alias/byid', {
             id: id
         }, function(response) {
-            $('#alias_match_info').empty()
-                .append('Currently matched to <a href="/ingredient/' + id + '">'
-                + fullyCapitalize(response.name) + '</a>');
+            if (response.ingredient) {
+                if (response.name === fullyCapitalize(response.ingredient.name)) {
+                    $('#alias_match_info').empty()
+                        .append('This ingredient already points to <a href="/ingredient/' + response.ingredient.id + '">itself</a>');
+                } else {
+                    $('#alias_match_info').empty()
+                        .append('Currently matched to <a href="/ingredient/' + response.ingredient.id + '">'
+                        + fullyCapitalize(response.ingredient.name) + '</a>');
+                }
+            }
+
         }, null, 'Fetching alias #' + id);
     });
 }

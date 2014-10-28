@@ -29,6 +29,7 @@ POST        /api/ingredient/filter               src.controllers.data.Ingredient
 POST        /api/ingredient/functions            src.controllers.data.FunctionController.api_functions()
 POST        /api/ingredient/function/byid        src.controllers.data.FunctionController.api_function_byid()
 POST        /api/ingredient/unmatched            src.controllers.data.IngredientController.api_alias_unmatched()
+POST        /api/ingredient/alias/byid           src.controllers.data.IngredientController.api_alias_byid()
 
 # Product API
 POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()
