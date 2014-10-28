@@ -12,11 +12,14 @@
 }
 
 .filter_container {
-    display: none;
     clear: both;
     background: @bg;
     border: 1px solid @border;
     padding: 20px 30px;
+
+    &.closed {
+        display: none;
+    }
 }
 
 .filter_area {
