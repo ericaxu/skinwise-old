@@ -572,19 +572,13 @@ public class MemCache {
 	//Matching
 
 	public static class Matcher {
-		private ReadWriteLock lock;
 		private MemCache cache;
 
 		public Matcher(MemCache cache) {
-			this.lock = new ReentrantReadWriteLock();
 			this.cache = cache;
 		}
 
 		public static List<String> splitIngredients(String ingredient_string) {
-			ingredient_string = ingredient_string
-					.replaceAll("[0-9\\.]+\\s*%", "")
-					.replaceAll("\\(\\s*\\)", "");
-
 			String[] ingredients = ingredient_string.split(",(?=[^\\)]*(?:\\(|$))");
 
 			List<String> result = new ArrayList<>();
@@ -600,6 +594,9 @@ public class MemCache {
 		}
 
 		public static List<String> splitIngredient(String ingredient) {
+			ingredient = ingredient
+					.replaceAll("[0-9\\.]+\\s*%", "")
+					.replaceAll("\\(\\s*\\)", "");
 			String[] words = ingredient.toLowerCase().split("[^a-zA-Z0-9]");
 			List<String> result = new ArrayList<>();
 			for (String word : words) {

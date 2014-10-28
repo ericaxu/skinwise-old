@@ -28,6 +28,10 @@ def regex_replace(regex, replacement, input):
 	"""replace substrings matching regex"""
 	return get_regex(regex).sub(replacement, input)
 
+def regex_split(regex, input):
+	"""split a string by regex"""
+	return get_regex(regex).split(input)
+
 def regex_replace_dict(dict, input):
 	"""
 	regex replacement using a dictionary

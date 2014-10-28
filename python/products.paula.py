@@ -78,45 +78,81 @@ for url in urls:
 	page_table = parser.regex_find(r'<div class="grid-row clearfix">(.*?)id="leavingSite"', page_html, 1)
 
 	product_name = parser.regex_find(r'<div class="u-miscellaneous-pagetitle clearfix">(.*?)<\/div>', page_table, 1)
-	product_name = parser.strip_tags(product_name)
+	product_name = web.html_unescape(parser.strip_tags(product_name))
 
 	product_brand = parser.regex_find(r'<div class="brand">by <a[^>]*>(.*?)<\/a>', page_table, 1)
-	product_brand = parser.strip_tags(product_brand)
+	product_brand = web.html_unescape(parser.strip_tags(product_brand))
 
 	if not product_name or not product_brand:
 		continue
 
 	product_claims = parser.regex_find(r'<div id="[^"]*pnlTabBodyClaims"[^>]*>(.*?)<\/div>', page_table, 1)
-	product_claims = parser.strip_tags(product_claims)
-	product_claims = parser.regex_replace_dict(description_corrections, product_claims)
-
-	product_ingredients = parser.regex_find(r'<div id="[^"]*pnlTabBodyIngredients"[^>]*>(.*?)<\/div>', page_table, 1)
+	product_claims = web.html_unescape(parser.strip_tags(product_claims))
+	product_claims = parser.fix_space(parser.regex_replace_dict(description_corrections, product_claims))
 
 	product_category = parser.regex_find(r'<a id="[^"]*hlCategory"[^>]*>(.*?)<\/a>', page_table, 1)
-
-	product_key_ingredients = parser.regex_find(r'<dd[^>]*>(.*?)<\/dd>', product_ingredients, 1)
-	product_other_ingredients = parser.regex_find(r'<p[^>]*>(.*?)<\/p>', product_ingredients, 1)
-
-	product_key_ingredients = parser.strip_tags(product_key_ingredients)
-	product_other_ingredients = parser.strip_tags(product_other_ingredients)
-
 	if product_category in type_corrections:
 		product_category = type_corrections[product_category]
 
-	product_key_ingredients = parser.regex_replace_dict(ingredient_corrections, product_key_ingredients)
-	product_other_ingredients = parser.regex_replace_dict(ingredient_corrections, product_other_ingredients)
+	product_ingredients = parser.regex_find(r'<div id="[^"]*pnlTabBodyIngredients"[^>]*>(.*?)<\/div>', page_table, 1)
+	product_ingredients = web.html_unescape(parser.regex_remove(r'<strong>\\xa0<\/strong>', product_ingredients))
 
-	product = dict()
-	product['name'] = web.html_unescape(product_name)
-	product['brand'] = web.html_unescape(product_brand)
-	product['type'] = web.html_unescape(product_category)
-	product['description'] = web.html_unescape(parser.fix_space(product_claims))
-	product["key_ingredients"] = web.html_unescape(parser.fix_space(product_key_ingredients))
-	product['ingredients'] = web.html_unescape(parser.fix_space(product_other_ingredients))
+	product_key_ingredients = parser.regex_find(r'<dd[^>]*>(.*?)<\/dd>', product_ingredients, 1)
+	product_other_ingredients = parser.regex_find_all(r'<p[^>]*>(.*?)<\/p>', product_ingredients)
 
-	key = parser.product_key(product['brand'], product['name'])
+	def getIngredients(ingredients):
+		if ingredients.startswith("Ingredients*:"):
+			ingredients = ingredients[12:]
 
-	result['products'][key] = product
+		ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients)
+		ingredients = parser.regex_replace_dict(ingredient_corrections, ingredients)
+
+		key = ""
+		other = ""
+
+		other = parser.regex_find(r'(?i)(Other|Inactive) *:', ingredients)
+		if other is None:
+			other = parser.fix_space(parser.strip_tags(ingredients))
+		else:
+			split = parser.regex_split(r'(?i)(Other|Inactive) *:', ingredients)
+			key = parser.fix_space(parser.strip_tags(split[0]))
+			other = parser.fix_space(parser.strip_tags(split[-1]))
+			key = parser.regex_remove(r'^(?i)Active *:', key).strip()
+
+		return (key, other)
+
+	def createProduct(name, key_ingredients, ingredients):
+		product = dict()
+		product['name'] = name
+		product['brand'] = product_brand
+		product['type'] = product_category
+		product['description'] = product_claims
+		product["key_ingredients"] = key_ingredients
+		product['ingredients'] = ingredients
+
+		key = parser.product_key(product['brand'], product['name'])
+
+		result['products'][key] = product
+
+	# No other ingredients
+	if len(product_other_ingredients) < 1:
+		product_other_ingredients = ""
+	else:
+		# Product Systems
+		if len(product_other_ingredients) > 1:
+			title = parser.regex_find(r'<strong>(.*?)<\/strong>(|<br \/>)', product_other_ingredients[0], 1)
+			if title != "":
+				print("%r" % (product_other_ingredients))
+		else:
+			pass
+		
+		product_other_ingredients = product_other_ingredients[0]
+		key_ingredients, ingredients = getIngredients(product_other_ingredients)
+		if key_ingredients != "":
+			product_key_ingredients = key_ingredients
+		product_other_ingredients = ingredients
+
+	createProduct(product_name, product_key_ingredients, product_other_ingredients)
 
 util.json_write(result, file_products_paula_json)
 
