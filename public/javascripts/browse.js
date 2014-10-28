@@ -74,6 +74,7 @@ function fetchProducts(page, callback) {
     postToAPI('/product/filter', {
         types: getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
+        neg_brands: getSelectedFilters('neg_brand'),
         ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
         neg_ingredients: getSelectedFilters('neg_ingredient'),
         page: page

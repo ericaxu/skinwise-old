@@ -73,6 +73,8 @@ public class ProductController extends Controller {
 		@NotNull
 		public long[] types;
 		@NotNull
+		public long [] neg_brands;
+		@NotNull
 		public long[] neg_ingredients;
 	}
 
@@ -148,6 +150,13 @@ public class ProductController extends Controller {
 				}
 			}
 
+			for (long brand_id : request.neg_brands) {
+				Brand brand = App.cache().brands.get(brand_id);
+				if (brand == null) {
+					throw new BadRequestException(Response.NOT_FOUND, "Brand not found");
+				}
+			}
+
 			for (long type_id : request.types) {
 				ProductType type = App.cache().types.get(type_id);
 				if (type == null) {
@@ -170,7 +179,7 @@ public class ProductController extends Controller {
 			}
 
 			Page page = new Page(request.page, 20);
-			List<Product> result = Product.byFilter(request.brands, request.types, request.ingredients, request.neg_ingredients, page);
+			List<Product> result = Product.byFilter(request.brands, request.neg_brands, request.types, request.ingredients, request.neg_ingredients, page);
 
 			ResponseProductFilter response = new ResponseProductFilter();
 			response.count = page.count;

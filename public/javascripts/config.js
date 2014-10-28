@@ -77,7 +77,7 @@ SW.FEEDBACK = {
 }
 
 SW.FILTER_TYPES = {
-    product: ['type', 'brand', 'ingredient', 'neg_ingredient'],
+    product: ['type', 'brand', 'neg_brand', 'ingredient', 'neg_ingredient'],
     ingredient: ['function']
 }
 

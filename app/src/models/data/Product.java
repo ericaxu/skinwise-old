@@ -240,9 +240,9 @@ public class Product extends NamedModel {
 	public static final String TABLENAME = "product";
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static List<Product> byFilter(long[] brands, long[] types, long[] ingredient_ids, long[] neg_ingredient_ids, Page page) {
+	public static List<Product> byFilter(long[] brands, long[] neg_brands, long[] types, long[] ingredient_ids, long[] neg_ingredient_ids, Page page) {
 		List<Product> result;
-		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0 && neg_ingredient_ids.length == 0) {
+		if (brands.length == 0 && types.length == 0 && ingredient_ids.length == 0 && neg_ingredient_ids.length == 0 && neg_brands.length == 0) {
 			result = page.apply(find.order().desc("popularity").order().asc("id"));
 		}
 		else {
@@ -254,6 +254,14 @@ public class Product extends NamedModel {
 
 			if (brands.length > 0) {
 				query += " main.brand_id IN (" + Util.joinString(",", brands) + ") ";
+				needAnd = true;
+			}
+
+			if (neg_brands.length > 0) {
+				if (needAnd) {
+					query += " AND ";
+				}
+				query += " main.brand_id NOT IN (" + Util.joinString(",", neg_brands) + ") ";
 				needAnd = true;
 			}
 
