@@ -1,17 +1,5 @@
 {
 	"ingredients": {
-		"1  3 4 dimethoxyphenyl  4 4 dimethyl 1 3 pentanedione  jpn": {
-			"alias": [
-				"DMAE",
-				"Dimethylamino ethanol",
-				"Deanol",
-				"Dimethyl MEA"
-			],
-			"cosdna_id": "1fceab6504",
-			"cosdna_infotag": "Cas No: 108-01-0",
-			"function": "",
-			"name": "2-dimethylaminoethanol"
-		},
 		"1 1 dimethyl 2 phenylethyl isobutyrate": {
 			"alias": [
 				"Phenethyl Benzoate"
@@ -80,13 +68,25 @@
 			"function": "",
 			"name": "1,2-Hexanediol"
 		},
-		"1 3 bis  2 4 diaminophenoxy propane": {
+		"1 3 4 dimethoxyphenyl 4 4 dimethyl 1 3 pentanedione jpn": {
+			"alias": [
+				"DMAE",
+				"Dimethylamino ethanol",
+				"Deanol",
+				"Dimethyl MEA"
+			],
+			"cosdna_id": "1fceab6504",
+			"cosdna_infotag": "Cas No: 108-01-0",
+			"function": "",
+			"name": "2-dimethylaminoethanol"
+		},
+		"1 3 bis 2 4 diaminophenoxy propane": {
 			"cosdna_id": "6ecab96509",
 			"cosdna_infotag": "Cas No: 81892-72-0",
 			"function": "Hair coloring",
 			"name": "1,3-bis-(2,4-diaminophenoxy)propane"
 		},
-		"1 3 bis  2 4 diaminophenoxy propane hcl": {
+		"1 3 bis 2 4 diaminophenoxy propane hcl": {
 			"cosdna_id": "6ecab96509",
 			"cosdna_infotag": "Cas No: 81892-72-0",
 			"function": "Hair coloring",
@@ -342,34 +342,17 @@
 			"function": "Emollient; Emulsifier",
 			"name": "Laneth-10 acetate"
 		},
-		"2  1 ethylpropyl pyridine": {
+		"2 1 ethylpropyl pyridine": {
 			"cosdna_id": "a494bd19597",
 			"cosdna_infotag": "Cas No: 28365-08-4",
 			"function": "Hair Dyeing",
 			"name": "2,6-diamino-3-((pyridin-3-yl)azo)pyridine"
 		},
-		"2  2 aminoethoxy ethanol": {
+		"2 2 aminoethoxy ethanol": {
 			"cosdna_id": "3fc0f919549",
 			"cosdna_infotag": "Cas No: 929-06-6",
 			"function": "Hair Fixing",
 			"name": "2-(2-Aminoethoxy)ethanol"
-		},
-		"2 2  methylenebis 4 aminophenol": {
-			"cosdna_id": "a28a528280",
-			"function": "Antistatic",
-			"name": "Methylenebis tallow acetamidodimonium chloride"
-		},
-		"2 2  methylenebis 4 aminophenol hcl": {
-			"cosdna_id": "d6834b8503",
-			"cosdna_infotag": "Cas No: 51-78-5",
-			"function": "Hair coloring",
-			"name": "P-aminophenol hcl"
-		},
-		"2 2  thiobis 4 chlorophenol": {
-			"cosdna_id": "e053106511",
-			"cosdna_infotag": "Cas No: 97-24-5",
-			"function": "Antimicrobial",
-			"name": "2,2 -thiobis(4-chlorophenol)"
 		},
 		"2 2 dimethyl 3 phenylpropionaldehyde": {
 			"alias": [
@@ -382,6 +365,23 @@
 			"cosdna_infotag": "Cas No: 108-01-0",
 			"function": "",
 			"name": "2-dimethylaminoethanol"
+		},
+		"2 2 methylenebis 4 aminophenol": {
+			"cosdna_id": "a28a528280",
+			"function": "Antistatic",
+			"name": "Methylenebis tallow acetamidodimonium chloride"
+		},
+		"2 2 methylenebis 4 aminophenol hcl": {
+			"cosdna_id": "d6834b8503",
+			"cosdna_infotag": "Cas No: 51-78-5",
+			"function": "Hair coloring",
+			"name": "P-aminophenol hcl"
+		},
+		"2 2 thiobis 4 chlorophenol": {
+			"cosdna_id": "e053106511",
+			"cosdna_infotag": "Cas No: 97-24-5",
+			"function": "Antimicrobial",
+			"name": "2,2 -thiobis(4-chlorophenol)"
 		},
 		"2 3 4 4a 5 6 7 8 octahydro 2 5 5 trimethyl 2 naphthol": {
 			"alias": [
@@ -433,7 +433,7 @@
 			"function": "",
 			"name": "2-dimethylaminoethanol"
 		},
-		"2 3 dimethyl 4  2 6 6 trimethyl 1 cyclohexenyl  2 butenal": {
+		"2 3 dimethyl 4 2 6 6 trimethyl 1 cyclohexenyl 2 butenal": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
@@ -486,7 +486,7 @@
 			"function": "Fragrance ingredient",
 			"name": "Musk ketone"
 		},
-		"2 4 dimethyl 2  5 6 7 8 tetrahydro 3 5 5 6 8 8 hexamethyl 2 naphthalenyl  1 3 dioxolane": {
+		"2 4 dimethyl 2 5 6 7 8 tetrahydro 3 5 5 6 8 8 hexamethyl 2 naphthalenyl 1 3 dioxolane": {
 			"cosdna_id": "20aad715987",
 			"cosdna_infotag": "Cas No: 646-06-0",
 			"function": "Solvent",
@@ -634,7 +634,7 @@
 			"function": "Tonic; Fragrance",
 			"name": "2,4-dimethyl-3-cyclohexene carboxaldehyde"
 		},
-		"2 6 diamino 3   pyridin 3 yl azo pyridine": {
+		"2 6 diamino 3 pyridin 3 yl azo pyridine": {
 			"cosdna_id": "a494bd19597",
 			"cosdna_infotag": "Cas No: 28365-08-4",
 			"function": "Hair Dyeing",
@@ -909,7 +909,7 @@
 			"function": "Antimicrobial; Preservative",
 			"name": "Isopropyl Methylphenol"
 		},
-		"2 ethyl 2  3 methylbut 2 enyl hex 3 enol": {
+		"2 ethyl 2 3 methylbut 2 enyl hex 3 enol": {
 			"alias": [
 				"Bisabolol",
 				"\u03b1-bisabolol",
@@ -923,12 +923,12 @@
 			"function": "Anti-inflammatory",
 			"name": "Alpha Bisabolol"
 		},
-		"2 ethyl 3  5 or 6  dimethylpyrazine": {
+		"2 ethyl 3 5 dimethylpyrazine": {
 			"cosdna_id": "354dc212017",
 			"function": "Skin conditioning",
 			"name": "Ethyl PCA"
 		},
-		"2 ethyl 3 5 dimethylpyrazine": {
+		"2 ethyl 3 5 or 6 dimethylpyrazine": {
 			"cosdna_id": "354dc212017",
 			"function": "Skin conditioning",
 			"name": "Ethyl PCA"
@@ -938,7 +938,7 @@
 			"function": "Skin conditioning",
 			"name": "Ethyl PCA"
 		},
-		"2 ethyl 4 hydroxy 5 methylfuran 3 2h  one": {
+		"2 ethyl 4 hydroxy 5 methylfuran 3 2h one": {
 			"alias": [
 				"Hydroxyethyl Cellulose",
 				"Hydroxy Ethyl Cellulose",
@@ -1145,7 +1145,7 @@
 			"function": "Preservative",
 			"name": "Kathon CG"
 		},
-		"2 methyl 3  1 7 7 trimethylbicyclohept 2 yloxy  propanol": {
+		"2 methyl 3 1 7 7 trimethylbicyclohept 2 yloxy propanol": {
 			"cosdna_id": "b7e9c66469",
 			"function": "Alkali",
 			"name": "2-amino-2-methyl-1-propanol"
@@ -1179,7 +1179,7 @@
 			"function": "Fragrance",
 			"name": "Butylphenyl Methylpropional"
 		},
-		"2 methyl 4  2 2 3 trimethyl 3 cyclopentenyl  2 buten 1 ol": {
+		"2 methyl 4 2 2 3 trimethyl 3 cyclopentenyl 2 buten 1 ol": {
 			"alias": [
 				"o-Cymen-5-ol",
 				"4-Isopropyl-m-cresol"
@@ -1189,19 +1189,19 @@
 			"function": "Antimicrobial; Preservative",
 			"name": "Isopropyl Methylphenol"
 		},
-		"2 methyl 4  2 6 6 trimethyl 1 cyclohexenyl  2 butenal": {
+		"2 methyl 4 2 6 6 trimethyl 1 cyclohexenyl 2 butenal": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
 			"name": "Trimethyl-1,3-pentanediol"
 		},
-		"2 methyl 4  2 6 6 trimethyl 2 cyclohexenyl  2 butenal": {
+		"2 methyl 4 2 6 6 trimethyl 2 cyclohexenyl 2 butenal": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
 			"name": "Trimethyl-1,3-pentanediol"
 		},
-		"2 methyl 4  2 6 6 trimethyl 2 cyclohexenyl  3 butenal": {
+		"2 methyl 4 2 6 6 trimethyl 2 cyclohexenyl 3 butenal": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
@@ -1455,17 +1455,17 @@
 			"function": "Antioxidant",
 			"name": "Di-t-butylhydroquinone"
 		},
-		"2 trans  6 cis nonadienol": {
+		"2 trans 6 cis nonadienol": {
 			"cosdna_id": "d6eda6540",
 			"function": "",
 			"name": "Cis-Oleic Acid"
 		},
-		"2 trans  6 trans nonadienal diethyl acetal": {
+		"2 trans 6 trans nonadienal diethyl acetal": {
 			"cosdna_id": "57288741",
 			"function": "",
 			"name": "All Trans Retinol"
 		},
-		"2 trans  6 trans nonadienyl acetate": {
+		"2 trans 6 trans nonadienyl acetate": {
 			"cosdna_id": "57288741",
 			"function": "",
 			"name": "All Trans Retinol"
@@ -1787,25 +1787,25 @@
 			"function": "Solvent",
 			"name": "Methyl acetate"
 		},
-		"3 methyl 4  2 4 6 trimethyl 3 cyclohexenyl  3 buten 2 one": {
+		"3 methyl 4 2 4 6 trimethyl 3 cyclohexenyl 3 buten 2 one": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
 			"name": "Trimethyl-1,3-pentanediol"
 		},
-		"3 methyl 4  3 5 6 trimethyl 3 cyclohexenyl  3 buten 2 one": {
+		"3 methyl 4 3 5 6 trimethyl 3 cyclohexenyl 3 buten 2 one": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
 			"name": "Trimethyl-1,3-pentanediol"
 		},
-		"3 methyl 5  2 2 3 trimethyl 3 cyclopentenyl methyl cyclohexanol": {
+		"3 methyl 5 2 2 3 trimethyl 3 cyclopentenyl methyl cyclohexanol": {
 			"cosdna_id": "7aa24313114",
 			"cosdna_infotag": "Cas No: 195060-85-6",
 			"function": "Skin conditioning",
 			"name": "Trimethyl Hydroxymethyl Cyclohexanol"
 		},
-		"3 methyl 5  2 2 3 trimethyl 3 cyclopentenyl pent 3 en 2 one": {
+		"3 methyl 5 2 2 3 trimethyl 3 cyclopentenyl pent 3 en 2 one": {
 			"alias": [
 				"3b-Hydroxyurs-12-en-28-oic Acid"
 			],
@@ -1814,7 +1814,7 @@
 			"function": "Fragrance; Skin conditioning",
 			"name": "Ursolic Acid"
 		},
-		"3 methyl 5  2 2 3 trimethyl 3 cyclopentenyl pent 4 en 2 ol": {
+		"3 methyl 5 2 2 3 trimethyl 3 cyclopentenyl pent 4 en 2 ol": {
 			"alias": [
 				"3b-Hydroxyurs-12-en-28-oic Acid"
 			],
@@ -1924,7 +1924,7 @@
 			"function": "Solvent",
 			"name": "2-t-butylcyclohexyl acetate"
 		},
-		"3a 4 5 6 7 7a hexahydro 4 7 methano 1h inden 5 or 6  yl acetate": {
+		"3a 4 5 6 7 7a hexahydro 4 7 methano 1h inden 5 or 6 yl acetate": {
 			"alias": [
 				"Deoxyarbutin",
 				"4-[(Tetrahydrofuran-2-yl)oxy]phenol"
@@ -1933,7 +1933,7 @@
 			"cosdna_infotag": "Cas No: 497-76-7",
 			"name": "D-Arbutin"
 		},
-		"4 4  isopropylidenediphenol epichlorohydrin copolymer": {
+		"4 4 isopropylidenediphenol epichlorohydrin copolymer": {
 			"cosdna_id": "b9dbf413296",
 			"cosdna_infotag": "Cas No: 25068-38-6",
 			"function": "Film-forming agent",
@@ -1981,7 +1981,7 @@
 			"function": "Hair coloring",
 			"name": "4-amino-2-hydroxytoluene"
 		},
-		"4 amino 2 nitrodiphenylamine 2  carboxylic acid": {
+		"4 amino 2 nitrodiphenylamine 2 carboxylic acid": {
 			"cosdna_id": "aca8626552",
 			"cosdna_infotag": "Cas No: 117907-43-4",
 			"function": "Hair coloring",
@@ -2034,7 +2034,7 @@
 			"function": "Fragrance",
 			"name": "4-Ethoxybenzaldehyde"
 		},
-		"4 ethyl 6  2 6 6 trimethyl 2 cyclohexenyl  2 hexene 1 4 diol cyclized": {
+		"4 ethyl 6 2 6 6 trimethyl 2 cyclohexenyl 2 hexene 1 4 diol cyclized": {
 			"cosdna_id": "e49de816530",
 			"cosdna_infotag": "Cas No: 592-41-6",
 			"function": "Solvent",
@@ -2348,7 +2348,7 @@
 			"function": "Binding agent; Emulsion Stabilizer; Film-forming agent; Hydrophilic Thickener",
 			"name": "Hydroxyethylcellulose"
 		},
-		"5 ethyl 4 hydroxy 2 methylfuran 3 2h  one": {
+		"5 ethyl 4 hydroxy 2 methylfuran 3 2h one": {
 			"alias": [
 				"Hydroxyethyl Cellulose",
 				"Hydroxy Ethyl Cellulose",
@@ -2387,7 +2387,7 @@
 			"function": "Antimicrobial",
 			"name": "M-cresol"
 		},
-		"5 methyl 1  2 2 3 trimethylcyclopentenyl  6 oxabicyclooctane": {
+		"5 methyl 1 2 2 3 trimethylcyclopentenyl 6 oxabicyclooctane": {
 			"alias": [
 				"Methylchloroisothiazolinone & Methylisothiazolinone",
 				"5-chloro-2-methyl-4-isothiazolin-3-one / 2-methyl-4-isothiazolin-3-one",
@@ -4669,7 +4669,7 @@
 			"function": "Surfactant; Viscosity Controlling",
 			"name": "Acrylic Acid/VP Crosspolymer"
 		},
-		"acrylic resin coated aluminum powder  jpn": {
+		"acrylic resin coated aluminum powder jpn": {
 			"cosdna_id": "5fe32614370",
 			"function": "Colorant",
 			"name": "Acrylic Resin Coated Aluminum Powder"
@@ -5588,7 +5588,7 @@
 			"function": "Solvent",
 			"name": "SD Alcohol"
 		},
-		"alcohol denat  sd alcohol 1": {
+		"alcohol denat sd alcohol 1": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5599,7 +5599,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 23 a": {
+		"alcohol denat sd alcohol 23 a": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5610,7 +5610,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 23 f": {
+		"alcohol denat sd alcohol 23 f": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5621,7 +5621,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 23 h": {
+		"alcohol denat sd alcohol 23 h": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5632,7 +5632,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 27 b": {
+		"alcohol denat sd alcohol 27 b": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5643,7 +5643,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 3 a": {
+		"alcohol denat sd alcohol 3 a": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5654,7 +5654,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 3 b": {
+		"alcohol denat sd alcohol 3 b": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5665,7 +5665,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 3 c": {
+		"alcohol denat sd alcohol 3 c": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5676,13 +5676,13 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 30": {
+		"alcohol denat sd alcohol 30": {
 			"cosdna_id": "5fd5009196",
 			"cosdna_infotag": "Cas No: 68439-53-2",
 			"function": "Emollient; Emulsifier",
 			"name": "PPG-30 lanolin alcohol ether"
 		},
-		"alcohol denat  sd alcohol 31 a": {
+		"alcohol denat sd alcohol 31 a": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5693,7 +5693,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 36": {
+		"alcohol denat sd alcohol 36": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5704,7 +5704,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 37": {
+		"alcohol denat sd alcohol 37": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5715,7 +5715,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 38 b": {
+		"alcohol denat sd alcohol 38 b": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5726,7 +5726,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 38 c": {
+		"alcohol denat sd alcohol 38 c": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5737,7 +5737,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 38 d": {
+		"alcohol denat sd alcohol 38 d": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5748,7 +5748,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 38 f": {
+		"alcohol denat sd alcohol 38 f": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5759,7 +5759,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 39": {
+		"alcohol denat sd alcohol 39": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5770,7 +5770,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 39 a": {
+		"alcohol denat sd alcohol 39 a": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5781,7 +5781,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 39 b": {
+		"alcohol denat sd alcohol 39 b": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5792,7 +5792,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 39 c": {
+		"alcohol denat sd alcohol 39 c": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5803,7 +5803,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 39 d": {
+		"alcohol denat sd alcohol 39 d": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -5814,27 +5814,27 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"alcohol denat  sd alcohol 40": {
+		"alcohol denat sd alcohol 40": {
 			"cosdna_id": "99aba98743",
 			"function": "Emulsifier",
 			"name": "PEG-40 jojoba alcohol"
 		},
-		"alcohol denat  sd alcohol 40 a": {
+		"alcohol denat sd alcohol 40 a": {
 			"cosdna_id": "99aba98743",
 			"function": "Emulsifier",
 			"name": "PEG-40 jojoba alcohol"
 		},
-		"alcohol denat  sd alcohol 40 b": {
+		"alcohol denat sd alcohol 40 b": {
 			"cosdna_id": "99aba98743",
 			"function": "Emulsifier",
 			"name": "PEG-40 jojoba alcohol"
 		},
-		"alcohol denat  sd alcohol 40 c": {
+		"alcohol denat sd alcohol 40 c": {
 			"cosdna_id": "99aba98743",
 			"function": "Emulsifier",
 			"name": "PEG-40 jojoba alcohol"
 		},
-		"alcohol denat  sd alcohol 46": {
+		"alcohol denat sd alcohol 46": {
 			"alias": [
 				"Ethanol",
 				"Grain Alcohol",
@@ -6472,11 +6472,6 @@
 			"function": "Whitening",
 			"name": "Aloesin"
 		},
-		"alpha  gamma gamma trimethylcyclohexylpropyl acetate": {
-			"cosdna_id": "6528441136",
-			"function": "Antioxidant",
-			"name": "Gamma-Oryzanol"
-		},
 		"alpha 3 3 trimethylcyclohexylmethyl acetate": {
 			"cosdna_id": "d217bf4024",
 			"function": "Stabilizing agent; Thickener",
@@ -6519,6 +6514,11 @@
 			"cosdna_id": "77469116368",
 			"function": "Humectant; Skin Conditioning",
 			"name": "Alpha-glucan"
+		},
+		"alpha gamma gamma trimethylcyclohexylpropyl acetate": {
+			"cosdna_id": "6528441136",
+			"function": "Antioxidant",
+			"name": "Gamma-Oryzanol"
 		},
 		"alpha glucan": {
 			"cosdna_id": "77469116368",
@@ -7319,17 +7319,17 @@
 			"function": "Emulsifier",
 			"name": "Amino bispropyl dimethicone"
 		},
-		"amino esters 1  jpn": {
+		"amino esters 1 jpn": {
 			"cosdna_id": "4bbbd212909",
 			"function": "Skin conditioning",
 			"name": "Amino Esters-1"
 		},
-		"amino esters 2  jpn": {
+		"amino esters 2 jpn": {
 			"cosdna_id": "4bbbd212909",
 			"function": "Skin conditioning",
 			"name": "Amino Esters-1"
 		},
-		"amino esters 3  jpn": {
+		"amino esters 3 jpn": {
 			"cosdna_id": "4bbbd212909",
 			"function": "Skin conditioning",
 			"name": "Amino Esters-1"
@@ -12658,17 +12658,17 @@
 			"function": "Emulsion Stabilizer",
 			"name": "Beta-sitosterol"
 		},
-		"beta sitosteryl  octadecene ma  copolymer": {
-			"cosdna_id": "9973bc8402",
-			"cosdna_infotag": "Cas No: 25266-02-8",
-			"function": "Emulsion Stabilizer; Film-forming agent; Thickener; Viscosity Controlling",
-			"name": "Octadecene/ma copolymer"
-		},
 		"beta sitosteryl acetate": {
 			"cosdna_id": "80aa4d6878",
 			"cosdna_infotag": "Cas No: 915-05-9",
 			"function": "Skin conditioning; Stabilizing agent",
 			"name": "Beta-sitosteryl acetate"
+		},
+		"beta sitosteryl octadecene ma copolymer": {
+			"cosdna_id": "9973bc8402",
+			"cosdna_infotag": "Cas No: 25266-02-8",
+			"function": "Emulsion Stabilizer; Film-forming agent; Thickener; Viscosity Controlling",
+			"name": "Octadecene/ma copolymer"
 		},
 		"beta vulgaris": {
 			"alias": [
@@ -13094,28 +13094,7 @@
 			"function": "Bulking agent; Suspending agent; Viscosity Controlling",
 			"name": "Biotite"
 		},
-		"bis  c1 8 alkyl lauroyl lysine decylcarboxamide  dimethicone": {
-			"cosdna_id": "64d7fb19583",
-			"function": "Emollient; Skin Protecting; Viscosity Controlling",
-			"name": "Bis-(c1-8 Alkyl Lauroyl Lysine Decylcarboxamide) Dimethicone"
-		},
-		"bis  polyglyceryl 3 oxyphenylpropyl  dimethicone": {
-			"cosdna_id": "2dc03c13395",
-			"function": "Skin and hair conditioning",
-			"name": "Bis-(Polyglyceryl-3 Oxyphenylpropyl) Dimethicone"
-		},
-		"bis  polyglyceryl 7 oxyphenylpropyl  dimethicone": {
-			"cosdna_id": "2dc03c13395",
-			"function": "Skin and hair conditioning",
-			"name": "Bis-(Polyglyceryl-3 Oxyphenylpropyl) Dimethicone"
-		},
-		"bis  tetramethyl hydroxypiperidinyl  sebacate": {
-			"cosdna_id": "e4cb2f19587",
-			"cosdna_infotag": "Cas No: 30538-92-2",
-			"function": "Antioxidant",
-			"name": "Bis-(tetramethyl Hydroxypiperidinyl) Sebacate"
-		},
-		"bis 1 methylheptyl  maleate": {
+		"bis 1 methylheptyl maleate": {
 			"cosdna_id": "0282f319586",
 			"cosdna_infotag": "Cas No: 97298-48-1",
 			"function": "Emollient; Hair Conditioning; Plasticiser; Solvent",
@@ -13164,7 +13143,7 @@
 			"function": "Emollient; Skin and hair conditioning; Viscosity Controlling",
 			"name": "Bis-Behenyl/Phytosteryl Dimer Dilinoleate"
 		},
-		"bis butylbenzoate  diaminotriazine aminopropyltrisiloxane": {
+		"bis butylbenzoate diaminotriazine aminopropyltrisiloxane": {
 			"cosdna_id": "95743513407",
 			"function": "Emollient; Viscosity Controlling",
 			"name": "Bis-Vinyldimethicone/Bis-Isobutyl PPG-20 Crosspolymer"
@@ -13179,12 +13158,17 @@
 			"function": "Hair conditioning; Hair Fixative",
 			"name": "Bis-Butyloxyamodimethicone/PEG-60 Copolymer"
 		},
-		"bis c13 15 alkoxy  hydroxybutamidoamodimethicone": {
+		"bis c1 8 alkyl lauroyl lysine decylcarboxamide dimethicone": {
+			"cosdna_id": "64d7fb19583",
+			"function": "Emollient; Skin Protecting; Viscosity Controlling",
+			"name": "Bis-(c1-8 Alkyl Lauroyl Lysine Decylcarboxamide) Dimethicone"
+		},
+		"bis c13 15 alkoxy hydroxybutamidoamodimethicone": {
 			"cosdna_id": "35fb2f19582",
 			"function": "Hair Conditioning",
 			"name": "Bis(c13-15 Alkoxy) Hydroxybutamidoamodimethicone"
 		},
-		"bis c13 15 alkoxy  pg amodimethicone": {
+		"bis c13 15 alkoxy pg amodimethicone": {
 			"cosdna_id": "6de4bf10600",
 			"function": "Emollient",
 			"name": "Bis(C13-15 Alkoxy) PG-Amodimethicone"
@@ -13308,7 +13292,7 @@
 			"function": "Emulsion Stabilizer; Film-forming agent; Skin conditioning; Viscosity Controlling",
 			"name": "Bis-Vinyl Dimethicone/Dimethicone Copolymer"
 		},
-		"bis glyceryl dimethacrylate  pyromellitate": {
+		"bis glyceryl dimethacrylate pyromellitate": {
 			"cosdna_id": "43252a13055",
 			"function": "Emulsion Stabilizer; Film-forming agent; Surfactant",
 			"name": "Bis-C16-18 Alkyl Glyceryl Undecyl Dimethicone"
@@ -13323,7 +13307,7 @@
 			"function": "Film-forming agent; Hair Fixing; Nail Conditioning",
 			"name": "Bis-Aminopropyl Dimethicone/IPDI Copolymer"
 		},
-		"bis hema poly 1 4 butanediol  22 ipdi copolymer": {
+		"bis hema poly 1 4 butanediol 22 ipdi copolymer": {
 			"cosdna_id": "31802e12805",
 			"function": "Bulking agent",
 			"name": "IPDI/Poly(1,4-Butanediol)-14 Crosspolymer"
@@ -13333,7 +13317,7 @@
 			"function": "Skin conditioning",
 			"name": "Poly(Glycol Adipate)/Bis-Hydroxyethoxypropyl Dimethicone Copolymer"
 		},
-		"bis hexyldecyl octyldodecyl  lauroyl glutamate": {
+		"bis hexyldecyl octyldodecyl lauroyl glutamate": {
 			"cosdna_id": "c4577f10328",
 			"function": "Emollient",
 			"name": "Phytosteryl/Octyldodecyl Lauroyl Glutamate"
@@ -13390,7 +13374,7 @@
 			"function": "Emollient; Film-forming agent; Hair conditioning",
 			"name": "Bis-Hydroxyethoxypropyl Dimethicone/PEG-2 Soyamine/IPDI Copolymer"
 		},
-		"bis hydroxyethyl acrylate poly neopentyl glycol adipate  ipdi copolymer": {
+		"bis hydroxyethyl acrylate poly neopentyl glycol adipate ipdi copolymer": {
 			"cosdna_id": "cf475612963",
 			"function": "Skin conditioning",
 			"name": "Poly(Glycol Adipate)/Bis-Hydroxyethoxypropyl Dimethicone Copolymer"
@@ -13477,7 +13461,7 @@
 			"function": "Emollient; Skin and hair conditioning; Viscosity Controlling",
 			"name": "Bis-Isostearyl Dimer Dilinoleyl Dimer Dilinoleate"
 		},
-		"bis lauryldimoniumhydroxyethyl bromide  peg 220 smdi copolymer": {
+		"bis lauryldimoniumhydroxyethyl bromide peg 220 smdi copolymer": {
 			"cosdna_id": "9dfa2a19585",
 			"cosdna_infotag": "Cas No: 435327-16-8",
 			"function": "Viscosity Controlling",
@@ -13607,6 +13591,16 @@
 			"cosdna_infotag": "Cas No: 203265-11-6",
 			"name": "Bis-phenylpropyl Dimethicone"
 		},
+		"bis polyglyceryl 3 oxyphenylpropyl dimethicone": {
+			"cosdna_id": "2dc03c13395",
+			"function": "Skin and hair conditioning",
+			"name": "Bis-(Polyglyceryl-3 Oxyphenylpropyl) Dimethicone"
+		},
+		"bis polyglyceryl 7 oxyphenylpropyl dimethicone": {
+			"cosdna_id": "2dc03c13395",
+			"function": "Skin and hair conditioning",
+			"name": "Bis-(Polyglyceryl-3 Oxyphenylpropyl) Dimethicone"
+		},
 		"bis ppg 15 dimethicone ipdi copolymer": {
 			"cosdna_id": "df20f911691",
 			"cosdna_infotag": "Cas No: 190793-18-1",
@@ -13619,7 +13613,7 @@
 			"function": "Film-forming agent",
 			"name": "Bis-PPG-15 Dimethicone/IPDI Copolymer"
 		},
-		"bis ppg 7 undeceneth 21  dimethicone": {
+		"bis ppg 7 undeceneth 21 dimethicone": {
 			"cosdna_id": "f39c2f12314",
 			"function": "Emulsifier; Emollient",
 			"name": "Bis(PPG-7 Undeceneth-21) Dimethicone"
@@ -13645,24 +13639,30 @@
 			"function": "Film Forming; Viscosity Controlling",
 			"name": "Bis-stearyl Ipdi/peg-795 Copolymer"
 		},
-		"bis t butyl benzoxazolyl  thiophene": {
+		"bis t butyl benzoxazolyl thiophene": {
 			"cosdna_id": "06ba4c12788",
 			"cosdna_infotag": "Cas No: 7128-64-5",
 			"function": "Skin conditioning",
 			"name": "Bis(t-butyl Benzoxazolyl) Thiophene"
+		},
+		"bis tetramethyl hydroxypiperidinyl sebacate": {
+			"cosdna_id": "e4cb2f19587",
+			"cosdna_infotag": "Cas No: 30538-92-2",
+			"function": "Antioxidant",
+			"name": "Bis-(tetramethyl Hydroxypiperidinyl) Sebacate"
 		},
 		"bis trimethoxysilylethyl tetramethyldisiloxyethyl dimethicone": {
 			"cosdna_id": "ea991415128",
 			"function": "Film Forming",
 			"name": "Bis-trimethoxysilylethyl Tetramethyldisiloxyethyl Dimethicone"
 		},
-		"bis trioctyldodecyl citryl  dilinoleate": {
+		"bis trioctyldodecyl citryl dilinoleate": {
 			"cosdna_id": "93901a19588",
 			"cosdna_infotag": "Cas No: 220716-32-5",
 			"function": "Emollient; Skin Conditioning",
 			"name": "Bis(trioctyldodecyl Citryl) Dilinoleate"
 		},
-		"bis tripeptide 1  copper acetate": {
+		"bis tripeptide 1 copper acetate": {
 			"cosdna_id": "84fb4a19589",
 			"cosdna_infotag": "Cas No: 130120-57-9",
 			"function": "Skin Conditioning",
@@ -17893,7 +17893,7 @@
 			"function": "Emollient; Skin Conditioning; Solvent",
 			"name": "Camellia Oleifera Seed Oil"
 		},
-		"camellia oleifera seed oil  hydrogenated camellia oleifera seed oil esters": {
+		"camellia oleifera seed oil hydrogenated camellia oleifera seed oil esters": {
 			"cosdna_id": "b037be16601",
 			"cosdna_infotag": "Cas No: 225233-97-6 ",
 			"function": "Hair Conditioning; Skin Conditioning",
@@ -23631,7 +23631,7 @@
 			"function": "Plant extract",
 			"name": "Cinnamomum camphora"
 		},
-		"cinnamomum camphora wood oil  decamphorised": {
+		"cinnamomum camphora wood oil decamphorised": {
 			"cosdna_id": "460b6312829",
 			"cosdna_infotag": "Cas No: 91745-89-0",
 			"function": "Fragrance",
@@ -24095,7 +24095,7 @@
 			"function": "",
 			"name": "Cis-Oleic Acid"
 		},
-		"cis cis 1 1   ethylidenebis oxy dihex 3 ene": {
+		"cis cis 1 1 ethylidenebis oxy dihex 3 ene": {
 			"cosdna_id": "d6eda6540",
 			"function": "",
 			"name": "Cis-Oleic Acid"
@@ -24302,12 +24302,6 @@
 			"function": "Fragrance",
 			"name": "Citral"
 		},
-		"citral   methyl anthranilate schiff base": {
-			"cosdna_id": "663a21255",
-			"cosdna_infotag": "Cas No: 134-20-3",
-			"function": "Sunscreen",
-			"name": "Methyl Anthranilate"
-		},
 		"citral acid isomerized": {
 			"cosdna_id": "a8a9bb10631",
 			"function": "Film-forming agent; Skin protecting",
@@ -24336,6 +24330,12 @@
 			"cosdna_infotag": "Cas No: 5392-40-5",
 			"function": "Fragrance",
 			"name": "Citral"
+		},
+		"citral methyl anthranilate schiff base": {
+			"cosdna_id": "663a21255",
+			"cosdna_infotag": "Cas No: 134-20-3",
+			"function": "Sunscreen",
+			"name": "Methyl Anthranilate"
 		},
 		"citric acid": {
 			"cosdna_id": "b8a3bf116",
@@ -25805,20 +25805,6 @@
 			"function": "Skin Conditioning",
 			"name": "Citrus Nobilis Water"
 		},
-		"citrus paradisi  x c  reticulata peel extract": {
-			"alias": [
-				"Tangerine Peel Extract"
-			],
-			"cosdna_id": "6a2b7c19848",
-			"cosdna_infotag": "Cas No: 8008-31-9",
-			"function": "Skin Conditioning",
-			"name": "Citrus Reticulata Peel Extract"
-		},
-		"citrus paradisi  x c  reticulata peel oil expressed": {
-			"cosdna_id": "2474fa19546",
-			"function": "Masking; Fragrance",
-			"name": "Citrus Paradisi Peel Oil"
-		},
 		"citrus paradisi fruit extract": {
 			"alias": [
 				"Grapefruit Fruit Extract"
@@ -25837,7 +25823,7 @@
 			"function": "Perfuming; Skin Conditioning",
 			"name": "Citrus Paradisi Juice"
 		},
-		"citrus paradisi m  peel oil expressed": {
+		"citrus paradisi m peel oil expressed": {
 			"cosdna_id": "2474fa19546",
 			"function": "Masking; Fragrance",
 			"name": "Citrus Paradisi Peel Oil"
@@ -25875,7 +25861,7 @@
 			"function": "Perfuming; Skin Conditioning",
 			"name": "Citrus Paradisi Seed Oil"
 		},
-		"citrus reticulata  x c  sinensis peel extract": {
+		"citrus paradisi x c reticulata peel extract": {
 			"alias": [
 				"Tangerine Peel Extract"
 			],
@@ -25883,6 +25869,11 @@
 			"cosdna_infotag": "Cas No: 8008-31-9",
 			"function": "Skin Conditioning",
 			"name": "Citrus Reticulata Peel Extract"
+		},
+		"citrus paradisi x c reticulata peel oil expressed": {
+			"cosdna_id": "2474fa19546",
+			"function": "Masking; Fragrance",
+			"name": "Citrus Paradisi Peel Oil"
 		},
 		"citrus reticulata fruit extract": {
 			"alias": [
@@ -25935,6 +25926,15 @@
 			"cosdna_infotag": "Cas No: 8008-31-9",
 			"function": "Skin Conditioning",
 			"name": "Citrus Reticulata Peel Powder"
+		},
+		"citrus reticulata x c sinensis peel extract": {
+			"alias": [
+				"Tangerine Peel Extract"
+			],
+			"cosdna_id": "6a2b7c19848",
+			"cosdna_infotag": "Cas No: 8008-31-9",
+			"function": "Skin Conditioning",
+			"name": "Citrus Reticulata Peel Extract"
 		},
 		"citrus sinensis peel extract": {
 			"alias": [
@@ -29185,12 +29185,6 @@
 			"function": "Fragrance",
 			"name": "Cyclamen aldehyde"
 		},
-		"cyclamen aldehyde   methyl anthranilate schiff base": {
-			"cosdna_id": "0fa6967230",
-			"cosdna_infotag": "Cas No: 103-95-7",
-			"function": "Fragrance",
-			"name": "Cyclamen aldehyde"
-		},
 		"cyclamen aldehyde diethyl acetal": {
 			"cosdna_id": "0fa6967230",
 			"cosdna_infotag": "Cas No: 103-95-7",
@@ -29198,6 +29192,12 @@
 			"name": "Cyclamen aldehyde"
 		},
 		"cyclamen aldehyde ethyleneglycol cyclic acetal": {
+			"cosdna_id": "0fa6967230",
+			"cosdna_infotag": "Cas No: 103-95-7",
+			"function": "Fragrance",
+			"name": "Cyclamen aldehyde"
+		},
+		"cyclamen aldehyde methyl anthranilate schiff base": {
 			"cosdna_id": "0fa6967230",
 			"cosdna_infotag": "Cas No: 103-95-7",
 			"function": "Fragrance",
@@ -29720,7 +29720,7 @@
 			"function": "Fragrance",
 			"name": "Lemon grass"
 		},
-		"cymbopogon nardus herb extract  acetone": {
+		"cymbopogon nardus herb extract acetone": {
 			"alias": [
 				"Citronella Oil"
 			],
@@ -37380,7 +37380,7 @@
 			"function": "Emollient",
 			"name": "Epoxidized soybean oil"
 		},
-		"epoxy resin coated aluminum powder  jpn": {
+		"epoxy resin coated aluminum powder jpn": {
 			"cosdna_id": "d16d2814369",
 			"function": "Colorant",
 			"name": "Epoxy Resin Coated Aluminum Powder"
@@ -39520,7 +39520,7 @@
 			"function": "Fragrance",
 			"name": "Eugenia Caryophyllus Bud Oil"
 		},
-		"eugenia caryophyllus extract  formaldehyde": {
+		"eugenia caryophyllus extract acetylated": {
 			"alias": [
 				"Clove Bud Extract"
 			],
@@ -39529,7 +39529,7 @@
 			"function": "Perfuming; Skin Conditioning",
 			"name": "Eugenia Caryophyllus Bud Extract"
 		},
-		"eugenia caryophyllus extract acetylated": {
+		"eugenia caryophyllus extract formaldehyde": {
 			"alias": [
 				"Clove Bud Extract"
 			],
@@ -44550,172 +44550,172 @@
 			"function": "Skin Conditioning",
 			"name": "Hazel Seed Oil Polyglyceryl-6 Esters"
 		},
-		"hc blue no  11": {
+		"hc blue no 11": {
 			"cosdna_id": "0c96cd7765",
 			"cosdna_infotag": "Cas No: 23920-15-2",
 			"function": "Hair coloring",
 			"name": "HC blue no. 11"
 		},
-		"hc blue no  12": {
+		"hc blue no 12": {
 			"cosdna_id": "58e84a7766",
 			"cosdna_infotag": "Cas No: 132885-85-9",
 			"function": "Hair coloring",
 			"name": "HC blue no. 12"
 		},
-		"hc blue no  13": {
+		"hc blue no 13": {
 			"cosdna_id": "25f62716475",
 			"function": "Hair Dyeing",
 			"name": "Hc Blue No. 13"
 		},
-		"hc blue no  14": {
+		"hc blue no 14": {
 			"cosdna_id": "44c6e816476",
 			"cosdna_infotag": "Cas No: 99788-75-7",
 			"function": "Hair Dyeing",
 			"name": "Hc Blue No. 14"
 		},
-		"hc blue no  15": {
+		"hc blue no 15": {
 			"cosdna_id": "01757516477",
 			"cosdna_infotag": "Cas No: 74578-10-2",
 			"function": "Hair Dyeing",
 			"name": "Hc Blue No. 15"
 		},
-		"hc blue no  16": {
+		"hc blue no 16": {
 			"cosdna_id": "55bc347764",
 			"cosdna_infotag": "Cas No: 102767-27-1",
 			"function": "Hair coloring",
 			"name": "HC blue no. 10"
 		},
-		"hc blue no  2": {
+		"hc blue no 2": {
 			"cosdna_id": "c228577767",
 			"cosdna_infotag": "Cas No: 33229-34-4",
 			"function": "Hair coloring",
 			"name": "HC blue no. 2"
 		},
-		"hc blue no  7": {
+		"hc blue no 7": {
 			"cosdna_id": "80e2fa7771",
 			"function": "Hair coloring",
 			"name": "HC blue no. 7"
 		},
-		"hc orange no  1": {
+		"hc orange no 1": {
 			"cosdna_id": "ddfcc47777",
 			"cosdna_infotag": "Cas No: 54381-08-7",
 			"function": "Hair coloring",
 			"name": "HC orange no. 1"
 		},
-		"hc orange no  2": {
+		"hc orange no 2": {
 			"cosdna_id": "8a75fd7778",
 			"cosdna_infotag": "Cas No: 85765-48-6",
 			"function": "Hair coloring",
 			"name": "HC orange no. 2"
 		},
-		"hc orange no  5": {
+		"hc orange no 5": {
 			"cosdna_id": "67f2d616478",
 			"cosdna_infotag": "Cas No: 97404-13-2",
 			"function": "Hair Dyeing",
 			"name": "Hc Orange No. 5"
 		},
-		"hc red no  1": {
+		"hc red no 1": {
 			"cosdna_id": "0522437780",
 			"cosdna_infotag": "Cas No: 2784-89-6",
 			"function": "Hair coloring",
 			"name": "HC red no. 1"
 		},
-		"hc red no  10": {
+		"hc red no 10": {
 			"cosdna_id": "63cbbd7781",
 			"cosdna_infotag": "Cas No: 95576-89-9",
 			"function": "Hair coloring",
 			"name": "HC red no. 10"
 		},
-		"hc red no  11": {
+		"hc red no 11": {
 			"cosdna_id": "61cf487782",
 			"cosdna_infotag": "Cas No: 95576-92-4",
 			"function": "Hair coloring",
 			"name": "HC red no. 11"
 		},
-		"hc red no  13": {
+		"hc red no 13": {
 			"cosdna_id": "9271867783",
 			"cosdna_infotag": "Cas No: 94158-13-1",
 			"function": "Hair coloring",
 			"name": "HC red no. 13"
 		},
-		"hc red no  14": {
+		"hc red no 14": {
 			"cosdna_id": "621c4b16479",
 			"function": "Hair Dyeing",
 			"name": "Hc Red No. 14"
 		},
-		"hc red no  15": {
+		"hc red no 15": {
 			"cosdna_id": "b9de8116480",
 			"cosdna_infotag": "Cas No: 90648-73-0",
 			"function": "Hair Dyeing",
 			"name": "Hc Red No. 15"
 		},
-		"hc red no  3": {
+		"hc red no 3": {
 			"cosdna_id": "b515007784",
 			"cosdna_infotag": "Cas No: 2871-01-4",
 			"function": "Hair coloring",
 			"name": "HC red no. 3"
 		},
-		"hc red no  7": {
+		"hc red no 7": {
 			"cosdna_id": "72d1c37785",
 			"cosdna_infotag": "Cas No: 24905-87-1",
 			"function": "Hair coloring",
 			"name": "HC red no. 7"
 		},
-		"hc violet no  1": {
+		"hc violet no 1": {
 			"cosdna_id": "50b0357788",
 			"cosdna_infotag": "Cas No: 82576-75-8",
 			"function": "Hair coloring",
 			"name": "HC violet no. 1"
 		},
-		"hc violet no  2": {
+		"hc violet no 2": {
 			"cosdna_id": "4f97527789",
 			"cosdna_infotag": "Cas No: 104226-19-9",
 			"function": "Hair coloring",
 			"name": "HC violet no. 2"
 		},
-		"hc yellow no  10": {
+		"hc yellow no 10": {
 			"cosdna_id": "02ee077790",
 			"cosdna_infotag": "Cas No: 109023-83-8",
 			"function": "Hair coloring",
 			"name": "HC yellow no. 10"
 		},
-		"hc yellow no  13": {
+		"hc yellow no 13": {
 			"cosdna_id": "706d2e7793",
 			"cosdna_infotag": "Cas No: 10442-83-8",
 			"function": "Hair coloring",
 			"name": "HC yellow no. 13"
 		},
-		"hc yellow no  14": {
+		"hc yellow no 14": {
 			"cosdna_id": "b8ccf916481",
 			"cosdna_infotag": "Cas No: 90349-40-9",
 			"function": "Hair Dyeing",
 			"name": "Hc Yellow No. 14"
 		},
-		"hc yellow no  15": {
+		"hc yellow no 15": {
 			"cosdna_id": "79860316482",
 			"cosdna_infotag": "Cas No: 138377-66-9",
 			"function": "Hair Dyeing",
 			"name": "Hc Yellow No. 15"
 		},
-		"hc yellow no  2": {
+		"hc yellow no 2": {
 			"cosdna_id": "8f19bf7794",
 			"cosdna_infotag": "Cas No: 4926-55-0",
 			"function": "Hair coloring",
 			"name": "HC yellow no. 2"
 		},
-		"hc yellow no  4": {
+		"hc yellow no 4": {
 			"cosdna_id": "2265877795",
 			"cosdna_infotag": "Cas No: 59820-43-8",
 			"function": "Hair coloring",
 			"name": "HC yellow no. 4"
 		},
-		"hc yellow no  7": {
+		"hc yellow no 7": {
 			"cosdna_id": "53854e7798",
 			"cosdna_infotag": "Cas No: 104226-21-3",
 			"function": "Hair coloring",
 			"name": "HC yellow no. 7"
 		},
-		"hc yellow no  9": {
+		"hc yellow no 9": {
 			"cosdna_id": "15a1f47800",
 			"cosdna_infotag": "Cas No: 86419-69-4",
 			"function": "Hair coloring",
@@ -47286,12 +47286,12 @@
 			"function": "Emulsion Stabilizer; Skin Protecting; Film-forming agent",
 			"name": "Hydrogenated dimer dilinoleyl/dimethylcarbonate copolymer"
 		},
-		"hydrogenated dimer dilinoleyl peg 41 poly 1 2 butanediol  18 dimethyl ether": {
+		"hydrogenated dimer dilinoleyl peg 41 poly 1 2 butanediol 18 dimethyl ether": {
 			"cosdna_id": "ea1bb011431",
 			"function": "Skin conditioning",
 			"name": "PEG/PPG-36/41 DIMETHYL ETHER"
 		},
-		"hydrogenated dimer dilinoleyl peg 44 poly 1 2 butanediol  15 dimethyl ether": {
+		"hydrogenated dimer dilinoleyl peg 44 poly 1 2 butanediol 15 dimethyl ether": {
 			"cosdna_id": "66d9de12468",
 			"function": "Binding agent; Hair conditioning; Occlusive; Lipophilic Viscosity Increasing Agent",
 			"name": "Dimer Dilinoleyl Hydrogenated Rosinate"
@@ -50115,11 +50115,6 @@
 			"function": "Antistatic; Hair Conditioning",
 			"name": "Hydroxyethyl Laurdimonium Chloride"
 		},
-		"hydroxyethyl methoxyethyl acrylate  butyl acrylate copolymer": {
-			"cosdna_id": "1f241c12397",
-			"function": "Film-forming agent",
-			"name": "Hydroxyethyl/Methoxyethyl Acrylate/Butyl Acrylate Copolymer"
-		},
 		"hydroxyethyl methoxyethyl acrylate butyl acrylate copolymer": {
 			"cosdna_id": "1f241c12397",
 			"function": "Film-forming agent",
@@ -50426,7 +50421,7 @@
 			"function": "Humectant; Skin conditioning",
 			"name": "Hydroxypropyl Bis-hydroxyethyldimonium Chloride"
 		},
-		"hydroxypropyl bis n hydroxyethyl p phenylenediamine  hcl": {
+		"hydroxypropyl bis n hydroxyethyl p phenylenediamine hcl": {
 			"cosdna_id": "2b07f43052",
 			"cosdna_infotag": "Cas No: 128729-28-2",
 			"function": "Hair coloring",
@@ -51422,7 +51417,7 @@
 			"function": "Hair Conditioning; Skin Conditioning; Surfactant",
 			"name": "Ipdi/peg-15 Soyethonium Ethosulfate Copolymer"
 		},
-		"ipdi poly 1 4 butanediol  14 crosspolymer": {
+		"ipdi poly 1 4 butanediol 14 crosspolymer": {
 			"cosdna_id": "31802e12805",
 			"function": "Bulking agent",
 			"name": "IPDI/Poly(1,4-Butanediol)-14 Crosspolymer"
@@ -54302,7 +54297,7 @@
 			"function": "Masking; Tonic",
 			"name": "Juniperus Scopulorum Oil"
 		},
-		"juniperus virginiana  ext   oxidized  acetylated": {
+		"juniperus virginiana ext oxidized acetylated": {
 			"cosdna_id": "3183405124",
 			"function": "Plant extract",
 			"name": "Juniperus virginiana"
@@ -63780,7 +63775,7 @@
 			"function": "Solvent",
 			"name": "Alcohol"
 		},
-		"methylpolysiloxane emulsion  jpn": {
+		"methylpolysiloxane emulsion jpn": {
 			"alias": [
 				"Emulsifying Wax"
 			],
@@ -65224,7 +65219,7 @@
 			"function": "Occlusive; Hair Fixative",
 			"name": "Myristic/Palmitic/Stearic/Ricinoleic/Eicosanedioic Glycerides"
 		},
-		"myristica fragrans aril oil  mace": {
+		"myristica fragrans aril oil mace": {
 			"alias": [
 				"Nutmeg Kernel Oil"
 			],
@@ -65242,7 +65237,7 @@
 			"function": "Masking; Tonic",
 			"name": "Myristica Fragrans Extract"
 		},
-		"myristica fragrans fruit extract  nutmeg": {
+		"myristica fragrans fruit extract nutmeg": {
 			"alias": [
 				"Nutmeg Fruit Powder"
 			],
@@ -65251,7 +65246,7 @@
 			"function": "Skin Conditioning",
 			"name": "Myristica Fragrans Fruit Powder"
 		},
-		"myristica fragrans fruit oil  nutmeg": {
+		"myristica fragrans fruit oil nutmeg": {
 			"alias": [
 				"Nutmeg Fruit Powder"
 			],
@@ -65876,13 +65871,13 @@
 			"function": "Hair Conditioning",
 			"name": "N-lauryl Diethanolamine"
 		},
-		"n n  bis 2 hydroxyethyl  2 nitro p phenylenediamine": {
+		"n n bis 2 hydroxyethyl 2 nitro p phenylenediamine": {
 			"cosdna_id": "2ac82810183",
 			"cosdna_infotag": "Cas No: 84041-77-0",
 			"function": "Colorant, used in hair-dye products",
 			"name": "N,N'-bis(2-hydroxyethyl)-2-nitro-p-phenylenediamine"
 		},
-		"n n bis 2 hydroxyethyl  p phenylenediamine sulfate": {
+		"n n bis 2 hydroxyethyl p phenylenediamine sulfate": {
 			"cosdna_id": "45024d3081",
 			"cosdna_infotag": "Cas No: 54381-16-7; 58262-44-5; 57524-61-5",
 			"function": "Hair coloring",
@@ -66730,7 +66725,7 @@
 			"function": "Antimicrobial; Preservative",
 			"name": "Isopropyl Methylphenol"
 		},
-		"nonanal  methyl anthranilate schiff base": {
+		"nonanal methyl anthranilate schiff base": {
 			"cosdna_id": "663a21255",
 			"cosdna_infotag": "Cas No: 134-20-3",
 			"function": "Sunscreen",
@@ -70775,7 +70770,7 @@
 			"function": "Masking, Acetophenone is used to create fragrances that resemble almond, cherry, honeysuckle, jasmine, and strawberry.",
 			"name": "Acetophenone"
 		},
-		"p tert butyl alpha methylhydrocinnamal  methylanthranilate schiff base": {
+		"p tert butyl alpha methylhydrocinnamal methylanthranilate schiff base": {
 			"alias": [
 				"Petrolatum",
 				"Vaseline",
@@ -72152,12 +72147,12 @@
 			"function": "Emollient",
 			"name": "Passiflora Edulis Seed Oil"
 		},
-		"passiflora edulis seed oil palm oil  aminopropanediol esters acetate ethyldimonium chloride": {
+		"passiflora edulis seed oil palm oil aminopropanediol esters": {
 			"cosdna_id": "69026518519",
 			"function": "Skin Conditioning",
 			"name": "Raspberry Seed Oil/palm Oil Aminopropanediol Esters"
 		},
-		"passiflora edulis seed oil palm oil aminopropanediol esters": {
+		"passiflora edulis seed oil palm oil aminopropanediol esters acetate ethyldimonium chloride": {
 			"cosdna_id": "69026518519",
 			"function": "Skin Conditioning",
 			"name": "Raspberry Seed Oil/palm Oil Aminopropanediol Esters"
@@ -72905,7 +72900,7 @@
 			"function": "Antistatic; Emulsifying",
 			"name": "Peg-12 Palmitamine"
 		},
-		"peg 12 poly 1 2 butanediol  12 methoxy isopropyl ether": {
+		"peg 12 poly 1 2 butanediol 12 methoxy isopropyl ether": {
 			"cosdna_id": "1d89cb17324",
 			"function": "Skin Conditioning",
 			"name": "Methoxy Peg-12 Retinamide"
@@ -74389,7 +74384,7 @@
 			"function": "Binding agent; Emulsion Stabilizer; Hydrophilic Thickener; Viscosity Controlling",
 			"name": "PEG-2M"
 		},
-		"peg 3 2 2  di p phenylenediamine": {
+		"peg 3 2 2 di p phenylenediamine": {
 			"cosdna_id": "eb81f010197",
 			"function": "Hair dyeing",
 			"name": "PEG-3 2,2'-DI-p-PHENYLENEDIAMINE"
@@ -77136,7 +77131,7 @@
 			"function": "Lipophilic Emulsifier",
 			"name": "PEG-2 OLEATE"
 		},
-		"peg poly 1 2 butanediol  52 32 dimethyl ether": {
+		"peg poly 1 2 butanediol 52 32 dimethyl ether": {
 			"cosdna_id": "31802e12805",
 			"function": "Bulking agent",
 			"name": "IPDI/Poly(1,4-Butanediol)-14 Crosspolymer"
@@ -77846,7 +77841,7 @@
 			"function": "Skin conditioning",
 			"name": "PEG/PPG-9/2 DIMETHYL ETHER"
 		},
-		"peg ppg butylene dimethicone copolymer  jpn": {
+		"peg ppg butylene dimethicone copolymer jpn": {
 			"cosdna_id": "6f9e9315118",
 			"cosdna_infotag": "Cas No: 158451-77-5 (generic)",
 			"function": "Emulsifying; Surfactant",
@@ -82271,7 +82266,7 @@
 			"function": "Emulsifier",
 			"name": "Poloxamine 908"
 		},
-		"poly 1 4 butanediol  9 dipalmitate": {
+		"poly 1 4 butanediol 9 dipalmitate": {
 			"cosdna_id": "31802e12805",
 			"function": "Bulking agent",
 			"name": "IPDI/Poly(1,4-Butanediol)-14 Crosspolymer"
@@ -82323,7 +82318,7 @@
 			"function": "Skin conditioning",
 			"name": "Poly(Glycol Adipate)/Bis-Hydroxyethoxypropyl Dimethicone Copolymer"
 		},
-		"poly glycol adipate  bis hydroxyethoxypropyl dimethicone copolymer": {
+		"poly glycol adipate bis hydroxyethoxypropyl dimethicone copolymer": {
 			"cosdna_id": "cf475612963",
 			"function": "Skin conditioning",
 			"name": "Poly(Glycol Adipate)/Bis-Hydroxyethoxypropyl Dimethicone Copolymer"
@@ -82872,13 +82867,13 @@
 			"function": "Film-forming agent",
 			"name": "Polyethylene Naphthalate"
 		},
-		"polyethylene polyethylene terephthalate laminated powder  jpn": {
+		"polyethylene polyethylene terephthalate laminated powder jpn": {
 			"cosdna_id": "975a1f402",
 			"cosdna_infotag": "Cas No: 25038-59-9",
 			"function": "",
 			"name": "Polyethylene Terephthalate"
 		},
-		"polyethylene polypentaerythrityl terephthalate laminated powder  jpn": {
+		"polyethylene polypentaerythrityl terephthalate laminated powder jpn": {
 			"cosdna_id": "03833b18196",
 			"function": "Film Forming",
 			"name": "Polypentaerythrityl Terephthalate"
@@ -84440,7 +84435,7 @@
 			"function": "",
 			"name": "Polymethyl Methacrylate"
 		},
-		"polymethyl methacrylate polypentaerythrityl terephthalate stearate palmitate laminated powder  jpn": {
+		"polymethyl methacrylate polypentaerythrityl terephthalate stearate palmitate laminated powder jpn": {
 			"cosdna_id": "03833b18196",
 			"function": "Film Forming",
 			"name": "Polypentaerythrityl Terephthalate"
@@ -84474,7 +84469,7 @@
 			"function": "Skin Conditioning",
 			"name": "Polymnia Sonchifolia Root Juice"
 		},
-		"polyoxyethylene cetyl stearyl diether  jpn": {
+		"polyoxyethylene cetyl stearyl diether jpn": {
 			"cosdna_id": "16befd12324",
 			"function": "",
 			"name": "Polyoxyethylene Cetyl Stearyl Diether"
@@ -84508,12 +84503,12 @@
 			"function": "Bulking agent",
 			"name": "Polyoxymethylene Urea"
 		},
-		"polyoxypropylene glyceryl ether phosphate  jpn": {
+		"polyoxypropylene glyceryl ether phosphate jpn": {
 			"cosdna_id": "ffcafe13545",
 			"function": "Surfactant",
 			"name": "Polyoxypropylene Glyceryl Ether Phosphate"
 		},
-		"polyoxypropylene sorbitol ricinoleate  jpn": {
+		"polyoxypropylene sorbitol ricinoleate jpn": {
 			"alias": [
 				"ADEKA NOL L-64"
 			],
@@ -106660,7 +106655,7 @@
 			"function": "Hair Dyeing; Stabilising",
 			"name": "Tetrahydro-6-nitroquinoxaline"
 		},
-		"tetrahydro methyl methylpropyl  pyran 4 ol": {
+		"tetrahydro methyl methylpropyl pyran 4 ol": {
 			"cosdna_id": "085de519161",
 			"cosdna_infotag": "Cas No: 41959-35-7",
 			"function": "Hair Dyeing; Stabilising",
@@ -108587,22 +108582,7 @@
 			"function": "Whitening",
 			"name": "Cyklokapron"
 		},
-		"trans  trans 2 4 decadienal": {
-			"cosdna_id": "57288741",
-			"function": "",
-			"name": "All Trans Retinol"
-		},
-		"trans  trans nona 2 4 dienal": {
-			"cosdna_id": "57288741",
-			"function": "",
-			"name": "All Trans Retinol"
-		},
-		"trans  trans trimethylpentadecatrienone": {
-			"cosdna_id": "57288741",
-			"function": "",
-			"name": "All Trans Retinol"
-		},
-		"trans 2 4 dimethyl 2  5 6 7 8 tetrahydro 5 5 8 8 tetramethyl 2 naphthalenyl  1 3 dioxolane": {
+		"trans 2 4 dimethyl 2 5 6 7 8 tetrahydro 5 5 8 8 tetramethyl 2 naphthalenyl 1 3 dioxolane": {
 			"cosdna_id": "20aad715987",
 			"cosdna_infotag": "Cas No: 646-06-0",
 			"function": "Solvent",
@@ -108850,7 +108830,22 @@
 			"function": "Fragrance ingredient",
 			"name": "Musk ketone"
 		},
+		"trans trans 2 4 decadienal": {
+			"cosdna_id": "57288741",
+			"function": "",
+			"name": "All Trans Retinol"
+		},
 		"trans trans allo ocimene": {
+			"cosdna_id": "57288741",
+			"function": "",
+			"name": "All Trans Retinol"
+		},
+		"trans trans nona 2 4 dienal": {
+			"cosdna_id": "57288741",
+			"function": "",
+			"name": "All Trans Retinol"
+		},
+		"trans trans trimethylpentadecatrienone": {
 			"cosdna_id": "57288741",
 			"function": "",
 			"name": "All Trans Retinol"
@@ -110109,7 +110104,7 @@
 			"function": "Solvent",
 			"name": "Trimethyl-1,3-pentanediol"
 		},
-		"trimethyl 7 oxabicycloheptyl  3 buten 2 one": {
+		"trimethyl 7 oxabicycloheptyl 3 buten 2 one": {
 			"cosdna_id": "174bef19277",
 			"cosdna_infotag": "Cas No: 144-19-4",
 			"function": "Solvent",
@@ -110822,7 +110817,7 @@
 			"function": "Emollient",
 			"name": "Triricinolein"
 		},
-		"tris acetiminoacetoxyethoxy methacrylate  ppg 6 trimethylolpropane": {
+		"tris acetiminoacetoxyethoxy methacrylate ppg 6 trimethylolpropane": {
 			"cosdna_id": "d820c213377",
 			"cosdna_infotag": "Cas No: 17096-07-0",
 			"function": "Film-forming agent",
@@ -110852,13 +110847,13 @@
 			"function": "Thickener; Viscosity Controlling",
 			"name": "Tris(hydroxymethyl)nitromethane"
 		},
-		"tris n hydroxyethyl  hexahydrotriazine": {
+		"tris n hydroxyethyl hexahydrotriazine": {
 			"cosdna_id": "2e5fa819655",
 			"cosdna_infotag": "Cas No: 4719-04-4",
 			"function": "Skin Conditioning; Skin Protecting",
 			"name": "Tris(n-hydroxyethyl) Hexahydrotriazine"
 		},
-		"tris n hydroxypropyl  hexahydrotriazine": {
+		"tris n hydroxypropyl hexahydrotriazine": {
 			"cosdna_id": "3f7c9219656",
 			"cosdna_infotag": "Cas No: 25254-50-6",
 			"function": "Antimicrobial",
@@ -110875,17 +110870,17 @@
 			"function": "Skin Conditioning",
 			"name": "Tris-oleoyltromethamine Ethane Sulfate"
 		},
-		"tris peg 2 phenylalanylcarboxamido  cyclohexane": {
+		"tris peg 2 phenylalanylcarboxamido cyclohexane": {
 			"cosdna_id": "ee03ac19659",
 			"function": "Emulsion Stabilising; Viscosity Controlling",
 			"name": "Tris(peg-2 Phenylalanylcarboxamido) Cyclohexane"
 		},
-		"tris ppg 3 benzyl ether  citrate": {
+		"tris ppg 3 benzyl ether citrate": {
 			"cosdna_id": "9ef12219660",
 			"function": "Emollient",
 			"name": "Tris(ppg-3 Benzyl Ether) Citrate"
 		},
-		"tris tetramethylhydroxypiperidinol  citrate": {
+		"tris tetramethylhydroxypiperidinol citrate": {
 			"cosdna_id": "a31e6212460",
 			"cosdna_infotag": "Cas No: 220410-74-2",
 			"function": "UV absorber",
@@ -114266,7 +114261,7 @@
 			"function": "Bulking agent, pH Adjuster",
 			"name": "Zinc Carbonate Hydroxide"
 		},
-		"zinc bis  methyl palmitoyl aspartate": {
+		"zinc bis methyl palmitoyl aspartate": {
 			"cosdna_id": "2200013150",
 			"cosdna_infotag": "Cas No: 36393-20-1",
 			"function": "Skin conditioning",
