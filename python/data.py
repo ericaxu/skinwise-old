@@ -12,6 +12,7 @@ file_ingredients_specialchem_json = "data/ingredients.specialchem.json.txt"
 file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
 file_products_paula_json = "data/products.paula.json.txt"
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
+file_ingredients_alias_additions_json = "data/ingredients.alias.additions.json.txt"
 
 def import_data():
 	result = util.json_read(file_data_json, "{}")
@@ -82,8 +83,23 @@ def import_data():
 			key = parser.product_key(product['brand'], product['name'])
 			if key in result['products'] and 'popularity' in product:
 				result['products'][key]['popularity'] = product['popularity']
-
 	del export
+
+	# ingredient aliases
+	aliases = util.json_read(file_ingredients_alias_additions_json, "{}")
+	for key, alias_obj in aliases.items():
+		if key in result['ingredients']:
+			ingredient = result['ingredients'][key]
+			if 'alias' not in ingredient:
+				ingredient['alias'] = list()
+			for alias, status in alias_obj.items():
+				if status:
+					ingredient['alias'].append(alias)
+				elif alias in ingredient['alias']:
+					ingredient['alias'].remove(alias)
+			ingredient['alias'] = util.list_unique(ingredient['alias'])
+			ingredient['alias'].sort()
+	del aliases
 
 	return result
 
