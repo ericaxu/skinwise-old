@@ -6,6 +6,7 @@ from util import (web, db, parser, util)
 file_data_json = "data/data.json.txt"
 file_data_tmp_json = "data/data.temp.json.txt"
 file_import_json = "data/import.json.txt"
+file_export_json = "data/export.json.txt"
 
 file_ingredients_specialchem_json = "data/ingredients.specialchem.json.txt"
 file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
@@ -73,6 +74,16 @@ def import_data():
 				result['products'][key]['image'] = image['url']
  
 	del duckduckgo
+
+	# export
+	export = util.json_read(file_export_json, "{}")
+	if 'products' in export:
+		for key, product in export['products'].items():
+			key = parser.product_key(product['brand'], product['name'])
+			if key in result['products'] and 'popularity' in product:
+				result['products'][key]['popularity'] = product['popularity']
+
+	del export
 
 	return result
 
