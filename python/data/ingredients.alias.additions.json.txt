@@ -1,0 +1,8 @@
+{
+	"aqua": {
+		"Water/Aqua/Eau": true,
+		"Eau": false,
+		"Aqua": false,
+		"water/aqua/eau": false
+	}
+}
