@@ -312,3 +312,12 @@ function checkImage($element, url) {
             });
         });
 }
+
+// Check if there's a new version that requires clearing local storage
+function checkLocalStorage() {
+    var version = localStorage.getItem('local_storage_ver');
+    if (SW.LOCAL_STORAGE_SETTINGS.REQUIRE_CLEAR && (version === null || version < SW.LOCAL_STORAGE_SETTINGS.VERSION)) {
+        localStorage.clear();
+    }
+    localStorage.setItem('local_storage_ver', SW.LOCAL_STORAGE_SETTINGS.VERSION);
+}

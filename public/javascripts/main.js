@@ -203,16 +203,6 @@ function setupNavSearchAutocomplete() {
     });
 }
 
-// Check if there's a new version that requires clearing local storage
-function checkLocalStorage() {
-    var version = localStorage.getItem('local_storage_ver');
-    if (version && version < SW.LOCAL_STORAGE_SETTINGS.VERSION && SW.LOCAL_STORAGE_SETTINGS.REQUIRE_CLEAR ||
-        version === null && SW.LOCAL_STORAGE_SETTINGS.REQUIRE_CLEAR) {
-        localStorage.clear();
-    }
-    localStorage.setItem('local_storage_ver', SW.LOCAL_STORAGE_SETTINGS.VERSION);
-}
-
 
 $(document).ready(function() {
     setupIngredientInfobox();
