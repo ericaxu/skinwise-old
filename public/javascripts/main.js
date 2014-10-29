@@ -203,12 +203,22 @@ function setupNavSearchAutocomplete() {
     });
 }
 
+function checkLocalStorage() {
+    var version = localStorage.getItem('local_storage_ver');
+    if (version && version < SW.LOCAL_STORAGE_SETTINGS.VERSION && SW.LOCAL_STORAGE_SETTINGS.REQUIRE_CLEAR) {
+        localStorage.clear();
+    }
+    localStorage.setItem('local_storage_ver', SW.LOCAL_STORAGE_SETTINGS.VERSION);
+}
+
 
 $(document).ready(function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
     attachScrollHandler();
     setupNavSearchAutocomplete();
+
+    checkLocalStorage();
 
     postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
 
