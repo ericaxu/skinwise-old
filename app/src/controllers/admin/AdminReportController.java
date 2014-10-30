@@ -83,9 +83,7 @@ public class AdminReportController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Report result = Report.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "Report", request.id);
 			ResponseReportList response = new ResponseReportList();
 			response.results.add(getResponse(result));
 
@@ -106,9 +104,7 @@ public class AdminReportController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Report result = Report.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Report " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "Report", request.id);
 
 			result.setResolved(true);
 			result.save();

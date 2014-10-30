@@ -58,15 +58,11 @@ public class AdminProductController extends Controller {
 			}
 			else {
 				result = cache.products.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-				}
+				Api.checkNotNull(result, "Product", request.id);
 			}
 
 			Brand brand = cache.brands.get(request.brand_id);
-			if (brand == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Brand id " + request.id + " not found");
-			}
+			Api.checkNotNull(brand, "Brand", request.brand_id);
 
 			//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
 			//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
@@ -105,15 +101,21 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
+			MemCache cache = App.cache();
+
+			//Name uniqueness
+			long other_id = BaseModel.getIdIfExists(cache.brands.get(request.name));
+			if (other_id != request.id) {
+				throw new BadRequestException(Response.INVALID, "Brand " + request.name + " already exists");
+			}
+
 			Brand result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Brand();
 			}
 			else {
-				result = App.cache().brands.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Brand " + request.id + " not found");
-				}
+				result = cache.brands.get(request.id);
+				Api.checkNotNull(result, "Brand", request.id);
 			}
 
 			String oldName = result.getName();
@@ -123,7 +125,7 @@ public class AdminProductController extends Controller {
 				result.setDescription(request.description);
 				result.save();
 
-				App.cache().brands.update(result, oldName);
+				cache.brands.update(result, oldName);
 			}
 
 			return Api.write(new InfoResponse("Brand " + result.getName() + " updated"));
@@ -142,15 +144,21 @@ public class AdminProductController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
+			MemCache cache = App.cache();
+
+			//Name uniqueness
+			long other_id = BaseModel.getIdIfExists(cache.types.get(request.name));
+			if (other_id != request.id) {
+				throw new BadRequestException(Response.INVALID, "Product Type " + request.name + " already exists");
+			}
+
 			ProductType result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new ProductType();
 			}
 			else {
-				result = App.cache().types.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Product type " + request.id + " not found");
-				}
+				result = cache.types.get(request.id);
+				Api.checkNotNull(result, "Product Type", request.id);
 			}
 
 			String oldName = result.getName();
@@ -160,7 +168,7 @@ public class AdminProductController extends Controller {
 				result.setDescription(request.description);
 				result.save();
 
-				App.cache().types.update(result, oldName);
+				cache.types.update(result, oldName);
 			}
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));

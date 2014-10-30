@@ -13,6 +13,7 @@ import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.MemCache;
 import src.models.data.Alias;
 import src.models.data.Function;
 import src.models.data.Ingredient;
@@ -55,23 +56,27 @@ public class AdminIngredientController extends Controller {
 
 			RequestIngredientUpdate request = Api.read(ctx(), RequestIngredientUpdate.class);
 
+			MemCache cache = App.cache();
+
+			//Name uniqueness
+			long other_id = BaseModel.getIdIfExists(cache.ingredients.get(request.name));
+			if (other_id != request.id) {
+				throw new BadRequestException(Response.INVALID, "Ingredient " + request.name + " already exists");
+			}
+
 			Ingredient result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Ingredient();
 			}
 			else {
-				result = App.cache().ingredients.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.id + " not found");
-				}
+				result = cache.ingredients.get(request.id);
+				Api.checkNotNull(result, "Ingredient", request.id);
 			}
 
 			Set<Function> functions = new HashSet<>();
 			for (String f : request.functions) {
-				Function function = App.cache().functions.get(f);
-				if (function == null) {
-					throw new BadRequestException(Response.INVALID, "Function " + f + " not found");
-				}
+				Function function = cache.functions.get(f);
+				Api.checkNotNull(function, "Function", f);
 				functions.add(function);
 			}
 
@@ -85,7 +90,7 @@ public class AdminIngredientController extends Controller {
 				result.setFunctions(functions);
 				result.save();
 
-				App.cache().ingredients.update(result, oldName);
+				cache.ingredients.update(result, oldName);
 			}
 
 			return Api.write(new InfoResponse("Ingredient " + result.getName() + " updated"));
@@ -104,15 +109,21 @@ public class AdminIngredientController extends Controller {
 
 			RequestAliasUpdate request = Api.read(ctx(), RequestAliasUpdate.class);
 
+			MemCache cache = App.cache();
+
+			//Name uniqueness
+			long other_id = BaseModel.getIdIfExists(cache.alias.get(request.name));
+			if (other_id != request.id) {
+				throw new BadRequestException(Response.INVALID, "Alias " + request.name + " already exists");
+			}
+
 			Alias result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Alias();
 			}
 			else {
-				result = App.cache().alias.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Ingredient Name " + request.id + " not found");
-				}
+				result = cache.alias.get(request.id);
+				Api.checkNotNull(result, "Alias", request.id);
 			}
 
 			Ingredient ingredient;
@@ -120,10 +131,8 @@ public class AdminIngredientController extends Controller {
 				ingredient = null;
 			}
 			else {
-				ingredient = App.cache().ingredients.get(request.ingredient_id);
-				if (ingredient == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Ingredient " + request.ingredient_id + " not found");
-				}
+				ingredient = cache.ingredients.get(request.ingredient_id);
+				Api.checkNotNull(ingredient, "Ingredient", request.ingredient_id);
 			}
 
 			String oldName = result.getName();
@@ -133,10 +142,10 @@ public class AdminIngredientController extends Controller {
 				result.setIngredient(ingredient);
 				result.save();
 
-				App.cache().alias.update(result, oldName);
+				cache.alias.update(result, oldName);
 			}
 
-			return Api.write(new InfoResponse("Ingredient Name " + result.getName() + " updated"));
+			return Api.write(new InfoResponse("Alias " + result.getName() + " updated"));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -152,15 +161,21 @@ public class AdminIngredientController extends Controller {
 
 			Api.RequestObjectUpdate request = Api.read(ctx(), Api.RequestObjectUpdate.class);
 
+			MemCache cache = App.cache();
+
+			//Name uniqueness
+			long other_id = BaseModel.getIdIfExists(cache.functions.get(request.name));
+			if (other_id != request.id) {
+				throw new BadRequestException(Response.INVALID, "Function " + request.name + " already exists");
+			}
+
 			Function result;
 			if (request.id == BaseModel.NEW_ID) {
 				result = new Function();
 			}
 			else {
-				result = App.cache().functions.get(request.id);
-				if (result == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Function " + request.id + " not found");
-				}
+				result = cache.functions.get(request.id);
+				Api.checkNotNull(result, "Function", request.id);
 			}
 			String oldName = result.getName();
 
@@ -169,7 +184,7 @@ public class AdminIngredientController extends Controller {
 				result.setDescription(request.description);
 				result.save();
 
-				App.cache().functions.update(result, oldName);
+				cache.functions.update(result, oldName);
 			}
 
 			return Api.write(new InfoResponse("Function " + result.getName() + " updated"));

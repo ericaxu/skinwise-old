@@ -15,6 +15,7 @@ import src.controllers.util.ResponseState;
 import src.models.user.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
+import src.models.util.BaseModel;
 
 import java.util.Set;
 
@@ -96,9 +97,7 @@ public class AdminUserController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			User result = User.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "User", request.id);
 
 			return Api.write(getResponse(result));
 		}
@@ -116,9 +115,7 @@ public class AdminUserController extends Controller {
 			RequestGetUserByEmail request = Api.read(ctx(), RequestGetUserByEmail.class);
 
 			User result = User.byEmail(request.email);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Email " + request.email + " not found");
-			}
+			Api.checkNotNull(result, "User", request.email);
 
 			return Api.write(getResponse(result));
 		}
@@ -137,9 +134,7 @@ public class AdminUserController extends Controller {
 					Api.read(ctx(), RequestEditUser.class);
 
 			User result = User.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "User", request.id);
 
 			Usergroup group = Usergroup.byName(request.group);
 
@@ -170,9 +165,7 @@ public class AdminUserController extends Controller {
 			RequestSetUserPassword request = Api.read(ctx(), RequestSetUserPassword.class);
 
 			User result = User.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "User", request.id);
 
 			result.setPassword(request.password);
 
@@ -198,9 +191,7 @@ public class AdminUserController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			User result = User.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "User", request.id);
 
 			result.delete();
 
@@ -220,9 +211,7 @@ public class AdminUserController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Usergroup result = Usergroup.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "Group", request.id);
 
 			return Api.write(getResponse(result));
 		}
@@ -240,9 +229,7 @@ public class AdminUserController extends Controller {
 			RequestGetGroupByName request = Api.read(ctx(), RequestGetGroupByName.class);
 
 			Usergroup result = Usergroup.byName(request.name);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Group " + request.name + " not found");
-			}
+			Api.checkNotNull(result, "Group", request.name);
 
 			return Api.write(getResponse(result));
 		}
@@ -259,14 +246,13 @@ public class AdminUserController extends Controller {
 
 			RequestEditGroup request = Api.read(ctx(), RequestEditGroup.class);
 
-			Usergroup result = Usergroup.byId(request.id);
-
-			if (request.id == -1) {
+			Usergroup result;
+			if (request.id == BaseModel.NEW_ID) {
 				result = new Usergroup();
 			}
-
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
+			else {
+				result = Usergroup.byId(request.id);
+				Api.checkNotNull(result, "Group", request.id);
 			}
 
 			result.setName(request.name);
@@ -293,9 +279,7 @@ public class AdminUserController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Usergroup result = Usergroup.byId(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
-			}
+			Api.checkNotNull(result, "Group", request.id);
 
 			result.delete();
 
