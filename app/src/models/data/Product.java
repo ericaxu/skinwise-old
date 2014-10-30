@@ -25,6 +25,7 @@ public class Product extends NamedModel {
 	private transient LongHistory brand_id_tracker = new LongHistory();
 
 	private long product_type_id;
+	private transient LongHistory product_type_id_tracker = new LongHistory();
 
 	@Column(length = 1023)
 	private String line;
@@ -43,7 +44,7 @@ public class Product extends NamedModel {
 	}
 
 	public long getProduct_type_id() {
-		return product_type_id;
+		return product_type_id_tracker.getValue(product_type_id);
 	}
 
 	public String getLine() {
@@ -66,6 +67,7 @@ public class Product extends NamedModel {
 	}
 
 	public void setProduct_type_id(long product_type_id) {
+		product_type_id_tracker.setValue(this.product_type_id, product_type_id);
 		this.product_type_id = product_type_id;
 	}
 
@@ -223,6 +225,7 @@ public class Product extends NamedModel {
 			Ebean.endTransaction();
 		}
 		brand_id_tracker.flush(App.cache().brand_product, getId());
+		product_type_id_tracker.flush(App.cache().type_product, getId());
 	}
 
 	private ProductIngredient createProductIngredient(Alias ingredient, boolean isKey, int order) {
@@ -240,29 +243,35 @@ public class Product extends NamedModel {
 	public static final String TABLENAME = "product";
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static List<Product> byFilter(long[] brands, long[] neg_brands,
+	public static List<Product> byFilter(long[] brands, long[] negBrands,
 	                                     long[] types,
-	                                     long[] ingredient_ids, long[] neg_ingredient_ids,
+	                                     long[] ingredients, long[] nedIngredients,
+	                                     boolean discontinued,
 	                                     Page page) {
 		SelectQuery query = new SelectQuery();
 		query.select("DISTINCT main.id as id, main.popularity");
 		query.from(TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux ON main.id = aux.product_id");
 
+		//Discontinued products
+		if (!discontinued) {
+			query.where("main.name NOT LIKE '%Discontinued%'");
+		}
+
 		if (brands.length > 0) {
 			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
 		}
 
-		if (neg_brands.length > 0) {
-			query.where("main.brand_id NOT IN (" + Util.joinString(",", neg_brands) + ")");
+		if (negBrands.length > 0) {
+			query.where("main.brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
 		}
 
 		if (types.length > 0) {
 			query.where("main.product_type_id IN (" + Util.joinString(",", types) + ")");
 		}
 
-		if (ingredient_ids.length > 0) {
+		if (ingredients.length > 0) {
 			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : ingredient_ids) {
+			for (long ingredient_id : ingredients) {
 				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
 				alias_ids.addAll(aliases);
 			}
@@ -270,7 +279,7 @@ public class Product extends NamedModel {
 
 			query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
 			query.other("GROUP BY main.id");
-			query.other("HAVING count(*) = " + ingredient_ids.length);
+			query.other("HAVING count(*) = " + ingredients.length);
 		}
 
 		query.other("ORDER BY main.popularity DESC, main.id ASC");
@@ -278,9 +287,9 @@ public class Product extends NamedModel {
 		TLongList result = query.execute();
 		TLongSet filter = new TLongHashSet();
 
-		if (neg_ingredient_ids.length > 0) {
+		if (nedIngredients.length > 0) {
 			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : neg_ingredient_ids) {
+			for (long ingredient_id : nedIngredients) {
 				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
 				alias_ids.addAll(aliases);
 			}

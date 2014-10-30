@@ -149,6 +149,7 @@ public class ProductController extends Controller {
 					request.brands, request.neg_brands,
 					request.types,
 					request.ingredients, request.neg_ingredients,
+					false,
 					page);
 
 			Api.ResponseResultList response = new Api.ResponseResultList();
