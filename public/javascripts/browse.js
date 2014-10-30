@@ -156,8 +156,19 @@ function loadFilters(type) {
     }
 }
 
+function getBrandsSuccess(response) {
+    for (var i = 0; i < response.results.length; i++) {
+        var brand = response.results[i];
+        SW.BRANDS[brand.id] = {
+            name: brand.name
+        };
+    }
+}
+
 function initBrowse(type) {
     var $add_filter = $('#add_filter');
+
+    postToAPI('/brand/all', {}, getBrandsSuccess);
 
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));

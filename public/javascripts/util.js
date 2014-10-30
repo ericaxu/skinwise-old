@@ -92,7 +92,7 @@ function productResultHTML(product) {
     }
 
     $link.append($img);
-    $link.append($('<div/>', {class: 'product_brand', text: product.brand}));
+    $link.append($('<div/>', {class: 'product_brand', text: SW.BRANDS[product.brand].name}));
     $link.append($('<div/>', {class: 'product_name', text: product.name}));
 
     $list_item.append($link);
@@ -150,7 +150,6 @@ function getAskAgain(key) {
 }
 
 function setAskAgain(key, value) {
-    log(key, value);
     localStorage.setItem('ask_again_' + key, value);
 }
 

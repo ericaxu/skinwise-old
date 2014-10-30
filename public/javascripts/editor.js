@@ -31,13 +31,6 @@ function listenForEnter() {
     });
 }
 
-function getBrandsSuccess(response) {
-    for (var i = 0; i < response.results.length; i++) {
-        var brand = response.results[i];
-        SW.BRANDS[brand.id] = brand.name;
-    }
-}
-
 
 // INGREDIENTS
 
@@ -169,7 +162,7 @@ function setupFunctionSearchCall() {
     $('#function_by_id_btn').on('click', function() {
         var function_id = $('#function_by_id').data('id');
 
-        postToAPI('/ingredient/function/byid', {
+        postToAPI('/function/byid', {
             id: function_id
         }, functionLoadSuccess, null, 'Looking up function...');
     });
@@ -188,9 +181,10 @@ function setupCreateFunctionCall() {
 }
 
 function functionLoadSuccess(response) {
-    $('#edit_function_id').val(response.id);
-    $('#edit_function_name').val(response.name).data('original', response.name);
-    $('#edit_function_description').val(response.description);
+    var function_obj = response.results[0];
+    $('#edit_function_id').val(function_obj.id);
+    $('#edit_function_name').val(function_obj.name).data('original', function_obj.name);
+    $('#edit_function_description').val(function_obj.description);
     $('#edit_function').show();
 }
 
@@ -219,7 +213,7 @@ function setupBrandSearchCall() {
     $('#brand_by_id_btn').on('click', function() {
         var brand_id = $('#brand_by_id').data('id');
 
-        postToAPI('/product/brand/byid', {
+        postToAPI('/brand/byid', {
             id: brand_id
         }, brandLoadSuccess, null, 'Looking up brand...');
     });
@@ -238,12 +232,13 @@ function setupCreateBrandCall() {
 }
 
 function brandLoadSuccess(response) {
-    $('#edit_brand_id').val(response.id);
-    $('#edit_brand_name').val(response.name).data('original', response.name);
-    $('#edit_brand_brand').val(response.brand);
-    $('#edit_brand_line').val(response.line);
-    $('#edit_brand_image').val(response.image);
-    $('#edit_brand_description').val(response.description);
+    var brand = response.results[0];
+    $('#edit_brand_id').val(brand.id);
+    $('#edit_brand_name').val(brand.name).data('original', brand.name);
+    $('#edit_brand_brand').val(brand.brand);
+    $('#edit_brand_line').val(brand.line);
+    $('#edit_brand_image').val(brand.image);
+    $('#edit_brand_description').val(brand.description);
     $('#edit_brand').show();
 }
 
@@ -274,7 +269,7 @@ function setupTypeSearchCall() {
     $('#type_by_id_btn').on('click', function() {
         var type_id = $('#type_by_id').data('id');
 
-        postToAPI('/product/type/byid', {
+        postToAPI('/producttype/byid', {
             id: type_id
         }, typeLoadSuccess, null, 'Looking up type...');
     });
@@ -293,9 +288,10 @@ function setupCreateTypeCall() {
 }
 
 function typeLoadSuccess(response) {
-    $('#edit_type_id').val(response.id);
-    $('#edit_type_name').val(response.name).data('original', response.name);
-    $('#edit_type_description').val(response.description);
+    var type = response.results[0];
+    $('#edit_type_id').val(type.id);
+    $('#edit_type_name').val(type.name).data('original', type.name);
+    $('#edit_type_description').val(type.description);
     $('#edit_type').show();
 }
 
@@ -340,7 +336,7 @@ function unmatchedHTML(alias) {
 }
 
 function fetchUnmatched() {
-    postToAPI('/ingredient/unmatched', {
+    postToAPI('/alias/unmatched', {
         page: 1
     }, loadUnmatched, null, 'Fetching unmatched alias...');
 }
@@ -374,17 +370,18 @@ function setupRematch() {
 
     $('#rematch_alias_lookup').on('click', function() {
         var id = $('#rematch_alias').data('id');
-        postToAPI('/ingredient/alias/byid', {
+        postToAPI('/alias/byid', {
             id: id
         }, function(response) {
-            if (response.ingredient) {
-                if (response.name === fullyCapitalize(response.ingredient.name)) {
+            var alias = response.results[0];
+            if (alias.ingredient) {
+                if (alias.name === fullyCapitalize(alias.ingredient.name)) {
                     $('#alias_match_info').empty()
-                        .append('This ingredient already points to <a href="/ingredient/' + response.ingredient.id + '">itself</a>');
+                        .append('This ingredient already points to <a href="/ingredient/' + alias.ingredient.id + '">itself</a>');
                 } else {
                     $('#alias_match_info').empty()
-                        .append('Currently matched to <a href="/ingredient/' + response.ingredient.id + '">'
-                        + fullyCapitalize(response.ingredient.name) + '</a>');
+                        .append('Currently matched to <a href="/ingredient/' + alias.ingredient.id + '">'
+                        + fullyCapitalize(alias.ingredient.name) + '</a>');
                 }
             }
 
@@ -425,7 +422,7 @@ $(document).ready(function() {
 
     setupRematch();
 
-    postToAPI('/product/brands', {}, getBrandsSuccess);
+    postToAPI('/brand/all', {}, getBrandsSuccess);
 
     listenForEnter();
 });

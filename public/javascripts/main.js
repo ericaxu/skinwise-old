@@ -31,7 +31,6 @@ function setupIngredientInfobox() {
                 ingredient_info.appendTo('body');
                 ingredient_info.append($('<p/>', {text: ingredient_data.description}));
                 $('.ingredient_infobox').remove();
-                log(e.pageX + 10, $(document).width() - 400);
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
                 ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
             }
@@ -77,7 +76,6 @@ function setupFunctionInfobox() {
                 func_info.append($('<p/>', {text: func_data.description}));
                 $('.function_infobox').remove();
 
-                log(e.pageX + 10, $(document).width());
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
                 func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
             }
@@ -123,14 +121,6 @@ function getFunctionsSuccess(response) {
             name: fullyCapitalize(func.name),
             description: func.description
         };
-    }
-}
-
-function getContainingProductsSuccess(response) {
-    var number_shown = Math.min(response.results.length, SW.CONFIG.CONTAINING_PRODUCT_NUM);
-
-    for (var i = 0; i < number_shown; i++) {
-        $('.contained_products ul').append(productResultHTML(response.results[i]));
     }
 }
 
@@ -211,7 +201,7 @@ $(document).ready(function() {
 
     checkLocalStorage();
 
-    postToAPI('/ingredient/functions', {}, getFunctionsSuccess);
+    postToAPI('/function/all', {}, getFunctionsSuccess);
 
     $('.profile_add_input').on('focus', function() {
         $(this).next().show();
