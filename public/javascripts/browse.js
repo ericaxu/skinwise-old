@@ -27,7 +27,7 @@ function ingredientResultHTML(ing) {
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter_obj, filter_key, type) {
     var $option = $('<div/>', {class: 'filter_option'})
-        .text(filter_obj.name).data('id', filter_obj.id);
+        .text(filter_obj.name + ' (' + filter_obj.count + ')').data('id', filter_obj.id);
     $option.append($('<span/>', {class: 'delete_btn'})
         .on('click', function(e) {
             e.stopPropagation();
@@ -196,18 +196,38 @@ function initBrowse(type) {
             }
 
             var filter_key = $(this).data('filterKey');
-            var new_filter = {
-                id: id,
-                name: name
-            };
-            addFilter(type, filter_key, new_filter);
 
-            var $filters = $('.' + filter_key + '_filters');
-            $filters.append(getFilterHTML(new_filter, filter_key, type));
+            switch (filter_key) {
+                case 'brand':
+                case 'neg_brand':
+                    var url = '/brand/byid';
+                    break;
+                case 'ingredient':
+                case 'neg_ingredient':
+                    var url = '/ingredient/byid';
+                    break;
+                case 'type':
+                    var url = '/producttype/byid';
+                    break;
+                default:
+                    showError('Unrecognized filter key ' + filter_key);
+            }
 
-            // reset
-            $add_filter.val('');
-            $('.popup').hide();
+            postToAPI(url, { id: id }, function(response) {
+                var new_filter = {
+                    id: id,
+                    name: name,
+                    count: response.results[0].product_count
+                };
+
+                addFilter(type, filter_key, new_filter);
+
+                var $filters = $('.' + filter_key + '_filters');
+                $filters.append(getFilterHTML(new_filter, filter_key, type));
+                $add_filter.val('');
+                $('.popup').hide();
+            });
+
         });
 
         loadFilters(type);
