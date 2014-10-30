@@ -12,20 +12,27 @@ public class NamedDataController {
 	public static Result api_named_model_byid(Http.Context context,
 	                                          MemCache.NamedIndex<? extends NamedModel> index,
 	                                          String title) {
+		return api_named_model_byid(context, index, title, null);
+	}
+
+	public static <T extends NamedModel> Result api_named_model_byid(Http.Context context,
+	                                                                 MemCache.NamedIndex<T> index,
+	                                                                 String title,
+	                                                                 Serializer<T> serializer) {
+		if (serializer == null) {
+			serializer = new Serializer<>();
+		}
+
 		try {
 			Api.RequestGetById request = Api.read(context, Api.RequestGetById.class);
 
-			NamedModel result = index.get(request.id);
+			T result = index.get(request.id);
 			Api.checkNotNull(result, title, request.id);
 
 			Api.ResponseResultList response = new Api.ResponseResultList();
 			response.count = 1;
 
-			response.results.add(new Api.ResponseNamedModelObject(
-					result.getId(),
-					result.getName(),
-					result.getDescription()
-			));
+			response.results.add(serializer.create(result));
 
 			return Api.write(response);
 		}
@@ -34,17 +41,34 @@ public class NamedDataController {
 		}
 	}
 
-	public static Result api_named_model_all(MemCache.NamedIndex<? extends NamedModel> index) {
+	public static <T extends NamedModel> Result api_named_model_all(MemCache.NamedIndex<T> index) {
+		return api_named_model_all(index, null);
+	}
+
+	public static <T extends NamedModel> Result api_named_model_all(MemCache.NamedIndex<T> index,
+	                                                                Serializer<T> serializer) {
+		if (serializer == null) {
+			serializer = new Serializer<>();
+		}
+
 		Api.ResponseResultList response = new Api.ResponseResultList();
 
-		for (NamedModel object : index.all()) {
-			response.results.add(new Api.ResponseNamedModelObject(
+		for (T object : index.all()) {
+			response.results.add(serializer.create(object));
+		}
+
+		response.count = response.results.size();
+
+		return Api.write(response);
+	}
+
+	public static class Serializer<T extends NamedModel> {
+		public Api.ResponseNamedModelObject create(T object) {
+			return new Api.ResponseNamedModelObject(
 					object.getId(),
 					object.getName(),
 					object.getDescription()
-			));
+			);
 		}
-
-		return Api.write(response);
 	}
 }
