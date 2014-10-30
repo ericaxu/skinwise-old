@@ -2,7 +2,6 @@ package src.models.data;
 
 import com.avaje.ebean.Ebean;
 import gnu.trove.list.TLongList;
-import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
@@ -17,7 +16,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,19 +54,39 @@ public class Ingredient extends NamedModel {
 		return App.cache().ingredient_function.getL(getId());
 	}
 
-	private transient Set<Function> functions_cache;
-	private transient Set<Function> functions_new;
+	private transient TLongSet functions_cache;
+	private transient TLongSet functions_new;
 
-	public Set<Function> getFunctions() {
+	public TLongSet getFunctionIds() {
 		if (functions_cache == null) {
 			Set<IngredientFunction> ingredient_functions = getIngredient_functions();
-			functions_cache = new HashSet<>();
+			functions_cache = new TLongHashSet();
 			for (IngredientFunction ingredient_function : ingredient_functions) {
-				functions_cache.add(ingredient_function.getFunction());
+				functions_cache.add(ingredient_function.getFunction_id());
 			}
 		}
 
 		return functions_cache;
+	}
+
+	public void setFunctionIds(TLongSet function_ids) {
+		functions_new = function_ids;
+	}
+
+	//ALiases relation
+
+	public TLongList getAliases() {
+		return App.cache().ingredient_alias.getMany(this.getId());
+	}
+
+	//Others
+
+	public Set<Function> getFunctions() {
+		return App.cache().functions.getSet(getFunctionIds().toArray());
+	}
+
+	public void setFunctions(Set<Function> input) {
+		setFunctionIds(App.cache().functions.getIdSet(input));
 	}
 
 	public List<String> getFunctionsString() {
@@ -79,33 +97,13 @@ public class Ingredient extends NamedModel {
 		return result;
 	}
 
-	public TLongList getFunctionIds() {
-		TLongList result = new TLongArrayList();
-		for (Function function : getFunctions()) {
-			result.add(function.getId());
-		}
-		return result;
-	}
-
-	public void setFunctions(Set<Function> input) {
-		functions_new = input;
-	}
-
-	//ALiases relation
-
-	public List<Alias> getAliases() {
-		return App.cache().ingredient_alias.getManyObject(this.getId());
-	}
-
 	public List<String> getAliasesString() {
 		List<String> result = new ArrayList<>();
-		for (Alias name : this.getAliases()) {
-			result.add(name.getName());
+		for (long aliasId : this.getAliases().toArray()) {
+			result.add(App.cache().alias.get(aliasId).getName());
 		}
 		return result;
 	}
-
-	//Others
 
 	public String getDisplayName() {
 		return WordUtils.capitalizeFully(getName());
@@ -124,9 +122,9 @@ public class Ingredient extends NamedModel {
 					ingredient_function.delete();
 				}
 				List<IngredientFunction> ingredient_functions_new = new ArrayList<>();
-				for (Function function : functions_new) {
+				for (long function_id : functions_new.toArray()) {
 					IngredientFunction ingredient_function = new IngredientFunction();
-					ingredient_function.setFunction(function);
+					ingredient_function.setFunction_id(function_id);
 					ingredient_function.setIngredient(this);
 					ingredient_function.save();
 					ingredient_functions_new.add(ingredient_function);

@@ -1,9 +1,12 @@
 package src.models;
 
+import gnu.trove.TLongCollection;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
@@ -73,12 +76,23 @@ public class MemCache {
 			return new HashSet<>(getList(ids));
 		}
 
-		public long[] getIds(List<T> objects) {
-			TLongList result = new TLongArrayList();
+		public TLongList getIdList(Collection<T> objects) {
+			return getIds(new TLongArrayList(), objects);
+		}
+
+		public TLongSet getIdSet(Collection<T> objects) {
+			return getIds(new TLongHashSet(), objects);
+		}
+
+		public <L extends TLongCollection> L getIds(L result, Collection<T> objects) {
 			for (T object : objects) {
 				result.add(object.getId());
 			}
-			return result.toArray();
+			return result;
+		}
+
+		public long[] getIds(Collection<T> objects) {
+			return getIdList(objects).toArray();
 		}
 
 		//Set

@@ -70,7 +70,8 @@ public class Export {
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
-		for (Alias alias : object.getAliases()) {
+		List<Alias> aliases = App.cache().alias.getList(object.getAliases().toArray());
+		for (Alias alias : aliases) {
 			result.alias.add(alias.getName());
 		}
 		Collections.sort(result.functions);
