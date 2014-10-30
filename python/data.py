@@ -101,6 +101,10 @@ def import_data():
 			ingredient['alias'].sort()
 	del aliases
 
+	for key, product in result['products'].items():
+		if "Discontinued" in product['name']:
+			product['popularity'] = -1;
+
 	return result
 
 combined_data = import_data()

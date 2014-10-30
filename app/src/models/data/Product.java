@@ -6,7 +6,6 @@ import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
 import src.models.util.*;
-import src.util.Logger;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -254,9 +253,9 @@ public class Product extends NamedModel {
 		query.from(TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux ON main.id = aux.product_id");
 
 		//Discontinued products
-		if (!discontinued) {
-			query.where("main.name NOT LIKE '%Discontinued%'");
-		}
+		//		if (!discontinued) {
+		//			query.where("main.name NOT LIKE '%Discontinued%'");
+		//		}
 
 		if (brands.length > 0) {
 			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
@@ -280,7 +279,7 @@ public class Product extends NamedModel {
 
 			query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
 			query.other("GROUP BY main.id");
-			query.other("HAVING count(*) = " + ingredients.length);
+			query.other("HAVING count(*) >= " + ingredients.length);
 		}
 
 		query.other("ORDER BY main.popularity DESC, main.id ASC");
