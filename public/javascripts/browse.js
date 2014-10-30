@@ -66,7 +66,11 @@ function loadFilterResults(response, type) {
     SW.ING_FETCH.LOADED_COUNT += response.results.length;
 
     if (SW.ING_FETCH.LOADED_COUNT >= SW.ING_FETCH.RESULT_COUNT) {
-        $('.end_of_results').show();
+        if (response.count === 0) {
+            $('.end_of_results').text('No results.').show();
+        } else {
+            $('.end_of_results').text('No more results.').show();
+        }
     }
 }
 
@@ -179,7 +183,6 @@ function initBrowse(type) {
             }
 
             var filter_key = $(this).data('filterKey');
-            log(filter_key, id, name);
             var new_filter =  {
                 id: id,
                 name: name
