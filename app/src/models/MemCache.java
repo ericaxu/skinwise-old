@@ -467,15 +467,14 @@ public class MemCache {
 
 		//Getters
 
-		public TLongSet getIdsSet(Set<T> relations) {
-			return getIds(new TLongHashSet(relations.size()), relations);
+		public <L extends TLongCollection> L getIdsL(L result, Set<T> relations) {
+			for (T relation : relations) {
+				result.add(relation.getLeftId());
+			}
+			return result;
 		}
 
-		public TLongList getIdsList(Set<T> relations) {
-			return getIds(new TLongArrayList(relations.size()), relations);
-		}
-
-		private <L extends TLongCollection> L getIds(L result, Set<T> relations) {
+		public <L extends TLongCollection> L getIdsR(L result, Set<T> relations) {
 			for (T relation : relations) {
 				result.add(relation.getRightId());
 			}

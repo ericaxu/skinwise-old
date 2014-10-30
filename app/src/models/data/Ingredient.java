@@ -10,6 +10,7 @@ import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 import src.models.util.Page;
 import src.models.util.SelectQuery;
+import src.util.Logger;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -79,13 +80,6 @@ public class Ingredient extends NamedModel {
 		return App.cache().ingredient_alias.getMany(this.getId());
 	}
 
-	//Products relation
-
-	public TLongList getProducts() {
-		Set<ProductIngredient> relations = App.cache().product_ingredient.getR(getId());
-		return App.cache().product_ingredient.getIdsList(relations);
-	}
-
 	//Others
 
 	public Set<Function> getFunctions() {
@@ -114,6 +108,14 @@ public class Ingredient extends NamedModel {
 
 	public String getDisplayName() {
 		return WordUtils.capitalizeFully(getName());
+	}
+
+	public TLongSet getProducts() {
+		TLongSet results = new TLongHashSet();
+		for (long aliasId : this.getAliases().toArray()) {
+			results.addAll(App.cache().alias.get(aliasId).getProducts());
+		}
+		return results;
 	}
 
 	@Override

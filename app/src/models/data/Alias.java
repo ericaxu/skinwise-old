@@ -1,5 +1,7 @@
 package src.models.data;
 
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.util.*;
@@ -42,8 +44,13 @@ public class Alias extends NamedModel {
 
 	//Products relation
 
-	public Set<ProductIngredient> getPairs() {
-		return App.cache().product_ingredient.getR(this.getId());
+	public Set<ProductIngredient> getProductIngredient() {
+		return App.cache().product_ingredient.getR(getId());
+	}
+
+	public TLongSet getProducts() {
+		Set<ProductIngredient> result = getProductIngredient();
+		return App.cache().product_ingredient.getIdsL(new TLongHashSet(), result);
 	}
 
 	//Others
