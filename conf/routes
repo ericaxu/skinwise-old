@@ -23,21 +23,29 @@ GET         /function/:id                        src.controllers.data.FunctionCo
 # GET         /api/search/:query                      src.controllers.IngredientSearch.fullSearch(query)
 POST        /api/autocomplete                    src.controllers.data.DataController.api_autocomplete()
 
+# Function API
+POST        /api/function/byid                   src.controllers.data.FunctionController.api_function_byid()
+POST        /api/function/all                    src.controllers.data.FunctionController.api_function_all()
+
 # Ingredient API
 POST        /api/ingredient/byid                 src.controllers.data.IngredientController.api_ingredient_byid()
 POST        /api/ingredient/filter               src.controllers.data.IngredientController.api_ingredient_filter()
-POST        /api/ingredient/functions            src.controllers.data.FunctionController.api_functions()
-POST        /api/ingredient/function/byid        src.controllers.data.FunctionController.api_function_byid()
-POST        /api/ingredient/unmatched            src.controllers.data.IngredientController.api_alias_unmatched()
-POST        /api/ingredient/alias/byid           src.controllers.data.IngredientController.api_alias_byid()
+
+# Alias API
+POST        /api/alias/byid                      src.controllers.data.IngredientController.api_alias_byid()
+POST        /api/alias/unmatched                 src.controllers.data.IngredientController.api_alias_unmatched()
+
+# Brand API
+POST        /api/brand/byid                      src.controllers.data.BrandController.api_brand_byid()
+POST        /api/brand/all                       src.controllers.data.BrandController.api_brand_all()
+
+# Product Type API
+POST        /api/producttype/byid                src.controllers.data.ProductTypeController.api_product_type_byid()
+POST        /api/producttype/all                 src.controllers.data.ProductTypeController.api_product_type_all()
 
 # Product API
 POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()
 POST        /api/product/filter                  src.controllers.data.ProductController.api_product_filter()
-POST        /api/product/brands                  src.controllers.data.ProductController.api_brands()
-POST        /api/product/brand/byid              src.controllers.data.ProductController.api_function_byid()
-POST        /api/product/types                   src.controllers.data.ProductController.api_types()
-POST        /api/product/type/byid               src.controllers.data.ProductController.api_type_byid()
 POST        /api/product/ingredientinfo          src.controllers.data.ProductController.api_ingredient_info()
 
 # User API

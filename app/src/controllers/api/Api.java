@@ -39,18 +39,6 @@ public class Api {
 		public int page;
 	}
 
-	public static class ResponseNamedModel extends Response {
-		public long id;
-		public String name;
-		public String description;
-
-		public ResponseNamedModel(long id, String name, String description) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-		}
-	}
-
 	public static class ResponseNamedModelObject {
 		public long id;
 		public String name;
@@ -63,8 +51,8 @@ public class Api {
 		}
 	}
 
-	public static class ResponseNamedModelList extends Response {
-		public List<ResponseNamedModelObject> results = new ArrayList<>();
+	public static class ResponseResultList extends Response {
+		public List<Object> results = new ArrayList<>();
 		public int count;
 	}
 
@@ -80,6 +68,12 @@ public class Api {
 		}
 		catch (IOException e) {
 			throw new BadRequestException(Response.BAD_JSON);
+		}
+	}
+
+	public static void checkNotNull(Object object, String title, Object details) throws BadRequestException {
+		if (object == null) {
+			throw new BadRequestException(Response.NOT_FOUND, title + " " + details + "not found");
 		}
 	}
 

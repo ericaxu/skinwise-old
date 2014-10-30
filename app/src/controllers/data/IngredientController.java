@@ -9,7 +9,6 @@ import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
-import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
 import src.models.data.Alias;
 import src.models.data.Function;
@@ -17,33 +16,9 @@ import src.models.data.Ingredient;
 import src.models.util.Page;
 import views.html.ingredient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientController extends Controller {
-
-	public static class ResponseIngredient extends Response {
-		public long id;
-		public String name;
-		public String cas_number;
-		public String description;
-		public List<String> functions;
-		public List<String> aliases;
-		public long popularity;
-
-		public ResponseIngredient(long id, String name,
-		                          String cas_number, String description,
-		                          List<String> functions, List<String> aliases, long popularity) {
-			this.id = id;
-			this.name = name;
-			this.cas_number = cas_number;
-			this.description = description;
-			this.functions = functions;
-			this.aliases = aliases;
-			this.popularity = popularity;
-		}
-	}
-
 	public static class RequestIngredientFilter extends Api.RequestGetAllByPage {
 		@NotNull
 		public long[] functions;
@@ -69,12 +44,7 @@ public class IngredientController extends Controller {
 		}
 	}
 
-	public static class ResponseIngredientFilter extends Response {
-		public List<ResponseIngredientObject> results = new ArrayList<>();
-		public int count;
-	}
-
-	public static class ResponseAliasInfo extends Api.ResponseNamedModel {
+	public static class ResponseAliasInfo extends Api.ResponseNamedModelObject {
 		public ResponseIngredientObject ingredient;
 
 		public ResponseAliasInfo(long id, String name, String description, ResponseIngredientObject ingredient) {
@@ -100,19 +70,19 @@ public class IngredientController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Ingredient result = App.cache().ingredients.get(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
-			}
+			Api.checkNotNull(result, "Ingredient", request.id);
 
-			Response response = new ResponseIngredient(
+			Api.ResponseResultList response = new Api.ResponseResultList();
+			response.count = 1;
+
+			response.results.add(new ResponseIngredientObject(
 					result.getId(),
 					result.getName(),
 					result.getCas_number(),
 					result.getDescription(),
-					result.getFunctionsString(),
-					result.getAliasesString(),
-					result.getPopularity()
-			);
+					result.getFunctionIds().toArray(),
+					result.getAliasesString()
+			));
 
 			return Api.write(response);
 		}
@@ -126,17 +96,15 @@ public class IngredientController extends Controller {
 		try {
 			RequestIngredientFilter request = Api.read(ctx(), RequestIngredientFilter.class);
 
-			for (long function_id : request.functions) {
-				Function function = App.cache().functions.get(function_id);
-				if (function == null) {
-					throw new BadRequestException(Response.NOT_FOUND, "Function not found");
-				}
+			for (long id : request.functions) {
+				Function object = App.cache().functions.get(id);
+				Api.checkNotNull(object, "Ingredient", id);
 			}
 
 			Page page = new Page(request.page, 20);
 			List<Ingredient> result = Ingredient.byFilter(request.functions, page);
 
-			ResponseIngredientFilter response = new ResponseIngredientFilter();
+			Api.ResponseResultList response = new Api.ResponseResultList();
 			response.count = page.count;
 
 			for (Ingredient ingredient : result) {
@@ -163,9 +131,7 @@ public class IngredientController extends Controller {
 			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
 
 			Alias result = App.cache().alias.get(request.id);
-			if (result == null) {
-				throw new BadRequestException(Response.NOT_FOUND, "Ingredient not found");
-			}
+			Api.checkNotNull(result, "Ingredient", request.id);
 
 			Ingredient ingredient = result.getIngredient();
 			ResponseIngredientObject ingredientObject = null;
@@ -180,9 +146,12 @@ public class IngredientController extends Controller {
 				);
 			}
 
-			ResponseAliasInfo response = new ResponseAliasInfo(result.getId(),
+			Api.ResponseResultList response = new Api.ResponseResultList();
+			response.count = 1;
+
+			response.results.add(new ResponseAliasInfo(result.getId(),
 					result.getName(), result.getDescription(), ingredientObject
-			);
+			));
 
 			return Api.write(response);
 		}
@@ -200,7 +169,7 @@ public class IngredientController extends Controller {
 
 			List<Alias> result = Alias.unmatched(new Page(request.page));
 
-			Api.ResponseNamedModelList response = new Api.ResponseNamedModelList();
+			Api.ResponseResultList response = new Api.ResponseResultList();
 
 			for (Alias object : result) {
 				response.results.add(new Api.ResponseNamedModelObject(

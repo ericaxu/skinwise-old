@@ -1,5 +1,6 @@
 package src.controllers.data;
 
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import src.App;
@@ -18,5 +19,15 @@ public class BrandController extends Controller {
 		}
 
 		return ok(brand.render(state, result));
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_brand_byid() {
+		return NamedDataController.api_named_model_byid(ctx(), App.cache().brands, "Brand");
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_brand_all() {
+		return NamedDataController.api_named_model_all(App.cache().brands);
 	}
 }
