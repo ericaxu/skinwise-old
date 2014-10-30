@@ -2,10 +2,7 @@ package src.models.data;
 
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.util.BaseModel;
-import src.models.util.NamedFinder;
-import src.models.util.NamedModel;
-import src.models.util.Page;
+import src.models.util.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,34 +14,19 @@ import java.util.Set;
 public class Alias extends NamedModel {
 
 	private long ingredient_id;
-	private transient long ingredient_id_old = 0;
-	private transient boolean ingredient_id_changed = false;
+	private transient LongHistory ingredient_id_tracker = new LongHistory();
 
 	//Getters
 
 	public long getIngredient_id() {
-		//Changed, let's still use the old value until the new one is flushed to DB.
-		if (ingredient_id_changed) {
-			return ingredient_id_old;
-		}
-		return ingredient_id;
+		return ingredient_id_tracker.getValue(ingredient_id);
 	}
 
 	//Setters
 
 	public void setIngredient_id(long ingredient_id) {
-		if (ingredient_id == this.ingredient_id) {
-			//Nothing changed, switch back to unchanged if necessary
-			ingredient_id_changed = false;
-		}
-		else {
-			//Changed, keep a copy of old value
-			if (!ingredient_id_changed) {
-				ingredient_id_old = this.ingredient_id;
-			}
-			this.ingredient_id = ingredient_id;
-			ingredient_id_changed = true;
-		}
+		ingredient_id_tracker.setValue(this.ingredient_id, ingredient_id);
+		this.ingredient_id = ingredient_id;
 	}
 
 	//Ingredient relation
@@ -72,16 +54,8 @@ public class Alias extends NamedModel {
 
 	@Override
 	public void save() {
-		if (ingredient_id_changed) {
-			App.cache().ingredient_alias.remove(getId(), ingredient_id_old);
-		}
-
 		super.save();
-
-		if (ingredient_id_changed) {
-			App.cache().ingredient_alias.add(getId(), ingredient_id);
-			ingredient_id_changed = false;
-		}
+		ingredient_id_tracker.flush(App.cache().ingredient_alias, getId());
 	}
 
 	//Static

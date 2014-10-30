@@ -299,7 +299,7 @@ public class Import {
 	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients) {
 		ConcurrentMap<String, Alias> results = new ConcurrentHashMap<>();
 
-		int threads = Runtime.getRuntime().availableProcessors() - 1;
+		int threads = Runtime.getRuntime().availableProcessors();
 		Logger.debug(TAG, "Using " + threads + " threads to match ingredients");
 		JoinableExecutor executor = new JoinableExecutor(Executors.newFixedThreadPool(threads));
 

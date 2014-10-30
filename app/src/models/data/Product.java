@@ -22,6 +22,7 @@ public class Product extends NamedModel {
 	private long popularity;
 
 	private long brand_id;
+	private transient LongHistory brand_id_tracker = new LongHistory();
 
 	private long product_type_id;
 
@@ -38,7 +39,7 @@ public class Product extends NamedModel {
 	}
 
 	public long getBrand_id() {
-		return brand_id;
+		return brand_id_tracker.getValue(brand_id);
 	}
 
 	public long getProduct_type_id() {
@@ -60,6 +61,7 @@ public class Product extends NamedModel {
 	}
 
 	public void setBrand_id(long brand_id) {
+		brand_id_tracker.setValue(this.brand_id, brand_id);
 		this.brand_id = brand_id;
 	}
 
@@ -220,6 +222,7 @@ public class Product extends NamedModel {
 		finally {
 			Ebean.endTransaction();
 		}
+		brand_id_tracker.flush(App.cache().brand_product, getId());
 	}
 
 	private ProductIngredient createProductIngredient(Alias ingredient, boolean isKey, int order) {

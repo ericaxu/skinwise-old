@@ -557,6 +557,13 @@ public class MemCache {
 		}
 	}
 
+	private static class BrandProductGetter implements OneToManyGetter<Product> {
+		@Override
+		public long getOneId(Product object) {
+			return object.getBrand_id();
+		}
+	}
+
 	private static class IngredientFunctionGetter implements ManyToManyGetter<IngredientFunction> {
 		public List<IngredientFunction> all() {
 			return IngredientFunction.all();
@@ -694,6 +701,7 @@ public class MemCache {
 	public ProductIndex products;
 
 	public OneToManyIndex<Alias> ingredient_alias;
+	public OneToManyIndex<Product> brand_product;
 	public ManyToManyIndex<IngredientFunction> ingredient_function;
 	public ManyToManyIndex<ProductIngredient> product_ingredient;
 
@@ -708,6 +716,7 @@ public class MemCache {
 		products = new ProductIndex(Product.find);
 
 		ingredient_alias = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
+		brand_product = new OneToManyIndex<>(new BrandProductGetter(), Product.find);
 		ingredient_function = new ManyToManyIndex<>(new IngredientFunctionGetter());
 		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter());
 
@@ -723,6 +732,7 @@ public class MemCache {
 		products.cache();
 
 		ingredient_alias.cache();
+		brand_product.cache();
 		ingredient_function.cache();
 		product_ingredient.cache();
 

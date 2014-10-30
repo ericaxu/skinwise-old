@@ -1,6 +1,7 @@
 {
 	"aqua": {
 		"Water/Aqua/Eau": true,
+		"Purified Water": true,
 		"Eau": false,
 		"Aqua": false,
 		"water/aqua/eau": false

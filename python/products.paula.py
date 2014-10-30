@@ -141,8 +141,8 @@ for url in urls:
 		# Product Systems
 		if len(product_other_ingredients) > 1:
 			title = parser.regex_find(r'<strong>(.*?)<\/strong>(|<br \/>)', product_other_ingredients[0], 1)
-			if title != "":
-				print("%r" % (product_other_ingredients))
+			print("%r" % (product_other_ingredients))
+			print("")
 		else:
 			pass
 		
