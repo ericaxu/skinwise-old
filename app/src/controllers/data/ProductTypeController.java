@@ -11,11 +11,11 @@ import src.models.data.ProductType;
 
 public class ProductTypeController extends Controller {
 	public static class ProductTypeObject extends Api.ResponseNamedModelObject {
-		public int products;
+		public int product_count;
 
-		public ProductTypeObject(long id, String name, String description, int products) {
+		public ProductTypeObject(long id, String name, String description, int product_count) {
 			super(id, name, description);
-			this.products = products;
+			this.product_count = product_count;
 		}
 	}
 

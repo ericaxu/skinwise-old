@@ -12,11 +12,11 @@ import views.html.brand;
 
 public class BrandController extends Controller {
 	public static class BrandObject extends Api.ResponseNamedModelObject {
-		public int products;
+		public int product_count;
 
-		public BrandObject(long id, String name, String description, int products) {
+		public BrandObject(long id, String name, String description, int product_count) {
 			super(id, name, description);
-			this.products = products;
+			this.product_count = product_count;
 		}
 	}
 

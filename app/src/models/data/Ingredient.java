@@ -79,6 +79,13 @@ public class Ingredient extends NamedModel {
 		return App.cache().ingredient_alias.getMany(this.getId());
 	}
 
+	//Products relation
+
+	public TLongList getProducts() {
+		Set<ProductIngredient> relations = App.cache().product_ingredient.getR(getId());
+		return App.cache().product_ingredient.getIdsList(relations);
+	}
+
 	//Others
 
 	public Set<Function> getFunctions() {

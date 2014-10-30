@@ -31,16 +31,19 @@ public class IngredientController extends Controller {
 		public String description;
 		public long[] functions;
 		public List<String> aliases;
+		public int product_count;
 
 		public ResponseIngredientObject(long id, String name,
 		                                String cas_number, String description,
-		                                long[] functions, List<String> aliases) {
+		                                long[] functions, List<String> aliases,
+		                                int product_count) {
 			this.id = id;
 			this.name = name;
 			this.cas_number = cas_number;
 			this.description = description;
 			this.functions = functions;
 			this.aliases = aliases;
+			this.product_count = product_count;
 		}
 	}
 
@@ -81,7 +84,8 @@ public class IngredientController extends Controller {
 					result.getCas_number(),
 					result.getDescription(),
 					result.getFunctionIds().toArray(),
-					result.getAliasesString()
+					result.getAliasesString(),
+					result.getProducts().size()
 			));
 
 			return Api.write(response);
@@ -114,7 +118,8 @@ public class IngredientController extends Controller {
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray(),
-						ingredient.getAliasesString()
+						ingredient.getAliasesString(),
+						ingredient.getProducts().size()
 				));
 			}
 
@@ -142,7 +147,8 @@ public class IngredientController extends Controller {
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray(),
-						ingredient.getAliasesString()
+						ingredient.getAliasesString(),
+						ingredient.getProducts().size()
 				);
 			}
 

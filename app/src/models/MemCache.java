@@ -467,6 +467,21 @@ public class MemCache {
 
 		//Getters
 
+		public TLongSet getIdsSet(Set<T> relations) {
+			return getIds(new TLongHashSet(relations.size()), relations);
+		}
+
+		public TLongList getIdsList(Set<T> relations) {
+			return getIds(new TLongArrayList(relations.size()), relations);
+		}
+
+		private <L extends TLongCollection> L getIds(L result, Set<T> relations) {
+			for (T relation : relations) {
+				result.add(relation.getRightId());
+			}
+			return result;
+		}
+
 		public Set<T> getR(long right_id) {
 			if (!right_index.containsKey(right_id)) {
 				right_index.put(right_id, new HashSet<>());
