@@ -203,7 +203,6 @@ function setupNavSearchAutocomplete() {
     });
 }
 
-
 $(document).ready(function() {
     setupIngredientInfobox();
     setupFunctionInfobox();

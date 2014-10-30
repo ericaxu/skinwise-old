@@ -128,14 +128,33 @@ function setupExpandableSearchbar() {
     });
 }
 
-function confirmAction(action, callback) {
-    $('.popup').hide();
-    $('.confirm.popup .action').text(action);
-    $('#confirm_btn').off('click').on('click', function () {
+function confirmAction(action, callback, key) {
+    // Do we want to ask again?
+    if (key === undefined || getAskAgain(key) === null || JSON.parse(getAskAgain(key))) {
         $('.popup').hide();
+        $('.confirm.popup .action').text(action);
+        $('#confirm_btn').off('click').on('click', function () {
+            $('.popup').hide();
+            callback();
+        });
+        $('#dont_ask_again_btn').off('click').on('click', function() {
+            setAskAgain(key, false);
+            $('.popup').hide();
+            callback();
+        });
+
+        // Do we provide the option "Don't ask again"?
+        if (key === undefined) {
+            $('#dont_ask_again_btn').hide();
+            $('.confirm.popup .form_container').css('width', '400px');
+        } else {
+            $('#dont_ask_again_btn').show();
+            $('.confirm.popup .form_container').css('width', '600px');
+        }
+        $('.confirm.popup').show();
+    } else {
         callback();
-    });
-    $('.confirm.popup').show();
+    }
 }
 
 function setupFeedbackCall() {

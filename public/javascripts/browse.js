@@ -26,18 +26,20 @@ function ingredientResultHTML(ing) {
 
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter_obj, filter_key, type) {
-    var $option = $('<div/>', { class: 'filter_option' })
+    var $option = $('<div/>', {class: 'filter_option'})
         .text(filter_obj.name).data('id', filter_obj.id);
-    $option.append($('<span/>', { class: 'delete_btn' })
+    $option.append($('<span/>', {class: 'delete_btn'})
         .on('click', function(e) {
             e.stopPropagation();
-            confirmAction('delete ' + $(this).data('type') + ' filter "' + $(this).parent().text() + '"', $.proxy(function () {
+            var action = 'delete ' + filter_key + ' filter "' + $(this).parent().text() + '"';
+            var delete_callback = function() {
                 removeFilter(type, filter_key, filter_obj.id);
                 $option.remove();
                 if ($option.hasClass('selected')) {
                     refetch(type);
                 }
-            }, this));
+            };
+            confirmAction(action, delete_callback, 'delete_filter');
         }));
 
     return $option;
@@ -77,9 +79,9 @@ function loadFilterResults(response, type) {
 function fetchProducts(page, callback) {
     postToAPI('/product/filter', {
         types: getSelectedFilters('type'),
-        brands: SW.CUR_BRAND ? [ SW.CUR_BRAND ] : getSelectedFilters('brand'),
+        brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
         neg_brands: getSelectedFilters('neg_brand'),
-        ingredients: SW.CUR_INGREDIENT ? [ SW.CUR_INGREDIENT ] : getSelectedFilters('ingredient'),
+        ingredients: SW.CUR_INGREDIENT ? [SW.CUR_INGREDIENT] : getSelectedFilters('ingredient'),
         neg_ingredients: getSelectedFilters('neg_ingredient'),
         page: page
     }, callback);
@@ -87,7 +89,7 @@ function fetchProducts(page, callback) {
 
 function fetchIngredients(page, callback) {
     postToAPI('/ingredient/filter', {
-        functions: SW.CUR_FUNCTION ? [ SW.CUR_FUNCTION ] : getSelectedFilters('function'),
+        functions: SW.CUR_FUNCTION ? [SW.CUR_FUNCTION] : getSelectedFilters('function'),
         page: page
     }, callback);
 }
@@ -97,7 +99,7 @@ function fetchNextPage(type) {
         $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
 
-        var fetch_callback = function (response) {
+        var fetch_callback = function(response) {
             $('#loading_spinner').hide();
             SW.ING_FETCH.LOADING = false;
             SW.ING_FETCH.CUR_PAGE += 1;
@@ -119,7 +121,7 @@ function refetch(type) {
 
     $('#loading_spinner').show();
 
-    var refetch_callback = function (response) {
+    var refetch_callback = function(response) {
         $('#loading_spinner').hide();
         SW.ING_FETCH.LOADING = false;
         SW.ING_FETCH.CUR_PAGE = 0;
@@ -157,11 +159,11 @@ function loadFilters(type) {
 function initBrowse(type) {
     var $add_filter = $('#add_filter');
 
-    $(document).on('ready', function () {
+    $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
         var nav_height = $('nav').height();
 
-        $('.open_add_filter_popup').on('click', function () {
+        $('.open_add_filter_popup').on('click', function() {
             $('#add_filter_btn').data({
                 type: $(this).data('type'),
                 filterKey: $(this).data('filterKey')
@@ -171,7 +173,7 @@ function initBrowse(type) {
             $('#add_filter').focus();
         });
 
-        $('#add_filter_btn').on('click', function () {
+        $('#add_filter_btn').on('click', function() {
             cleanupErrors();
 
             var id = $add_filter.data('id');
@@ -183,7 +185,7 @@ function initBrowse(type) {
             }
 
             var filter_key = $(this).data('filterKey');
-            var new_filter =  {
+            var new_filter = {
                 id: id,
                 name: name
             };
@@ -200,7 +202,7 @@ function initBrowse(type) {
         loadFilters(type);
         fetchNextPage(type);
 
-        $(document).on('click', '.filter_option', function () {
+        $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
             refetch(type);
         });
@@ -217,7 +219,7 @@ function initBrowse(type) {
             }
         });
 
-        $(window).on('scroll', function () {
+        $(window).on('scroll', function() {
             // Check if we are at bottom of page
             if ($(window).scrollTop() + $(window).height() + SW.REFETCH_DISTANCE_THRESHOLD > $(document).height() - nav_height &&
                 SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {

@@ -145,6 +145,15 @@ function setFeedbackEmail(email) {
     localStorage.setItem('feedback_email', email);
 }
 
+function getAskAgain(key) {
+    return localStorage.getItem('ask_again_' + key);
+}
+
+function setAskAgain(key, value) {
+    log(key, value);
+    localStorage.setItem('ask_again_' + key, value);
+}
+
 // Get an array of checked ids for a filter type
 function getSelectedFilters(filter_type) {
     var results = [];
