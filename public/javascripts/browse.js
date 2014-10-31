@@ -180,6 +180,7 @@ function initBrowse(type) {
         var nav_height = $('nav').height();
 
         $('.open_add_filter_popup').on('click', function() {
+            $('#add_filter').val('');
             $('#add_filter_btn').data({
                 type: $(this).data('type'),
                 filterKey: $(this).data('filterKey')
