@@ -1,0 +1,5 @@
+#Content Feedback
+
+##Contributing product data
+Elena says:
+>There are no Oilatum products listed on the site. One thing I was wondering: is there anyway we can contribute to the database? I imagine it must be hard for all of you to add products; I'm impressed at how many you've managed to add alone.
