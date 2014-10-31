@@ -1,15 +1,12 @@
 package src.models.userdata;
 
-import play.db.ebean.Model;
 import src.models.user.User;
+import src.models.util.BaseModel;
 
 import javax.persistence.*;
 
 @Entity
-public class UserPreference extends Model {
-	@Id
-	private long id;
-
+public class UserPreference extends BaseModel {
 	@ManyToOne
 	@JoinColumn(name = "user")
 	private User user;
@@ -20,18 +17,32 @@ public class UserPreference extends Model {
 	@Lob
 	private String value;
 
-	public UserPreference(User user, String key, String value) {
-		this.user = user;
-		this.key = key;
-		this.value = value;
-	}
-
-	public long getId() {
-		return id;
-	}
+	//Get
 
 	public User getUser() {
 		return user;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	//Set
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	//Static
