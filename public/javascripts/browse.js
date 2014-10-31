@@ -194,13 +194,17 @@ function initBrowse(type) {
 
             var id = $add_filter.data('id');
             var name = $add_filter.val();
+            var filter_key = $(this).data('filterKey');
 
             if (id === undefined || id === '') {
                 showAddFilterError('We can\'t recognize this filter :(');
                 return;
             }
 
-            var filter_key = $(this).data('filterKey');
+            if (getFiltersByType(filter_key).indexOf(id) !== -1) {
+                showAddFilterError('Already added this filter.');
+                return;
+            }
 
             switch (filter_key) {
                 case 'brand':

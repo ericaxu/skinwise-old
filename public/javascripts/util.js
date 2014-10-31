@@ -163,6 +163,16 @@ function getSelectedFilters(filter_type) {
     return results;
 }
 
+// Get an array of checked ids for a filter type
+function getFiltersByType(filter_type) {
+    var results = [];
+    $('.' + filter_type + '_filters .filter_option').each(function () {
+        results.push($(this).data('id'));
+    });
+
+    return results;
+}
+
 function log() {
     if (SW.DEBUG) {
         console.log.apply(console, arguments);
