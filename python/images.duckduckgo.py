@@ -13,6 +13,12 @@ file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 #Crawled URLs
 url_image_search = "https://duckduckgo.com/i.js?o=json&q=%s"
 
+bad_urls = [
+"ebaystatic.com",
+"wp-content",
+"blogspot"
+]
+
 data = util.json_read(file_data_json, "{}")
 if 'products' not in data:
 	sys.exit(0)
@@ -59,7 +65,11 @@ for key, product in products.items():
 				continue
 
 			# wordpress
-			if image['url'].find("wp-content") != -1 or image['url'].find("blogspot") != -1:
+			good_url = True
+			for bad_url in bad_urls:
+				if bad_url in image['url']:
+					good_url = False
+			if not good_url:
 				continue
  
 			final_image = image

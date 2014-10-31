@@ -1447,10 +1447,10 @@
 			"width": 640
 		},
 		"aloette multi action scrub": {
-			"height": 952,
-			"source": "Yahoo",
-			"url": "http://media-cache-cd0.pinimg.com/736x/7e/0c/48/7e0c480a0dbc449e9433787a9d098df4.jpg",
-			"width": 736
+			"height": 0,
+			"source": "Correction",
+			"url": "http://rcdn-1.fishpond.com.au/0029/847/594/27816955/6.jpeg",
+			"width": 0
 		},
 		"aloette multi active prevention plus": {
 			"height": 500,
@@ -1519,16 +1519,16 @@
 			"width": 500
 		},
 		"aloette redness reduction calming creme": {
-			"height": 256,
-			"source": "Yahoo",
-			"url": "http://drjskinclinic.com/images/Phyto-Stem-Oxygen-Soothing-Mask-Gel-Redness-Reduction.jpg",
-			"width": 420
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.shoptoit.ca/images/detail/84414000/84414622.jpg",
+			"width": 0
 		},
 		"aloette roll away smoothing eye pen": {
-			"height": 360,
-			"source": "Yahoo",
-			"url": "http://media-cache-ec0.pinimg.com/736x/59/96/18/599618e50dd51903fda40fdec4c02fe7.jpg",
-			"width": 480
+			"height": 0,
+			"source": "Correction",
+			"url": "http://media-cache-ak0.pinimg.com/736x/03/a4/2a/03a42a103c32aab1e6d8ac3e6b105ccf.jpg",
+			"width": 0
 		},
 		"aloette sensitive skin toner": {
 			"height": 500,
@@ -1567,10 +1567,10 @@
 			"width": 300
 		},
 		"aloette visible aid skin restoring cream": {
-			"height": 288,
-			"source": "Yahoo",
-			"url": "http://i00.i.aliimg.com/photo/v0/100431986/Osmena_Pearl_Cabochons.jpg",
-			"width": 352
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.aloette-by-amanda.com/uploads/5/1/4/4/5144937/s939333783460809269_p28_i1_w384.jpeg",
+			"width": 0
 		},
 		"alpha hydrox 14 aha swipes": {
 			"height": 300,
@@ -1735,10 +1735,10 @@
 			"width": 736
 		},
 		"american beauty ultimate diamond luminous mineral makeup spf 15": {
-			"height": 300,
-			"source": "Yahoo",
-			"url": "http://www.polyvore.com/cgi/img-thing?.out=jpg&size=l&tid=9514073",
-			"width": 300
+			"height": 0,
+			"source": "Correction",
+			"url": "http://di3-4.shoppingshadow.com/pi/i.ebayimg.com/00/$T2eC16JHJI!E9qSO8D3HBR0StPjM6g~~_32-500x500-0-0.JPG",
+			"width": 0
 		},
 		"american beauty ultimate diamond restorative anti aging cream": {
 			"height": 300,
@@ -6679,10 +6679,10 @@
 			"width": 320
 		},
 		"beauticontrol perfecting creme to powder finish": {
-			"height": 199,
-			"source": "Yahoo",
-			"url": "http://i.ebayimg.com/00/s/MTA2MlgxNjAw/$(KGrHqZHJFUE-k4iuuDPBPy,2j4u3w~~60_35.JPG",
-			"width": 300
+			"height": 0,
+			"source": "Correction",
+			"url": "http://ecx.images-amazon.com/images/I/51bwizg%2BcUL._SX425_.jpg",
+			"width": 0
 		},
 		"beauticontrol perfecting wet dry finish foundation": {
 			"height": 300,
@@ -6823,10 +6823,10 @@
 			"width": 312
 		},
 		"beauticontrol skinlogics clear spot treatment duo": {
-			"height": 491,
-			"source": "Yahoo",
-			"url": "http://media-cache-ec0.pinimg.com/736x/50/2e/9b/502e9be46458239de897ce49dea5dc64.jpg",
-			"width": 736
+			"height": 0,
+			"source": "Correction",
+			"url": "http://beauticontrol.com/eprofile/Skinlogics%20Clear%20Spot%20Treatment%20Duo.jpg",
+			"width": 0
 		},
 		"beauticontrol skinlogics corticure comfort lotion with chamomile": {
 			"height": 300,
@@ -8095,10 +8095,10 @@
 			"width": 630
 		},
 		"bite beauty agave lip mask": {
-			"height": 600,
-			"source": "Yahoo",
-			"url": "http://media-cache-ak0.pinimg.com/736x/f3/6b/af/f36baf588f6bebd64c212e0d145ed898.jpg",
-			"width": 600
+			"height": 0,
+			"source": "Correction",
+			"url": "http://community.sephora.com/t5/image/serverpage/image-id/78763i179FD350C47EC9E0",
+			"width": 0
 		},
 		"bite beauty bb for lips spf 15": {
 			"height": 813,
@@ -8910,6 +8910,12 @@
 			"url": "http://media-cache-ec0.pinimg.com/736x/c4/ce/88/c4ce881ec48f2427192ae6f7a043b187.jpg",
 			"width": 410
 		},
+		"boots complexion refining day moisturising lotion spf 12 discontinued": {
+			"height": 0,
+			"source": "Correction",
+			"url": "http://4.bp.blogspot.com/-7GSDzwhfXJA/UKXJgd0pdwI/AAAAAAAAJPM/1UWkT_knQlw/s1600/Botanics_Skincare_-_Complexion_Refining_Day_Moisture_Lotion_SPF12.jpg",
+			"width": 0
+		},
 		"boots complexion refining deep clean mousse": {
 			"height": 618,
 			"source": "Yahoo",
@@ -9389,6 +9395,12 @@
 			"source": "Yahoo",
 			"url": "http://dailymed.nlm.nih.gov/dailymed/image.cfm?id=25374&type=img&name=Rebalancing%20Day%20Fluid%20carton.jpg",
 			"width": 2340
+		},
+		"boots rebalancing day gel for oily combination skin discontinued": {
+			"height": 0,
+			"source": "Correction",
+			"url": "http://4.bp.blogspot.com/-Ale0tHVyIeU/T9IeqRtfcII/AAAAAAAAAeg/n5SuVTxa3GU/s1600/IMG_3436.JPG",
+			"width": 0
 		},
 		"boots responsive moisture lotion": {
 			"height": 350,
@@ -10621,10 +10633,10 @@
 			"width": 386
 		},
 		"burt s bees tinted lip balm": {
-			"height": 736,
-			"source": "Yahoo",
-			"url": "http://media-cache-ec0.pinimg.com/736x/7d/ba/a2/7dbaa2ea8401630e19e1a5c2adcf48b5.jpg",
-			"width": 736
+			"height": 0,
+			"source": "Correction",
+			"url": "https://cdnssl.nu3.de/DE/product/burt-s-bees-tinted-lip-balm-rose-4.25-g-24861-9766-16842-1-productbig.jpg",
+			"width": 0
 		},
 		"burt s bees ultra conditioning lip balm with kokum butter": {
 			"height": 800,
@@ -19567,10 +19579,10 @@
 			"width": 193
 		},
 		"dr denese new york damage reversal pads": {
-			"height": 394,
-			"source": "Yahoo",
-			"url": "http://www.giantimagemanagement.com/yahoo_site_admin/assets/images/hrc.25213512_std.jpg",
-			"width": 630
+			"height": 0,
+			"source": "Correction",
+			"url": "http://images.qvc.com/is/image/a/94/a313394.001",
+			"width": 0
 		},
 		"dr denese new york dermaclean gentle bha cleanser": {
 			"height": 441,
@@ -21367,10 +21379,10 @@
 			"width": 311
 		},
 		"elizabeth grant biocollasis advanced cellular hydration": {
-			"height": 400,
-			"source": "Yahoo",
-			"url": "http://www.onlineaanbieding.com/product_images/83879308187.jpg",
-			"width": 400
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.thebeautystore.co.uk/media/catalog/product/cache/2/image/9df78eab33525d08d6e5fb8d27136e95/e/l/elizabeth-grant-biocollasis-advance-cellular-hydration-50ml.jpg",
+			"width": 0
 		},
 		"elizabeth grant biocollasis advanced cellular night regeneration": {
 			"height": 500,
@@ -22423,10 +22435,10 @@
 			"width": 1092
 		},
 		"epicuren discovery skin lightener balancing cream": {
-			"height": 1024,
-			"source": "Yahoo",
-			"url": "http://media-cache-ak0.pinimg.com/736x/e5/15/51/e515510a714bdd98c541d3b5b8c13fa8.jpg",
-			"width": 736
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.advancedspa.com/shop/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/s/k/skin_light_cut_1.jpg",
+			"width": 0
 		},
 		"epicuren discovery ultra rose treat enzyme moisturizer": {
 			"height": 370,
@@ -43723,10 +43735,10 @@
 			"width": 333
 		},
 		"paula s choice skincare clinical 1 retinol treatment": {
-			"height": 1126,
-			"source": "Yahoo",
-			"url": "http://www.multivu.com/players/English/7285151-best-skin-care-makeup-fall-2014-winners-announced-from-beautypedia-com/gallery/image/b4d39330-bb07-432e-a32e-951c57f2a8e4.HR.jpg",
-			"width": 2000
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.paulaschoice.com/_resources/_global/media/resized/00010/ihwx.c1140e18-e3a2-4f06-bf1a-40ced884117d.1200.800.png",
+			"width": 0
 		},
 		"paula s choice skincare clinical instant calm advanced redness relief treatment": {
 			"height": 1200,
@@ -43903,10 +43915,10 @@
 			"width": 0
 		},
 		"paula s choice skincare resist cellular defense daily moisturizer with spf 25 antioxidants": {
-			"height": 2765,
-			"source": "Yahoo",
-			"url": "http://thelabofluxury.files.wordpress.com/2013/10/paulaschoice_resist_cellulardefensedailymoisturizer_spf25_001.jpg",
-			"width": 3202
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.makeuponyourmind.com/wp-content/uploads/RESIST-Cellular-Defense-Daily-Moisturizer-SPF-25-and-antioxidants.jpg",
+			"width": 0
 		},
 		"paula s choice skincare resist daily pore refining treatment 2 bha": {
 			"height": 1200,
@@ -44083,10 +44095,10 @@
 			"width": 460
 		},
 		"paula s choice skincare skin perfecting 2 bha liquid": {
-			"height": 717,
-			"source": "Yahoo",
-			"url": "http://media-cache-ak0.pinimg.com/736x/45/21/0d/45210d95e4e47a72cc7eb773f73cfffd.jpg",
-			"width": 600
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.paulaschoice.com/_resources/_global/media/resized/00001/ihwx.1f14f86d-ae4e-46b5-b476-f5f9f2236db9.1200.800.png",
+			"width": 0
 		},
 		"paula s choice skincare skin perfecting 2 bha lotion": {
 			"height": 460,
