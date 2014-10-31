@@ -16,11 +16,23 @@ import src.models.data.Product;
 import src.models.userdata.UserIngredientList;
 import src.models.userdata.UserProductList;
 
+import java.util.List;
+
 public class UserListController extends Controller {
 	public static class RequestAdd extends Request {
 		@NotNull
 		public String key;
 		public long id;
+	}
+
+	public static class ResponseListObject {
+		public String key;
+		public long id;
+
+		public ResponseListObject(String key, long id) {
+			this.key = key;
+			this.id = id;
+		}
 	}
 
 	public static Result api_ingredient_add() {
@@ -79,6 +91,34 @@ public class UserListController extends Controller {
 		}
 	}
 
+	public static Result api_ingredient_list() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (state.getUser() == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Not logged in");
+			}
+
+			List<UserIngredientList> result = UserIngredientList.byUser(state.getUser());
+
+			Api.ResponseResultList response = new Api.ResponseResultList();
+
+			for (UserIngredientList object : result) {
+				response.results.add(new ResponseListObject(
+						object.getKey(),
+						object.getIngredient_id()
+				));
+			}
+
+			response.count = result.size();
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
 	public static Result api_product_add() {
 		ResponseState state = new ResponseState(session());
 
@@ -129,6 +169,34 @@ public class UserListController extends Controller {
 			result.delete();
 
 			return Api.write(new InfoResponse("Item removed"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	public static Result api_product_list() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			if (state.getUser() == null) {
+				throw new BadRequestException(Response.NOT_FOUND, "Not logged in");
+			}
+
+			List<UserProductList> result = UserProductList.byUser(state.getUser());
+
+			Api.ResponseResultList response = new Api.ResponseResultList();
+
+			for (UserProductList object : result) {
+				response.results.add(new ResponseListObject(
+						object.getKey(),
+						object.getProduct_id()
+				));
+			}
+
+			response.count = result.size();
+
+			return Api.write(response);
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));

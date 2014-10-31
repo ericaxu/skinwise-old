@@ -1,5 +1,6 @@
 package src.models.userdata;
 
+import src.App;
 import src.models.data.Product;
 import src.models.user.User;
 import src.models.util.BaseModel;
@@ -17,9 +18,7 @@ public class UserProductList extends BaseModel {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
+	private long product_id;
 
 	//Getters
 
@@ -31,9 +30,10 @@ public class UserProductList extends BaseModel {
 		return user;
 	}
 
-	public Product getProduct() {
-		return product;
+	public long getProduct_id() {
+		return product_id;
 	}
+
 	//Setters
 
 	public void setKey(String key) {
@@ -44,9 +44,20 @@ public class UserProductList extends BaseModel {
 		this.user = user;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProduct_id(long product_id) {
+		this.product_id = product_id;
 	}
+
+	//Others
+
+	public Product getProduct() {
+		return App.cache().products.get(getProduct_id());
+	}
+
+	public void setProduct(Product product) {
+		this.product_id = BaseModel.getIdIfExists(product);
+	}
+
 	//Static
 
 	public static final String TABLENAME = "user_product_list";

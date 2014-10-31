@@ -1,5 +1,6 @@
 package src.models.userdata;
 
+import src.App;
 import src.models.data.Ingredient;
 import src.models.user.User;
 import src.models.util.BaseModel;
@@ -17,9 +18,7 @@ public class UserIngredientList extends BaseModel {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "ingredient_id", referencedColumnName = "id")
-	private Ingredient ingredient;
+	private long ingredient_id;
 
 	//Getters
 
@@ -31,10 +30,9 @@ public class UserIngredientList extends BaseModel {
 		return user;
 	}
 
-	public Ingredient getIngredient() {
-		return ingredient;
+	public long getIngredient_id() {
+		return ingredient_id;
 	}
-
 	//Setters
 
 	public void setKey(String key) {
@@ -45,8 +43,18 @@ public class UserIngredientList extends BaseModel {
 		this.user = user;
 	}
 
+	public void setIngredient_id(long ingredient_id) {
+		this.ingredient_id = ingredient_id;
+	}
+
+	//Others
+
+	public Ingredient getIngredient() {
+		return App.cache().ingredients.get(getIngredient_id());
+	}
+
 	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
+		this.ingredient_id = BaseModel.getIdIfExists(ingredient);
 	}
 
 	//Static

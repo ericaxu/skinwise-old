@@ -55,8 +55,10 @@ POST        /api/user/logout                     src.controllers.UserController.
 
 POST        /api/user/ingredient/add             src.controllers.userdata.UserListController.api_ingredient_add()
 POST        /api/user/ingredient/remove          src.controllers.userdata.UserListController.api_ingredient_remove()
+POST        /api/user/ingredient/list            src.controllers.userdata.UserListController.api_ingredient_list()
 POST        /api/user/product/add                src.controllers.userdata.UserListController.api_product_add()
 POST        /api/user/product/remove             src.controllers.userdata.UserListController.api_product_remove()
+POST        /api/user/product/list               src.controllers.userdata.UserListController.api_product_list()
 POST        /api/user/routine/get                src.controllers.userdata.RoutineController.api_routine_byuser()
 POST        /api/user/routine/update             src.controllers.userdata.RoutineController.api_routine_update()
 POST        /api/user/routine/remove             src.controllers.userdata.RoutineController.api_routine_delete()
