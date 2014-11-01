@@ -481,14 +481,14 @@ public class MemCache {
 			return result;
 		}
 
-		public Set<T> getR(long right_id) {
+		public Set<T> getByR(long right_id) {
 			if (!right_index.containsKey(right_id)) {
 				right_index.put(right_id, new HashSet<>());
 			}
 			return right_index.get(right_id);
 		}
 
-		public Set<T> getL(long left_id) {
+		public Set<T> getByL(long left_id) {
 			if (!left_index.containsKey(left_id)) {
 				left_index.put(left_id, new HashSet<>());
 			}
@@ -532,15 +532,15 @@ public class MemCache {
 		private void _add(T object) {
 			long left = object.getLeftId();
 			long right = object.getRightId();
-			getL(left).add(object);
-			getR(right).add(object);
+			getByL(left).add(object);
+			getByR(right).add(object);
 		}
 
 		private void _remove(T object) {
 			long left = object.getLeftId();
 			long right = object.getRightId();
-			getL(left).remove(object);
-			getR(right).remove(object);
+			getByL(left).remove(object);
+			getByR(right).remove(object);
 		}
 
 		private void _cache(List<T> list) {

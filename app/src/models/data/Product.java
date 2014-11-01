@@ -107,7 +107,7 @@ public class Product extends NamedModel {
 	private transient List<Alias> key_ingredients_new;
 
 	public List<ProductIngredient> getProductIngredients() {
-		Set<ProductIngredient> result = App.cache().product_ingredient.getL(getId());
+		Set<ProductIngredient> result = App.cache().product_ingredient.getByL(getId());
 		List<ProductIngredient> list = new ArrayList<>(result);
 		Collections.sort(list, ProductIngredient.sorter);
 		return list;

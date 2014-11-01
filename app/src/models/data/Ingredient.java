@@ -10,7 +10,6 @@ import src.models.util.NamedFinder;
 import src.models.util.NamedModel;
 import src.models.util.Page;
 import src.models.util.SelectQuery;
-import src.util.Logger;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -52,7 +51,7 @@ public class Ingredient extends NamedModel {
 	//Functions relation
 
 	private Set<IngredientFunction> getIngredient_functions() {
-		return App.cache().ingredient_function.getL(getId());
+		return App.cache().ingredient_function.getByL(getId());
 	}
 
 	private transient TLongSet functions_cache;

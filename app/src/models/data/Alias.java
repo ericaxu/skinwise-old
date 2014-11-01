@@ -45,7 +45,7 @@ public class Alias extends NamedModel {
 	//Products relation
 
 	public Set<ProductIngredient> getProductIngredient() {
-		return App.cache().product_ingredient.getR(getId());
+		return App.cache().product_ingredient.getByR(getId());
 	}
 
 	public TLongSet getProducts() {
