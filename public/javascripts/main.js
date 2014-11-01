@@ -87,6 +87,8 @@ function setupFunctionInfobox() {
         }, SW.FUNC_BOX.DISMISS_TIMEOUT);
     }).on('click', '.function', function(e) {
         e.stopPropagation();
+        var id = $(this).data('id');
+        location.href = '/function/' + id;
     });
 
     // Dismiss infobox after leaving it for a while
