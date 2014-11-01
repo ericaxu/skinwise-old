@@ -230,7 +230,7 @@ public class Import {
 		result.setName(object.name);
 		result.setCas_number(object.cas_no);
 		result.setDescription(object.description);
-		if (object.popularity > 0) {
+		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
 		}
 		result.setFunctions(functionList);
@@ -284,7 +284,7 @@ public class Import {
 		result.setType(type);
 		result.setDescription(object.description);
 		result.setImage(object.image);
-		if (object.popularity > 0) {
+		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
 		}
 		result.setIngredients(ingredients);
