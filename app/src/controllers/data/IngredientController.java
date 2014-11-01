@@ -64,6 +64,8 @@ public class IngredientController extends Controller {
 			return ErrorController.notfound();
 		}
 
+		result.incrementPopularity(1);
+
 		return ok(ingredient.render(state, result));
 	}
 

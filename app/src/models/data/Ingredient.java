@@ -7,8 +7,8 @@ import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.util.NamedFinder;
-import src.models.util.NamedModel;
 import src.models.util.Page;
+import src.models.util.PopularNamedModel;
 import src.models.util.SelectQuery;
 import src.util.Util;
 
@@ -21,28 +21,18 @@ import java.util.Set;
 
 @Entity
 @Table(name = Ingredient.TABLENAME)
-public class Ingredient extends NamedModel {
-
-	private long popularity;
+public class Ingredient extends PopularNamedModel {
 
 	@Column(length = 127)
 	private String cas_number;
 
 	//Getters
 
-	public long getPopularity() {
-		return popularity;
-	}
-
 	public String getCas_number() {
 		return cas_number;
 	}
 
 	//Setters
-
-	public void setPopularity(long popularity) {
-		this.popularity = popularity;
-	}
 
 	public void setCas_number(String cas_number) {
 		this.cas_number = cas_number;

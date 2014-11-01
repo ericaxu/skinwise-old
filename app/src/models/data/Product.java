@@ -18,8 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = Product.TABLENAME)
-public class Product extends NamedModel {
-	private long popularity;
+public class Product extends PopularNamedModel {
 
 	private long brand_id;
 	private transient LongHistory brand_id_tracker = new LongHistory();
@@ -34,10 +33,6 @@ public class Product extends NamedModel {
 	private String image;
 
 	//Getters
-
-	public long getPopularity() {
-		return popularity;
-	}
 
 	public long getBrand_id() {
 		return brand_id_tracker.getValue(brand_id);
@@ -56,10 +51,6 @@ public class Product extends NamedModel {
 	}
 
 	//Setters
-
-	public void setPopularity(long popularity) {
-		this.popularity = popularity;
-	}
 
 	public void setBrand_id(long brand_id) {
 		brand_id_tracker.setValue(this.brand_id, brand_id);

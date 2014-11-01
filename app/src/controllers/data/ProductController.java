@@ -83,6 +83,8 @@ public class ProductController extends Controller {
 			return ErrorController.notfound();
 		}
 
+		result.incrementPopularity(1);
+
 		return ok(product.render(state, result));
 	}
 
