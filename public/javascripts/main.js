@@ -190,10 +190,10 @@ function handleEnterKey() {
     $(document).on('keyup', function(e) {
         // 13 is ENTER
         if (e.which === 13) {
+            e.preventDefault();
             if ($('#nav_searchbar').is(':focus')) {
                 $('#nav_searchbar_btn').trigger('click');
             } else if ($('#add_filter').is(':focus') && $('#add_filter').val() !== '') {
-                log($('#add_filter').val());
                 $('#add_filter_btn').trigger('click');
             }
         }
