@@ -215,6 +215,9 @@ function handleAddFilter() {
             case 'type':
                 var url = '/producttype/byid';
                 break;
+            case 'function':
+                var url = '/function/byid';
+                break;
             default:
                 showError('Unrecognized filter key ' + filter_key);
         }
@@ -223,7 +226,7 @@ function handleAddFilter() {
             var new_filter = {
                 id: id,
                 name: name,
-                count: response.results[0].product_count
+                count: filter_key === 'function' ? response.results[0].ingredient_count :response.results[0].product_count
             };
 
             addFilter(SW.BROWSE_TYPE, filter_key, new_filter);
