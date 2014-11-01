@@ -15,8 +15,8 @@
             @if(ingredient.getAliasesString.size > 0) {
                 <div class="alternate_names">
                     Also known as
-                    @Util.joinString(", ", ingredient.getAliasesString.map{WordUtils.capitalizeFully(_)}
-                            .filter{_.toLowerCase != ingredient.getName.toLowerCase})
+                    @Util.joinString(", ", ingredient.getAliasesString.map { WordUtils.capitalizeFully(_) }
+                            .filter { _.toLowerCase != ingredient.getName.toLowerCase })
                 </div>
             }
         </div>
@@ -40,23 +40,53 @@
             <div class="product_filter filter_area">
                 <div class="result_summary"></div>
 
-                <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
+                <div class="filter_toggle_link open">Refine results <span class="chevron top"></span></div>
 
-                <div class="filter_container closed">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Type</h3>
-                            <span class="open_add_filter_popup" data-type="type">+</span>
+                <div class="filter_container">
+                    <div class="filter_group">
+                        <div class="filter_section">
+                            <div class="filter_header">
+                                <h3>Type</h3>
+                                <span class="open_add_filter_popup" data-type="type" data-filter-key="type">+</span>
+                            </div>
+                            <div class="type_filters"></div>
                         </div>
-                        <div class="type_filters"></div>
                     </div>
 
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Brand</h3>
-                            <span class="open_add_filter_popup" data-type="brand">+</span>
+                    <div class="filter_group">
+                        <div class="filter_section">
+                            <div class="filter_header">
+                                <h3>From Brand</h3>
+                                <span class="open_add_filter_popup" data-type="brand" data-filter-key="brand">+</span>
+                            </div>
+                            <div class="brand_filters"></div>
                         </div>
-                        <div class="brand_filters"></div>
+                        <div class="filter_section">
+                            <div class="filter_header">
+                                <h3>Not From Brand</h3>
+                                <span class="open_add_filter_popup" data-type="brand" data-filter-key="neg_brand">+</span>
+                            </div>
+                            <div class="neg_brand_filters"></div>
+                        </div>
+                    </div>
+
+                    <div class="filter_group">
+                        <div class="filter_section">
+                            <div class="filter_header">
+                                <h3>Contains</h3>
+                                <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="ingredient">
+                                    +</span>
+                            </div>
+                            <div class="ingredient_filters"></div>
+                        </div>
+                        <div class="filter_section">
+                            <div class="filter_header">
+                                <h3>Does not contain</h3>
+                                <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="neg_ingredient">
+                                    +</span>
+                            </div>
+                            <div class="neg_ingredient_filters"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,8 +110,9 @@
     <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
     <script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
     <script>
-        SW.CUR_INGREDIENT = @ingredient.getId;
-        initBrowse('product');
+        SW.CUR_INGREDIENT = @ingredient.getId ;
+        SW.BROWSE_TYPE = 'product';
+        initBrowse();
     </script>
 
 }

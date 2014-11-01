@@ -428,24 +428,33 @@ nav {
     height: 325px;
     margin-bottom: 40px;
     text-align: center;
+    vertical-align: top;
     box-sizing: border-box;
 
     .product_brand {
         font-weight: bold;
     }
 
-    .product_pic {
+    .product_img_container {
+        display: inline-block;
+        position: relative;
+        width: 250px;
+        height: 250px;
+    }
+
+    .product_img {
+        position: absolute;
+        margin: auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: auto;
         height: auto;
         max-width: 250px;
         max-height: 250px;
         padding: 20px;
         box-sizing: border-box;
-
-        img {
-            max-width: 250px;
-            max-height: 250px;
-        }
     }
 }
 
@@ -455,7 +464,7 @@ nav {
     border: 1px solid @border;
     background: @bg;
     color: @dark_text;
-    font-family: "Source Sans Pro";
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
     cursor: default;
 }
 

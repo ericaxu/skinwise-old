@@ -32,7 +32,7 @@ function setupIngredientInfobox() {
                 ingredient_info.append($('<p/>', {text: ingredient_data.description}));
                 $('.ingredient_infobox').remove();
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
-                ingredient_info.addClass('ingredient_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
+                ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: left_offset});
             }
         }, SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
@@ -77,7 +77,7 @@ function setupFunctionInfobox() {
                 $('.function_infobox').remove();
 
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
-                func_info.addClass('function_infobox').show().offset({ top: e.pageY + 10, left: left_offset });
+                func_info.addClass('function_infobox').show().offset({top: e.pageY + 10, left: left_offset});
             }
         }, SW.FUNC_BOX.TIMEOUT);
     }).on('mouseleave', '.function', function() {
@@ -124,7 +124,7 @@ function getFunctionsSuccess(response) {
     }
 }
 
-function attachScrollHandler () {
+function setupBackToTop() {
     var $to_top = $('#back_to_top');
     $(window).on('scroll', function() {
         if ($(document).scrollTop() > SW.BACK_TO_TOP_THRESHOLD) {
@@ -133,9 +133,9 @@ function attachScrollHandler () {
             $to_top.fadeOut(200);
         }
     });
-    $to_top.on('click', function (e) {
+    $to_top.on('click', function(e) {
         e.preventDefault();
-        $('body').animate({ scrollTop: 0 }, 100);
+        $('body').animate({scrollTop: 0}, 100);
     });
 }
 
@@ -184,20 +184,28 @@ function setupNavSearchAutocomplete() {
     $nav_search.on('focus', function() {
         $(this).autocomplete('search');
     });
+}
 
+function handleEnterKey() {
     $(document).on('keyup', function(e) {
         // 13 is ENTER
-        if (e.which === 13 && $nav_search.is(':focus')) {
-            $('#nav_searchbar_btn').trigger('click');
+        if (e.which === 13) {
+            e.preventDefault();
+            if ($('#nav_searchbar').is(':focus')) {
+                $('#nav_searchbar_btn').trigger('click');
+            } else if ($('#add_filter').is(':focus') && $('#add_filter').val() !== '') {
+                $('#add_filter_btn').trigger('click');
+            }
         }
     });
 }
 
-$(document).ready(function() {
+$(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
-    attachScrollHandler();
+    setupBackToTop();
     setupNavSearchAutocomplete();
+    handleEnterKey();
 
     checkLocalStorage();
 

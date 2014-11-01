@@ -82,7 +82,7 @@ function productResultHTML(product) {
     var $list_item = $('<li/>', {class: 'product'});
     var $link = $('<a/>', {href: '/product/' + product.id});
     var $img = $('<img/>', {
-        class: 'product_pic',
+        class: 'product_img',
         src: product.image || SW_PLACEHOLDER_URL,
         alt: product.brand + ' ' + product.name
     });
@@ -91,7 +91,10 @@ function productResultHTML(product) {
         checkImage($img, product.image);
     }
 
-    $link.append($img);
+    var $img_container = $('<div/>', { class: 'product_img_container' });
+    $img_container.append($img);
+
+    $link.append($img_container);
     $link.append($('<div/>', {class: 'product_brand', text: SW.BRANDS[product.brand].name}));
     $link.append($('<div/>', {class: 'product_name', text: product.name}));
 
@@ -157,6 +160,16 @@ function setAskAgain(key, value) {
 function getSelectedFilters(filter_type) {
     var results = [];
     $('.' + filter_type + '_filters .filter_option.selected').each(function () {
+        results.push($(this).data('id'));
+    });
+
+    return results;
+}
+
+// Get an array of checked ids for a filter type
+function getFiltersByType(filter_type) {
+    var results = [];
+    $('.' + filter_type + '_filters .filter_option').each(function () {
         results.push($(this).data('id'));
     });
 
