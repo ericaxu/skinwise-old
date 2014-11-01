@@ -16,12 +16,14 @@
     <div class="ingredient_container">
         <h1 class="name">@product.getName</h1>
         <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
-        @if(product.hasDescription) {
-            <div class="claim">
-                <h3>What It Does</h3>
+
+        <div class="claim">
+            <h3>What It Does</h3>
+            <p><span class='product_type neutral'>@product.getTypeName</span></p>
+            @if(product.hasDescription) {
                 <p>@product.getDescription</p>
-            </div>
-        }
+            }
+        </div>
 
         @if(!product.getKey_ingredients.isEmpty) {
             <div class="active_ingredients">
