@@ -4,7 +4,6 @@ import src.models.MemCache;
 
 import javax.persistence.Embeddable;
 
-@Embeddable
 public class LongHistory {
 	private static final String TAG = "LinkedLongValue";
 

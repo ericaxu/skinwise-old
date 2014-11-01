@@ -16,6 +16,11 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+dependencyOverrides ++= Set(
+  "org.avaje.ebeanorm" % "avaje-ebeanorm-agent" % "4.1.6",
+  "org.avaje.ebeanorm" % "avaje-ebeanorm" % "4.1.8"
+)
+
 javaOptions ++= Seq("-Xms512M", "-Xmx2G",  "-XX:+CMSClassUnloadingEnabled")
 
 scalacOptions ++= Seq("-feature")

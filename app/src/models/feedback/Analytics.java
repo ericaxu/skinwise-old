@@ -1,7 +1,9 @@
 package src.models.feedback;
 
 import src.models.user.User;
+import src.models.util.BaseFinder;
 import src.models.util.BaseModel;
+import src.models.util.Page;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -89,16 +91,13 @@ public class Analytics extends BaseModel {
 
 	//Static
 
-	public static Finder<Long, Analytics> find = new Finder<>(Long.class, Analytics.class);
+	public static BaseFinder<Analytics> find = new BaseFinder<>(Analytics.class);
 
 	public static Analytics byId(long id) {
 		return find.byId(id);
 	}
 
-	public static List<Analytics> byUser(long user_id, int page, int size) {
-		return find.where().eq("user_id", user_id)
-				.findPagingList(size)
-				.getPage(page)
-				.getList();
+	public static List<Analytics> byUser(long user_id, Page page) {
+		return page.apply(find.where().eq("user_id", user_id).query());
 	}
 }

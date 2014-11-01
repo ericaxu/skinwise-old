@@ -1,6 +1,7 @@
 package src.models.feedback;
 
 import src.models.user.User;
+import src.models.util.BaseFinder;
 import src.models.util.BaseModel;
 import src.models.util.Page;
 
@@ -113,7 +114,7 @@ public class Report extends BaseModel {
 
 	//Static
 
-	public static Finder<Long, Report> find = new Finder<>(Long.class, Report.class);
+	public static BaseFinder<Report> find = new BaseFinder<>(Report.class);
 
 	public static Report byId(long id) {
 		return find.byId(id);

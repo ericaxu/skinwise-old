@@ -73,7 +73,7 @@ public class Api {
 
 	public static void checkNotNull(Object object, String title, Object details) throws BadRequestException {
 		if (object == null) {
-			throw new BadRequestException(Response.NOT_FOUND, title + " " + details + "not found");
+			throw new BadRequestException(Response.NOT_FOUND, title + " " + details + " not found");
 		}
 	}
 
