@@ -27,3 +27,8 @@ Christina says:
 
 Elena says:
 >Also, the ability to filter "out" an ingredient (that is, show all except a certain ingredient) would be useful.
+
+##Bugs
+####~~Can't Add Function Filter~~
+allygator95 says:
+>When selecting a function in the ingredients search, I get the error "unrecognized filter key function" when selecting any suggested term (in this, I selected solvent)
