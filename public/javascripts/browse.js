@@ -169,6 +169,7 @@ function getBrandsSuccess(response) {
             name: brand.name
         };
     }
+    fetchNextPage();
 }
 
 function handleAddFilter() {
@@ -288,14 +289,11 @@ function setupAddFilterPopup() {
 }
 
 function initBrowse() {
-
-    postToAPI('/brand/all', {}, getBrandsSuccess);
-
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
         loadFilters();
-        fetchNextPage();
+        postToAPI('/brand/all', {}, getBrandsSuccess);
         handleAddFilter();
         handleBrowseScroll();
         setupAddFilterPopup();
