@@ -8,6 +8,7 @@ import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.util.ResponseState;
 import src.models.data.ProductType;
+import views.html.product_type;
 
 public class ProductTypeController extends Controller {
 	public static class ProductTypeObject extends Api.ResponseNamedModelObject {
@@ -27,7 +28,7 @@ public class ProductTypeController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(/*product_type.render(state, result)*/);
+		return ok(product_type.render(state, result));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

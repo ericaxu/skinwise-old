@@ -19,7 +19,7 @@
 
         <div class="claim">
             <h3>What It Does</h3>
-            <p><span class='product_type neutral'>@product.getTypeName</span></p>
+            <p><a href="/type/@product.getType.getId" class="silent"><span class='product_type neutral'>@product.getTypeName</span></a></p>
             @if(product.hasDescription) {
                 <p>@product.getDescription</p>
             }

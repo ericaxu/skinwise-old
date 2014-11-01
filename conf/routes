@@ -17,6 +17,7 @@ GET         /ingredient/:id                      src.controllers.data.Ingredient
 GET         /product/:id                         src.controllers.data.ProductController.product(id : Long)
 GET         /brand/:id                           src.controllers.data.BrandController.brand(id: Long)
 GET         /function/:id                        src.controllers.data.FunctionController.function(id: Long)
+GET         /type/:id                            src.controllers.data.ProductTypeController.product_type(id: Long)
 
 # Search
 # GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
