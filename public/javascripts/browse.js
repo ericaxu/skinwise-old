@@ -26,8 +26,9 @@ function ingredientResultHTML(ing) {
 
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter_obj, filter_key) {
+    var $name = $('<span/>', { class: 'filter_option_text', text: filter_obj.name });
     var $option = $('<div/>', {class: 'filter_option'})
-        .text(filter_obj.name + ' (' + filter_obj.count + ')').data('id', filter_obj.id);
+        .append($name).append(' (' + filter_obj.count + ')').data('id', filter_obj.id);
     $option.append($('<span/>', {class: 'delete_btn'})
         .on('click', function(e) {
             e.stopPropagation();
@@ -185,10 +186,22 @@ function handleAddFilter() {
             return;
         }
 
-        if (getFiltersByType(filter_key).indexOf(id) !== -1) {
-            showAddFilterError('Already added this filter.');
-            return;
-        }
+        // Check if this filter already exists
+        var found = false;
+        $('.' + filter_key + '_filters .filter_option').each(function () {
+            if ($(this).data('id') === id) {
+                var filter_label = $(this).find('.filter_option_text').text();
+                if (filter_label === name) {
+                    showAddFilterError('Already added this filter.');
+                    found = true;
+                } else {
+                    showAddFilterError(filter_label + ' is the same thing as ' + name + ' and it\'s already added.');
+                    found = true;
+                }
+            }
+        });
+
+        if (found) { return; }
 
         switch (filter_key) {
             case 'brand':
