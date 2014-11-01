@@ -224,36 +224,65 @@ function handleAddFilter() {
     });
 }
 
-function initBrowse() {
+function handleBrowseScroll() {
+    var nav_height = $('nav').height();
+    $(window).on('scroll', function() {
+        // Check if we are at bottom of page
+        if ($(window).scrollTop() + $(window).height() + SW.REFETCH_DISTANCE_THRESHOLD > $(document).height() - nav_height &&
+            SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {
+            fetchNextPage();
+        }
+
+        if (SW.BROWSE_TYPE === 'product') {
+            var list_height = $('.products_list').height();
+        } else if (SW.BROWSE_TYPE === 'ingredient') {
+            var list_height = $('.ingredients_list').height();
+        }
+
+        //if (list_height + $('#logo').height() + nav_height > $(window).height()) {
+        //    if ($(window).scrollTop() >= 100 - nav_height) {
+        //        $('.filter_area').addClass('sticky');
+        //    } else {
+        //        $('.filter_area').removeClass('sticky');
+        //    }
+        //}
+    });
+}
+
+function setupAddFilterPopup() {
     var $add_filter = $('#add_filter');
+    $('.open_add_filter_popup').on('click', function() {
+        // Reset
+        cleanupErrors();
+        $add_filter.val('');
+
+        var type = $(this).data('type');
+        $('#add_filter_btn').data({
+            type: type,
+            filterKey: $(this).data('filterKey')
+        });
+        enableAutocomplete(type, $add_filter, '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $('#add_filter_not_found'));
+        $add_filter.on('focus', function() {
+            $(this).autocomplete('search');
+        });
+        $('#add_filter_type').text(type);
+        $('.add_filter.popup').show();
+        $add_filter.focus();
+    });
+}
+
+function initBrowse() {
 
     postToAPI('/brand/all', {}, getBrandsSuccess);
 
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
-        var nav_height = $('nav').height();
-
-        $('.open_add_filter_popup').on('click', function() {
-            var type = $(this).data('type');
-
-            $add_filter.val('');
-            $('#add_filter_btn').data({
-                type: type,
-                filterKey: $(this).data('filterKey')
-            });
-            enableAutocomplete(type, $add_filter, '#add_filter_form .inputs', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $('#add_filter_not_found'));
-            $add_filter.on('focus', function() {
-                $(this).autocomplete('search');
-            });
-            $('#add_filter_type').text(type);
-            $('.add_filter.popup').show();
-            $add_filter.focus();
-        });
 
         loadFilters();
         fetchNextPage();
-
         handleAddFilter();
+        handleBrowseScroll();
+        setupAddFilterPopup();
 
         $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
@@ -272,26 +301,5 @@ function initBrowse() {
             }
         });
 
-        $(window).on('scroll', function() {
-            // Check if we are at bottom of page
-            if ($(window).scrollTop() + $(window).height() + SW.REFETCH_DISTANCE_THRESHOLD > $(document).height() - nav_height &&
-                SW.ING_FETCH.LOADED_COUNT < SW.ING_FETCH.RESULT_COUNT) {
-                fetchNextPage();
-            }
-
-            if (SW.BROWSE_TYPE === 'product') {
-                var list_height = $('.products_list').height();
-            } else if (SW.BROWSE_TYPE === 'ingredient') {
-                var list_height = $('.ingredients_list').height();
-            }
-
-            //if (list_height + $('#logo').height() + nav_height > $(window).height()) {
-            //    if ($(window).scrollTop() >= 100 - nav_height) {
-            //        $('.filter_area').addClass('sticky');
-            //    } else {
-            //        $('.filter_area').removeClass('sticky');
-            //    }
-            //}
-        });
     });
 }

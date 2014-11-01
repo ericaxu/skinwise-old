@@ -124,7 +124,7 @@ function getFunctionsSuccess(response) {
     }
 }
 
-function handleScroll() {
+function setupBackToTop() {
     var $to_top = $('#back_to_top');
     $(window).on('scroll', function() {
         if ($(document).scrollTop() > SW.BACK_TO_TOP_THRESHOLD) {
@@ -203,7 +203,7 @@ function handleEnterKey() {
 $(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
-    handleScroll();
+    setupBackToTop();
     setupNavSearchAutocomplete();
     handleEnterKey();
 
