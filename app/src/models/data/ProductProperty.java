@@ -4,6 +4,7 @@ import com.avaje.ebean.annotation.Index;
 import src.App;
 import src.models.util.BaseFinder;
 import src.models.util.BaseModel;
+import src.models.util.LongHistory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.Entity;
 public class ProductProperty extends BaseModel {
 	@Index
 	private long product_id;
+	private transient LongHistory product_id_tracker = new LongHistory();
+
 	@Index
 	@Column(name = "_key", length = 255)
 	private String key;
@@ -22,7 +25,7 @@ public class ProductProperty extends BaseModel {
 	//Getters
 
 	public long getProduct_id() {
-		return product_id;
+		return product_id_tracker.getValue(product_id);
 	}
 
 	public String getKey() {
@@ -36,6 +39,7 @@ public class ProductProperty extends BaseModel {
 	//Setters
 
 	public void setProduct_id(long product_id) {
+		product_id_tracker.setValue(this.product_id, product_id);
 		this.product_id = product_id;
 	}
 
@@ -47,7 +51,7 @@ public class ProductProperty extends BaseModel {
 		this.value = value;
 	}
 
-	//Others
+	//Product relation
 
 	public Product getProduct() {
 		return App.cache().products.get(getProduct_id());
@@ -57,11 +61,21 @@ public class ProductProperty extends BaseModel {
 		setProduct_id(BaseModel.getIdIfExists(product));
 	}
 
+	//Others
+
+	@Override
+	public void save() {
+		super.save();
+		product_id_tracker.flush(App.cache().product_product_properties, getId());
+	}
+
 	//Static
 	public static final String TABLENAME = "alias";
 	public static BaseFinder<ProductProperty> find = new BaseFinder<>(ProductProperty.class);
 
 	public ProductProperty byProductIdAndKey(long product_id, String key) {
-		return find.where().eq("product_id", product_id).eq("key", key).findUnique();
+		return App.cache().product_properties.get(
+				find.where().eq("product_id", product_id).eq("key", key).findUnique()
+		);
 	}
 }

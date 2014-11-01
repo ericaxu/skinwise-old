@@ -38,8 +38,7 @@ public class Alias extends NamedModel {
 	}
 
 	public void setIngredient(Ingredient ingredient) {
-		long id = BaseModel.getIdIfExists(ingredient);
-		setIngredient_id(id);
+		setIngredient_id(BaseModel.getIdIfExists(ingredient));
 	}
 
 	//Products relation
