@@ -12,7 +12,7 @@
 
         <div class="section">
             <h1 class="name">@ingredient.getDisplayName</h1>
-            @if(ingredient.getAliasesString.size > 0) {
+            @if(ingredient.getAliasesString.size > 1) {
                 <div class="alternate_names">
                     Also known as
                     @Util.joinString(", ", ingredient.getAliasesString.map { WordUtils.capitalizeFully(_) }
