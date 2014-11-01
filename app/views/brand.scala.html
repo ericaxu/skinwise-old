@@ -52,7 +52,8 @@
     <script src='@routes.Assets.at("/public", "javascripts/browse.js")'></script>
     <script>
         SW.CUR_BRAND = @brand.getId;
-        initBrowse('product');
+        SW.BROWSE_TYPE = 'product';
+        initBrowse();
     </script>
 
 }
