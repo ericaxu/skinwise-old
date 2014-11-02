@@ -133,9 +133,22 @@ class SearchEngine[T] {
   def fullSearch(query: String, limit: Int): java.util.List[T] = {
     val queryWords = MemCache.Matcher.splitIngredient(query).toList
     val matches = queryWords.map(fullSearchMatches).flatten
-    val scores = mutable.HashMap[String, Double]()
 
+    // We might have duplicate words in the result, in which case we just pick the match
+    // with the lowest distance. We shouldn't keep duplicates because that doubles the value
+    // of some words.
+    // e.g. 'tiger' and 'tuber' match to 'tree' with distance 3, which is not a good match. 'tree' should
+    // only be counted once
+    val deduped = mutable.HashMap[String, Double]()
     matches foreach { case (result, distance) =>
+      deduped.get(result) match {
+        case None => deduped.put(result, distance)
+        case Some(existingDist) => deduped.put(result, min(existingDist, distance))
+      }
+    }
+
+    val scores = mutable.HashMap[String, Double]()
+    deduped foreach { case (result, distance) =>
       wordToNames(result) foreach { name =>
         val minScore = 1.0
         val scoreForPenalty = max(0.0, minScore - calculatePenalty(query.length, distance))
@@ -158,7 +171,7 @@ class SearchEngine[T] {
     val slicedResults = weightedResults.slice(0, limit)
 
     // For debugging.
-    //    slicedResults.foreach { case (name, score) => sln(f"$name $score%.3f") }
+//    slicedResults.foreach { case (name, score) => println(f"$name $score") }
 
     slicedResults.map(result => namesToObjs.get(result._1))
   }
