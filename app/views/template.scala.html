@@ -34,7 +34,7 @@
             <li><a href="/products">Products</a></li>
             <li><a href="/ingredients">Ingredients</a></li>
             <li class="search_container">
-                @search_icon()
+                @icon.search_icon()
                 <select id="search_category_select">
                     <option value="product" selected>Product</option>
                     <option value="ingredient">Ingredient</option>
@@ -114,12 +114,12 @@
             <p class="message"></p>
         </div>
     </div>
-    @popups.signup()
-    @popups.login()
-    @popups.forgot_password()
-    @popups.confirm()
-    @popups.feedback(state)
-    @popups.add_filter()
+    @popup.signup()
+    @popup.login()
+    @popup.forgot_password()
+    @popup.confirm()
+    @popup.feedback(state)
+    @popup.add_filter()
 
     <script>
         SW_PLACEHOLDER_URL = '@routes.Assets.at("/public", "images/placeholder.png")';

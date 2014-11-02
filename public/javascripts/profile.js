@@ -10,6 +10,30 @@ function setupProfileAutocomplete() {
     }
 }
 
+function handleAddIngredientToProfile() {
+    $('#add_ingredient_work_btn').on('click', function() {
+        var name = $('#add_ingredient_work').val();
+        var id = $('#add_ingredient_work').data('id');
+
+        var list = $(this).parent().parent().find('.preference_list');
+        list.append(profileListItemHTML(name, id));
+    });
+}
+
+function profileListItemHTML(name, id) {
+    var $li = $('<li/>');
+    $li.append($('<a/>', {
+        href: '/ingredient/' + id,
+        text: name
+    }));
+    $li.append($('<span/>', {
+        class: 'delete_preference',
+        title: 'Delete this ingredient'
+    }));
+
+    return $li;
+}
+
 $(document).on('ready', function() {
     $('.profile_add_input').on('focus', function() {
         $(this).next().show();
@@ -20,4 +44,5 @@ $(document).on('ready', function() {
     });
 
     setupProfileAutocomplete();
+    handleAddIngredientToProfile();
 });
