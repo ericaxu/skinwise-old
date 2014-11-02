@@ -105,7 +105,12 @@ class SearchEngine[T] {
         val distances = List.fill(matches.length)(0.0)
         matches.zip(distances)
       case None =>
-        Levenshtein.findMatches(queryWord, trie, 20)
+        val matches = Levenshtein.findMatches(queryWord, trie, 20)
+        matches.map {
+          // A small penalty is given to short words, because we'd rather have, for example,
+          // "Ascorbyl Palmitate Vitamin C" match to "Ascorbyl Palmitate" than "Vitamin C"
+          case (result, distance) => (result, distance + 0.3 / queryWord.length)
+        }
     }
   }
 
@@ -159,7 +164,7 @@ class SearchEngine[T] {
           scores(name) += scoreForPenalty
 
           // Give a higher score to smaller results, which should match the query more "tightly"
-          scores(name) += 0.1 / name.length
+          scores(name) += 0.3 / name.length
         }
       }
     }
