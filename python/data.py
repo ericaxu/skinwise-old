@@ -10,6 +10,7 @@ file_export_json = "data/export.json.txt"
 
 file_ingredients_specialchem_json = "data/ingredients.specialchem.json.txt"
 file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
+file_ingredients_inci_json = "data/ingredients.inci.json.txt"
 file_products_paula_json = "data/products.paula.json.txt"
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 file_ingredients_alias_additions_json = "data/ingredients.alias.additions.json.txt"
@@ -57,6 +58,15 @@ def import_data():
 				ingredient['alias'].sort()
 
 	del cosdna
+
+	# inci
+	inci = util.json_read(file_ingredients_inci_json, "{}")
+
+	if 'functions' in inci:
+		for key, functions in inci['functions'].items():
+			result['functions'][key] = functions
+
+	del inci
 
 	# paula
 	paula = util.json_read(file_products_paula_json, "{}")

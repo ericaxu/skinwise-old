@@ -16,6 +16,10 @@ def strip_newline(input):
 	"""strip all unicode newline characters"""
 	return regex_remove('[\u000A\u000B\u000C\u000D\u0085\u2028\u2029]', input).strip()
 
+def strip_array(input):
+	"""strip strings in array"""
+	return [x.strip() for x in input]
+
 def fix_space(input):
 	"""Fix multiple spaces"""
 	return regex_replace(r'\s+', " ", input)
