@@ -46723,10 +46723,10 @@
 			"width": 315
 		},
 		"proactiv proactiv complexion perfecting hydrator": {
-			"height": 562,
-			"source": "Yahoo",
-			"url": "http://image.cdn.ispot.tv/ad/7dR0/proactiv-featuring-adam-levine-large-8.jpg",
-			"width": 1000
+			"height": 0,
+			"source": "Correction",
+			"url": "http://www.allure.com/images/beauty-products/skin/2013/proactiv-complexion-perfecting-hydrator.jpg",
+			"width": 0
 		},
 		"proactiv proactiv daily oil control": {
 			"height": 500,
