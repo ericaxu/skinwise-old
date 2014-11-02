@@ -1,5 +1,9 @@
 #Filter Feedback
 
+##Ineffective type filter
+allyator95 says:
+>When searching for CeraVe products, CeraVe Moisturizing Cream is listed, but when I filter by moisturizers from CeraVe, this item disappears (along with the moisturizing lotion) (If these are not in fact moisturizers despite their name, my apologies for this feedback!)
+
 ##More filter types
 
 ####Filter by price
