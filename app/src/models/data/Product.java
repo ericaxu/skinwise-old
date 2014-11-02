@@ -11,6 +11,7 @@ import src.util.Util;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,8 @@ public class Product extends PopularNamedModel {
 	private String image;
 
 	private long price;
-	private String size;
+	private float size;
+	private String size_unit;
 
 	//Get/Set
 
@@ -57,8 +59,12 @@ public class Product extends PopularNamedModel {
 		return price;
 	}
 
-	public String getSize() {
+	public float getSize() {
 		return size;
+	}
+
+	public String getSize_unit() {
+		return size_unit;
 	}
 
 	public void setBrand_id(long brand_id) {
@@ -83,8 +89,12 @@ public class Product extends PopularNamedModel {
 		this.price = price;
 	}
 
-	public void setSize(String size) {
+	public void setSize(float size) {
 		this.size = size;
+	}
+
+	public void setSize_unit(String size_unit) {
+		this.size_unit = size_unit;
 	}
 
 	//Many-One Brand relations
@@ -158,14 +168,7 @@ public class Product extends PopularNamedModel {
 	//Others
 
 	public String getFormattedPrice() {
-		long price = getPrice();
-		long whole = price / 100;
-		long decimal = price - (whole * 100);
-		String result = String.format("$%d", whole);
-		if (decimal != 0) {
-			result += String.format(".%02d", decimal);
-		}
-		return result;
+		return Util.formatPrice(getPrice());
 	}
 
 	public String getBrandName() {

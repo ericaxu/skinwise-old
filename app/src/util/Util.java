@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,6 +60,41 @@ public class Util {
 		}
 		result.append(array.get(array.size() - 1));
 		return result.toString();
+	}
+
+	private static DecimalFormat priceFormatter = new DecimalFormat("#,###");
+
+	public static long parsePrice(String price) throws NumberFormatException {
+		//Strip dollar sign
+		if (price.startsWith("$")) {
+			price = price.substring(1);
+		}
+		//Remove commas
+		price = price.replace(",", "");
+
+		String decimal = "0";
+		//Has decimals
+		if (price.contains(".")) {
+			String[] pieces = price.split("\\.");
+			price = pieces[0];
+			decimal = pieces[1];
+		}
+		if (decimal.length() > 2) {
+			throw new NumberFormatException(decimal + " is not a valid decimal for currency");
+		}
+		long result = Long.parseLong(price) * 100;
+		result += Long.parseLong(decimal);
+		return result;
+	}
+
+	public static String formatPrice(long price) {
+		long whole = price / 100;
+		long decimal = price - (whole * 100);
+		String result = priceFormatter.format(whole);
+		if (decimal != 0) {
+			result += String.format(".%02d", decimal);
+		}
+		return "$" + result;
 	}
 
 	public static String goodKey(String input) {

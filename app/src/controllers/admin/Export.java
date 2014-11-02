@@ -102,7 +102,13 @@ public class Export {
 		result.description = object.getDescription();
 		result.image = object.getImage();
 		result.price = object.getFormattedPrice();
-		result.size = object.getSize();
+		String sizeUnit = object.getSize_unit();
+		if(sizeUnit != null && !sizeUnit.isEmpty()) {
+			result.size = object.getSize() + " " + sizeUnit;
+		}
+		else {
+			result.size = "";
+		}
 		List<String> key_ingredients = new ArrayList<>();
 		for (Alias ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());
