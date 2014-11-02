@@ -21,7 +21,7 @@ GET         /type/:id                            src.controllers.data.ProductTyp
 
 # Search
 # GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
-# GET         /api/search/:query                      src.controllers.IngredientSearch.fullSearch(query)
+GET         /api/search/:query                      src.controllers.data.DataController.search(query)
 POST        /api/autocomplete                    src.controllers.data.DataController.api_autocomplete()
 
 # Function API

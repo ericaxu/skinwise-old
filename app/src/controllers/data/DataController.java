@@ -126,4 +126,19 @@ public class DataController extends Controller {
 			return Api.write(new ErrorResponse(e));
 		}
 	}
+
+	public static Result search(String query) {
+		int numResults = 10;
+		MemCache cache = App.cache();
+		List<Alias> result = cache.alias.search(query, numResults, true);
+		String finalResults="";
+		if (result != null) {
+			for (NamedModel object : result) {
+				finalResults += " \n<br> "+object.getName();
+			}
+		}
+
+		return Controller.ok(finalResults);
+	}
+
 }
