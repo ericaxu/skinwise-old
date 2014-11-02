@@ -213,14 +213,6 @@ $(document).on('ready', function() {
 
     postToAPI('/function/all', {}, getFunctionsSuccess);
 
-    $('.profile_add_input').on('focus', function() {
-        $(this).next().show();
-    }).on('blur', function() {
-        if ($(this).val() === '') {
-            $(this).next().hide();
-        }
-    });
-
     $('.expand_subnav').on('mouseenter', function() {
         $('.sub_navbar').fadeIn(SW.CONFIG.SUBNAV_FADE_IN);
     }).on('mouseleave', function() {
