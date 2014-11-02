@@ -229,6 +229,7 @@ public class Import {
 
 		result.setName(object.name);
 		result.setCas_number(object.cas_no);
+		result.setActive(object.active);
 		result.setDescription(object.description);
 		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
@@ -268,6 +269,16 @@ public class Import {
 	private static void createProduct(DBFormat.ProductObject object, MemCache cache) {
 		List<Alias> ingredients = cache.matcher.matchAllAliases(object.ingredients);
 		List<Alias> key_ingredients = cache.matcher.matchAllAliases(object.key_ingredients);
+
+		Iterator<Alias> iterator = ingredients.iterator();
+		while (iterator.hasNext()) {
+			Alias alias = iterator.next();
+			Ingredient ingredient = alias.getIngredient();
+			if (ingredient != null && ingredient.isActive()) {
+				iterator.remove();
+				key_ingredients.add(alias);
+			}
+		}
 
 		Brand brand = cache.brands.get(object.brand);
 		ProductType type = cache.types.get(object.type);

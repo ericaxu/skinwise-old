@@ -621,6 +621,7 @@ public class MemCache {
 		}
 
 		public static List<String> splitIngredients(String ingredient_string) {
+			//ingredient_string = ingredient_string.replaceAll("\\s*(?i)May contains*:*\\s*", ",");
 			String[] ingredients = ingredient_string.split(",(?=[^\\)]*(?:\\(|$))");
 
 			List<String> result = new ArrayList<>();
@@ -651,7 +652,7 @@ public class MemCache {
 		}
 
 		public List<Alias> matchAllAliases(String input) {
-			List<Alias> matches = new ArrayList<>();
+			List<Alias> matches = new LinkedList<>();
 			Set<Alias> matchSet = new HashSet<>();
 			List<String> ingredients = splitIngredients(input);
 			for (String ingredient : ingredients) {

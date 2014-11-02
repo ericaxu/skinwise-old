@@ -30,6 +30,7 @@ public class DBFormat {
 		public String ec_no;
 		public String restriction;
 		public long popularity;
+		public boolean active;
 		public List<String> functions = new ArrayList<>();
 		public List<String> alias = new ArrayList<>();
 

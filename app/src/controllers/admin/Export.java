@@ -67,6 +67,7 @@ public class Export {
 		result.cas_no = object.getCas_number();
 		result.description = object.getDescription();
 		result.popularity = object.getPopularity();
+		result.active = object.isActive();
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}

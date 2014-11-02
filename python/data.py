@@ -118,7 +118,6 @@ def import_data():
 
 	active = util.json_read(file_ingredients_active_list_json, "{}")
 	for key in active:
-		key = key.lower()
 		if key in result['ingredients']:
 			result['ingredients'][key]['active'] = True
 		else:

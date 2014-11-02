@@ -5,5 +5,8 @@
 		"Eau": false,
 		"Aqua": false,
 		"water/aqua/eau": false
+	},
+	"retinal": {
+		"Vitamin A": true
 	}
 }

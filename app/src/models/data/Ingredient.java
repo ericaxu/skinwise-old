@@ -23,16 +23,26 @@ import java.util.Set;
 @Table(name = Ingredient.TABLENAME)
 public class Ingredient extends PopularNamedModel {
 
+	private boolean active;
+
 	@Column(length = 127)
 	private String cas_number;
 
 	//Getters
+
+	public boolean isActive() {
+		return active;
+	}
 
 	public String getCas_number() {
 		return cas_number;
 	}
 
 	//Setters
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public void setCas_number(String cas_number) {
 		this.cas_number = cas_number;
