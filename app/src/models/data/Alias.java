@@ -18,20 +18,18 @@ public class Alias extends NamedModel {
 	private long ingredient_id;
 	private transient LongHistory ingredient_id_tracker = new LongHistory();
 
-	//Getters
+	//Get/Set
 
 	public long getIngredient_id() {
 		return ingredient_id_tracker.getValue(ingredient_id);
 	}
-
-	//Setters
 
 	public void setIngredient_id(long ingredient_id) {
 		ingredient_id_tracker.setValue(this.ingredient_id, ingredient_id);
 		this.ingredient_id = ingredient_id;
 	}
 
-	//Ingredient relation
+	//Many-One Ingredient relation
 
 	public Ingredient getIngredient() {
 		return App.cache().ingredients.get(ingredient_id);
@@ -41,7 +39,7 @@ public class Alias extends NamedModel {
 		setIngredient_id(BaseModel.getIdIfExists(ingredient));
 	}
 
-	//Products relation
+	//Many-Many Products relation
 
 	public Set<ProductIngredient> getProductIngredient() {
 		return App.cache().product_ingredient.getByR(getId());
@@ -65,7 +63,9 @@ public class Alias extends NamedModel {
 	}
 
 	//Static
+
 	public static final String TABLENAME = "alias";
+
 	public static NamedFinder<Alias> find = new NamedFinder<>(Alias.class);
 
 	public static List<Alias> unmatched(Page page) {

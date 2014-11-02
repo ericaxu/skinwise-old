@@ -8,7 +8,6 @@ import src.models.util.ManyToMany;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Comparator;
-import java.util.List;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
@@ -19,7 +18,7 @@ public class ProductIngredient extends BaseModel implements ManyToMany {
 	private int item_order;
 	private boolean is_key;
 
-	//Getters
+	//Get/Set
 
 	public long getProduct_id() {
 		return product_id;
@@ -36,8 +35,6 @@ public class ProductIngredient extends BaseModel implements ManyToMany {
 	public int getItem_order() {
 		return item_order;
 	}
-
-	//Setters
 
 	public void setProduct_id(long product_id) {
 		this.product_id = product_id;
@@ -90,10 +87,6 @@ public class ProductIngredient extends BaseModel implements ManyToMany {
 	public static final String TABLENAME = "product_ingredient";
 
 	public static BaseFinder<ProductIngredient> find = new BaseFinder<>(ProductIngredient.class);
-
-	public static List<ProductIngredient> all() {
-		return find.all();
-	}
 
 	public static final Sorter sorter = new Sorter();
 

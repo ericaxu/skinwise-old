@@ -618,7 +618,7 @@ public class MemCache {
 
 	private static class ProductIngredientGetter implements ManyToManyGetter<ProductIngredient> {
 		public List<ProductIngredient> all() {
-			return ProductIngredient.all();
+			return ProductIngredient.find.all();
 		}
 	}
 

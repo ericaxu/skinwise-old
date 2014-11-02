@@ -63,6 +63,8 @@ public class DBFormat {
 		public String ingredients;
 		public String image;
 		public long popularity;
+		public String price;
+		public String size;
 
 		@Override
 		public void sanitize() {
@@ -72,6 +74,8 @@ public class DBFormat {
 			ingredients = Util.notNull(ingredients).trim();
 			key_ingredients = Util.notNull(key_ingredients).trim();
 			image = Util.notNull(image).trim();
+			price = Util.notNull(price).trim();
+			size = Util.notNull(size).trim();
 		}
 	}
 

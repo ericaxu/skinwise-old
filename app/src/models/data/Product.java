@@ -32,7 +32,10 @@ public class Product extends PopularNamedModel {
 	@Column(length = 1023)
 	private String image;
 
-	//Getters
+	private long price;
+	private String size;
+
+	//Get/Set
 
 	public long getBrand_id() {
 		return brand_id_tracker.getValue(brand_id);
@@ -50,7 +53,13 @@ public class Product extends PopularNamedModel {
 		return image;
 	}
 
-	//Setters
+	public long getPrice() {
+		return price;
+	}
+
+	public String getSize() {
+		return size;
+	}
 
 	public void setBrand_id(long brand_id) {
 		brand_id_tracker.setValue(this.brand_id, brand_id);
@@ -70,7 +79,15 @@ public class Product extends PopularNamedModel {
 		this.image = image;
 	}
 
-	//Brand relations
+	public void setPrice(long price) {
+		this.price = price;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	//Many-One Brand relations
 
 	public Brand getBrand() {
 		return App.cache().brands.get(brand_id);
@@ -80,7 +97,7 @@ public class Product extends PopularNamedModel {
 		setBrand_id(BaseModel.getIdIfExists(brand));
 	}
 
-	//ProductType relations
+	//Many-One ProductType relations
 
 	public ProductType getType() {
 		return App.cache().types.get(product_type_id);
@@ -90,7 +107,7 @@ public class Product extends PopularNamedModel {
 		setProduct_type_id(BaseModel.getIdIfExists(type));
 	}
 
-	//Aliases relations
+	//Many-Many Aliases relations
 
 	private transient List<Alias> ingredients_cache;
 	private transient List<Alias> ingredients_new;
@@ -139,6 +156,17 @@ public class Product extends PopularNamedModel {
 	}
 
 	//Others
+
+	public String getFormattedPrice() {
+		long price = getPrice();
+		long whole = price / 100;
+		long decimal = price - (whole * 100);
+		String result = String.format("$%d", whole);
+		if (decimal != 0) {
+			result += String.format(".%02d", decimal);
+		}
+		return result;
+	}
 
 	public String getBrandName() {
 		if (getBrand() == null) {
@@ -232,6 +260,7 @@ public class Product extends PopularNamedModel {
 	//Static
 
 	public static final String TABLENAME = "product";
+
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
 	public static List<Product> byFilter(long[] brands, long[] negBrands,

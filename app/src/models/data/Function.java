@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = Function.TABLENAME)
 public class Function extends NamedModel {
 
-	//Ingredients
+	//Many-Many Ingredients relation
 
 	public Set<IngredientFunction> getIngredientFunction() {
 		return App.cache().ingredient_function.getByR(getId());
@@ -26,6 +26,8 @@ public class Function extends NamedModel {
 	}
 
 	//Static
+
 	public static final String TABLENAME = "function";
+
 	public static NamedFinder<Function> find = new NamedFinder<>(Function.class);
 }

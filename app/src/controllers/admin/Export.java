@@ -101,6 +101,8 @@ public class Export {
 		result.type = object.getTypeName();
 		result.description = object.getDescription();
 		result.image = object.getImage();
+		result.price = object.getFormattedPrice();
+		result.size = object.getSize();
 		List<String> key_ingredients = new ArrayList<>();
 		for (Alias ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());

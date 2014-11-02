@@ -11,13 +11,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = ProductType.TABLENAME)
 public class ProductType extends NamedModel {
-	//Products relation
+	//One-Many Products relation
 
 	public TLongList getProducts() {
 		return App.cache().type_product.getMany(this.getId());
 	}
 
 	//Static
+
 	public static final String TABLENAME = "product_type";
+
 	public static NamedFinder<ProductType> find = new NamedFinder<>(ProductType.class);
 }

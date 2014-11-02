@@ -8,8 +8,10 @@ import src.models.util.LongHistory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = ProductProperty.TABLENAME)
 public class ProductProperty extends BaseModel {
 	@Index
 	private long product_id;
@@ -22,7 +24,7 @@ public class ProductProperty extends BaseModel {
 	@Column(length = 255)
 	private String value;
 
-	//Getters
+	//Get/Set
 
 	public long getProduct_id() {
 		return product_id_tracker.getValue(product_id);
@@ -35,8 +37,6 @@ public class ProductProperty extends BaseModel {
 	public String getValue() {
 		return value;
 	}
-
-	//Setters
 
 	public void setProduct_id(long product_id) {
 		product_id_tracker.setValue(this.product_id, product_id);
@@ -51,7 +51,7 @@ public class ProductProperty extends BaseModel {
 		this.value = value;
 	}
 
-	//Product relation
+	//Many-One Product relation
 
 	public Product getProduct() {
 		return App.cache().products.get(getProduct_id());
@@ -70,7 +70,9 @@ public class ProductProperty extends BaseModel {
 	}
 
 	//Static
-	public static final String TABLENAME = "alias";
+
+	public static final String TABLENAME = "product_property";
+
 	public static BaseFinder<ProductProperty> find = new BaseFinder<>(ProductProperty.class);
 
 	public ProductProperty byProductIdAndKey(long product_id, String key) {

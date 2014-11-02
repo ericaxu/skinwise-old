@@ -28,7 +28,7 @@ public class Ingredient extends PopularNamedModel {
 	@Column(length = 127)
 	private String cas_number;
 
-	//Getters
+	//Get/Set
 
 	public boolean isActive() {
 		return active;
@@ -38,8 +38,6 @@ public class Ingredient extends PopularNamedModel {
 		return cas_number;
 	}
 
-	//Setters
-
 	public void setActive(boolean active) {
 		this.active = active;
 	}
@@ -48,7 +46,7 @@ public class Ingredient extends PopularNamedModel {
 		this.cas_number = cas_number;
 	}
 
-	//Functions relation
+	//Many-Many Functions relation
 
 	private Set<IngredientFunction> getIngredient_functions() {
 		return App.cache().ingredient_function.getByL(getId());
@@ -73,14 +71,6 @@ public class Ingredient extends PopularNamedModel {
 		functions_new = function_ids;
 	}
 
-	//ALiases relation
-
-	public TLongList getAliases() {
-		return App.cache().ingredient_alias.getMany(this.getId());
-	}
-
-	//Others
-
 	public Set<Function> getFunctions() {
 		return App.cache().functions.getSet(getFunctionIds().toArray());
 	}
@@ -89,13 +79,13 @@ public class Ingredient extends PopularNamedModel {
 		setFunctionIds(App.cache().functions.getIdSet(input));
 	}
 
-	public List<String> getFunctionsString() {
-		List<String> result = new ArrayList<>();
-		for (Function function : getFunctions()) {
-			result.add(WordUtils.capitalizeFully(function.getName()));
-		}
-		return result;
+	//One-Many Aliases relation
+
+	public TLongList getAliases() {
+		return App.cache().ingredient_alias.getMany(this.getId());
 	}
+
+	//Others
 
 	public List<String> getAliasesString() {
 		List<String> result = new ArrayList<>();
