@@ -9,6 +9,7 @@ file_import_json = "data/import.json.txt"
 file_export_json = "data/export.json.txt"
 
 file_ingredients_specialchem_json = "data/ingredients.specialchem.json.txt"
+file_ingredients_active_list_json = "data/ingredients.active.list.json.txt"
 file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
 file_ingredients_inci_json = "data/ingredients.inci.json.txt"
 file_products_paula_json = "data/products.paula.json.txt"
@@ -111,6 +112,20 @@ def import_data():
 			ingredient['alias'].sort()
 	del aliases
 
+	# active ingredients
+	for key, ingredient in result['ingredients'].items():
+		ingredient['active'] = False
+
+	active = util.json_read(file_ingredients_active_list_json, "{}")
+	for key in active:
+		key = key.lower()
+		if key in result['ingredients']:
+			result['ingredients'][key]['active'] = True
+		else:
+			print (key)
+	del active
+
+	# discontinued
 	for key, product in result['products'].items():
 		if "Discontinued" in product['name']:
 			product['popularity'] = -1;
@@ -130,4 +145,3 @@ util.swap_files(file_data_tmp_json, file_data_json)
 parser.print_count(combined_data['ingredients'], 'Ingredients')
 parser.print_count(combined_data['functions'], 'Functions')
 parser.print_count(combined_data['products'], "Products")
-
