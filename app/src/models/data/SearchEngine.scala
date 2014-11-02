@@ -164,7 +164,7 @@ class SearchEngine[T] {
           scores(name) += scoreForPenalty
 
           // Give a higher score to smaller results, which should match the query more "tightly"
-          scores(name) += 0.3 / name.length
+          scores(name) += 0.1 / name.length
         }
       }
     }
