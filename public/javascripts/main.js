@@ -202,6 +202,16 @@ function handleEnterKey() {
     });
 }
 
+function getBrandsSuccess(response, callback) {
+    for (var i = 0; i < response.results.length; i++) {
+        var brand = response.results[i];
+        SW.BRANDS[brand.id] = {
+            name: brand.name
+        };
+    }
+    callback && callback();
+}
+
 $(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();

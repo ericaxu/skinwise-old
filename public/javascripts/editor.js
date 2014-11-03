@@ -42,17 +42,19 @@ function setupIngredientSearchCall() {
 
         postToAPI('/ingredient/byid', {
             id: ingredient_id
-        }, ingredientLoadSuccess, null, 'Looking up ingredient...');
+        }, function(response) {
+            ingredientLoadSuccess(response.results[0]);
+        }, null, 'Looking up ingredient...');
     });
 }
 
-function ingredientLoadSuccess(response) {
-    $('#edit_ingredient_id').val(response.id);
-    $('#edit_ingredient_name').val(response.name).data('original', response.name);
-    $('#edit_ingredient_cas_number').val(response.cas_number);
-    $('#edit_ingredient_popularity').val(response.popularity);
-    $('#edit_ingredient_description').val(response.description);
-    $('#edit_ingredient_functions').val(response.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
+function ingredientLoadSuccess(ingredient) {
+    $('#edit_ingredient_id').val(ingredient.id);
+    $('#edit_ingredient_name').val(ingredient.name).data('original', ingredient.name);
+    $('#edit_ingredient_cas_number').val(ingredient.cas_number);
+    $('#edit_ingredient_popularity').val(ingredient.popularity);
+    $('#edit_ingredient_description').val(ingredient.description);
+    $('#edit_ingredient_functions').val(ingredient.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
     $('#edit_ingredient').show();
 }
 
@@ -99,7 +101,9 @@ function setupProductSearchCall() {
 
         postToAPI('/product/byid', {
             id: product_id
-        }, productLoadSuccess, null, 'Looking up product...');
+        }, function(response) {
+            productLoadSuccess(response.results[0]);
+        }, null, 'Looking up product...');
     });
 }
 
@@ -115,21 +119,21 @@ function setupCreateProductCall() {
     });
 }
 
-function productLoadSuccess(response) {
-    var brand_name = SW.BRANDS[response.brand] || '';
+function productLoadSuccess(product) {
+    var brand_name = SW.BRANDS[product.brand].name || '';
 
     if (!brand_name) {
-        showError('Brand ID ' + response.brand + ' not found.');
+        showError('Brand ID ' + product.brand + ' not found.');
         return;
     }
 
-    $('#edit_product_id').val(response.id);
-    $('#edit_product_name').val(response.name).data('original', response.name);
-    $('#edit_product_brand').val(brand_name).data('id', response.brand);
-    $('#edit_product_line').val(response.line);
-    $('#edit_product_image').val(response.image);
-    $('#edit_product_popularity').val(response.popularity);
-    $('#edit_product_description').val(response.description);
+    $('#edit_product_id').val(product.id);
+    $('#edit_product_name').val(product.name).data('original', product.name);
+    $('#edit_product_brand').val(brand_name).data('id', product.brand);
+    $('#edit_product_line').val(product.line);
+    $('#edit_product_image').val(product.image);
+    $('#edit_product_popularity').val(product.popularity);
+    $('#edit_product_description').val(product.description);
     $('#edit_product').show();
 }
 
@@ -164,7 +168,9 @@ function setupFunctionSearchCall() {
 
         postToAPI('/function/byid', {
             id: function_id
-        }, functionLoadSuccess, null, 'Looking up function...');
+        }, function(response) {
+            functionLoadSuccess(response.results[0]);
+        }, null, 'Looking up function...');
     });
 }
 
@@ -180,8 +186,7 @@ function setupCreateFunctionCall() {
     });
 }
 
-function functionLoadSuccess(response) {
-    var function_obj = response.results[0];
+function functionLoadSuccess(function_obj) {
     $('#edit_function_id').val(function_obj.id);
     $('#edit_function_name').val(function_obj.name).data('original', function_obj.name);
     $('#edit_function_description').val(function_obj.description);
@@ -215,7 +220,9 @@ function setupBrandSearchCall() {
 
         postToAPI('/brand/byid', {
             id: brand_id
-        }, brandLoadSuccess, null, 'Looking up brand...');
+        }, function(response) {
+            brandLoadSuccess(response.results[0]);
+        }, null, 'Looking up brand...');
     });
 }
 
@@ -231,8 +238,7 @@ function setupCreateBrandCall() {
     });
 }
 
-function brandLoadSuccess(response) {
-    var brand = response.results[0];
+function brandLoadSuccess(brand) {
     $('#edit_brand_id').val(brand.id);
     $('#edit_brand_name').val(brand.name).data('original', brand.name);
     $('#edit_brand_brand').val(brand.brand);
@@ -271,7 +277,9 @@ function setupTypeSearchCall() {
 
         postToAPI('/producttype/byid', {
             id: type_id
-        }, typeLoadSuccess, null, 'Looking up type...');
+        }, function(response) {
+            typeLoadSuccess(response.results[0]);
+        }, null, 'Looking up type...');
     });
 }
 
@@ -287,8 +295,7 @@ function setupCreateTypeCall() {
     });
 }
 
-function typeLoadSuccess(response) {
-    var type = response.results[0];
+function typeLoadSuccess(type) {
     $('#edit_type_id').val(type.id);
     $('#edit_type_name').val(type.name).data('original', type.name);
     $('#edit_type_description').val(type.description);

@@ -162,16 +162,6 @@ function loadFilters() {
     }
 }
 
-function getBrandsSuccess(response) {
-    for (var i = 0; i < response.results.length; i++) {
-        var brand = response.results[i];
-        SW.BRANDS[brand.id] = {
-            name: brand.name
-        };
-    }
-    fetchNextPage();
-}
-
 function handleAddFilter() {
     var $add_filter = $('#add_filter');
 
@@ -293,7 +283,9 @@ function initBrowse() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
         loadFilters();
-        postToAPI('/brand/all', {}, getBrandsSuccess);
+        postToAPI('/brand/all', {}, function(response) {
+            getBrandsSuccess(response, fetchNextPage);
+        });
         handleAddFilter();
         handleBrowseScroll();
         setupAddFilterPopup();

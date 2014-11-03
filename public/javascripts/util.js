@@ -299,6 +299,7 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
 
     $selector.data('old_val', $selector.val());
 
+    // Update data id on any input change
     $selector.off('propertychange keyup input paste').on('propertychange keyup input paste', function() {
         if ($(this).data('old_val') !== $(this).val()) {
             // Updated stored value
@@ -318,6 +319,7 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
     });
 }
 
+// Show placeholder image if image is unavailable
 function checkImage($element, url) {
     $('<img/>').attr('src', url)
         .load(function() {
