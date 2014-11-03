@@ -141,46 +141,58 @@ function setupBackToTop() {
     });
 }
 
+function redirectToSelectedItem(provided_id) {
+    var $nav_search = $('#nav_searchbar');
+    var $search_select = $('#search_category_select');
+
+    if (provided_id !== undefined) {
+        var id = provided_id;
+    } else {
+        var id = $nav_search.data('id');
+    }
+    // Go to page if id is present
+    if (id !== undefined && id !== '') {
+        location.href = '/' + $search_select.val() + '/' + id;
+    }
+    // If autocomplete is showing results, use the first one
+    else if ($('.search_container .ui-autocomplete').is(':visible')) {
+        $('.search_container .ui-autocomplete .ui-menu-item:first-child').trigger('click');
+        id = $nav_search.data('id');
+        location.href = '/' + $search_select.val() + '/' + id;
+    }
+    // Last attempt: ask server if there's any match
+    else {
+        var query = $nav_search.val();
+        postToAPI('/autocomplete', {
+            type: $search_select.val(),
+            query: query
+        }, function(response) {
+            if (response.results.length > 0) {
+                var id = response.results[0].id;
+                location.href = '/' + $search_select.val() + '/' + id;
+            }
+        });
+    }
+}
+
 function setupNavSearchAutocomplete() {
     var $search_select = $('#search_category_select');
     var $nav_search = $('#nav_searchbar');
 
     $search_select.val(getLastSearchedCatgory());
 
-    enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
+    enableAutocomplete($search_select.val(), $nav_search, '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
+    $nav_search.on('autocompleteselect', function(event, ui) {
+        redirectToSelectedItem(ui.item.value);
+    });
 
     $search_select.on('change', function() {
         setLastSearchedCatgory($(this).val());
-        enableAutocomplete($search_select.val(), $('#nav_searchbar'), '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
-        $('#nav_searchbar').val('');
+        enableAutocomplete($search_select.val(), $nav_search, '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
+        $nav_search.val('');
     });
 
-    $('#nav_searchbar_btn').on('click', function() {
-        var id = $nav_search.data('id');
-        // Go to page if id is present
-        if (id !== undefined && id !== '') {
-            location.href = '/' + $search_select.val() + '/' + id;
-        }
-        // If autocomplete is showing results, use the first one
-        else if ($('.search_container .ui-autocomplete').is(':visible')) {
-            $('.search_container .ui-autocomplete .ui-menu-item:first-child').trigger('click');
-            id = $nav_search.data('id');
-            location.href = '/' + $search_select.val() + '/' + id;
-        }
-        // Last attempt: ask server if there's any match
-        else {
-            var query = $nav_search.val();
-            postToAPI('/autocomplete', {
-                type: $search_select.val(),
-                query: query
-            }, function(response) {
-                if (response.results.length > 0) {
-                    var id = response.results[0].id;
-                    location.href = '/' + $search_select.val() + '/' + id;
-                }
-            });
-        }
-    });
+    $('#nav_searchbar_btn').on('click', redirectToSelectedItem);
 
     // Open autocomplete menu when focus on input
     $nav_search.on('focus', function() {
