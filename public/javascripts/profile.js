@@ -1,5 +1,5 @@
 function preferenceListItemHTML(name, id) {
-    var $li = $('<li/>');
+    var $li = $('<li/>').data('id', id);
     $li.append($('<a/>', {
         href: '/ingredient/' + id,
         text: name
@@ -10,6 +10,16 @@ function preferenceListItemHTML(name, id) {
     }));
 
     return $li;
+}
+
+function getIdsInList($list) {
+    var ids = [];
+    log($list);
+    $list.find('li').each(function() {
+        ids.push($(this).data('id'));
+    });
+
+    return ids;
 }
 
 function loadPreferenceList(list) {
@@ -30,8 +40,16 @@ function loadPreferenceList(list) {
         if (name === '' || id === undefined) {
             return;
         }
-        $list.append(preferenceListItemHTML(name, id))
-        $add_ingredient_input.val('');
+
+        $list.append(preferenceListItemHTML(name, id));
+        postToAPI('/user/ingredient/set', {
+            key: list.id,
+            ids: getIdsInList($list)
+        }, function() {
+            $add_ingredient_input.val('');
+        }, function() {
+            showError('Failed to save your preferences. Please try again.');
+        });
     });
     var $no_result = addEl('div', $div, 'preference_not_found', 'No results found.');
     enableAutocomplete('ingredient', $add_ingredient_input, '.' + list.id + '_add', SW.AUTOCOMPLETE_LIMIT.ADD_FILTER, $no_result);
@@ -56,9 +74,6 @@ $(document).on('ready', function() {
             $(this).next().hide();
         }
     });
-
-    setupProfileAutocomplete();
-    handleAddIngredientToProfile();
 
     for (var i = 0; i < SW.PREFERENCES.INGREDIENT.length; i++) {
         var key = SW.PREFERENCES.INGREDIENT[i];

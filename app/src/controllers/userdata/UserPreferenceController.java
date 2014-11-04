@@ -11,6 +11,7 @@ import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.InfoResponse;
 import src.controllers.api.response.Response;
+import src.controllers.data.IngredientController;
 import src.controllers.util.ResponseState;
 import src.models.data.Ingredient;
 import src.models.data.Product;
@@ -44,7 +45,7 @@ public class UserPreferenceController extends Controller {
 
 	public static class ResponseGetList extends Response {
 		@NotNull
-		public List<Ingredient> results;
+		public List<IngredientController.ResponseIngredientObject> results;
 	}
 
 	private static class LongListFormat {
@@ -71,9 +72,8 @@ public class UserPreferenceController extends Controller {
 					request.key.equals(INGREDIENTS_NOT_WORKING) ||
 					request.key.equals(INGREDIENTS_BAD_REACTION)) {
 					set_list(state.getUser(), request.key, dbObject);
-				return Api.write(new InfoResponse("Ingredient list saved"));
+				return Api.write(new InfoResponse("Preference saved."));
 			} else {
-
 				return Api.write(new ErrorResponse(Response.INVALID, "Set list key " + request.key + " is not valid."));
 			}
 		}
@@ -97,11 +97,19 @@ public class UserPreferenceController extends Controller {
 				response.results = new ArrayList<>();
 				long[] ids = get_list(state.getUser(), request.key);
 				for (long id : ids) {
-					response.results.add(App.cache().ingredients.get(id));
+					Ingredient ingredient = App.cache().ingredients.get(id);
+					response.results.add(new IngredientController.ResponseIngredientObject(
+							id,
+							ingredient.getDisplayName(),
+							ingredient.getCas_number(),
+							ingredient.getDescription(),
+							ingredient.getFunctionIds().toArray(),
+							ingredient.getAliasesString(),
+							ingredient.getProducts().size()
+					));
 				}
 				return Api.write(response);
 			} else {
-
 				return Api.write(new ErrorResponse(Response.INVALID, "Get list key " + request.key + " is not valid."));
 			}
 		}
@@ -111,7 +119,6 @@ public class UserPreferenceController extends Controller {
 	}
 
 	private static long[] get_list(User user, String key) {
-
 		UserPreference result = UserPreference.byUserAndKey(user, key);
 
 		if (result != null) {
