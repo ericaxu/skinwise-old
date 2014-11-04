@@ -165,6 +165,12 @@ public class Product extends PopularNamedModel {
 		this.key_ingredients_new = key_ingredients;
 	}
 
+	//One-Many ProductProperty relation
+
+	public TLongList getProductProperties() {
+		return App.cache().product_product_properties.getMany(this.getId());
+	}
+
 	//Others
 
 	public String getFormattedPrice() {
