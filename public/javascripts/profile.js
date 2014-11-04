@@ -1,14 +1,19 @@
-function preferenceListItemHTML(name, id) {
+function preferenceListItemHTML(name, id, list_key) {
     var $li = $('<li/>').data('id', id);
-    $li.append($('<a/>', {
-        href: '/ingredient/' + id,
-        text: name
-    }));
-    $li.append($('<span/>', {
-        class: 'delete_preference',
-        title: 'Delete this ingredient'
-    }));
+    addEl('a', $li, 'preference_list_tem', name, { href: '/ingredient/' + id });
+    $li.append(' (');
+    addEl('a', $li, 'delete_preference', 'remove', { href: '#' }).on('click', function(e) {
+        e.preventDefault();
 
+        $li.remove();
+        postToAPI('/user/ingredient/set', {
+            key: list_key,
+            ids: getIdsInList($('#' + list_key + '_section').find('.preference_list'))
+        }, null, function() {
+            showError('Failed to save your preferences. Please try again.');
+        });
+    });
+    $li.append(')');
     return $li;
 }
 
@@ -27,7 +32,7 @@ function loadPreferenceList(list) {
     var $list = addEl('ul', $div, 'preference_list');
     for (var i = 0; i < list.items.length; i++) {
         var item = list.items[i];
-        $list.append(preferenceListItemHTML(item.name, item.id));
+        $list.append(preferenceListItemHTML(item.name, item.id, list.id));
     }
     var $add_ingredient = addEl('div', $div, 'field ' + list.id + '_add');
     addEl('label', $add_ingredient, '', 'Add another: ');
@@ -41,7 +46,7 @@ function loadPreferenceList(list) {
             return;
         }
 
-        $list.append(preferenceListItemHTML(name, id));
+        $list.append(preferenceListItemHTML(name, id, list.id));
         postToAPI('/user/ingredient/set', {
             key: list.id,
             ids: getIdsInList($list)
