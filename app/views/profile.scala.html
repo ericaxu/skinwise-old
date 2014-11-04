@@ -71,62 +71,19 @@
     </div>
 
     <div class="column">
-        <div class="section">
+        <div id="user_preference_ingredient_lists" class="section">
             <h2>Skin preferences</h2>
 
-            <div class="subsection">
-                <h3>Ingredients that work:</h3>
-                <div class="field">
-                    <ul class="preference_list">
-                        <li>Aqua<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>BP<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>Mandelic Acid<span title="Delete this ingredient" class="delete_preference"></span></li>
-                    </ul>
-                    <input type="button" value="Edit list"/>
-                </div>
-                <div class="field" id="add_ingredient_work_container">
-                    <label for="add_ingredient_work">Add another one: </label>
-                    <input class="profile_add_input" id="add_ingredient_work" type="text"/>
-                    <input class="profile_add_btn" id="add_ingredient_work_btn" type="button" value="Add"/>
-                    <div id="add_ingredient_work_not_found" class="no_results_found profile_not_found">No results found.</div>
-                </div>
+            <div id="ingredient_working_section" class="subsection">
+                <h3>Ingredients that work</h3>
             </div>
 
-            <div class="subsection">
-                <h3>Ingredients that don't work:</h3>
-                <div class="field">
-                    <ul class="preference_list">
-                        <li>Aqua<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>BP<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>Mandelic Acid<span title="Delete this ingredient" class="delete_preference"></span></li>
-                    </ul>
-                    <input type="button" value="Edit list"/>
-                </div>
-
-                <div class="field" id="add_ingredient_doesnt_work_container">
-                    <label for="add_ingredient_doesnt_work">Add another one: </label>
-                    <input class="profile_add_input" id="add_ingredient_doesnt_work" type="text"/>
-                    <input class="profile_add_btn" type="button" value="Add"/>
-                    <div id="add_ingredient_doesnt_work_not_found" class="no_results_found profile_not_found">No results found.</div>
-                </div>
+            <div id="ingredient_not_working_section" class="subsection">
+                <h3>Ingredients that don't work</h3>
             </div>
 
-            <div class="subsection">
-                <h3>Ingredients that you react badly to:</h3>
-                <div class="field">
-                    <ul class="preference_list">
-                        <li>Aqua<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>Lemon Juice<span title="Delete this ingredient" class="delete_preference"></span></li>
-                        <li>Mandelic Acid<span title="Delete this ingredient" class="delete_preference"></span></li>
-                    </ul>
-                    <input type="button" value="Edit list"/>
-                </div>
-                <div class="field" id="add_ingredient_bad_reaction_container">
-                    <label for="add_ingredient_bad_reaction">Add another one: </label>
-                    <input class="profile_add_input" id="add_ingredient_bad_reaction" type="text"/>
-                    <input class="profile_add_btn" type="button" value="Add"/>
-                    <div id="add_ingredient_bad_reaction_not_found" class="no_results_found profile_not_found">No results found.</div>
-                </div>
+            <div id="ingredient_bad_reaction_section" class="subsection">
+                <h3>Ingredients that you react badly to</h3>
             </div>
         </div>
 

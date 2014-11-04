@@ -20,6 +20,8 @@ import src.util.Json;
 import src.util.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserPreferenceController extends Controller {
 	private static final String TAG = "UserPreferenceController";
@@ -42,7 +44,7 @@ public class UserPreferenceController extends Controller {
 
 	public static class ResponseGetList extends Response {
 		@NotNull
-		public long[] ids;
+		public List<Ingredient> results;
 	}
 
 	private static class LongListFormat {
@@ -92,7 +94,11 @@ public class UserPreferenceController extends Controller {
 			if (request.key.equals(INGREDIENTS_WORKING) ||
 					request.key.equals(INGREDIENTS_NOT_WORKING) ||
 					request.key.equals(INGREDIENTS_BAD_REACTION)) {
-				response.ids = get_list(state.getUser(), request.key);
+				response.results = new ArrayList<>();
+				long[] ids = get_list(state.getUser(), request.key);
+				for (long id : ids) {
+					response.results.add(App.cache().ingredients.get(id));
+				}
 				return Api.write(response);
 			} else {
 
