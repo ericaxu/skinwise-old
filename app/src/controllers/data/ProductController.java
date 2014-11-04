@@ -12,6 +12,7 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
+import src.models.MemCache;
 import src.models.data.*;
 import src.models.util.Page;
 import views.html.product;
@@ -72,6 +73,22 @@ public class ProductController extends Controller {
 			this.name = name;
 			this.description = description;
 			this.image = image;
+		}
+	}
+
+	public static class ResponseProductPropertyObject {
+		public long id;
+		public long product_id;
+		public String key;
+		public String text_value;
+		public double number_value;
+
+		public ResponseProductPropertyObject(long id, long product_id, String key, String text_value, double number_value) {
+			this.id = id;
+			this.product_id = product_id;
+			this.key = key;
+			this.text_value = text_value;
+			this.number_value = number_value;
 		}
 	}
 
@@ -204,6 +221,38 @@ public class ProductController extends Controller {
 			}
 
 			Response response = new ResponseProductIngredientInfo(results);
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_product_properties() {
+		try {
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			MemCache cache = App.cache();
+
+			Product result = cache.products.get(request.id);
+			Api.checkNotNull(result, "Product", request.id);
+
+			List<ProductProperty> properties = cache.product_properties.getList(
+					result.getProductProperties().toArray());
+
+			Api.ResponseResultList response = new Api.ResponseResultList();
+
+			for (ProductProperty property : properties) {
+				response.results.add(new ResponseProductPropertyObject(
+						property.getId(),
+						property.getProduct_id(),
+						property.getKey(),
+						property.getText_value(),
+						property.getNumber_value()
+				));
+			}
 
 			return Api.write(response);
 		}

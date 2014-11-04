@@ -22,7 +22,9 @@ public class ProductProperty extends BaseModel {
 	private String key;
 
 	@Column(length = 255)
-	private String value;
+	private String text_value;
+
+	private double number_value;
 
 	//Get/Set
 
@@ -34,8 +36,12 @@ public class ProductProperty extends BaseModel {
 		return key;
 	}
 
-	public String getValue() {
-		return value;
+	public String getText_value() {
+		return text_value;
+	}
+
+	public double getNumber_value() {
+		return number_value;
 	}
 
 	public void setProduct_id(long product_id) {
@@ -47,8 +53,12 @@ public class ProductProperty extends BaseModel {
 		this.key = key;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setText_value(String text_value) {
+		this.text_value = text_value;
+	}
+
+	public void setNumber_value(double number_value) {
+		this.number_value = number_value;
 	}
 
 	//Many-One Product relation
@@ -74,10 +84,4 @@ public class ProductProperty extends BaseModel {
 	public static final String TABLENAME = "product_property";
 
 	public static BaseFinder<ProductProperty> find = new BaseFinder<>(ProductProperty.class);
-
-	public ProductProperty byProductIdAndKey(long product_id, String key) {
-		return App.cache().product_properties.get(
-				find.where().eq("product_id", product_id).eq("key", key).findUnique()
-		);
-	}
 }

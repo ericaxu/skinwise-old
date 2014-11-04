@@ -20,8 +20,8 @@ GET         /function/:id                        src.controllers.data.FunctionCo
 GET         /type/:id                            src.controllers.data.ProductTypeController.product_type(id: Long)
 
 # Search
-# GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
-GET         /api/search/:query                      src.controllers.data.DataController.search(query)
+# GET         /api/quicksearch/:query              src.controllers.IngredientSearch.partialSearch(query)
+GET         /api/search/:query                   src.controllers.data.DataController.search(query)
 POST        /api/autocomplete                    src.controllers.data.DataController.api_autocomplete()
 
 # Function API
@@ -48,9 +48,10 @@ POST        /api/producttype/all                 src.controllers.data.ProductTyp
 POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()
 POST        /api/product/filter                  src.controllers.data.ProductController.api_product_filter()
 POST        /api/product/ingredientinfo          src.controllers.data.ProductController.api_ingredient_info()
+POST        /api/product/properties              src.controllers.data.ProductController.api_product_properties()
 
 # User API
-#POST        /api/user/signup                        src.controllers.UserController.api_signup()
+#POST        /api/user/signup                     src.controllers.UserController.api_signup()
 POST        /api/user/login                      src.controllers.UserController.api_login()
 POST        /api/user/logout                     src.controllers.UserController.api_logout()
 
