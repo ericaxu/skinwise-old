@@ -131,10 +131,10 @@ public class DataController extends Controller {
 		int numResults = 10;
 		MemCache cache = App.cache();
 		List<Alias> result = cache.alias.search(query, numResults, true);
-		String finalResults="";
+		String finalResults = "";
 		if (result != null) {
 			for (NamedModel object : result) {
-				finalResults += " \n<br> "+object.getName();
+				finalResults += " \n<br> " + object.getName();
 			}
 		}
 

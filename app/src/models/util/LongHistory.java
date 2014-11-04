@@ -2,8 +2,6 @@ package src.models.util;
 
 import src.models.MemCache;
 
-import javax.persistence.Embeddable;
-
 public class LongHistory {
 	private static final String TAG = "LinkedLongValue";
 

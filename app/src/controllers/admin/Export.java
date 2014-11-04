@@ -103,7 +103,7 @@ public class Export {
 		result.image = object.getImage();
 		result.price = object.getFormattedPrice();
 		String sizeUnit = object.getSize_unit();
-		if(sizeUnit != null && !sizeUnit.isEmpty()) {
+		if (sizeUnit != null && !sizeUnit.isEmpty()) {
 			result.size = object.getSize() + " " + sizeUnit;
 		}
 		else {

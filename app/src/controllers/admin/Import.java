@@ -296,7 +296,7 @@ public class Import {
 		result.setDescription(object.description);
 		result.setImage(object.image);
 		result.setPrice(parsePrice(object.price));
-		if(!object.size.isEmpty() && object.size.contains(" ")) {
+		if (!object.size.isEmpty() && object.size.contains(" ")) {
 			String[] pieces = object.size.split(" ");
 			String sizeString = pieces[0];
 			String unit = object.size.substring(sizeString.length() + 1);
