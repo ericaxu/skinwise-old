@@ -3,102 +3,104 @@
 # ~~~~
 
 # Static pages
-GET         /                                    src.controllers.HtmlController.index()
-GET         /products                            src.controllers.HtmlController.products()
-GET         /ingredients                         src.controllers.HtmlController.ingredients()
-GET         /profile                             src.controllers.HtmlController.profile()
-GET         /routine                             src.controllers.HtmlController.routine()
-GET         /about                               src.controllers.HtmlController.about()
-GET         /team                                src.controllers.HtmlController.team()
-GET         /favicon.ico                         controllers.Assets.at(path="/public/images/", file="favicon.ico")
+GET         /                                        src.controllers.HtmlController.index()
+GET         /products                                src.controllers.HtmlController.products()
+GET         /ingredients                             src.controllers.HtmlController.ingredients()
+GET         /profile                                 src.controllers.HtmlController.profile()
+GET         /routine                                 src.controllers.HtmlController.routine()
+GET         /about                                   src.controllers.HtmlController.about()
+GET         /team                                    src.controllers.HtmlController.team()
+GET         /favicon.ico                             controllers.Assets.at(path="/public/images/", file="favicon.ico")
 
 # Dynamic pages
-GET         /ingredient/:id                      src.controllers.data.IngredientController.ingredient(id : Long)
-GET         /product/:id                         src.controllers.data.ProductController.product(id : Long)
-GET         /brand/:id                           src.controllers.data.BrandController.brand(id: Long)
-GET         /function/:id                        src.controllers.data.FunctionController.function(id: Long)
-GET         /type/:id                            src.controllers.data.ProductTypeController.product_type(id: Long)
+GET         /ingredient/:id                          src.controllers.data.IngredientController.ingredient(id : Long)
+GET         /product/:id                             src.controllers.data.ProductController.product(id : Long)
+GET         /brand/:id                               src.controllers.data.BrandController.brand(id: Long)
+GET         /function/:id                            src.controllers.data.FunctionController.function(id: Long)
+GET         /type/:id                                src.controllers.data.ProductTypeController.product_type(id: Long)
 
 # Search
 # GET         /api/quicksearch/:query              src.controllers.IngredientSearch.partialSearch(query)
-GET         /api/search/:query                   src.controllers.data.DataController.search(query)
-POST        /api/autocomplete                    src.controllers.data.DataController.api_autocomplete()
+GET         /api/search/:query                       src.controllers.data.DataController.search(query)
+POST        /api/autocomplete                        src.controllers.data.DataController.api_autocomplete()
 
 # Function API
-POST        /api/function/byid                   src.controllers.data.FunctionController.api_function_byid()
-POST        /api/function/all                    src.controllers.data.FunctionController.api_function_all()
+POST        /api/function/byid                       src.controllers.data.FunctionController.api_function_byid()
+POST        /api/function/all                        src.controllers.data.FunctionController.api_function_all()
 
 # Ingredient API
-POST        /api/ingredient/byid                 src.controllers.data.IngredientController.api_ingredient_byid()
-POST        /api/ingredient/filter               src.controllers.data.IngredientController.api_ingredient_filter()
+POST        /api/ingredient/byid                     src.controllers.data.IngredientController.api_ingredient_byid()
+POST        /api/ingredient/filter                   src.controllers.data.IngredientController.api_ingredient_filter()
 
 # Alias API
-POST        /api/alias/byid                      src.controllers.data.IngredientController.api_alias_byid()
-POST        /api/alias/unmatched                 src.controllers.data.IngredientController.api_alias_unmatched()
+POST        /api/alias/byid                          src.controllers.data.IngredientController.api_alias_byid()
+POST        /api/alias/unmatched                     src.controllers.data.IngredientController.api_alias_unmatched()
 
 # Brand API
-POST        /api/brand/byid                      src.controllers.data.BrandController.api_brand_byid()
-POST        /api/brand/all                       src.controllers.data.BrandController.api_brand_all()
+POST        /api/brand/byid                          src.controllers.data.BrandController.api_brand_byid()
+POST        /api/brand/all                           src.controllers.data.BrandController.api_brand_all()
 
 # Product Type API
-POST        /api/producttype/byid                src.controllers.data.ProductTypeController.api_product_type_byid()
-POST        /api/producttype/all                 src.controllers.data.ProductTypeController.api_product_type_all()
+POST        /api/producttype/byid                    src.controllers.data.ProductTypeController.api_product_type_byid()
+POST        /api/producttype/all                     src.controllers.data.ProductTypeController.api_product_type_all()
 
 # Product API
-POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()
-POST        /api/product/filter                  src.controllers.data.ProductController.api_product_filter()
-POST        /api/product/ingredientinfo          src.controllers.data.ProductController.api_ingredient_info()
-POST        /api/product/properties              src.controllers.data.ProductController.api_product_properties()
+POST        /api/product/byid                        src.controllers.data.ProductController.api_product_byid()
+POST        /api/product/filter                      src.controllers.data.ProductController.api_product_filter()
+POST        /api/product/ingredientinfo              src.controllers.data.ProductController.api_ingredient_info()
+POST        /api/product/properties                  src.controllers.data.ProductController.api_product_properties()
 
 # User API
 #POST        /api/user/signup                     src.controllers.UserController.api_signup()
-POST        /api/user/login                      src.controllers.UserController.api_login()
-POST        /api/user/logout                     src.controllers.UserController.api_logout()
+POST        /api/user/login                          src.controllers.UserController.api_login()
+POST        /api/user/logout                         src.controllers.UserController.api_logout()
 
-POST        /api/user/ingredient/get             src.controllers.userdata.UserPreferenceController.api_pref_get_ingredients()
-POST        /api/user/ingredient/set             src.controllers.userdata.UserPreferenceController.api_pref_set_ingredients()
-POST        /api/user/product/get                src.controllers.userdata.UserPreferenceController.api_pref_get_products()
-POST        /api/user/product/set                src.controllers.userdata.UserPreferenceController.api_pref_set_products()
-POST        /api/user/routine/get                src.controllers.userdata.RoutineController.api_routine_byuser()
-POST        /api/user/routine/update             src.controllers.userdata.RoutineController.api_routine_update()
-POST        /api/user/routine/remove             src.controllers.userdata.RoutineController.api_routine_delete()
+POST        /api/user/ingredient/get                 src.controllers.userdata.UserPreferenceController.api_pref_get_ingredients()
+POST        /api/user/ingredient/set                 src.controllers.userdata.UserPreferenceController.api_pref_set_ingredients()
+POST        /api/user/product/get                    src.controllers.userdata.UserPreferenceController.api_pref_get_products()
+POST        /api/user/product/set                    src.controllers.userdata.UserPreferenceController.api_pref_set_products()
+POST        /api/user/routine/get                    src.controllers.userdata.RoutineController.api_routine_byuser()
+POST        /api/user/routine/update                 src.controllers.userdata.RoutineController.api_routine_update()
+POST        /api/user/routine/remove                 src.controllers.userdata.RoutineController.api_routine_delete()
 
 # Feedback
-POST        /api/feedback/report                 src.controllers.feedback.ReportController.api_report_create()
-POST        /api/feedback/analytics              src.controllers.feedback.AnalyticsController.api_analytics()
+POST        /api/feedback/report                     src.controllers.feedback.ReportController.api_report_create()
+POST        /api/feedback/analytics                  src.controllers.feedback.AnalyticsController.api_analytics()
 
 # Admin console
-GET         /admin                               src.controllers.admin.AdminController.home()
-GET         /editor                              src.controllers.admin.AdminController.editor()
-POST        /api/admin/import                    src.controllers.admin.AdminController.api_import_db()
-POST        /api/admin/export                    src.controllers.admin.AdminController.api_export_db()
+GET         /admin                                   src.controllers.admin.AdminController.home()
+GET         /editor                                  src.controllers.admin.AdminController.editor()
+POST        /api/admin/import                        src.controllers.admin.AdminController.api_import_db()
+POST        /api/admin/export                        src.controllers.admin.AdminController.api_export_db()
 
-POST        /api/admin/user/byid                 src.controllers.admin.AdminUserController.api_user_by_id()
-POST        /api/admin/user/byemail              src.controllers.admin.AdminUserController.api_user_by_email()
-POST        /api/admin/user/update               src.controllers.admin.AdminUserController.api_user_update()
-POST        /api/admin/user/setpass              src.controllers.admin.AdminUserController.api_user_set_password()
-POST        /api/admin/user/delete               src.controllers.admin.AdminUserController.api_user_delete()
+POST        /api/admin/user/byid                     src.controllers.admin.AdminUserController.api_user_by_id()
+POST        /api/admin/user/byemail                  src.controllers.admin.AdminUserController.api_user_by_email()
+POST        /api/admin/user/update                   src.controllers.admin.AdminUserController.api_user_update()
+POST        /api/admin/user/setpass                  src.controllers.admin.AdminUserController.api_user_set_password()
+POST        /api/admin/user/delete                   src.controllers.admin.AdminUserController.api_user_delete()
 
-POST        /api/admin/group/byid                src.controllers.admin.AdminUserController.api_group_by_id()
-POST        /api/admin/group/byname              src.controllers.admin.AdminUserController.api_group_by_name()
-POST        /api/admin/group/update              src.controllers.admin.AdminUserController.api_group_update()
-POST        /api/admin/group/delete              src.controllers.admin.AdminUserController.api_group_delete()
+POST        /api/admin/group/byid                    src.controllers.admin.AdminUserController.api_group_by_id()
+POST        /api/admin/group/byname                  src.controllers.admin.AdminUserController.api_group_by_name()
+POST        /api/admin/group/update                  src.controllers.admin.AdminUserController.api_group_update()
+POST        /api/admin/group/delete                  src.controllers.admin.AdminUserController.api_group_delete()
 
-POST        /api/admin/function/update           src.controllers.admin.AdminIngredientController.api_function_update()
-POST        /api/admin/ingredient/update         src.controllers.admin.AdminIngredientController.api_ingredient_update()
-POST        /api/admin/alias/update              src.controllers.admin.AdminIngredientController.api_alias_update()
+POST        /api/admin/function/update               src.controllers.admin.AdminIngredientController.api_function_update()
+POST        /api/admin/ingredient/update             src.controllers.admin.AdminIngredientController.api_ingredient_update()
+POST        /api/admin/alias/update                  src.controllers.admin.AdminIngredientController.api_alias_update()
 
-POST        /api/admin/brand/update              src.controllers.admin.AdminProductController.api_brand_update()
-POST        /api/admin/producttype/update        src.controllers.admin.AdminProductController.api_type_update()
-POST        /api/admin/product/update            src.controllers.admin.AdminProductController.api_product_update()
+POST        /api/admin/brand/update                  src.controllers.admin.AdminProductController.api_brand_update()
+POST        /api/admin/producttype/update            src.controllers.admin.AdminProductController.api_type_update()
+POST        /api/admin/product/update                src.controllers.admin.AdminProductController.api_product_update()
+POST        /api/admin/productproperty/update        src.controllers.admin.AdminProductController.api_product_property_update()
+POST        /api/admin/productproperty/delete        src.controllers.admin.AdminProductController.api_product_property_delete()
 
-POST        /api/admin/report/byid               src.controllers.admin.AdminReportController.api_report_byid()
-POST        /api/admin/report/list               src.controllers.admin.AdminReportController.api_report_list()
-POST        /api/admin/report/resolve            src.controllers.admin.AdminReportController.api_report_resolve()
+POST        /api/admin/report/byid                   src.controllers.admin.AdminReportController.api_report_byid()
+POST        /api/admin/report/list                   src.controllers.admin.AdminReportController.api_report_list()
+POST        /api/admin/report/resolve                src.controllers.admin.AdminReportController.api_report_resolve()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                        controllers.Assets.at(path="/public", file)
+GET         /assets/*file                            controllers.Assets.at(path="/public", file)
 
 # Not found
-POST        /api/*route                          src.controllers.ErrorController.api_notfound(route)
-GET         /*route                              src.controllers.ErrorController.notfound(route)
+POST        /api/*route                              src.controllers.ErrorController.api_notfound(route)
+GET         /*route                                  src.controllers.ErrorController.notfound(route)

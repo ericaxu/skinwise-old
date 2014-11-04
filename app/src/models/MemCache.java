@@ -122,6 +122,16 @@ public class MemCache {
 			}
 		}
 
+		public void remove(T object) {
+			lock.writeLock().lock();
+			try {
+				_remove(object);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
 		//Internals
 
 		private T _get(long id) {
@@ -142,6 +152,11 @@ public class MemCache {
 		private void _update(T object) {
 			index.put(object.getId(), object);
 			all.add(object);
+		}
+
+		private void _remove(T object) {
+			index.remove(object.getId());
+			all.remove(object);
 		}
 	}
 
@@ -215,6 +230,20 @@ public class MemCache {
 				super.update(object);
 				index.put(key, object);
 				search.update(key);
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		@Override
+		public void remove(T object) {
+			String key = _key(object);
+			lock.writeLock().lock();
+			try {
+				super.remove(object);
+				index.remove(key);
+				search.reset();
 			}
 			finally {
 				lock.writeLock().unlock();
@@ -307,6 +336,22 @@ public class MemCache {
 				Map<String, Product> map = _getMap(object.getBrand_id());
 				if (map != null) {
 					map.put(key, object);
+				}
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		}
+
+		@Override
+		public void remove(Product object) {
+			String key = super._key(object.getName());
+			lock.writeLock().lock();
+			try {
+				super.remove(object);
+				Map<String, Product> map = _getMap(object.getBrand_id());
+				if (map != null) {
+					map.remove(key);
 				}
 			}
 			finally {

@@ -16,6 +16,7 @@ import src.controllers.util.ResponseState;
 import src.models.MemCache;
 import src.models.data.Brand;
 import src.models.data.Product;
+import src.models.data.ProductProperty;
 import src.models.data.ProductType;
 import src.models.user.Permissible;
 import src.models.util.BaseModel;
@@ -39,6 +40,15 @@ public class AdminProductController extends Controller {
 		//		public String ingredients;
 		//		@NotNull
 		//		public String key_ingredients;
+	}
+
+	public static class RequestProductPropertyUpdate extends Request {
+		public long id;
+		public long product_id;
+		@NotEmpty
+		public String key;
+		public String text_value;
+		public double number_value;
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
@@ -172,6 +182,73 @@ public class AdminProductController extends Controller {
 			}
 
 			return Api.write(new InfoResponse("Product type " + result.getName() + " updated"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_product_property_update() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.PRODUCT.EDIT);
+
+			RequestProductPropertyUpdate request = Api.read(ctx(), RequestProductPropertyUpdate.class);
+
+			MemCache cache = App.cache();
+
+			Product product = cache.products.get(request.product_id);
+			Api.checkNotNull(product, "Product", request.product_id);
+
+			ProductProperty result;
+			if (request.id == BaseModel.NEW_ID) {
+				result = new ProductProperty();
+			}
+			else {
+				result = cache.product_properties.get(request.id);
+				Api.checkNotNull(result, "Product Property", request.id);
+			}
+
+			synchronized (result) {
+				result.setKey(request.key);
+				result.setProduct_id(request.product_id);
+				result.setText_value(request.text_value);
+				result.setNumber_value(request.number_value);
+				result.save();
+
+				cache.product_properties.update(result);
+			}
+
+			return Api.write(new InfoResponse("Product Property updated"));
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_product_property_delete() {
+		ResponseState state = new ResponseState(session());
+
+		try {
+			state.requirePermission(Permissible.PRODUCT.EDIT);
+
+			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
+
+			MemCache cache = App.cache();
+
+			ProductProperty result = cache.product_properties.get(request.id);
+			Api.checkNotNull(result, "Product Property", request.id);
+
+			synchronized (result) {
+				result.delete();
+
+				cache.product_properties.remove(result);
+			}
+
+			return Api.write(new InfoResponse("Product Property updated"));
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
