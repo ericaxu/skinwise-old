@@ -5,6 +5,7 @@ import play.mvc.Result;
 import src.App;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
+import src.controllers.api.request.NotEmpty;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.request.Request;
 import src.controllers.api.response.ErrorResponse;
@@ -22,15 +23,25 @@ import java.io.IOException;
 
 public class UserPreferenceController extends Controller {
 	private static final String TAG = "UserPreferenceController";
-	private static final String INGREDIENTS = "ingredients";
-	private static final String PRODUCTS = "products";
+	private static final String INGREDIENTS_WORKING = "ingredient_working";
+	private static final String INGREDIENTS_NOT_WORKING = "ingredient_not_working";
+	private static final String INGREDIENTS_BAD_REACTION = "ingredient_bad_reaction";
+
 
 	public static class RequestSetList extends Request {
+		@NotEmpty
+		public String key;
 		@NotNull
 		public long[] ids;
 	}
 
-	public static class ResposeGetList extends Response {
+	public static class RequestGetList extends Request {
+		@NotEmpty
+		public String key;
+	}
+
+	public static class ResponseGetList extends Response {
+		@NotNull
 		public long[] ids;
 	}
 
@@ -54,9 +65,15 @@ public class UserPreferenceController extends Controller {
 			LongListFormat dbObject = new LongListFormat();
 			dbObject.ids = request.ids;
 
-			set_list(state.getUser(), INGREDIENTS, dbObject);
+			if (request.key.equals(INGREDIENTS_WORKING) ||
+					request.key.equals(INGREDIENTS_NOT_WORKING) ||
+					request.key.equals(INGREDIENTS_BAD_REACTION)) {
+					set_list(state.getUser(), request.key, dbObject);
+				return Api.write(new InfoResponse("Ingredient list saved"));
+			} else {
 
-			return Api.write(new InfoResponse("Ingredient list saved"));
+				return Api.write(new ErrorResponse(Response.INVALID, "Set list key " + request.key + " is not valid."));
+			}
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
@@ -69,49 +86,18 @@ public class UserPreferenceController extends Controller {
 		try {
 			checkLoggedIn(state);
 
-			ResposeGetList response = new ResposeGetList();
-			response.ids = get_list(state.getUser(), INGREDIENTS);
-			return Api.write(response);
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
-	}
+			RequestGetList request = Api.read(ctx(), RequestGetList.class);
 
-	public static Result api_pref_set_products() {
-		ResponseState state = new ResponseState(session());
+			ResponseGetList response = new ResponseGetList();
+			if (request.key.equals(INGREDIENTS_WORKING) ||
+					request.key.equals(INGREDIENTS_NOT_WORKING) ||
+					request.key.equals(INGREDIENTS_BAD_REACTION)) {
+				response.ids = get_list(state.getUser(), request.key);
+				return Api.write(response);
+			} else {
 
-		try {
-			checkLoggedIn(state);
-
-			RequestSetList request = Api.read(ctx(), RequestSetList.class);
-
-			for (long id : request.ids) {
-				Product object = App.cache().products.get(id);
-				Api.checkNotNull(object, "Product", id);
+				return Api.write(new ErrorResponse(Response.INVALID, "Get list key " + request.key + " is not valid."));
 			}
-
-			LongListFormat dbObject = new LongListFormat();
-			dbObject.ids = request.ids;
-
-			set_list(state.getUser(), PRODUCTS, dbObject);
-
-			return Api.write(new InfoResponse("Product list saved"));
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
-	}
-
-	public static Result api_pref_get_products() {
-		ResponseState state = new ResponseState(session());
-
-		try {
-			checkLoggedIn(state);
-
-			ResposeGetList response = new ResposeGetList();
-			response.ids = get_list(state.getUser(), PRODUCTS);
-			return Api.write(response);
 		}
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
