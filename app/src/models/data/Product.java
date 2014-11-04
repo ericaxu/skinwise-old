@@ -11,6 +11,7 @@ import src.util.Util;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,11 @@ public class Product extends PopularNamedModel {
 	@Column(length = 1023)
 	private String image;
 
-	//Getters
+	private long price;
+	private float size;
+	private String size_unit;
+
+	//Get/Set
 
 	public long getBrand_id() {
 		return brand_id_tracker.getValue(brand_id);
@@ -50,7 +55,17 @@ public class Product extends PopularNamedModel {
 		return image;
 	}
 
-	//Setters
+	public long getPrice() {
+		return price;
+	}
+
+	public float getSize() {
+		return size;
+	}
+
+	public String getSize_unit() {
+		return size_unit;
+	}
 
 	public void setBrand_id(long brand_id) {
 		brand_id_tracker.setValue(this.brand_id, brand_id);
@@ -70,7 +85,19 @@ public class Product extends PopularNamedModel {
 		this.image = image;
 	}
 
-	//Brand relations
+	public void setPrice(long price) {
+		this.price = price;
+	}
+
+	public void setSize(float size) {
+		this.size = size;
+	}
+
+	public void setSize_unit(String size_unit) {
+		this.size_unit = size_unit;
+	}
+
+	//Many-One Brand relations
 
 	public Brand getBrand() {
 		return App.cache().brands.get(brand_id);
@@ -80,7 +107,7 @@ public class Product extends PopularNamedModel {
 		setBrand_id(BaseModel.getIdIfExists(brand));
 	}
 
-	//ProductType relations
+	//Many-One ProductType relations
 
 	public ProductType getType() {
 		return App.cache().types.get(product_type_id);
@@ -90,7 +117,7 @@ public class Product extends PopularNamedModel {
 		setProduct_type_id(BaseModel.getIdIfExists(type));
 	}
 
-	//Aliases relations
+	//Many-Many Aliases relations
 
 	private transient List<Alias> ingredients_cache;
 	private transient List<Alias> ingredients_new;
@@ -138,7 +165,17 @@ public class Product extends PopularNamedModel {
 		this.key_ingredients_new = key_ingredients;
 	}
 
+	//One-Many ProductProperty relation
+
+	public TLongList getProductProperties() {
+		return App.cache().product_product_properties.getMany(this.getId());
+	}
+
 	//Others
+
+	public String getFormattedPrice() {
+		return Util.formatPrice(getPrice());
+	}
 
 	public String getBrandName() {
 		if (getBrand() == null) {
@@ -232,6 +269,7 @@ public class Product extends PopularNamedModel {
 	//Static
 
 	public static final String TABLENAME = "product";
+
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
 	public static List<Product> byFilter(long[] brands, long[] negBrands,

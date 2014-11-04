@@ -15,7 +15,7 @@ public class IngredientFunction extends BaseModel implements ManyToMany {
 	private long ingredient_id;
 	private long function_id;
 
-	//Getters
+	//Get/Set
 
 	public long getIngredient_id() {
 		return ingredient_id;
@@ -24,8 +24,6 @@ public class IngredientFunction extends BaseModel implements ManyToMany {
 	public long getFunction_id() {
 		return function_id;
 	}
-
-	//Setters
 
 	public void setIngredient_id(long ingredient_id) {
 		this.ingredient_id = ingredient_id;

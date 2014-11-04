@@ -1,5 +1,10 @@
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
+dependencyOverrides ++= Set(
+  "org.avaje.ebeanorm" % "avaje-ebeanorm-agent" % "4.1.6",
+  "org.avaje.ebeanorm" % "avaje-ebeanorm" % "4.1.8"
+)
+
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.4")
 

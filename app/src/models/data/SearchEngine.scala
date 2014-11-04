@@ -176,7 +176,7 @@ class SearchEngine[T] {
     val slicedResults = weightedResults.slice(0, limit)
 
     // For debugging.
-//    slicedResults.foreach { case (name, score) => println(f"$name $score") }
+    //    slicedResults.foreach { case (name, score) => println(f"$name $score") }
 
     slicedResults.map(result => namesToObjs.get(result._1))
   }

@@ -94,6 +94,15 @@ for url in urls:
 	if product_category in type_corrections:
 		product_category = type_corrections[product_category]
 
+	product_price_size = parser.regex_find(r'<dt>Price:</dt><dd>([^<]*)</dd>', page_table, 1)
+	product_price_size = web.html_unescape(product_price_size).replace('\u00a0', ' ')
+	product_price = product_price_size.strip()
+	product_size = ""
+	if '-' in product_price_size:
+		pieces = product_price_size.split('-')
+		product_price = pieces[0].strip()
+		product_size = pieces[1].strip()
+
 	product_ingredients = parser.regex_find(r'<div id="[^"]*pnlTabBodyIngredients"[^>]*>(.*?)<\/div>', page_table, 1)
 	product_ingredients = web.html_unescape(parser.regex_remove(r'<strong>\\xa0<\/strong>', product_ingredients))
 
@@ -127,6 +136,8 @@ for url in urls:
 		product['brand'] = product_brand
 		product['type'] = product_category
 		product['description'] = product_claims
+		product['price'] = product_price
+		product['size'] = product_size
 		product["key_ingredients"] = key_ingredients
 		product['ingredients'] = ingredients
 

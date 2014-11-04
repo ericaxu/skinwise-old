@@ -10,6 +10,7 @@ import src.controllers.util.ResponseState;
 import src.models.feedback.Analytics;
 import src.models.user.Permissible;
 import src.models.user.User;
+import src.models.util.Page;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class AdminAnalyticsController extends Controller {
 				throw new BadRequestException(Response.NOT_FOUND, "Id " + request.id + " not found");
 			}
 
-			List<Analytics> list = Analytics.byUser(request.id, request.page, 20);
+			List<Analytics> list = Analytics.byUser(request.id, new Page(request.page));
 
 			//TODO
 

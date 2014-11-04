@@ -58,6 +58,10 @@ public class MemCache {
 			}
 		}
 
+		public T get(T object) {
+			return get(BaseModel.getIdIfExists(object));
+		}
+
 		public List<T> getList(long[] ids) {
 			lock.readLock().lock();
 			try {
@@ -599,6 +603,13 @@ public class MemCache {
 		}
 	}
 
+	private static class ProductProductPropertyGetter implements OneToManyGetter<ProductProperty> {
+		@Override
+		public long getOneId(ProductProperty object) {
+			return object.getProduct_id();
+		}
+	}
+
 	private static class IngredientFunctionGetter implements ManyToManyGetter<IngredientFunction> {
 		public List<IngredientFunction> all() {
 			return IngredientFunction.all();
@@ -607,7 +618,7 @@ public class MemCache {
 
 	private static class ProductIngredientGetter implements ManyToManyGetter<ProductIngredient> {
 		public List<ProductIngredient> all() {
-			return ProductIngredient.all();
+			return ProductIngredient.find.all();
 		}
 	}
 
@@ -735,10 +746,12 @@ public class MemCache {
 	public NamedIndex<Ingredient> ingredients;
 	public NamedIndex<Alias> alias;
 	public ProductIndex products;
+	public BaseIndex<ProductProperty> product_properties;
 
 	public OneToManyIndex<Alias> ingredient_alias;
 	public OneToManyIndex<Product> brand_product;
 	public OneToManyIndex<Product> type_product;
+	public OneToManyIndex<ProductProperty> product_product_properties;
 	public ManyToManyIndex<IngredientFunction> ingredient_function;
 	public ManyToManyIndex<ProductIngredient> product_ingredient;
 
@@ -751,10 +764,12 @@ public class MemCache {
 		ingredients = new NamedIndex<>(Ingredient.find);
 		alias = new NamedIndex<>(Alias.find);
 		products = new ProductIndex(Product.find);
+		product_properties = new BaseIndex<>(ProductProperty.find);
 
 		ingredient_alias = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
 		brand_product = new OneToManyIndex<>(new BrandProductGetter(), Product.find);
 		type_product = new OneToManyIndex<>(new ProductTypeProductGetter(), Product.find);
+		product_product_properties = new OneToManyIndex<>(new ProductProductPropertyGetter(), ProductProperty.find);
 		ingredient_function = new ManyToManyIndex<>(new IngredientFunctionGetter());
 		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter());
 
@@ -768,10 +783,12 @@ public class MemCache {
 		ingredients.cache();
 		alias.cache();
 		products.cache();
+		product_properties.cache();
 
 		ingredient_alias.cache();
 		brand_product.cache();
 		type_product.cache();
+		product_product_properties.cache();
 		ingredient_function.cache();
 		product_ingredient.cache();
 

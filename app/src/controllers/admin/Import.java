@@ -295,6 +295,18 @@ public class Import {
 		result.setType(type);
 		result.setDescription(object.description);
 		result.setImage(object.image);
+		result.setPrice(parsePrice(object.price));
+		if(!object.size.isEmpty() && object.size.contains(" ")) {
+			String[] pieces = object.size.split(" ");
+			String sizeString = pieces[0];
+			String unit = object.size.substring(sizeString.length() + 1);
+			float size = Float.parseFloat(sizeString);
+			result.setSize(size);
+			result.setSize_unit(unit);
+		}
+		else {
+			result.setSize_unit("");
+		}
 		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
 		}
@@ -326,6 +338,16 @@ public class Import {
 		}
 
 		return new ArrayList<>(results.values());
+	}
+
+	private static long parsePrice(String price) {
+		try {
+			return Util.parsePrice(price);
+		}
+		catch (NumberFormatException e) {
+			Logger.info(TAG, "Bad price: " + price);
+			return 0;
+		}
 	}
 
 	private static class IngredientSearch implements Runnable {

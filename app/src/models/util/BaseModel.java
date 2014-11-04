@@ -1,7 +1,5 @@
 package src.models.util;
 
-import play.db.ebean.Model;
-
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 

@@ -1,15 +1,15 @@
 package src.models.user;
 
-import play.db.ebean.Model;
-import src.models.util.Page;
+import com.avaje.ebean.annotation.Index;
+import src.models.util.BaseFinder;
 import src.util.BCrypt;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class User extends Permissible {
 
+	@Index
 	@Column(length = 255, unique = true)
 	private String email;
 
@@ -93,7 +93,7 @@ public class User extends Permissible {
 
 	//Static
 
-	private static Model.Finder<Long, User> find = new Model.Finder<>(Long.class, User.class);
+	private static BaseFinder<User> find = new BaseFinder<>(User.class);
 
 	public static User byId(long id) {
 		return find.byId(id);
@@ -103,9 +103,5 @@ public class User extends Permissible {
 		return find.where()
 				.eq("email", email.toLowerCase())
 				.findUnique();
-	}
-
-	public static List<User> all(Page page) {
-		return page.apply(find);
 	}
 }

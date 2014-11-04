@@ -1,5 +1,8 @@
 package src.models.user;
 
+import com.avaje.ebean.annotation.Index;
+import src.models.util.BaseFinder;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.List;
 @Entity
 public class Usergroup extends Permissible {
 
+	@Index
 	@Column(length = 255, unique = true)
 	private String name;
 
@@ -31,7 +35,7 @@ public class Usergroup extends Permissible {
 
 	//Static
 
-	private static Finder<Long, Usergroup> find = new Finder<>(Long.class, Usergroup.class);
+	private static BaseFinder<Usergroup> find = new BaseFinder<>(Usergroup.class);
 
 	public static List<Usergroup> all() {
 		return find.all();

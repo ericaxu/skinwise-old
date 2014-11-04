@@ -1,6 +1,6 @@
 package src.models.util;
 
-import com.avaje.ebean.PagingList;
+import com.avaje.ebean.PagedList;
 import com.avaje.ebean.Query;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
@@ -67,13 +67,13 @@ public class Page {
 	}
 
 	public <T> List<T> apply(Query<T> query, boolean doCount) {
-		return apply(query.findPagingList(size), doCount);
+		return apply(query.findPagedList(page, size), doCount);
 	}
 
-	public <T> List<T> apply(PagingList<T> list, boolean doCount) {
+	public <T> List<T> apply(PagedList<T> list, boolean doCount) {
 		if (doCount) {
 			count = list.getTotalRowCount();
 		}
-		return list.getPage(page).getList();
+		return list.getList();
 	}
 }
