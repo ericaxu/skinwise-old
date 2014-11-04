@@ -65,14 +65,35 @@ public class ProductController extends Controller {
 		public String name;
 		public String description;
 		public String image;
+		public long price;
+		public float size;
+		public String size_unit;
 
-		public ResponseProductObject(long id, long brand, String line, String name, String description, String image) {
+		public ResponseProductObject(Product result) {
+			this(
+					result.getId(),
+					result.getBrand_id(),
+					result.getLine(),
+					result.getName(),
+					result.getDescription(),
+					result.getImage(),
+					result.getPrice(),
+					result.getSize(),
+					result.getSize_unit()
+			);
+		}
+
+		public ResponseProductObject(long id, long brand, String line, String name,
+		                             String description, String image, long price, float size, String size_unit) {
 			this.id = id;
 			this.brand = brand;
 			this.line = line;
 			this.name = name;
 			this.description = description;
 			this.image = image;
+			this.price = price;
+			this.size = size;
+			this.size_unit = size_unit;
 		}
 	}
 
@@ -117,14 +138,7 @@ public class ProductController extends Controller {
 			Api.ResponseResultList response = new Api.ResponseResultList();
 			response.count = 1;
 
-			response.results.add(new ResponseProductObject(
-					result.getId(),
-					result.getBrand_id(),
-					result.getLine(),
-					result.getName(),
-					result.getDescription(),
-					result.getImage()
-			));
+			response.results.add(new ResponseProductObject(result));
 
 			return Api.write(response);
 		}
@@ -175,14 +189,7 @@ public class ProductController extends Controller {
 			response.count = page.count;
 
 			for (Product product : result) {
-				response.results.add(new ResponseProductObject(
-						product.getId(),
-						product.getBrand_id(),
-						product.getLine(),
-						product.getName(),
-						product.getDescription(),
-						product.getImage()
-				));
+				response.results.add(new ResponseProductObject(product));
 			}
 
 			return Api.write(response);

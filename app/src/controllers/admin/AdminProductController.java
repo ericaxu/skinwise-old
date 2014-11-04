@@ -36,6 +36,9 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
+		public long price;
+		public float size;
+		public String size_unit;
 		//		@NotNull
 		//		public String ingredients;
 		//		@NotNull
@@ -77,6 +80,10 @@ public class AdminProductController extends Controller {
 			//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
 			//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
 
+			if(request.size_unit == null) {
+				request.size_unit = "";
+			}
+
 			String oldName = result.getName();
 			long oldBrandId = result.getBrand_id();
 
@@ -87,6 +94,10 @@ public class AdminProductController extends Controller {
 				result.setDescription(request.description);
 				result.setImage(request.image);
 				result.setPopularity(request.popularity);
+
+				result.setPrice(request.price);
+				result.setSize(request.size);
+				result.setSize_unit(request.size_unit);
 
 				result.save();
 
