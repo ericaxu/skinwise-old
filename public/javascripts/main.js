@@ -179,8 +179,6 @@ function setupNavSearchAutocomplete() {
     var $search_select = $('#search_category_select');
     var $nav_search = $('#nav_searchbar');
 
-    $search_select.val(getLastSearchedCatgory());
-
     enableAutocomplete($search_select.val(), $nav_search, '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
     $nav_search.on('autocompleteselect', function(event, ui) {
         redirectToSelectedItem(ui.item.value);

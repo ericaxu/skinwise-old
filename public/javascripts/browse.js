@@ -275,7 +275,7 @@ function setupAddFilterPopup() {
     });
 }
 
-function initBrowse() {
+function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
 
@@ -291,6 +291,8 @@ function initBrowse() {
             $(this).toggleClass('selected');
             refetch();
         });
+
+        type && $('#search_category_select').val(type);
 
         $('.filter_toggle_link').on('click', function() {
             if ($(this).hasClass('open')) {
