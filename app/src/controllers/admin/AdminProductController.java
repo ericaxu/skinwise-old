@@ -20,6 +20,7 @@ import src.models.data.ProductProperty;
 import src.models.data.ProductType;
 import src.models.user.Permissible;
 import src.models.util.BaseModel;
+import src.util.Util;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
@@ -36,7 +37,7 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
-		public long price;
+		public String price;
 		public float size;
 		public String size_unit;
 		//		@NotNull
@@ -76,11 +77,18 @@ public class AdminProductController extends Controller {
 
 			Brand brand = cache.brands.get(request.brand_id);
 			Api.checkNotNull(brand, "Brand", request.brand_id);
+			long price;
+			try {
+				price = Util.parsePrice(request.price);
+			}
+			catch (NumberFormatException e) {
+				throw new BadRequestException(Response.INVALID, "Bad price");
+			}
 
 			//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
 			//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
 
-			if(request.size_unit == null) {
+			if (request.size_unit == null) {
 				request.size_unit = "";
 			}
 
@@ -95,7 +103,7 @@ public class AdminProductController extends Controller {
 				result.setImage(request.image);
 				result.setPopularity(request.popularity);
 
-				result.setPrice(request.price);
+				result.setPrice(price);
 				result.setSize(request.size);
 				result.setSize_unit(request.size_unit);
 
@@ -103,7 +111,7 @@ public class AdminProductController extends Controller {
 
 				cache.products.update(result, oldBrandId, oldName);
 
-				//				result.saveIngredients(ingredients, key_ingredients);
+				//result.saveIngredients(ingredients, key_ingredients);
 			}
 
 			return Api.write(new InfoResponse("Product " + result.getName() + " updated"));

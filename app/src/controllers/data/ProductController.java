@@ -15,6 +15,7 @@ import src.controllers.util.ResponseState;
 import src.models.MemCache;
 import src.models.data.*;
 import src.models.util.Page;
+import src.util.Util;
 import views.html.product;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class ProductController extends Controller {
 		public String name;
 		public String description;
 		public String image;
-		public long price;
+		public String price;
 		public float size;
 		public String size_unit;
 
@@ -91,7 +92,7 @@ public class ProductController extends Controller {
 			this.name = name;
 			this.description = description;
 			this.image = image;
-			this.price = price;
+			this.price = Util.formatPrice(price);
 			this.size = size;
 			this.size_unit = size_unit;
 		}
