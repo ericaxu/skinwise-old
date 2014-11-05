@@ -212,8 +212,7 @@ nav {
 
 
 .function, .product_type {
-    border-radius: 5px;
-    padding: 1px 7px;
+   .label;
     margin-right: 10px;
     cursor: pointer;
 
@@ -227,8 +226,8 @@ nav {
     margin-bottom: 15px;
 
     .function {
+        .label;
         display: inline-block;
-        border-radius: 5px;
         margin-bottom: 10px;
     }
 }
@@ -249,8 +248,24 @@ nav {
 .ingredient {
     cursor: pointer;
 
+
     &:hover {
         text-decoration: underline;
+    }
+
+    &.bad_reaction {
+        .label;
+        background: @warning;
+    }
+
+    &.not_working {
+        .label;
+        background: @neutral;
+    }
+
+    &.working {
+        .label;
+        background: @fav;
     }
 }
 

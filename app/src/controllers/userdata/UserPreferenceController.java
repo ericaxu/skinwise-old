@@ -22,13 +22,14 @@ import src.util.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserPreferenceController extends Controller {
 	private static final String TAG = "UserPreferenceController";
-	private static final String INGREDIENTS_WORKING = "ingredient_working";
-	private static final String INGREDIENTS_NOT_WORKING = "ingredient_not_working";
-	private static final String INGREDIENTS_BAD_REACTION = "ingredient_bad_reaction";
+	public static final String INGREDIENTS_WORKING = "ingredient_working";
+	public static final String INGREDIENTS_NOT_WORKING = "ingredient_not_working";
+	public static final String INGREDIENTS_BAD_REACTION = "ingredient_bad_reaction";
 
 
 	public static class RequestSetList extends Request {
@@ -116,6 +117,16 @@ public class UserPreferenceController extends Controller {
 		catch (BadRequestException e) {
 			return Api.write(new ErrorResponse(e));
 		}
+	}
+
+	public static boolean is_in_list(User user, String key, long id) {
+		long[] ids = get_list(user, key);
+		for (long ingredient_id : ids) {
+			if (ingredient_id == id) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static long[] get_list(User user, String key) {
