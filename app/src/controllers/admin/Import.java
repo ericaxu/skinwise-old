@@ -3,6 +3,7 @@ package src.controllers.admin;
 import src.App;
 import src.models.MemCache;
 import src.models.data.*;
+import src.models.util.BaseModel;
 import src.util.JoinableExecutor;
 import src.util.Json;
 import src.util.Logger;
@@ -13,6 +14,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Import {
 	private static final String TAG = "Import";
@@ -280,6 +283,28 @@ public class Import {
 			}
 		}
 
+		Pattern regex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
+
+		List<ProductProperty> properties = new ArrayList<>();
+
+		for (Alias alias : key_ingredients) {
+			long ingredient_id = alias.getIngredient_id();
+			if(BaseModel.isIdNull(ingredient_id)) {
+				continue;
+			}
+			String name = alias.getName();
+			Matcher matcher = regex.matcher(name);
+			if (matcher.find()) {
+				String precentString = matcher.group(1);
+				double precent = Double.parseDouble(precentString);
+				String key = "ingredients." + ingredient_id + ".precent";
+				ProductProperty property = new ProductProperty();
+				property.setKey(key);
+				property.setNumber_value(precent);
+				properties.add(property);
+			}
+		}
+
 		Brand brand = cache.brands.get(object.brand);
 		ProductType type = cache.types.get(object.type);
 
@@ -317,6 +342,11 @@ public class Import {
 
 		cache.products.update(result, oldBrandId, oldName);
 
+		for(ProductProperty property : properties) {
+			property.setProduct_id(result.getId());
+			property.save();
+			cache.product_properties.update(property);
+		}
 	}
 
 	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients) {
