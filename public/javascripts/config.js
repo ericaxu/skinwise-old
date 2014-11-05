@@ -87,3 +87,11 @@ SW.LOCAL_STORAGE_SETTINGS = {
     VERSION: 3,
     REQUIRE_CLEAR: true
 };
+
+SW.PREFERENCES = {
+    INGREDIENT: [
+        'ingredient_working',
+        'ingredient_not_working',
+        'ingredient_bad_reaction'
+    ]
+};

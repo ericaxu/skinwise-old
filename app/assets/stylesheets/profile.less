@@ -1,22 +1,20 @@
 @import "util/_mixins";
 @import "util/_colors";
 
-.delete_preference {
-    display: none;
-    position: relative;
-    top: 1px;
-    margin-left: 3px;
-    padding: 0 5px;
+.column {
+    width: 500px;
+}
 
-    font-weight: bolder;
-    font-size: 22px;
-    color: @error;
+a.delete_preference {
+    color: @border;
 
-    cursor: pointer;
-
-    &::before {
-        content: "\D7";
+    &:hover {
+        color: @dark_text;
     }
+}
+
+.preference_list_tem {
+    margin-right: 10px;
 }
 
 .profile_add_btn {
@@ -36,9 +34,8 @@
     }
 }
 
-#add_ingredient_work_not_found,
-#add_ingredient_doesnt_work_not_found,
-#add_ingredient_bad_reaction_not_found {
+.preference_not_found {
+    display: none;
     left: 126px;
     padding: 4px 7px;
     z-index: 1;
