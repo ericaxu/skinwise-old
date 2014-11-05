@@ -131,6 +131,9 @@ function productLoadSuccess(product) {
     $('#edit_product_name').val(product.name).data('original', product.name);
     $('#edit_product_brand').val(brand_name).data('id', product.brand);
     $('#edit_product_line').val(product.line);
+    $('#edit_product_price').val(product.price);
+    $('#edit_product_size').val(product.size);
+    $('#edit_product_size_unit').val(product.size_unit);
     $('#edit_product_image').val(product.image);
     $('#edit_product_popularity').val(product.popularity);
     $('#edit_product_description').val(product.description);
