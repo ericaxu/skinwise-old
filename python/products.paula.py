@@ -15,7 +15,14 @@ url_product_list = "http://www.paulaschoice.com/beautypedia-skin-care-reviews?so
 
 ingredient_corrections = {
 	r'Aqua \(Water\) Eau\)': "Aqua (Water) Eau",
-	r', Iron Oxides\)\.': ", Iron Oxides."
+	r', Iron Oxides\)\.': ", Iron Oxides.",
+	r'\s*\(listed in alphabetical order per the new FDA sunscreen monograph\)': "",
+	r'(?i)sa;icylic acid': "Salicylic Acid",
+	r'<strong>\s*:\s*</strong>': ":",
+	r'<strong>\s*(?i)May Contain:\s*</strong>': "May Contain:",
+	r'<strong>\s*(?i)Others* *:\s*</strong>': "Other:",
+	r'<strong>\s*(?i)Actives* *:\s*</strong>': "Other:",
+	r'\(this is the version we do NOT recommend\):': ""
 }
 
 description_corrections = {
@@ -114,19 +121,19 @@ for url in urls:
 			ingredients = ingredients[12:]
 
 		ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients)
-		ingredients = parser.regex_replace_dict(ingredient_corrections, ingredients)
 
 		key = ""
 		other = ""
 
+		ingredients = parser.fix_space(parser.strip_tags(ingredients))
+
 		other = parser.regex_find(r'(?i)(Other|Inactive) *:', ingredients)
 		if other is None:
-			other = parser.fix_space(parser.strip_tags(ingredients))
+			other = parser.regex_remove(r'^(?i)Actives* *:', ingredients).strip()
 		else:
 			split = parser.regex_split(r'(?i)(Other|Inactive) *:', ingredients)
-			key = parser.fix_space(parser.strip_tags(split[0]))
-			other = parser.fix_space(parser.strip_tags(split[-1]))
-			key = parser.regex_remove(r'^(?i)Active *:', key).strip()
+			key = parser.regex_remove(r'^(?i)Actives* *:', split[0]).strip()
+			other = split[-1].strip()
 
 		return (key, other)
 
@@ -156,8 +163,10 @@ for url in urls:
 			print("")
 		else:
 			pass
-		
+
 		product_other_ingredients = product_other_ingredients[0]
+		product_other_ingredients = parser.regex_replace_dict(ingredient_corrections, product_other_ingredients)
+		product_other_ingredients = parser.regex_remove(r'<strong>(.*?)<\/strong>', product_other_ingredients)
 		key_ingredients, ingredients = getIngredients(product_other_ingredients)
 		if key_ingredients != "":
 			product_key_ingredients = key_ingredients
