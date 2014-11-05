@@ -1,24 +1,21 @@
 function ingredientResultHTML(ing) {
-    var $list_item = $('<li/>', {class: 'ingredient_item'});
-    $list_item.append('<h2 class="name"><a href="/ingredient/' + ing.id + '">' + ing.name + '</a></h2>');
-    var functions = $('<p/>', {class: 'functions'});
+
+    var $list_item = addEl('li', null, 'ingredient_item');
+    var $header = addEl('h2', $list_item, 'name');
+    addEl('a', $header, '', ing.name, { href: '/ingredient/' + ing.id});
+    var $functions = addEl('p', $list_item, 'functions');
 
     for (var j = 0; j < ing.functions.length; j++) {
         var id = ing.functions[j];
         if (SW.FUNC[id]) {
-            var name = fullyCapitalize(SW.FUNC[id].name);
-            functions.append($('<a/>', {
-                class: 'function neutral',
-                href: '/function/' + id,
-                text: fullyCapitalize(SW.FUNC[id].name)
-            }).data('id', id));
+            addEl('a', $functions, 'function neutral', fullyCapitalize(SW.FUNC[id].name), {
+                href: '/function/' + id
+            }).data('id', id);
         }
     }
 
-    $list_item.append(functions);
-
     if (ing.description) {
-        $list_item.append('<p class="ingredient_description">' + ing.description + '</p>');
+        addEl('p', $list_item, 'ingredient_description', ing.description);
     }
 
     return $list_item;

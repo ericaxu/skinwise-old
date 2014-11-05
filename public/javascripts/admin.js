@@ -173,12 +173,14 @@ function setupCreateGroupCall() {
 // FEEDBACK
 
 function feedbackHTML(feedback) {
-    var $div = $('<div/>', {class: 'feedback_item'});
-    $div.append($('<h2/>').text(SW.FEEDBACK[feedback.type]({user: feedback.reported_by || 'Someone'})));
-    $div.append($('<p/>').text(feedback.content));
-    $div.append($('<p/>').html('Reach me at <span class="emphasis">' + feedback.email + '</span>'));
-    $div.append($('<p/>').html('Reported ' + getReadableTime(feedback.timestamp) + ' at <a href="' + feedback.path + '">' + feedback.path + '</a>'));
-    var $mark_resolved = $('<input/>', {
+    var $div = addEl('div', null, 'feedback_item');
+    addEl('h2', $div, '', SW.FEEDBACK[feedback.type]({user: feedback.reported_by || 'Someone'}));
+    addEl('p', $div, '', feedback.content);
+    var $contact = addEl('p', $div, '', 'Reach me at ');
+    addEl('span', $contact, 'emphasis', feedback.email);
+    var $timestamp = addEl('p', $div, '', 'Reported ' + getReadableTime(feedback.timestamp) + ' at ');
+    addEl('a', $timestamp, '', feedback.path, { href: feedback.path });
+    addEl('input', $div, '', '', {
         type: 'button',
         value: 'Mark resolved'
     }).on('click', function() {
@@ -186,8 +188,6 @@ function feedbackHTML(feedback) {
             id: feedback.id
         }, fetchFeedback, null, 'Marking feedback resolved...');
     });
-    $div.append($('<p/>').append($mark_resolved));
-
     return $div;
 }
 

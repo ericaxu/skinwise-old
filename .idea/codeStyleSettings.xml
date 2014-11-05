@@ -6,9 +6,6 @@
         <JSCodeStyleSettings>
           <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
         </JSCodeStyleSettings>
-        <ScalaCodeStyleSettings>
-          <option name="KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST" value="true" />
-        </ScalaCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
