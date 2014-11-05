@@ -13,9 +13,16 @@
         }
     </div>
 
-    <div class="ingredient_container">
+    <div class="detail_container">
         <h1 class="name">@product.getName</h1>
         <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
+
+        @if(product.getPrice != null) {
+            <div>
+                <span class="price_info">@product.getFormattedPrice</span>
+                <p>Size: @product.getSize @product.getSize_unit</p>
+            </div>
+        }
 
         @if(product.getProduct_type_id != 0) {
             <div class="claim">
