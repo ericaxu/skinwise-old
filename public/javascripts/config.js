@@ -95,3 +95,155 @@ SW.PREFERENCES = {
         'ingredient_bad_reaction'
     ]
 };
+
+SW.EDITOR = {
+    product: {
+        key: 'name',
+        fields: [
+            {
+                name: 'id',
+                label: 'ID',
+                type: 'short_text'
+            },
+            {
+                name: 'name',
+                label: 'Name',
+                type: 'short_text'
+            },
+            {
+                name: 'brand',
+                label: 'Brand',
+                type: 'short_text'
+            },
+            {
+                name: 'line',
+                label: 'Line',
+                type: 'short_text'
+            },
+            {
+                name: 'size',
+                label: 'Size',
+                type: 'short_text'
+            },
+            {
+                name: 'size_unit',
+                label: 'Size unit',
+                type: 'short_text'
+            },
+            {
+                name: 'image',
+                label: 'Image URL',
+                type: 'short_text'
+            },
+            {
+                name: 'popularity',
+                label: 'Popularity',
+                type: 'short_text'
+            },
+            {
+                name: 'description',
+                label: 'Description',
+                type: 'long_text'
+            }
+        ]
+    },
+
+    ingredient: {
+        key: 'name',
+        fields: [
+            {
+                name: 'id',
+                label: 'ID',
+                type: 'short_text'
+            },
+            {
+                name: 'name',
+                label: 'Name',
+                type: 'short_text'
+            },
+            {
+                name: 'cas_number',
+                label: 'CAS number',
+                type: 'short_text'
+            },
+            {
+                name: 'popularity',
+                label: 'Popularity',
+                type: 'short_text'
+            },
+            {
+                name: 'description',
+                label: 'Description',
+                type: 'long_text'
+            },
+            {
+                name: 'functions',
+                label: 'Functions',
+                type: 'long_text'
+            }
+        ]
+    },
+
+    function: {
+        key: 'name',
+        fields: [
+            {
+                name: 'id',
+                label: 'ID',
+                type: 'short_text'
+            },
+            {
+                name: 'name',
+                label: 'Name',
+                type: 'short_text'
+            },
+            {
+                name: 'description',
+                label: 'Description',
+                type: 'long_text'
+            }
+        ]
+    },
+
+    brand: {
+        key: 'name',
+        fields: [
+            {
+                name: 'id',
+                label: 'ID',
+                type: 'short_text'
+            },
+            {
+                name: 'name',
+                label: 'Name',
+                type: 'short_text'
+            },
+            {
+                name: 'description',
+                label: 'Description',
+                type: 'long_text'
+            }
+        ]
+    },
+
+    type: {
+        key: 'name',
+        fields: [
+            {
+                name: 'id',
+                label: 'ID',
+                type: 'short_text'
+            },
+            {
+                name: 'name',
+                label: 'Name',
+                type: 'short_text'
+            },
+            {
+                name: 'description',
+                label: 'Description',
+                type: 'long_text'
+            }
+        ]
+    }
+}

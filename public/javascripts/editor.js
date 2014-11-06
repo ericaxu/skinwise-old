@@ -11,6 +11,86 @@ function setupTabSystem() {
     })
 }
 
+function loadTab(name, data) {
+    var $tab = $('#' + name + '_tab');
+    addEl('h1', $tab, '', fullyCapitalize(name) + ' Editor');
+    var $lookup_field = addEl('div', $tab, 'field');
+    var $lookup_labels = addEl('div', $lookup_field, 'labels');
+    addEl('label', $lookup_labels, '', 'Enter name:', { for: name + '_by_id' });
+    var $lookup_inputs = addEl('div', $lookup_field, 'inputs');
+    var $search_input = addEl('input', $lookup_inputs, '', '', { id: name + '_by_id' });
+    addEl('input', $lookup_inputs, '', '', {
+        id: name + '_by_id_btn',
+        value: 'Search',
+        type: 'button'
+    }).on('click', function() {
+        var id = $search_input.data('id');
+
+        if (name == 'type') {
+            var url = '/producttype/byid';
+        } else {
+            var url = '/' + name + '/byid';
+        }
+
+        postToAPI(url, {
+            id: id
+        }, function(response) {
+            var item = response.results[0];
+
+            for (var i = 0; i < data.fields.length; i++) {
+                var field_name = data.fields[i].name;
+                $('#edit_' + name + '_' + field_name).val(item[field_name]);
+                if (data.key == field_name) {
+                    $('#edit_' + name + '_' + field_name).data('original', item[field_name]);
+                }
+            }
+
+            $('#edit_' + name).show();
+
+        }, null, 'Looking up ' + name + '...');
+    });
+    addEl('input', $tab, 'primary', '', {
+        id: 'create_' + name + '_btn',
+        value: 'Create ingredient',
+        type: 'button'
+    });
+
+    var $edit_container = addEl('div', $tab, 'edit_container', '', { id: 'edit_' + name });
+    addEl('h2', $edit_container, '', 'Edit ' + fullyCapitalize(name));
+    var $edit_fields = addEl('div', $edit_container, 'field');
+    var $edit_labels = addEl('div', $edit_fields, 'labels');
+    var $edit_inputs = addEl('div', $edit_fields, 'inputs');
+
+    for (var i = 0; i < data.fields.length; i++) {
+        var field_name = data.fields[i].name;
+        var label_text = data.fields[i].label;
+        var type = data.fields[i].type;
+        addEl('label', $edit_labels, '', label_text, { for: 'edit_' + name + '_' + field_name });
+        if (i > 0) {
+            addEl('br', $edit_inputs);
+        }
+        if (type == 'short_text') {
+            addEl('input', $edit_inputs, '', '', { id: 'edit_' + name + '_' + field_name });
+        } else if (type == 'long_text') {
+            addEl('textarea', $edit_inputs, '', '', { id: 'edit_' + name + '_' + field_name });
+        }
+    }
+
+    var $save_field = addEl('div', $edit_container, 'field');
+    addEl('input', $save_field, 'primary', '', {
+        type: 'button',
+        id: 'save_' + name + '_btn',
+        value: 'Save'
+    });
+
+    enableAutocomplete(name, $search_input, '#' + name + '_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+
+    if (name == 'product') {
+        enableAutocomplete('brand', $('#edit_product_brand'), '#edit_product .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
+    }
+
+}
+
 function hideEdit() {
     $('.edit_container').hide();
 }
@@ -29,33 +109,6 @@ function listenForEnter() {
             $('#' + btn_id).click();
         }
     });
-}
-
-
-// INGREDIENTS
-
-function setupIngredientSearchCall() {
-    enableAutocomplete('ingredient', $('#ingredient_by_id'), '#ingredient_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-
-    $('#ingredient_by_id_btn').on('click', function() {
-        var ingredient_id = $('#ingredient_by_id').data('id');
-
-        postToAPI('/ingredient/byid', {
-            id: ingredient_id
-        }, function(response) {
-            ingredientLoadSuccess(response.results[0]);
-        }, null, 'Looking up ingredient...');
-    });
-}
-
-function ingredientLoadSuccess(ingredient) {
-    $('#edit_ingredient_id').val(ingredient.id);
-    $('#edit_ingredient_name').val(ingredient.name).data('original', ingredient.name);
-    $('#edit_ingredient_cas_number').val(ingredient.cas_number);
-    $('#edit_ingredient_popularity').val(ingredient.popularity);
-    $('#edit_ingredient_description').val(ingredient.description);
-    $('#edit_ingredient_functions').val(ingredient.functions.join(SW.CONFIG.PERMISSION_DELIMITER));
-    $('#edit_ingredient').show();
 }
 
 function setupIngredientEditSaveCall() {
@@ -94,7 +147,6 @@ function setupCreateIngredientCall() {
 
 function setupProductSearchCall() {
     enableAutocomplete('product', $('#product_by_id'), '#product_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-    enableAutocomplete('brand', $('#edit_product_brand'), '#edit_product .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
 
     $('#product_by_id_btn').on('click', function() {
         var product_id = $('#product_by_id').data('id');
@@ -163,19 +215,6 @@ function setupProductEditSaveCall() {
 
 // FUNCTION
 
-function setupFunctionSearchCall() {
-    enableAutocomplete('function', $('#function_by_id'), '#function_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-
-    $('#function_by_id_btn').on('click', function() {
-        var function_id = $('#function_by_id').data('id');
-
-        postToAPI('/function/byid', {
-            id: function_id
-        }, function(response) {
-            functionLoadSuccess(response.results[0]);
-        }, null, 'Looking up function...');
-    });
-}
 
 function setupCreateFunctionCall() {
     $('#create_function_btn').on('click', function() {
@@ -187,13 +226,6 @@ function setupCreateFunctionCall() {
             description: ''
         });
     });
-}
-
-function functionLoadSuccess(function_obj) {
-    $('#edit_function_id').val(function_obj.id);
-    $('#edit_function_name').val(function_obj.name).data('original', function_obj.name);
-    $('#edit_function_description').val(function_obj.description);
-    $('#edit_function').show();
 }
 
 function setupFunctionEditSaveCall() {
@@ -215,20 +247,6 @@ function setupFunctionEditSaveCall() {
 
 // BRAND
 
-function setupBrandSearchCall() {
-    enableAutocomplete('brand', $('#brand_by_id'), '#brand_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-
-    $('#brand_by_id_btn').on('click', function() {
-        var brand_id = $('#brand_by_id').data('id');
-
-        postToAPI('/brand/byid', {
-            id: brand_id
-        }, function(response) {
-            brandLoadSuccess(response.results[0]);
-        }, null, 'Looking up brand...');
-    });
-}
-
 function setupCreateBrandCall() {
     $('#create_brand_btn').on('click', function() {
         brandLoadSuccess({
@@ -239,16 +257,6 @@ function setupCreateBrandCall() {
             description: ''
         });
     });
-}
-
-function brandLoadSuccess(brand) {
-    $('#edit_brand_id').val(brand.id);
-    $('#edit_brand_name').val(brand.name).data('original', brand.name);
-    $('#edit_brand_brand').val(brand.brand);
-    $('#edit_brand_line').val(brand.line);
-    $('#edit_brand_image').val(brand.image);
-    $('#edit_brand_description').val(brand.description);
-    $('#edit_brand').show();
 }
 
 function setupBrandEditSaveCall() {
@@ -272,20 +280,6 @@ function setupBrandEditSaveCall() {
 
 // PRODUCT TYPE
 
-function setupTypeSearchCall() {
-    enableAutocomplete('type', $('#type_by_id'), '#type_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-
-    $('#type_by_id_btn').on('click', function() {
-        var type_id = $('#type_by_id').data('id');
-
-        postToAPI('/producttype/byid', {
-            id: type_id
-        }, function(response) {
-            typeLoadSuccess(response.results[0]);
-        }, null, 'Looking up type...');
-    });
-}
-
 function setupCreateTypeCall() {
     $('#create_type_btn').on('click', function() {
         typeLoadSuccess({
@@ -296,13 +290,6 @@ function setupCreateTypeCall() {
             description: ''
         });
     });
-}
-
-function typeLoadSuccess(type) {
-    $('#edit_type_id').val(type.id);
-    $('#edit_type_name').val(type.name).data('original', type.name);
-    $('#edit_type_description').val(type.description);
-    $('#edit_type').show();
 }
 
 function setupTypeEditSaveCall() {
@@ -403,23 +390,27 @@ function setupRematch() {
 $(document).ready(function() {
     setupTabSystem();
 
-    setupIngredientSearchCall();
+    for (var tab in SW.EDITOR) {
+        loadTab(tab, SW.EDITOR[tab]);
+    }
+
+    //setupIngredientSearchCall();
     setupIngredientEditSaveCall();
     setupCreateIngredientCall();
 
-    setupProductSearchCall();
+    //setupProductSearchCall();
     setupProductEditSaveCall();
     setupCreateProductCall();
 
-    setupFunctionSearchCall();
+    //setupFunctionSearchCall();
     setupFunctionEditSaveCall();
     setupCreateFunctionCall();
 
-    setupBrandSearchCall();
+    //setupBrandSearchCall();
     setupBrandEditSaveCall();
     setupCreateBrandCall();
 
-    setupTypeSearchCall();
+    //setupTypeSearchCall();
     setupTypeEditSaveCall();
     setupCreateTypeCall();
 
