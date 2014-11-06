@@ -326,11 +326,11 @@ function setupTypeEditSaveCall() {
 // UNMATCHED ALIAS
 
 function unmatchedHTML(alias) {
-    var $div = $('<div/>', {class: 'unmatched_alias_item'});
-    $div.append($('<h2/>').text(alias.name));
-    $div.append($('<p/>').text(alias.description || ''));
-    var $input_container = $('<div/>', {id: 'unmatched_' + alias.id});
-    var $ingredient_search = $('<input/>');
+    var $div = addEl('div', null, 'unmatched_alias_item');
+    addEl('h2', $div, '', alias.name);
+    addEl('p', $div, '', alias.description || '');
+    var $input_container = addEl('div', null, '', '', {id: 'unmatched_' + alias.id});
+    var $ingredient_search = addEl('input');
     enableAutocomplete('ingredient', $ingredient_search, '#' + 'unmatched_' + alias.id)
     var $mark_resolved = $('<input/>', {
         type: 'button',

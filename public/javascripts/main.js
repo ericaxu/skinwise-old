@@ -8,31 +8,28 @@ function setupIngredientInfobox() {
         SW.ING_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.ING[id]) {
                 var ingredient_data = SW.ING[id];
-                var ingredient_info = $('<div/>').on('click', function(e) {
+                var $ingredient_info = addEl('div').on('click', function(e) {
                     e.stopPropagation();
                 });
-                var close_button = $('<span/>', {class: 'close_btn'}).on('click', function() {
+                addEl('span', $ingredient_info, 'close_btn').on('click', function() {
                     $('.ingredient_infobox').remove();
-                })
-                ingredient_info.append(close_button);
-                ingredient_info.append($('<h2/>', {text: ingredient_data.name}));
-                var functions = $('<p/>', {class: 'functions'});
+                });
+                addEl('h2', $ingredient_info, '', ingredient_data.name);
+                var $functions = addEl('p', $ingredient_info, 'functions');
                 for (var i = 0; i < ingredient_data.functions.length; i++) {
                     var func_id = ingredient_data.functions[i];
                     if (SW.FUNC[func_id]) {
-                        functions.append($('<a/>', {
-                            class: 'function neutral',
-                            text: fullyCapitalize(SW.FUNC[func_id].name),
+                        addEl('a', $functions, 'function neutral', fullyCapitalize(SW.FUNC[func_id].name), {
                             href: '/function/' + func_id
-                        }).data('id', func_id));
+                        }).data('id', func_id);
+
                     }
                 }
-                ingredient_info.append(functions);
-                ingredient_info.appendTo('body');
-                ingredient_info.append($('<p/>', {text: ingredient_data.description}));
+                $ingredient_info.appendTo('body');
+                addEl('p', $ingredient_info, '', ingredient_data.description);
                 $('.ingredient_infobox').remove();
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
-                ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: left_offset});
+                $ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: left_offset});
             }
         }, SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
@@ -64,20 +61,19 @@ function setupFunctionInfobox() {
         SW.FUNC_BOX.TIMEOUT_ID = setTimeout(function() {
             if (SW.FUNC[id]) {
                 var func_data = SW.FUNC[id];
-                var func_info = $('<div/>').on('click', function(e) {
+                var $func_info = addEl('div').on('click', function(e) {
                     e.stopPropagation();
                 });
-                var close_button = $('<span/>', {class: 'close_btn'}).on('click', function() {
+                addEl('span', $func_info, 'close_btn').on('click', function() {
                     $('.function_infobox').remove();
-                })
-                func_info.append(close_button);
-                func_info.append($('<h2/>', {text: func_data.name}));
-                func_info.appendTo('body');
-                func_info.append($('<p/>', {text: func_data.description}));
+                });
+                addEl('h2', $func_info, '', func_data.name);
+                $func_info.appendTo('body');
+                addEl('p', $func_info, '', func_data.description);
                 $('.function_infobox').remove();
 
                 var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
-                func_info.addClass('function_infobox').show().offset({top: e.pageY + 10, left: left_offset});
+                $func_info.addClass('function_infobox').show().offset({top: e.pageY + 10, left: left_offset});
             }
         }, SW.FUNC_BOX.TIMEOUT);
     }).on('mouseleave', '.function', function() {

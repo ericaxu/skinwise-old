@@ -23,22 +23,21 @@ function ingredientResultHTML(ing) {
 
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter_obj, filter_key) {
-    var $name = $('<span/>', { class: 'filter_option_text', text: filter_obj.name });
-    var $option = $('<div/>', {class: 'filter_option'})
-        .append($name).append(' (' + filter_obj.count + ')').data('id', filter_obj.id);
-    $option.append($('<span/>', {class: 'delete_btn'})
-        .on('click', function(e) {
-            e.stopPropagation();
-            var action = 'delete ' + filter_key + ' filter "' + filter_obj.name + '"';
-            var delete_callback = function() {
-                removeFilter(SW.BROWSE_TYPE, filter_key, filter_obj.id);
-                $option.remove();
-                if ($option.hasClass('selected')) {
-                    refetch(SW.BROWSE_TYPE);
-                }
-            };
-            confirmAction(action, delete_callback, 'delete_filter');
-        }));
+    var $option = addEl('div', null, 'filter_option').data('id', filter_obj.id);
+    addEl('span', $option, 'filter_option_text', filter_obj.name);
+    $option.append(' (' + filter_obj.count + ')');
+    addEl('span', $option, 'delete_btn').on('click', function(e) {
+        e.stopPropagation();
+        var action = 'delete ' + filter_key + ' filter "' + filter_obj.name + '"';
+        var delete_callback = function() {
+            removeFilter(SW.BROWSE_TYPE, filter_key, filter_obj.id);
+            $option.remove();
+            if ($option.hasClass('selected')) {
+                refetch(SW.BROWSE_TYPE);
+            }
+        };
+        confirmAction(action, delete_callback, 'delete_filter');
+    });
 
     return $option;
 }

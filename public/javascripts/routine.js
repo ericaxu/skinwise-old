@@ -44,16 +44,23 @@ function routineItemHTML(product) {
     $li.append(' ');
     $li.append($('<a/>', { href: '#', class: 'product_name', text: product.name }));
     $li.append('<div class="edit_btns"><input type="button" class="edit_product" value="Edit"/><input type="button" ' +
-        'class="delete_product" value="Delete"/></div>');
+    'class="delete_product" value="Delete"/></div>');
+
+    var $li = addEl('li');
+    addEl('a', $li, 'product_brand', product.brand, { href: '#' });
+    $li.append(' ');
+    addEl('a', $li, 'product_name', product.name, { href: '#' });
+    $li.append('<div class="edit_btns"><input type="button" class="edit_product" value="Edit"/><input type="button" ' +
+    'class="delete_product" value="Delete"/></div>');
 
     return $li;
 }
 
 function routineHTML(routine, is_new) {
-    var $div = $('<div/>', { class: is_new ? 'column editing' : 'column' });
-    var $routine = $('<div/>', { class: 'section' });
-    $routine.append($('<h2/>', { text: routine.name }));
-    var $routine_list = $('<ol/>', { class: 'routines' }).sortable({
+    var $div = addEl('div', is_new ? 'column editing' : 'column');
+    var $routine = addEl('div', $div, 'section');
+    addEl('h2', $routine, '', routine.name);
+    var $routine_list = addEl('ol', $routine, 'routines').sortable({
         placeholder: 'routine_placeholder'
     });
 
@@ -61,8 +68,6 @@ function routineHTML(routine, is_new) {
         $routine_list.append(routineItemHTML(routine.products[i]));
     }
 
-    $routine.append($routine_list);
-    $div.append($routine);
     if (is_new) {
         $div.append('<label>Add product: </label><input type="text" class="add_product">');
         $div.append('<input type="button" class="primary edit_routine" value="Save routine">');

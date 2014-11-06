@@ -79,26 +79,19 @@ function showInfo(message) {
 }
 
 function productResultHTML(product) {
-    var $list_item = $('<li/>', {class: 'product'});
-    var $link = $('<a/>', {href: '/product/' + product.id});
-    var $img = $('<img/>', {
-        class: 'product_img',
+    var $list_item = addEl('li', null, 'product');
+    var $link = addEl('a', $list_item, '', '', { href: '/product/' + product.id });
+    var $img_container = addEl('div', $link, 'product_img_container');
+    var $img = addEl('img', $img_container, 'product_img', '', {
         src: product.image || SW_PLACEHOLDER_URL,
         alt: product.brand + ' ' + product.name
-    });
+    })
     // check if image is ok
     if (product.image) {
         checkImage($img, product.image);
     }
-
-    var $img_container = $('<div/>', { class: 'product_img_container' });
-    $img_container.append($img);
-
-    $link.append($img_container);
-    $link.append($('<div/>', {class: 'product_brand', text: SW.BRANDS[product.brand].name}));
-    $link.append($('<div/>', {class: 'product_name', text: product.name}));
-
-    $list_item.append($link);
+    addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
+    addEl('div', $link, 'product_name', product.name);
 
     return $list_item;
 }
