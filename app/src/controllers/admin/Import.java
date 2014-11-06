@@ -283,7 +283,7 @@ public class Import {
 			}
 		}
 
-		Pattern regex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
+		Pattern percentageRegex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
 
 		List<ProductProperty> properties = new ArrayList<>();
 
@@ -293,9 +293,9 @@ public class Import {
 				continue;
 			}
 			String name = alias.getName();
-			Matcher matcher = regex.matcher(name);
-			if (matcher.find()) {
-				String precentString = matcher.group(1);
+			Matcher percentageMatcher = percentageRegex.matcher(name);
+			if (percentageMatcher.find()) {
+				String precentString = percentageMatcher.group(1);
 				double precent = Double.parseDouble(precentString);
 				String key = "ingredients." + ingredient_id + ".precent";
 				ProductProperty property = new ProductProperty();
@@ -303,6 +303,16 @@ public class Import {
 				property.setNumber_value(precent);
 				properties.add(property);
 			}
+		}
+
+		Matcher spfMatcher = Pattern.compile("(?i)SPF *([0-9]+)").matcher(object.name);
+		if(spfMatcher.find()) {
+			String spfString = spfMatcher.group(1);
+			double spf = Double.parseDouble(spfString);
+			ProductProperty property = new ProductProperty();
+			property.setKey("sunscreen.spf");
+			property.setNumber_value(spf);
+			properties.add(property);
 		}
 
 		Brand brand = cache.brands.get(object.brand);
