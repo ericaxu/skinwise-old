@@ -13,6 +13,7 @@ function setupTabSystem() {
 
 function loadTab(name, data) {
     var $tab = $('#' + name + '_tab');
+    var url_type = name === 'type' ? 'producttype' : name;
     addEl('h1', $tab, '', fullyCapitalize(name) + ' Editor');
     var $lookup_field = addEl('div', $tab, 'field');
     var $lookup_labels = addEl('div', $lookup_field, 'labels');
@@ -26,33 +27,21 @@ function loadTab(name, data) {
     }).on('click', function() {
         var id = $search_input.data('id');
 
-        if (name == 'type') {
-            var url = '/producttype/byid';
-        } else {
-            var url = '/' + name + '/byid';
-        }
-
-        postToAPI(url, {
+        postToAPI('/' + url_type + '/byid', {
             id: id
         }, function(response) {
             var item = response.results[0];
-
-            for (var i = 0; i < data.fields.length; i++) {
-                var field_name = data.fields[i].name;
-                $('#edit_' + name + '_' + field_name).val(item[field_name]);
-                if (data.key == field_name) {
-                    $('#edit_' + name + '_' + field_name).data('original', item[field_name]);
-                }
-            }
-
-            $('#edit_' + name).show();
-
+            loadItem(item, name, data);
         }, null, 'Looking up ' + name + '...');
     });
     addEl('input', $tab, 'primary', '', {
         id: 'create_' + name + '_btn',
-        value: 'Create ingredient',
+        value: 'Create ' + name,
         type: 'button'
+    }).on('click', function() {
+        loadItem({
+            id: 'Not assigned yet'
+        }, name, data);
     });
 
     var $edit_container = addEl('div', $tab, 'edit_container', '', { id: 'edit_' + name });
@@ -81,6 +70,22 @@ function loadTab(name, data) {
         type: 'button',
         id: 'save_' + name + '_btn',
         value: 'Save'
+    }).on('click', function() {
+        var type_id = $('#edit_' + name + '_id').val();
+        var new_type_info = {
+            id: type_id
+        };
+
+        for (var i = 0; i < data.fields.length; i++) {
+            var field_name = data.fields[i].name;
+            new_type_info[field_name] = $('#edit_' + name + '_' + field_name).val();
+        }
+
+        if (new_type_info.id === 'Not assigned yet') {
+            new_type_info.id = '-1';
+        }
+
+        postToAPI('/admin/' + url_type + '/update', new_type_info, null, null, 'Updating ' + name + '...');
     });
 
     enableAutocomplete(name, $search_input, '#' + name + '_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
@@ -88,7 +93,18 @@ function loadTab(name, data) {
     if (name == 'product') {
         enableAutocomplete('brand', $('#edit_product_brand'), '#edit_product .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
     }
+}
 
+function loadItem(item, content_type, data) {
+    for (var i = 0; i < data.fields.length; i++) {
+        var field_name = data.fields[i].name;
+        $('#edit_' + content_type + '_' + field_name).val(item[field_name] || '');
+        if (data.key == field_name) {
+            $('#edit_' + content_type + '_' + field_name).data('original', item[field_name]);
+        }
+    }
+
+    $('#edit_' + content_type).show();
 }
 
 function hideEdit() {
@@ -111,65 +127,7 @@ function listenForEnter() {
     });
 }
 
-function setupIngredientEditSaveCall() {
-    $('#save_ingredient_btn').on('click', function() {
-        var ingredient_id = $('#edit_ingredient_id').val();
-        if (ingredient_id === 'Not assigned yet') {
-            ingredient_id = '-1';
-        }
-        var new_ingredient_info = {
-            id: ingredient_id,
-            name: $('#edit_ingredient_name').val(),
-            cas_number: $('#edit_ingredient_cas_number').val(),
-            popularity: $('#edit_ingredient_popularity').val(),
-            description: $('#edit_ingredient_description').val(),
-            functions: $('#edit_ingredient_functions').val().split(SW.CONFIG.PERMISSION_DELIMITER)
-        };
-
-        postToAPI('/admin/ingredient/update', new_ingredient_info, null, null, 'Updating ingredient...');
-    });
-}
-
-function setupCreateIngredientCall() {
-    $('#create_ingredient_btn').on('click', function() {
-        ingredientLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            cas_name: '',
-            description: '',
-            functions: []
-        });
-    });
-}
-
-
 // PRODUCT
-
-function setupProductSearchCall() {
-    enableAutocomplete('product', $('#product_by_id'), '#product_tab .inputs', SW.AUTOCOMPLETE_LIMIT.EDITOR);
-
-    $('#product_by_id_btn').on('click', function() {
-        var product_id = $('#product_by_id').data('id');
-
-        postToAPI('/product/byid', {
-            id: product_id
-        }, function(response) {
-            productLoadSuccess(response.results[0]);
-        }, null, 'Looking up product...');
-    });
-}
-
-function setupCreateProductCall() {
-    $('#create_product_btn').on('click', function() {
-        productLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            brand: '',
-            line: '',
-            description: ''
-        });
-    });
-}
 
 function productLoadSuccess(product) {
     var brand_name = SW.BRANDS[product.brand].name || '';
@@ -209,104 +167,6 @@ function setupProductEditSaveCall() {
         };
 
         postToAPI('/admin/product/update', new_product_info, null, null, 'Updating product...');
-    });
-}
-
-
-// FUNCTION
-
-
-function setupCreateFunctionCall() {
-    $('#create_function_btn').on('click', function() {
-        functionLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            brand: '',
-            line: '',
-            description: ''
-        });
-    });
-}
-
-function setupFunctionEditSaveCall() {
-    $('#save_function_btn').on('click', function() {
-        var function_id = $('#edit_function_id').val();
-        if (function_id === 'Not assigned yet') {
-            function_id = '-1';
-        }
-        var new_function_info = {
-            id: function_id,
-            name: $('#edit_function_name').val(),
-            description: $('#edit_function_description').val()
-        };
-
-        postToAPI('/admin/function/update', new_function_info, null, null, 'Updating function...');
-    });
-}
-
-
-// BRAND
-
-function setupCreateBrandCall() {
-    $('#create_brand_btn').on('click', function() {
-        brandLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            brand: '',
-            line: '',
-            description: ''
-        });
-    });
-}
-
-function setupBrandEditSaveCall() {
-    $('#save_brand_btn').on('click', function() {
-        var brand_id = $('#edit_brand_id').val();
-        if (brand_id === 'Not assigned yet') {
-            brand_id = '-1';
-        }
-        var new_brand_info = {
-            id: brand_id,
-            name: $('#edit_brand_name').val(),
-            brand: $('#edit_brand_brand').val(),
-            line: $('#edit_brand_line').val(),
-            description: $('#edit_brand_description').val()
-        };
-
-        postToAPI('/admin/brand/update', new_brand_info, null, null, 'Updating brand...');
-    });
-}
-
-
-// PRODUCT TYPE
-
-function setupCreateTypeCall() {
-    $('#create_type_btn').on('click', function() {
-        typeLoadSuccess({
-            id: 'Not assigned yet',
-            name: '',
-            type: '',
-            line: '',
-            description: ''
-        });
-    });
-}
-
-function setupTypeEditSaveCall() {
-    $('#save_type_btn').on('click', function() {
-        var type_id = $('#edit_type_id').val();
-        if (type_id === 'Not assigned yet') {
-            type_id = '-1';
-        }
-        var new_type_info = {
-            id: type_id,
-            name: $('#edit_type_name').val(),
-            type: $('#edit_type_type').val(),
-            line: $('#edit_type_line').val(),
-            description: $('#edit_type_description').val()
-        };
-
-        postToAPI('/admin/producttype/update', new_type_info, null, null, 'Updating type...');
     });
 }
 
@@ -394,25 +254,7 @@ $(document).ready(function() {
         loadTab(tab, SW.EDITOR[tab]);
     }
 
-    //setupIngredientSearchCall();
-    setupIngredientEditSaveCall();
-    setupCreateIngredientCall();
-
-    //setupProductSearchCall();
-    setupProductEditSaveCall();
-    setupCreateProductCall();
-
-    //setupFunctionSearchCall();
-    setupFunctionEditSaveCall();
-    setupCreateFunctionCall();
-
-    //setupBrandSearchCall();
-    setupBrandEditSaveCall();
-    setupCreateBrandCall();
-
-    //setupTypeSearchCall();
-    setupTypeEditSaveCall();
-    setupCreateTypeCall();
+    //setupProductEditSaveCall();
 
     $('#refresh_unmatched_btn').on('click', function() {
         if ($(this).val() === 'Load') {
