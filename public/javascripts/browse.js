@@ -2,7 +2,7 @@ function ingredientResultHTML(ing) {
 
     var $list_item = addEl('li', null, 'ingredient_item');
     var $header = addEl('h2', $list_item, 'name');
-    addEl('a', $header, '', ing.name, { href: '/ingredient/' + ing.id});
+    addEl('a', $header, '', ing.name, {href: '/ingredient/' + ing.id});
     var $functions = addEl('p', $list_item, 'functions');
 
     for (var j = 0; j < ing.functions.length; j++) {
@@ -73,20 +73,27 @@ function loadFilterResults(response) {
     }
 }
 
-function fetchProducts(page, callback) {
+function fetchProducts(page, callback, query) {
     var ingredients = getSelectedFilters('ingredient');
     if (SW.CUR_INGREDIENT && (ingredients.indexOf(SW.CUR_INGREDIENT) === -1 || ingredients.length === 0)) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
 
-    postToAPI('/product/filter', {
-        types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
-        brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
-        neg_brands: getSelectedFilters('neg_brand'),
-        ingredients: ingredients,
-        neg_ingredients: getSelectedFilters('neg_ingredient'),
-        page: page
-    }, callback);
+    if (query === undefined) {
+        var query = {
+            types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
+            brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
+            neg_brands: getSelectedFilters('neg_brand'),
+            ingredients: ingredients,
+            neg_ingredients: getSelectedFilters('neg_ingredient'),
+            page: page
+        };
+    }
+
+    postToAPI('/product/filter', query, function(response) {
+        callback(response);
+        changeHash(query);
+    });
 }
 
 function fetchIngredients(page, callback) {
@@ -175,7 +182,7 @@ function handleAddFilter() {
 
         // Check if this filter already exists
         var found = false;
-        $('.' + filter_key + '_filters .filter_option').each(function () {
+        $('.' + filter_key + '_filters .filter_option').each(function() {
             if ($(this).data('id') === id) {
                 var filter_label = $(this).find('.filter_option_text').text();
                 if (filter_label === name) {
@@ -188,7 +195,9 @@ function handleAddFilter() {
             }
         });
 
-        if (found) { return; }
+        if (found) {
+            return;
+        }
 
         switch (filter_key) {
             case 'brand':
@@ -209,11 +218,11 @@ function handleAddFilter() {
                 showError('Unrecognized filter key ' + filter_key);
         }
 
-        postToAPI(url, { id: id }, function(response) {
+        postToAPI(url, {id: id}, function(response) {
             var new_filter = {
                 id: id,
                 name: name,
-                count: filter_key === 'function' ? response.results[0].ingredient_count :response.results[0].product_count
+                count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count
             };
 
             addFilter(SW.BROWSE_TYPE, filter_key, new_filter);
@@ -274,6 +283,29 @@ function setupAddFilterPopup() {
     });
 }
 
+function changeHash(query) {
+    var hash = '';
+    var need_divide = false;
+
+    for (var filter_type in SW.FILTER_ABBR_MAPPING) {
+        if (query[filter_type].length > 0) {
+            if (need_divide) {
+                hash += '&';
+            }
+            need_divide = true;
+
+            hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=');
+            for (var i = 0; i < query[filter_type].length - 1; i++) {
+                hash += query[filter_type][i] + ',';
+            }
+            hash += query[filter_type][query[filter_type].length - 1];
+
+        }
+    }
+
+    location.hash = hash;
+}
+
 function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
@@ -306,6 +338,5 @@ function initBrowse(type) {
                 $('.filter_container').show();
             }
         });
-
     });
 }

@@ -96,6 +96,14 @@ SW.PREFERENCES = {
     ]
 };
 
+SW.FILTER_ABBR_MAPPING = {
+    types: 't',
+    brands: 'b',
+    neg_brands: 'nb',
+    ingredients: 'i',
+    neg_ingredients: 'ni'
+};
+
 SW.EDITOR = {
     product: {
         key: 'name',
