@@ -79,7 +79,7 @@ function fetchProducts(page, callback, query) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
 
-    if (query === undefined) {
+    if (query === undefined || $.isEmptyObject(query)) {
         var query = {
             types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
             brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
@@ -103,7 +103,7 @@ function fetchIngredients(page, callback) {
     }, callback);
 }
 
-function fetchNextPage() {
+function fetchNextPage(query) {
     if (!SW.ING_FETCH.LOADING) {
         $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
@@ -117,9 +117,9 @@ function fetchNextPage() {
         };
 
         if (SW.BROWSE_TYPE === 'ingredient') {
-            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
+            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback, query);
         } else if (SW.BROWSE_TYPE === 'product') {
-            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
+            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback, query);
         }
     }
 }
@@ -283,6 +283,34 @@ function setupAddFilterPopup() {
     });
 }
 
+function parseQueryFromUrl() {
+    if (location.hash.length > 0) {
+        var reverse_mapping = {};
+        var query = {};
+
+        for (var filter_type in SW.FILTER_ABBR_MAPPING) {
+            var abbr = SW.FILTER_ABBR_MAPPING[filter_type];
+            reverse_mapping[abbr] = filter_type;
+
+            // Default empty filter types to empty array
+            query[filter_type] = [];
+        }
+
+        var hash = location.hash.slice(1, location.hash.length);
+        var filters_by_type = hash.split('&');
+
+        for (var i = 0; i < filters_by_type.length; i++) {
+            var parts = filters_by_type[i].split('=');
+            var filter_name = reverse_mapping[parts[0]];
+            var filter_items = parts[1].split(',');
+            query[filter_name] = filter_items;
+        }
+
+        log(query);
+        return query;
+    }
+}
+
 function changeHash(query) {
     var hash = '';
     var need_divide = false;
@@ -312,7 +340,10 @@ function initBrowse(type) {
 
         loadFilters();
         postToAPI('/brand/all', {}, function(response) {
-            getBrandsSuccess(response, fetchNextPage);
+            getBrandsSuccess(response, function() {
+                var query = parseQueryFromUrl();
+                fetchNextPage(query);
+            });
         });
         handleAddFilter();
         handleBrowseScroll();
@@ -338,5 +369,6 @@ function initBrowse(type) {
                 $('.filter_container').show();
             }
         });
+
     });
 }
