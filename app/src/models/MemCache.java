@@ -7,12 +7,12 @@ import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
-import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.data.*;
 import src.models.util.BaseModel;
 import src.models.util.ManyToMany;
 import src.models.util.NamedModel;
+import src.util.Util;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -682,8 +682,7 @@ public class MemCache {
 
 			List<String> result = new ArrayList<>();
 			for (String ingredient : ingredients) {
-				ingredient = ingredient.trim().toLowerCase();
-				ingredient = StringUtils.strip(ingredient, "\t ,./?`~!@#$%^&*;:");
+				ingredient = Util.cleanTrim(ingredient);
 				if (!ingredient.isEmpty()) {
 					result.add(ingredient);
 				}
@@ -693,9 +692,6 @@ public class MemCache {
 		}
 
 		public static List<String> splitIngredient(String ingredient) {
-			ingredient = ingredient
-					.replaceAll("[0-9\\.]+\\s*%", "")
-					.replaceAll("\\(\\s*\\)", "");
 			String[] words = ingredient.toLowerCase().split("[^a-zA-Z0-9]");
 			List<String> result = new ArrayList<>();
 			for (String word : words) {
@@ -707,14 +703,16 @@ public class MemCache {
 			return result;
 		}
 
-		public List<Alias> matchAllAliases(String input) {
+		public List<Alias> matchAllAliases(String input, List<String> originals) {
 			List<Alias> matches = new LinkedList<>();
 			Set<Alias> matchSet = new HashSet<>();
 			List<String> ingredients = splitIngredients(input);
-			for (String ingredient : ingredients) {
+			for (String original : ingredients) {
+				String ingredient = Util.cleanTrim(original.replaceAll("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*", ""));
 				Alias name = matchAlias(ingredient);
 				if (!matchSet.contains(name)) {
 					matches.add(name);
+					originals.add(original);
 					matchSet.add(name);
 				}
 			}

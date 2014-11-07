@@ -1,5 +1,7 @@
 package src.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -101,6 +103,10 @@ public class Util {
 	public static double getNumberFrom(Matcher matcher, int group) {
 		String result = matcher.group(group);
 		return Double.parseDouble(result);
+	}
+
+	public static String cleanTrim(String input) {
+		return StringUtils.strip(input, "\t ,./?`~!@#$^&*;:=+-_\\|");
 	}
 
 	public static String goodKey(String input) {

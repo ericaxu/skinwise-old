@@ -19,8 +19,9 @@ import java.util.regex.Pattern;
 
 public class Import {
 	private static final String TAG = "Import";
-	private static final Pattern percentageRegex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
-	private static final Pattern spfRegex = Pattern.compile("(?i)SPF *([0-9]+)");
+	private static final String percentageRegex = "\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*";
+	private static final Pattern percentagePattern = Pattern.compile(percentageRegex);
+	private static final Pattern spfPattern = Pattern.compile("(?i)SPF *([0-9]+)");
 
 	public static synchronized void importDB(String path) throws IOException {
 		String json = Util.readAll(path);
@@ -71,6 +72,13 @@ public class Import {
 		brands.remove("");
 		types.remove("");
 		allIngredients.remove("");
+
+		Set<String> allIngredientsNew = new HashSet<>();
+		for(String ingredient : allIngredients) {
+			allIngredientsNew.add(Util.cleanTrim(ingredient.replaceAll("\\(*\\s*[0-9\\.]+\\s*%\\s*\\)*", "")));
+		}
+
+		allIngredients = allIngredientsNew;
 
 		Logger.debug(TAG, "Importing product brands and types");
 		//Create brands not entered in the system
@@ -272,28 +280,36 @@ public class Import {
 	}
 
 	private static void createProduct(DBFormat.ProductObject object, MemCache cache) {
-		List<Alias> ingredients = cache.matcher.matchAllAliases(object.ingredients);
-		List<Alias> key_ingredients = cache.matcher.matchAllAliases(object.key_ingredients);
+		List<String> ingredientOriginals = new ArrayList<>();
+		List<String> keyIngredientOriginals = new ArrayList<>();
+		List<Alias> ingredients = cache.matcher.matchAllAliases(object.ingredients, ingredientOriginals);
+		List<Alias> key_ingredients = cache.matcher.matchAllAliases(object.key_ingredients, keyIngredientOriginals);
 
 		Iterator<Alias> iterator = ingredients.iterator();
+		Iterator<String> iterator2 = ingredientOriginals.iterator();
 		while (iterator.hasNext()) {
 			Alias alias = iterator.next();
+			String original = iterator2.next();
 			Ingredient ingredient = alias.getIngredient();
 			if (ingredient != null && ingredient.isActive()) {
 				iterator.remove();
 				key_ingredients.add(alias);
+				iterator2.remove();
+				keyIngredientOriginals.add(original);
 			}
 		}
 
 		List<ProductProperty> properties = new ArrayList<>();
 
+		int i = -1;
 		for (Alias alias : key_ingredients) {
+			i++;
 			long ingredient_id = alias.getIngredient_id();
 			if (BaseModel.isIdNull(ingredient_id)) {
 				continue;
 			}
-			String name = alias.getName();
-			Matcher percentageMatcher = percentageRegex.matcher(name);
+			String original = keyIngredientOriginals.get(i);
+			Matcher percentageMatcher = percentagePattern.matcher(original);
 			if (percentageMatcher.find()) {
 				double precent = Util.getNumberFrom(percentageMatcher, 1);
 				String key = "ingredients." + ingredient_id + ".precent";
@@ -304,7 +320,7 @@ public class Import {
 			}
 		}
 
-		Matcher spfMatcher = spfRegex.matcher(object.name);
+		Matcher spfMatcher = spfPattern.matcher(object.name);
 		if (spfMatcher.find()) {
 			double spf = Util.getNumberFrom(spfMatcher, 1);
 			ProductProperty property = new ProductProperty();
