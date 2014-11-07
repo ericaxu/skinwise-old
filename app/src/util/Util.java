@@ -9,6 +9,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 
 public class Util {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -95,6 +96,11 @@ public class Util {
 			result += String.format(".%02d", decimal);
 		}
 		return "$" + result;
+	}
+
+	public static double getNumberFrom(Matcher matcher, int group) {
+		String result = matcher.group(group);
+		return Double.parseDouble(result);
 	}
 
 	public static String goodKey(String input) {

@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 
 public class Import {
 	private static final String TAG = "Import";
+	private static final Pattern percentageRegex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
+	private static final Pattern spfRegex = Pattern.compile("(?i)SPF *([0-9]+)");
 
 	public static synchronized void importDB(String path) throws IOException {
 		String json = Util.readAll(path);
@@ -283,20 +285,17 @@ public class Import {
 			}
 		}
 
-		Pattern percentageRegex = Pattern.compile("\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*");
-
 		List<ProductProperty> properties = new ArrayList<>();
 
 		for (Alias alias : key_ingredients) {
 			long ingredient_id = alias.getIngredient_id();
-			if(BaseModel.isIdNull(ingredient_id)) {
+			if (BaseModel.isIdNull(ingredient_id)) {
 				continue;
 			}
 			String name = alias.getName();
 			Matcher percentageMatcher = percentageRegex.matcher(name);
 			if (percentageMatcher.find()) {
-				String precentString = percentageMatcher.group(1);
-				double precent = Double.parseDouble(precentString);
+				double precent = Util.getNumberFrom(percentageMatcher, 1);
 				String key = "ingredients." + ingredient_id + ".precent";
 				ProductProperty property = new ProductProperty();
 				property.setKey(key);
@@ -305,10 +304,9 @@ public class Import {
 			}
 		}
 
-		Matcher spfMatcher = Pattern.compile("(?i)SPF *([0-9]+)").matcher(object.name);
-		if(spfMatcher.find()) {
-			String spfString = spfMatcher.group(1);
-			double spf = Double.parseDouble(spfString);
+		Matcher spfMatcher = spfRegex.matcher(object.name);
+		if (spfMatcher.find()) {
+			double spf = Util.getNumberFrom(spfMatcher, 1);
 			ProductProperty property = new ProductProperty();
 			property.setKey("sunscreen.spf");
 			property.setNumber_value(spf);
@@ -352,7 +350,7 @@ public class Import {
 
 		cache.products.update(result, oldBrandId, oldName);
 
-		for(ProductProperty property : properties) {
+		for (ProductProperty property : properties) {
 			property.setProduct_id(result.getId());
 			property.save();
 			cache.product_properties.update(property);
