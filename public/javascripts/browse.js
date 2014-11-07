@@ -291,7 +291,9 @@ function initBrowse(type) {
             refetch();
         });
 
-        type && $('#search_category_select').val(type);
+        if (type) {
+            $('#search_category_select').val(type).trigger('change');
+        }
 
         $('.filter_toggle_link').on('click', function() {
             if ($(this).hasClass('open')) {
