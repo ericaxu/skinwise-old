@@ -75,7 +75,7 @@ function loadFilterResults(response) {
 
 function fetchProducts(page, callback) {
     var ingredients = getSelectedFilters('ingredient');
-    if (SW.CUR_INGREDIENT && (ingredients.indexOf(SW.CUR_INGREDIENT) !== -1 || ingredients.length === 0)) {
+    if (SW.CUR_INGREDIENT && (ingredients.indexOf(SW.CUR_INGREDIENT) === -1 || ingredients.length === 0)) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
 
