@@ -389,6 +389,15 @@ function initBrowse(type) {
         handleBrowseScroll();
         setupAddFilterPopup();
 
+        $('#price_filter').slider({
+            range: true,
+            min: 0,
+            max: 500,
+            values: [0, 500],
+            slide: function(event, ui) {
+            }
+        });
+
         $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
             refetch();
