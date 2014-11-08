@@ -16,6 +16,7 @@ file_products_paula_json = "data/products.paula.json.txt"
 file_products_birchbox_json = "data/products.birchbox.json.txt"
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 file_ingredients_alias_additions_json = "data/ingredients.alias.additions.json.txt"
+file_products_brand_corrections_json = "data/products.brand.corrections.json.txt"
 
 def import_data():
 	result = dict() # util.json_read(file_data_json, "{}")
@@ -72,7 +73,7 @@ def import_data():
 
 	del inci
 
-	paula
+	# paula
 	paula = util.json_read(file_products_paula_json, "{}")
 	if 'products' in paula:
 		for key, product in paula['products'].items():
@@ -142,9 +143,16 @@ def import_data():
 			product['popularity'] = -1;
 
 	# brands
+	corrections = util.json_read(file_products_brand_corrections_json, "{}")
 	for key, product in result['products'].items():
+		# Brand correction applied
+		if product['brand'] in corrections:
+			product['brand'] = corrections[product['brand']]
+		if product['brand'].endswith('\u00ae') or product['brand'].endswith('\u2122'):
+			product['brand'] = product['brand'][:-1]
 		brand_key = parser.good_key(product['brand'])
 		result['brands'][brand_key] = {"name": product['brand']}
+	del corrections
 
 	return result
 

@@ -117,11 +117,10 @@ for url in urls:
 	product_other_ingredients = parser.regex_find_all(r'<p[^>]*>(.*?)<\/p>', product_ingredients)
 
 	def getIngredients(ingredients):
-		if ingredients.startswith("Ingredients*:"):
-			ingredients = ingredients[12:]
+		ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients).strip()
 
-		ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients)
-
+		if ingredients.startswith(":"):
+			ingredients = ingredients[1:]
 		key = ""
 		other = ""
 

@@ -19,8 +19,8 @@ class Crawler(object):
 		"""
 		def selective_callback(data):
 			data = parser.strip_newline(data)
-			return parser.regex_find(regex, data, 1)
-
+			matches = parser.regex_find(regex, data)
+			return "".join([matches.group(i) for i in range(1, matches.lastindex + 1)])
 		return self.crawl(key, url, selective_callback)
 
 	def crawl(self, key, url, callback=None):
