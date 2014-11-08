@@ -274,8 +274,13 @@ public class Product extends PopularNamedModel {
 	public static List<Product> byFilter(long[] brands, long[] negBrands,
 	                                     long[] types,
 	                                     long[] ingredients, long[] nedIngredients,
+	                                     long priceMin, long priceMax,
 	                                     boolean discontinued,
 	                                     Page page) {
+		if(priceMax <= priceMin) {
+			priceMax = Long.MAX_VALUE;
+		}
+
 		SelectQuery query = new SelectQuery();
 		query.select("DISTINCT main.id as id, main.popularity");
 		query.from(TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux ON main.id = aux.product_id");
@@ -284,6 +289,7 @@ public class Product extends PopularNamedModel {
 		//		if (!discontinued) {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
+		query.where("main.price BETWEEN " + priceMin + " AND " + priceMax);
 
 		if (brands.length > 0) {
 			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");

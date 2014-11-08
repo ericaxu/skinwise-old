@@ -57,6 +57,8 @@ public class ProductController extends Controller {
 		public long[] neg_brands;
 		@NotNull
 		public long[] neg_ingredients;
+		public long price_min;
+		public long price_max;
 	}
 
 	public static class ResponseProductObject {
@@ -183,6 +185,7 @@ public class ProductController extends Controller {
 					request.brands, request.neg_brands,
 					request.types,
 					request.ingredients, request.neg_ingredients,
+					request.price_min, request.price_max,
 					false,
 					page);
 
