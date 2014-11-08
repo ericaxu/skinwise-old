@@ -1,5 +1,4 @@
 function ingredientResultHTML(ing) {
-
     var $list_item = addEl('li', null, 'ingredient_item');
     var $header = addEl('h2', $list_item, 'name');
     addEl('a', $header, '', ing.name, {href: '/ingredient/' + ing.id});
@@ -23,9 +22,14 @@ function ingredientResultHTML(ing) {
 
 // Generate the HTML for each filter item, given filter obj and type
 function getFilterHTML(filter_obj, filter_key) {
-    var $option = addEl('div', null, 'filter_option').data('id', filter_obj.id);
+    var $option = addEl('div', null, 'filter_option', '', {
+        id: filter_key + '_' + filter_obj.id + '_filter_option'
+    }).data('id', filter_obj.id);
     addEl('span', $option, 'filter_option_text', filter_obj.name);
     $option.append(' (' + filter_obj.count + ')');
+    if (filter_obj.selected) {
+        $option.addClass('selected');
+    }
     addEl('span', $option, 'delete_btn').on('click', function(e) {
         e.stopPropagation();
         var action = 'delete ' + filter_key + ' filter "' + filter_obj.name + '"';
@@ -79,16 +83,14 @@ function fetchProducts(page, callback, query) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
 
-    if (query === undefined || $.isEmptyObject(query)) {
-        var query = {
-            types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
-            brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
-            neg_brands: getSelectedFilters('neg_brand'),
-            ingredients: ingredients,
-            neg_ingredients: getSelectedFilters('neg_ingredient'),
-            page: page
-        };
-    }
+    var query = {
+        types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
+        brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
+        neg_brands: getSelectedFilters('neg_brand'),
+        ingredients: ingredients,
+        neg_ingredients: getSelectedFilters('neg_ingredient'),
+        page: page
+    };
 
     postToAPI('/product/filter', query, function(response) {
         callback(response);
@@ -103,7 +105,7 @@ function fetchIngredients(page, callback) {
     }, callback);
 }
 
-function fetchNextPage(query) {
+function fetchNextPage() {
     if (!SW.ING_FETCH.LOADING) {
         $('#loading_spinner').show();
         SW.ING_FETCH.LOADING = true;
@@ -117,9 +119,9 @@ function fetchNextPage(query) {
         };
 
         if (SW.BROWSE_TYPE === 'ingredient') {
-            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback, query);
+            fetchIngredients(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         } else if (SW.BROWSE_TYPE === 'product') {
-            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback, query);
+            fetchProducts(SW.ING_FETCH.CUR_PAGE + 1, fetch_callback);
         }
     }
 }
@@ -165,6 +167,29 @@ function loadFilters() {
     }
 }
 
+function fetchFilterInfo(filter_key, id, callback) {
+    switch (filter_key) {
+        case 'brand':
+        case 'neg_brand':
+            var url = '/brand/byid';
+            break;
+        case 'ingredient':
+        case 'neg_ingredient':
+            var url = '/ingredient/byid';
+            break;
+        case 'type':
+            var url = '/producttype/byid';
+            break;
+        case 'function':
+            var url = '/function/byid';
+            break;
+        default:
+            showError('Unrecognized filter key ' + filter_key);
+    }
+
+    postToAPI(url, {id: id}, callback);
+}
+
 function handleAddFilter() {
     var $add_filter = $('#add_filter');
 
@@ -180,45 +205,13 @@ function handleAddFilter() {
             return;
         }
 
-        // Check if this filter already exists
-        var found = false;
-        $('.' + filter_key + '_filters .filter_option').each(function() {
-            if ($(this).data('id') === id) {
-                var filter_label = $(this).find('.filter_option_text').text();
-                if (filter_label === name) {
-                    showAddFilterError('Already added this filter.');
-                    found = true;
-                } else {
-                    showAddFilterError(filter_label + ' is the same thing as ' + name + ' and it\'s already added.');
-                    found = true;
-                }
-            }
-        });
+        var result = checkIfFilterAlreadyExists(filter_key, id);
 
-        if (found) {
-            return;
+        if (result.found) {
+            showAddFilterError(result.error);
         }
 
-        switch (filter_key) {
-            case 'brand':
-            case 'neg_brand':
-                var url = '/brand/byid';
-                break;
-            case 'ingredient':
-            case 'neg_ingredient':
-                var url = '/ingredient/byid';
-                break;
-            case 'type':
-                var url = '/producttype/byid';
-                break;
-            case 'function':
-                var url = '/function/byid';
-                break;
-            default:
-                showError('Unrecognized filter key ' + filter_key);
-        }
-
-        postToAPI(url, {id: id}, function(response) {
+        fetchFilterInfo(filter_key, id, function(response) {
             var new_filter = {
                 id: id,
                 name: name,
@@ -261,6 +254,28 @@ function handleBrowseScroll() {
     });
 }
 
+function checkIfFilterAlreadyExists(filter_key, id) {
+    var result = {
+        found: false,
+        error: ''
+    };
+
+    $('.' + filter_key + '_filters .filter_option').each(function() {
+        if ($(this).data('id') === id) {
+            var filter_label = $(this).find('.filter_option_text').text();
+            if (filter_label === name) {
+                result.error = 'Already added this filter.';
+                result.found = true;
+            } else {
+                result.error = filter_label + ' is the same thing as ' + name + ' and it\'s already added.';
+                result.found = true;
+            }
+        }
+    });
+
+    return result;
+}
+
 function setupAddFilterPopup() {
     var $add_filter = $('#add_filter');
     $('.open_add_filter_popup').on('click', function() {
@@ -283,7 +298,7 @@ function setupAddFilterPopup() {
     });
 }
 
-function parseQueryFromUrl() {
+function showExtraFiltersFromUrl() {
     if (location.hash.length > 0) {
         var reverse_mapping = {};
         var query = {};
@@ -306,8 +321,34 @@ function parseQueryFromUrl() {
             query[filter_name] = filter_items;
         }
 
-        log(query);
-        return query;
+        for (var filter_key in query) {
+            var filters = query[filter_key];
+            filter_key = filter_key.slice(0, filter_key.length - 1);
+
+            for (var i = 0; i < filters.length; i++) {
+                var filter_id = filters[i];
+                showExtraFilter(filter_key, filter_id);
+            }
+        }
+    }
+}
+
+function showExtraFilter(filter_key, id) {
+    var result = $('#' + filter_key + '_' + id + '_filter_option');
+    if (result.length > 0) {
+        result.addClass('selected');
+    } else {
+        fetchFilterInfo(filter_key, id, function(response) {
+            var new_filter = {
+                id: id,
+                name: response.results[0].name,
+                count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count,
+                selected: true
+            };
+
+            var $filters = $('.' + filter_key + '_filters');
+            $filters.append(getFilterHTML(new_filter, filter_key));
+        });
     }
 }
 
@@ -336,14 +377,13 @@ function changeHash(query) {
 
 function initBrowse(type) {
     $(document).on('ready', function() {
-        new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById("loading_spinner"));
+        new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
 
         loadFilters();
+        showExtraFiltersFromUrl();
+
         postToAPI('/brand/all', {}, function(response) {
-            getBrandsSuccess(response, function() {
-                var query = parseQueryFromUrl();
-                fetchNextPage(query);
-            });
+            getBrandsSuccess(response, fetchNextPage);
         });
         handleAddFilter();
         handleBrowseScroll();
