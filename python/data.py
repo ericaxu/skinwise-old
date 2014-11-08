@@ -13,17 +13,20 @@ file_ingredients_active_list_json = "data/ingredients.active.list.json.txt"
 file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
 file_ingredients_inci_json = "data/ingredients.inci.json.txt"
 file_products_paula_json = "data/products.paula.json.txt"
+file_products_birchbox_json = "data/products.birchbox.json.txt"
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 file_ingredients_alias_additions_json = "data/ingredients.alias.additions.json.txt"
 
 def import_data():
-	result = util.json_read(file_data_json, "{}")
+	result = dict() # util.json_read(file_data_json, "{}")
 	if not 'ingredients' in result:
 		result['ingredients'] = dict()
 	if not 'functions' in result:
 		result['functions'] = dict()
 	if not 'products' in result:
 		result['products'] = dict()
+	if not 'brands' in result:
+		result['brands'] = dict()
 
 	# specialchem
 	specialchem = util.json_read(file_ingredients_specialchem_json, "{}")
@@ -69,7 +72,7 @@ def import_data():
 
 	del inci
 
-	# paula
+	paula
 	paula = util.json_read(file_products_paula_json, "{}")
 	if 'products' in paula:
 		for key, product in paula['products'].items():
@@ -77,6 +80,15 @@ def import_data():
 				result['products'][key] = product
  
 	del paula
+
+	# birchbox
+	# birchbox = util.json_read(file_products_birchbox_json, "{}")
+	# if 'products' in birchbox:
+	# 	for key, product in birchbox['products'].items():
+	# 		if product['ingredients'] != "" or product['key_ingredients']!= "":
+	# 			result['products'][key] = product
+ 
+	# del birchbox
 
 	# duckduckgo
 	duckduckgo = util.json_read(file_images_duckduckgo_json, "{}")
@@ -87,7 +99,7 @@ def import_data():
  
 	del duckduckgo
 
-	# export
+	# export popularity
 	export = util.json_read(file_export_json, "{}")
 	if 'products' in export:
 		for key, product in export['products'].items():
@@ -129,6 +141,11 @@ def import_data():
 		if "Discontinued" in product['name']:
 			product['popularity'] = -1;
 
+	# brands
+	for key, product in result['products'].items():
+		brand_key = parser.good_key(product['brand'])
+		result['brands'][brand_key] = {"name": product['brand']}
+
 	return result
 
 combined_data = import_data()
@@ -142,5 +159,6 @@ util.json_write(combined_data, file_data_tmp_json)
 util.swap_files(file_data_tmp_json, file_data_json)
 
 parser.print_count(combined_data['ingredients'], 'Ingredients')
+parser.print_count(combined_data['brands'], 'Brands')
 parser.print_count(combined_data['functions'], 'Functions')
 parser.print_count(combined_data['products'], "Products")
