@@ -395,6 +395,7 @@ function initBrowse(type) {
             max: 500,
             values: [0, 500],
             slide: function(event, ui) {
+                $('#price_label').text('$' + ui.values[0] + ' - $' + ui.values[1]);
             }
         });
 
