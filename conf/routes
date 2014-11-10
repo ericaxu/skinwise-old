@@ -85,7 +85,7 @@ POST        /api/admin/ingredient/update         src.controllers.admin.AdminIngr
 POST        /api/admin/alias/update              src.controllers.admin.AdminIngredientController.api_alias_update()
 
 POST        /api/admin/brand/update              src.controllers.admin.AdminProductController.api_brand_update()
-POST        /api/admin/producttype/update        src.controllers.admin.AdminProductController.api_type_update()
+POST        /api/admin/type/update        src.controllers.admin.AdminProductController.api_type_update()
 POST        /api/admin/product/update            src.controllers.admin.AdminProductController.api_product_update()
 
 POST        /api/admin/report/byid               src.controllers.admin.AdminReportController.api_report_byid()

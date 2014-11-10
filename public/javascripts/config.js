@@ -107,7 +107,7 @@ SW.FILTER_ABBR_MAPPING = {
 SW.PRICE_FILTER_RANGE = {
     MIN: 0,
     MAX: 201,
-    INFINITY: Math.pow(2, 53)
+    INFINITY: -1
 };
 
 SW.EDITOR = {

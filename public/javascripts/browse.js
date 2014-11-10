@@ -211,7 +211,7 @@ function fetchFilterInfo(filter_key, id, callback) {
             var url = '/ingredient/byid';
             break;
         case 'type':
-            var url = '/producttype/byid';
+            var url = '/type/byid';
             break;
         case 'function':
             var url = '/function/byid';

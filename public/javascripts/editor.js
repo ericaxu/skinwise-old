@@ -13,7 +13,6 @@ function setupTabSystem() {
 
 function loadTab(name, data) {
     var $tab = $('#' + name + '_tab');
-    var url_type = name === 'type' ? 'producttype' : name;
     addEl('h1', $tab, '', fullyCapitalize(name) + ' Editor');
     var $lookup_field = addEl('div', $tab, 'field');
     var $lookup_labels = addEl('div', $lookup_field, 'labels');
@@ -27,7 +26,7 @@ function loadTab(name, data) {
     }).on('click', function() {
         var id = $search_input.data('id');
 
-        postToAPI('/' + url_type + '/byid', {
+        postToAPI('/' + name + '/byid', {
             id: id
         }, function(response) {
             var item = response.results[0];
