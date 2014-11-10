@@ -1,12 +1,12 @@
 {
-	"Bodycare": "Bodycare",
-	"Cleanser": "Cleanser",
-	"Eye Treatment": "Eye Treatment",
-	"Haircare": "Haircare",
+	"Bodycare": "Skincare,Body care",
+	"Cleanser": "Skincare,Cleanser",
+	"Eye Treatment": "Skincare,Eye Care",
+	"Haircare": "Hair Care",
 	"Makeup": "Makeup",
-	"Mask and Scrub": "Mask and Scrub",
-	"Moisturizer": "Moisturizer",
-	"Suncare": "Suncare",
-	"Toner": "Toner",
-	"Treatment": "Treatment"
+	"Mask and Scrub": "Skincare,Facial Mask",
+	"Moisturizer": "Skincare,Moisturizer",
+	"Suncare": "Skincare,Sunscreen",
+	"Toner": "Skincare,Toner",
+	"Treatment": "Skincare,Treatment"
 }
