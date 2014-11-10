@@ -78,24 +78,6 @@ function showInfo(message) {
     showMessage({type: 'info', message: message});
 }
 
-function productResultHTML(product) {
-    var $list_item = addEl('li', null, 'product');
-    var $link = addEl('a', $list_item, '', '', { href: '/product/' + product.id });
-    var $img_container = addEl('div', $link, 'product_img_container');
-    var $img = addEl('img', $img_container, 'product_img', '', {
-        src: product.image || SW_PLACEHOLDER_URL,
-        alt: product.brand + ' ' + product.name
-    })
-    // check if image is ok
-    if (product.image) {
-        checkImage($img, product.image);
-    }
-    addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
-    addEl('div', $link, 'product_name', product.name);
-
-    return $list_item;
-}
-
 function addFilter(type, filter_key, item) {
     var key = type + '_' + filter_key;
     var filters = JSON.parse(localStorage.getItem(key) || '[]');
