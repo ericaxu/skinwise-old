@@ -104,6 +104,12 @@ SW.FILTER_ABBR_MAPPING = {
     neg_ingredients: 'ni'
 };
 
+SW.PRICE_FILTER_RANGE = {
+    MIN: 0,
+    MAX: 199,
+    INFINITY: Math.pow(2, 53)
+};
+
 SW.EDITOR = {
     product: {
         key: 'name',

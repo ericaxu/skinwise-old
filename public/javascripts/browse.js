@@ -90,7 +90,7 @@ function fetchProducts(page, callback, query) {
         ingredients: ingredients,
         neg_ingredients: getSelectedFilters('neg_ingredient'),
         price_min: price_filter[0] * 100,
-        price_max: price_filter[1] * 100,
+        price_max: price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100,
         page: page
     };
 
@@ -393,11 +393,15 @@ function initBrowse(type) {
 
         $('#price_filter').slider({
             range: true,
-            min: 0,
-            max: 200,
-            values: [0, 200],
+            min: SW.PRICE_FILTER_RANGE.MIN,
+            max: SW.PRICE_FILTER_RANGE.MAX,
+            values: [SW.PRICE_FILTER_RANGE.MIN, SW.PRICE_FILTER_RANGE.MAX],
             slide: function(event, ui) {
-                $('#price_label').text('$' + ui.values[0] + ' - $' + ui.values[1]);
+                if (ui.values[1] === SW.PRICE_FILTER_RANGE.MAX) {
+                    $('#price_label').text('$' + ui.values[0] + ' - unlimited');
+                } else {
+                    $('#price_label').text('$' + ui.values[0] + ' - $' + ui.values[1]);
+                }
             },
             stop: function(event, ui) {
                 refetch();
