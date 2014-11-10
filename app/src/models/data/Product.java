@@ -270,7 +270,7 @@ public class Product extends PopularNamedModel {
 	                                     long priceMin, long priceMax,
 	                                     boolean discontinued,
 	                                     Page page) {
-		if (priceMax <= priceMin) {
+		if (priceMax < priceMin) {
 			priceMax = Long.MAX_VALUE;
 		}
 
