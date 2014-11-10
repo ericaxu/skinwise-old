@@ -125,7 +125,9 @@ function fetchProducts(page, callback, query) {
 
     postToAPI('/product/filter', query, function(response) {
         callback(response);
-        changeHash(query);
+        if (!SW.CUR_INGREDIENT && !SW.CUR_TYPE && !SW.CUR_BRAND) {
+            changeHash(query);
+        }
     });
 }
 
