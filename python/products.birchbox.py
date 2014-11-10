@@ -13,6 +13,48 @@ file_products_birchbox_json = "data/products.birchbox.json.txt"
 url_product_page = "https://www.birchbox.com/shop/%s"
 url_product_list = "https://www.birchbox.com/shop/skincare?p=%s"
 
+dot_ingredient_lists = [
+	"Nocturnal Rescue Mask",
+	"Daily Dose Foaming Cleanser",
+	"Glamour Shot Eyes"
+]
+
+badnames = [
+	"kit",
+	"set",
+	"collection",
+	"system",
+	"duo",
+	"trio",
+	"microdelivery peel"
+]
+
+size_map = {
+	"oz": "fl. oz.",
+	"oz.": "fl. oz.",
+	"fl oz": "fl. oz.",
+	"fl. oz": "fl. oz.",
+	"oz bottle": "fl. oz.",
+	"oz (113 g)": "fl. oz.",
+	"g": "g.",
+	"ml": "ml.",
+	"mL": "ml.",
+	"ml. each": "ml.",
+	"mask": "masks",
+	"individual masks": "masks",
+	"single-use sheet masks": "masks",
+	"Sheet": "sheets",
+	"wipes inside a mirrored compact": "wipes",
+	"single-use 2-step patch": "patches",
+	"single-use 2-step patches": "patches",
+	"single-use cloths": "cloths",
+	"Individually Wrapped Packets": "packets",
+	"single-use packets": "packets",
+	"packets per box": "packets",
+	"pk": "packets",
+	"Towelettes": "towelettes"
+}
+
 print("Searching product urls")
 
 urls = list()
@@ -73,9 +115,19 @@ for url in urls:
 	ingredients = parser.regex_replace(r'<[^>]*?>', " | ", parser.regex_find(r'<div class="bbox-target">(.*?)</div>', product_info, 1))
 	ingredients = parser.regex_replace(r'\|\s*\|', "|", ingredients)
 	ingredients = ingredients.strip("| ")
+	ingredients = ingredients.replace(";", ",")
 	if not brand or not ingredients:
 		continue
+
+	name_is_bad = False
+	for bad_name in badnames:
+		if parser.regex_find(r' (?i)' + bad_name, name):
+			name_is_bad = True
+	if name_is_bad:
+		continue
 	name = parser.strip_brand(brand, name)
+	if name in dot_ingredient_lists:
+		ingredients = ingredients.replace(".", ",")
 	prod_type = parser.regex_find(r'"urls":(\[[^\]]*\])}', product_info, 1)
 	prod_type = util.json_decode(prod_type)
 	prod_type = [x for x in prod_type if x.startswith("skincare") and not x == "skincare/cleanser"
@@ -94,6 +146,8 @@ for url in urls:
 		print("Product only has holiday as type: " + name)
 
 	prod_type = [x if x not in type_corrections else type_corrections[x] for x in prod_type]
+	prod_type = [x for x in prod_type if x != ""]
+	prod_type = list(set(prod_type))
 	prod_type.sort()
 
 	for x in prod_type:
@@ -103,10 +157,27 @@ for url in urls:
 
 	price = parser.regex_find(r'<span itemprop="price"><strong>([^<]*)</strong></span>', product_info, 1)
 	size = parser.regex_find(r'<label>Size:</label><span>([^<]*)</span>', product_info, 1)
-	size = parser.regex_remove(r'&nbsp;', size)
+	size = parser.regex_remove(r'&nbsp;', size).strip()
 	# description = parser.strip_tags(parser.regex_find(r'<span itemprop="description"><p>(.*?)</p>', product_info, 1))
 	# description += "<br>" + parser.strip_tags(parser.regex_find(r'How it Works</h4>(.*?)</p>', product_info, 1))
 	# description += "<br>" + parser.strip_tags(parser.regex_find(r'How to Use</h4>(.*?)</p>', product_info, 1))
+	size = [x.strip() for x in parser.regex_split(r'/|,| or|;', size)]
+	size = [x for x in size if x]
+	# print("%r"%size)
+	size_tmp = list()
+	for s in size:
+		split = s.split(' ')
+		if not split[0].isnumeric():
+			continue
+		unit = s[len(split[0])+1:]
+		if unit in size_map:
+			unit = size_map[unit]
+
+		if unit == "fl. oz.":
+			size_tmp = [split[0] + " " + unit]
+			break
+		size_tmp.append(split[0] + " " + unit)
+	size = size_tmp
 	image = parser.strip_tags(parser.regex_find(r'<img itemprop="image" src="(.*?)"', product_info, 1))
 	product = dict()
 	product["name"] = web.html_unescape(name)
@@ -114,7 +185,7 @@ for url in urls:
 	product['types'] = prod_type
 	product["description"] = "" # web.html_unescape(description)
 	product['price'] = price
-	product['size'] = web.html_unescape(size)
+	product['size'] = web.html_unescape(size[0] if len(size) else "")
 	(key_ingredients, other_ingredients) = getIngredients(web.html_unescape(ingredients))
 	product["key_ingredients"] = key_ingredients
 	product["ingredients"] = other_ingredients

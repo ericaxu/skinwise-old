@@ -83,13 +83,13 @@ def import_data():
 	del paula
 
 	# birchbox
-	# birchbox = util.json_read(file_products_birchbox_json, "{}")
-	# if 'products' in birchbox:
-	# 	for key, product in birchbox['products'].items():
-	# 		if product['ingredients'] != "" or product['key_ingredients']!= "":
-	# 			result['products'][key] = product
+	birchbox = util.json_read(file_products_birchbox_json, "{}")
+	if 'products' in birchbox:
+		for key, product in birchbox['products'].items():
+			if product['ingredients'] != "" or product['key_ingredients']!= "":
+				result['products'][key] = product
  
-	# del birchbox
+	del birchbox
 
 	# duckduckgo
 	duckduckgo = util.json_read(file_images_duckduckgo_json, "{}")
