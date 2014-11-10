@@ -3,7 +3,6 @@
 require_once("parser.inc.php");
 parser_no_timeout();
 
-//Documentation: http://eur-lex.europa.eu/search.html?qid=1412217293942&text=32006D0257&scope=EURLEX&type=quick&lang=en
 $source_root = "http://www.cosmetic-ingredients.net/";
 $source_index = $source_root . "index.php";
 $source_brand = $source_root . "product.php?type=' OR '1'='1&brand=";

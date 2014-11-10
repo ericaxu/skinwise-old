@@ -81,6 +81,8 @@ for url in urls:
 	product_brand = parser.regex_find(r'<div class="brand">by <a[^>]*>(.*?)<\/a>', page_table, 1)
 	product_brand = web.html_unescape(parser.strip_tags(product_brand))
 
+	product_name = parser.strip_brand_entire(product_brand, product_name)
+
 	if not product_name or not product_brand:
 		continue
 

@@ -116,7 +116,6 @@ def getIngredients(ingredients):
 
 type_corrections = util.json_read(file_products_birchbox_type_corrections_json, "{}")
 
-types = set()
 types_unique = set()
 unit_unique = set()
 
@@ -138,7 +137,7 @@ for url in urls:
 			name_is_bad = True
 	if name_is_bad:
 		continue
-	name = parser.strip_brand(brand, name)
+	name = parser.strip_brand(brand if not brand == "(MALIN+GOETZ)" else "(MALIN + GOETZ)", name)
 	if name in dot_ingredient_lists:
 		ingredients = ingredients.replace(".", ",")
 	prod_type = parser.regex_find(r'"urls":(\[[^\]]*\])}', product_info, 1)
@@ -166,7 +165,6 @@ for url in urls:
 	for x in prod_type:
 		types_unique.add(x)
 	prod_type = ",".join(prod_type)
-	types.add(prod_type)
 
 	price = parser.regex_find(r'<span itemprop="price"><strong>([^<]*)</strong></span>', product_info, 1)
 	sizes = parser.regex_find(r'<label>Size:</label><span>([^<]*)</span>', product_info, 1)
@@ -213,8 +211,6 @@ unit_unique = list(unit_unique)
 unit_unique.sort()
 print(unit_unique)
 
-result['types'] = list(types)
-result['types'].sort()
 result['types_unique'] = list(types_unique)
 result['types_unique'].sort()
 

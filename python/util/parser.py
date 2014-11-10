@@ -115,11 +115,25 @@ def array_rotate(array, col_key, col_value):
 
 def strip_brand(brand, name):
 	"""strip the brand name off a product name"""
-	tmp_name = name.lower()
-	for i, c in enumerate(brand.lower() + "  "):
-		if c != tmp_name[i]:
+	brand_split = regex_split(r'(\W)', brand)
+	name_split = regex_split(r'(\W)', name)
+	first = 0
+	found = False
+	last = min(len(brand_split), len(name_split))
+	for i in range(0, last):
+		first = i
+		if not brand_split[i].lower() == name_split[i].lower():
+			found = True
 			break
-	return name[i:]
+	if not found:
+		first = last
+	return "".join(name_split[first:]).strip()
+
+def strip_brand_entire(brand, name):
+	"""strip the brand name off a product name"""
+	if name.lower().startswith(brand.lower()):
+		return name[len(brand):].strip()
+	return name
 
 def print_count(list, title):
 	"""print the length of the list as "Title: count" """

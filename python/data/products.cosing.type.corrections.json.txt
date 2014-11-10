@@ -1,0 +1,12 @@
+{
+	"Bodycare": "Bodycare",
+	"Cleanser": "Cleanser",
+	"Eye Treatment": "Eye Treatment",
+	"Haircare": "Haircare",
+	"Makeup": "Makeup",
+	"Mask and Scrub": "Mask and Scrub",
+	"Moisturizer": "Moisturizer",
+	"Suncare": "Suncare",
+	"Toner": "Toner",
+	"Treatment": "Treatment"
+}
