@@ -10,7 +10,7 @@ public class DBFormat {
 	public Map<String, IngredientObject> ingredients = new HashMap<>();
 	public Map<String, NamedObject> functions = new HashMap<>();
 	public Map<String, NamedObject> brands = new HashMap<>();
-	public Map<String, NamedObject> types = new HashMap<>();
+	public Map<String, TypeOject> types = new HashMap<>();
 	public Map<String, ProductObject> products = new HashMap<>();
 
 	@JsonPropertyOrder(alphabetic = true)
@@ -58,7 +58,7 @@ public class DBFormat {
 	@JsonPropertyOrder(alphabetic = true)
 	public static class ProductObject extends NamedObject {
 		public String brand;
-		public String type;
+		public String types;
 		public String key_ingredients;
 		public String ingredients;
 		public String image;
@@ -70,12 +70,22 @@ public class DBFormat {
 		public void sanitize() {
 			super.sanitize();
 			brand = Util.notNull(brand).trim();
-			type = Util.notNull(type).trim();
+			types = Util.notNull(types).trim();
 			ingredients = Util.notNull(ingredients).trim();
 			key_ingredients = Util.notNull(key_ingredients).trim();
 			image = Util.notNull(image).trim();
 			price = Util.notNull(price).trim();
 			size = Util.notNull(size).trim();
+		}
+	}
+
+	@JsonPropertyOrder(alphabetic = true)
+	public static class TypeOject extends NamedObject {
+		public String parent;
+
+		public void sanitize() {
+			super.sanitize();
+			parent = Util.notNull(parent).trim();
 		}
 	}
 

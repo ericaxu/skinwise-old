@@ -17,11 +17,10 @@ GET         /ingredient/:id                      src.controllers.data.Ingredient
 GET         /product/:id                         src.controllers.data.ProductController.product(id : Long)
 GET         /brand/:id                           src.controllers.data.BrandController.brand(id: Long)
 GET         /function/:id                        src.controllers.data.FunctionController.function(id: Long)
-GET         /type/:id                            src.controllers.data.ProductTypeController.product_type(id: Long)
+GET         /type/:id                            src.controllers.data.TypeController.product_type(id: Long)
 
 # Search
-# GET         /api/quicksearch/:query                 src.controllers.IngredientSearch.partialSearch(query)
-GET         /api/search/:query                      src.controllers.data.DataController.search(query)
+GET         /api/search/:query                   src.controllers.data.DataController.search(query)
 POST        /api/autocomplete                    src.controllers.data.DataController.api_autocomplete()
 
 # Function API
@@ -40,9 +39,9 @@ POST        /api/alias/unmatched                 src.controllers.data.Ingredient
 POST        /api/brand/byid                      src.controllers.data.BrandController.api_brand_byid()
 POST        /api/brand/all                       src.controllers.data.BrandController.api_brand_all()
 
-# Product Type API
-POST        /api/producttype/byid                src.controllers.data.ProductTypeController.api_product_type_byid()
-POST        /api/producttype/all                 src.controllers.data.ProductTypeController.api_product_type_all()
+# Type API
+POST        /api/type/byid                       src.controllers.data.TypeController.api_type_byid()
+POST        /api/type/all                        src.controllers.data.TypeController.api_type_all()
 
 # Product API
 POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()

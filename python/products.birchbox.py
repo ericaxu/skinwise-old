@@ -105,7 +105,7 @@ for url in urls:
 	product = dict()
 	product["name"] = web.html_unescape(name)
 	product["brand"] = web.html_unescape(brand)
-	product['type'] = prod_type
+	product['types'] = prod_type
 	product["description"] = "" # web.html_unescape(description)
 	product['price'] = price
 	product['size'] = web.html_unescape(size)

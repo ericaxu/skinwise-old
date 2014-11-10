@@ -140,7 +140,7 @@ for url in urls:
 		product = dict()
 		product['name'] = name
 		product['brand'] = product_brand
-		product['type'] = product_category
+		product['types'] = product_category
 		product['description'] = product_claims
 		product['price'] = product_price
 		product['size'] = product_size

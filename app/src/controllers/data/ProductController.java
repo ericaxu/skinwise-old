@@ -166,7 +166,7 @@ public class ProductController extends Controller {
 			}
 
 			for (long id : request.types) {
-				ProductType object = App.cache().types.get(id);
+				Type object = App.cache().types.get(id);
 				Api.checkNotNull(object, "Product Type", id);
 			}
 

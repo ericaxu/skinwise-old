@@ -41,7 +41,7 @@ public class Import {
 		}
 
 		Logger.debug(TAG, "Importing product types");
-		for (DBFormat.NamedObject object : input.types.values()) {
+		for (DBFormat.TypeOject object : input.types.values()) {
 			object.sanitize();
 			createType(object, cache);
 		}
@@ -61,7 +61,7 @@ public class Import {
 			object.sanitize();
 
 			brands.add(object.brand);
-			types.add(object.type);
+			types.addAll(Arrays.asList(object.types.split(",")));
 
 			List<String> ingredients = MemCache.Matcher.splitIngredients(object.ingredients);
 			allIngredients.addAll(ingredients);
@@ -74,7 +74,7 @@ public class Import {
 		allIngredients.remove("");
 
 		Set<String> allIngredientsNew = new HashSet<>();
-		for(String ingredient : allIngredients) {
+		for (String ingredient : allIngredients) {
 			allIngredientsNew.add(Util.cleanTrim(ingredient.replaceAll("\\(*\\s*[0-9\\.]+\\s*%\\s*\\)*", "")));
 		}
 
@@ -95,9 +95,9 @@ public class Import {
 
 		//Create types not entered in the system
 		for (String type : types) {
-			ProductType object = cache.types.get(type);
+			Type object = cache.types.get(type);
 			if (object == null) {
-				object = new ProductType();
+				object = new Type();
 				object.setName(type);
 				object.setDescription("");
 				object.save();
@@ -176,15 +176,24 @@ public class Import {
 		cache.brands.update(result);
 	}
 
-	private static void createType(DBFormat.NamedObject object, MemCache cache) {
-		ProductType result = cache.types.get(object.name);
+	private static void createType(DBFormat.TypeOject object, MemCache cache) {
+		Type parent = cache.types.get(object.parent);
+		if (parent == null && !object.parent.isEmpty()) {
+			parent = new Type();
+			parent.setName(object.parent);
+			parent.save();
+			cache.types.update(parent);
+		}
+
+		Type result = cache.types.get(object.name);
 
 		if (result == null) {
-			result = new ProductType();
+			result = new Type();
 		}
 
 		result.setName(object.name);
 		result.setDescription(object.description);
+		result.setParent(parent);
 
 		result.save();
 
@@ -330,7 +339,14 @@ public class Import {
 		}
 
 		Brand brand = cache.brands.get(object.brand);
-		ProductType type = cache.types.get(object.type);
+		String[] typesSting = object.types.split(",");
+		Set<Type> types = new HashSet<>();
+		for (String typeString : typesSting) {
+			Type type = cache.types.get(typeString);
+			if (type != null) {
+				types.add(type);
+			}
+		}
 
 		Product result = cache.products.get(brand.getId(), object.name);
 		if (result == null) {
@@ -341,7 +357,7 @@ public class Import {
 		long oldBrandId = result.getBrand_id();
 		result.setName(object.name);
 		result.setBrand(brand);
-		result.setType(type);
+		result.setTypes(types);
 		result.setDescription(object.description);
 		result.setImage(object.image);
 		result.setPrice(parsePrice(object.price));

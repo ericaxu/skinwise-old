@@ -3,7 +3,7 @@ package src.models.data;
 import src.App;
 import src.models.util.BaseFinder;
 import src.models.util.BaseModel;
-import src.models.util.ManyToMany;
+import src.models.util.ManyToManyModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = IngredientFunction.TABLENAME)
-public class IngredientFunction extends BaseModel implements ManyToMany {
+public class IngredientFunction extends ManyToManyModel {
 	private long ingredient_id;
 	private long function_id;
 

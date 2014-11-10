@@ -10,7 +10,7 @@ import gnu.trove.set.hash.TLongHashSet;
 import src.App;
 import src.models.data.*;
 import src.models.util.BaseModel;
-import src.models.util.ManyToMany;
+import src.models.util.ManyToManyModel;
 import src.models.util.NamedModel;
 import src.util.Util;
 
@@ -501,7 +501,7 @@ public class MemCache {
 		}
 	}
 
-	public static class ManyToManyIndex<T extends ManyToMany> {
+	public static class ManyToManyIndex<T extends ManyToManyModel> {
 		private ReadWriteLock lock;
 		private TLongObjectMap<Set<T>> left_index;
 		private TLongObjectMap<Set<T>> right_index;
@@ -623,7 +623,7 @@ public class MemCache {
 		public long getOneId(M object);
 	}
 
-	private static interface ManyToManyGetter<T extends ManyToMany> {
+	private static interface ManyToManyGetter<T extends ManyToManyModel> {
 		public List<T> all();
 	}
 
@@ -641,13 +641,6 @@ public class MemCache {
 		}
 	}
 
-	private static class ProductTypeProductGetter implements OneToManyGetter<Product> {
-		@Override
-		public long getOneId(Product object) {
-			return object.getProduct_type_id();
-		}
-	}
-
 	private static class ProductProductPropertyGetter implements OneToManyGetter<ProductProperty> {
 		@Override
 		public long getOneId(ProductProperty object) {
@@ -658,6 +651,12 @@ public class MemCache {
 	private static class IngredientFunctionGetter implements ManyToManyGetter<IngredientFunction> {
 		public List<IngredientFunction> all() {
 			return IngredientFunction.all();
+		}
+	}
+
+	private static class ProductTypeGetter implements ManyToManyGetter<ProductType> {
+		public List<ProductType> all() {
+			return ProductType.find.all();
 		}
 	}
 
@@ -785,7 +784,7 @@ public class MemCache {
 	//MemCache
 	public NamedIndex<Function> functions;
 	public NamedIndex<Brand> brands;
-	public NamedIndex<ProductType> types;
+	public NamedIndex<Type> types;
 	public NamedIndex<Ingredient> ingredients;
 	public NamedIndex<Alias> alias;
 	public ProductIndex products;
@@ -793,9 +792,9 @@ public class MemCache {
 
 	public OneToManyIndex<Alias> ingredient_alias;
 	public OneToManyIndex<Product> brand_product;
-	public OneToManyIndex<Product> type_product;
 	public OneToManyIndex<ProductProperty> product_product_properties;
 	public ManyToManyIndex<IngredientFunction> ingredient_function;
+	public ManyToManyIndex<ProductType> product_type;
 	public ManyToManyIndex<ProductIngredient> product_ingredient;
 
 	public Matcher matcher;
@@ -803,7 +802,7 @@ public class MemCache {
 	public MemCache() {
 		functions = new NamedIndex<>(Function.find);
 		brands = new NamedIndex<>(Brand.find);
-		types = new NamedIndex<>(ProductType.find);
+		types = new NamedIndex<>(Type.find);
 		ingredients = new NamedIndex<>(Ingredient.find);
 		alias = new NamedIndex<>(Alias.find);
 		products = new ProductIndex(Product.find);
@@ -811,9 +810,9 @@ public class MemCache {
 
 		ingredient_alias = new OneToManyIndex<>(new IngredientAliasGetter(), Alias.find);
 		brand_product = new OneToManyIndex<>(new BrandProductGetter(), Product.find);
-		type_product = new OneToManyIndex<>(new ProductTypeProductGetter(), Product.find);
 		product_product_properties = new OneToManyIndex<>(new ProductProductPropertyGetter(), ProductProperty.find);
 		ingredient_function = new ManyToManyIndex<>(new IngredientFunctionGetter());
+		product_type = new ManyToManyIndex<>(new ProductTypeGetter());
 		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter());
 
 		matcher = new Matcher(this);
@@ -830,9 +829,9 @@ public class MemCache {
 
 		ingredient_alias.cache();
 		brand_product.cache();
-		type_product.cache();
 		product_product_properties.cache();
 		ingredient_function.cache();
+		product_type.cache();
 		product_ingredient.cache();
 
 		System.gc();

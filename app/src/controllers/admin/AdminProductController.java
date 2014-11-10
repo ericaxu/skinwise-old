@@ -17,7 +17,7 @@ import src.models.MemCache;
 import src.models.data.Brand;
 import src.models.data.Product;
 import src.models.data.ProductProperty;
-import src.models.data.ProductType;
+import src.models.data.Type;
 import src.models.user.Permissible;
 import src.models.util.BaseModel;
 import src.util.Util;
@@ -181,9 +181,9 @@ public class AdminProductController extends Controller {
 				throw new BadRequestException(Response.INVALID, "Product Type " + request.name + " already exists");
 			}
 
-			ProductType result;
+			Type result;
 			if (request.id == BaseModel.NEW_ID) {
-				result = new ProductType();
+				result = new Type();
 			}
 			else {
 				result = cache.types.get(request.id);

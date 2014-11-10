@@ -26,28 +26,30 @@ public class Page {
 		this.count = 0;
 	}
 
-	public TLongList filter(TLongList input, TLongSet filter) {
+	public TLongList filter(TLongList input, TLongSet no, TLongSet... intersects) {
 		int start = Math.min(page * size, input.size());
 		int end = Math.min(start + size, input.size());
-		TLongSet all = new TLongHashSet(input.size() + filter.size());
-		all.addAll(input);
-		all.addAll(filter);
-		count = all.size() - filter.size();
+
+		TLongSet yes = new TLongHashSet(input);
+		for (TLongSet intersect : intersects) {
+			if (intersect != null) {
+				yes.retainAll(intersect);
+			}
+		}
 
 		//No result
-		if (start == end) {
+		if (start >= end || yes.isEmpty()) {
+			count = 0;
 			return new TLongArrayList();
 		}
 
-		//No filter
-		if (filter.isEmpty()) {
-			return input.subList(start, end);
-		}
+		TLongSet all = new TLongHashSet(yes);
+		all.addAll(no);
+		count = all.size() - no.size();
 
-		//With filter
 		TLongList result = new TLongArrayList(end - start);
 		for (long id : input.toArray()) {
-			if (!filter.contains(id)) {
+			if (!no.contains(id) && yes.contains(id)) {
 				start--;
 				end--;
 				//Stop looking when we have enough

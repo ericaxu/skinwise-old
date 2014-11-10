@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class Export {
 	private static final String TAG = "Export";
@@ -39,8 +40,8 @@ public class Export {
 		}
 
 		Logger.debug(TAG, "Exporting product types");
-		for (ProductType object : cache.types.all()) {
-			DBFormat.NamedObject resultObject = export(object);
+		for (Type object : cache.types.all()) {
+			DBFormat.TypeOject resultObject = export(object);
 			result.types.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
@@ -87,10 +88,17 @@ public class Export {
 		return result;
 	}
 
-	public static DBFormat.NamedObject export(ProductType object) {
-		DBFormat.NamedObject result = new DBFormat.NamedObject();
+	public static DBFormat.TypeOject export(Type object) {
+		DBFormat.TypeOject result = new DBFormat.TypeOject();
 		result.name = object.getName();
 		result.description = object.getDescription();
+		Type parent = object.getParent();
+		if (parent != null) {
+			result.parent = parent.getName();
+		}
+		else {
+			result.parent = "";
+		}
 		return result;
 	}
 
@@ -98,7 +106,6 @@ public class Export {
 		DBFormat.ProductObject result = new DBFormat.ProductObject();
 		result.name = object.getName();
 		result.brand = object.getBrandName();
-		result.type = object.getTypeName();
 		result.description = object.getDescription();
 		result.image = object.getImage();
 		result.price = object.getFormattedPrice();
@@ -109,6 +116,12 @@ public class Export {
 		else {
 			result.size = "";
 		}
+		Set<Type> types = object.getTypes();
+		List<String> typesString = new ArrayList<>();
+		for (Type type : types) {
+			typesString.add(type.getName());
+		}
+		result.types = Util.joinString(",", typesString);
 		List<String> key_ingredients = new ArrayList<>();
 		for (Alias ing : object.getKey_ingredients()) {
 			key_ingredients.add(ing.getName());

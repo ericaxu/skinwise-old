@@ -20,6 +20,9 @@ class Crawler(object):
 		def selective_callback(data):
 			data = parser.strip_newline(data)
 			matches = parser.regex_find(regex, data)
+			if matches is None:
+				print("No match for " + url)
+				return ""
 			return "".join([matches.group(i) for i in range(1, matches.lastindex + 1)])
 		return self.crawl(key, url, selective_callback)
 

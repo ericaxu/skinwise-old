@@ -23,7 +23,7 @@ public class DataController extends Controller {
 	private static enum AutocompleteType {
 		FUNCTION("function"),
 		BRAND("brand"),
-		PRODUCT_TYPE("type"),
+		TYPE("type"),
 		INGREDIENT("ingredient"),
 		ALIAS("alias"),
 		PRODUCT("product");
@@ -87,7 +87,7 @@ public class DataController extends Controller {
 				case BRAND:
 					result = cache.brands.search(request.query, numResults, false);
 					break;
-				case PRODUCT_TYPE:
+				case TYPE:
 					result = cache.types.search(request.query, numResults, false);
 					break;
 				case INGREDIENT:

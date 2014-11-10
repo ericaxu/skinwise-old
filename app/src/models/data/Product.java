@@ -5,6 +5,7 @@ import gnu.trove.list.TLongList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
+import src.models.MemCache;
 import src.models.util.*;
 import src.util.Util;
 
@@ -23,9 +24,6 @@ public class Product extends PopularNamedModel {
 	private long brand_id;
 	private transient LongHistory brand_id_tracker = new LongHistory();
 
-	private long product_type_id;
-	private transient LongHistory product_type_id_tracker = new LongHistory();
-
 	@Column(length = 1023)
 	private String line;
 
@@ -40,10 +38,6 @@ public class Product extends PopularNamedModel {
 
 	public long getBrand_id() {
 		return brand_id_tracker.getValue(brand_id);
-	}
-
-	public long getProduct_type_id() {
-		return product_type_id_tracker.getValue(product_type_id);
 	}
 
 	public String getLine() {
@@ -69,11 +63,6 @@ public class Product extends PopularNamedModel {
 	public void setBrand_id(long brand_id) {
 		brand_id_tracker.setValue(this.brand_id, brand_id);
 		this.brand_id = brand_id;
-	}
-
-	public void setProduct_type_id(long product_type_id) {
-		product_type_id_tracker.setValue(this.product_type_id, product_type_id);
-		this.product_type_id = product_type_id;
 	}
 
 	public void setLine(String line) {
@@ -106,14 +95,24 @@ public class Product extends PopularNamedModel {
 		setBrand_id(BaseModel.getIdIfExists(brand));
 	}
 
-	//Many-One ProductType relations
+	//Many-Many Type relations
 
-	public ProductType getType() {
-		return App.cache().types.get(product_type_id);
+	private transient ManyToManyHistory<ProductType> types = new ProductTypeHistory();
+
+	public TLongSet getTypesIds() {
+		return types.getOtherIds(getId());
 	}
 
-	public void setType(ProductType type) {
-		setProduct_type_id(BaseModel.getIdIfExists(type));
+	public void setTypesIds(TLongSet type_ids) {
+		types.setOtherIds(type_ids);
+	}
+
+	public Set<Type> getTypes() {
+		return App.cache().types.getSet(getTypesIds().toArray());
+	}
+
+	public void setTypes(Set<Type> input) {
+		setTypesIds(App.cache().types.getIdSet(input));
 	}
 
 	//Many-Many Aliases relations
@@ -183,13 +182,6 @@ public class Product extends PopularNamedModel {
 		return getBrand().getName();
 	}
 
-	public String getTypeName() {
-		if (getType() == null) {
-			return "";
-		}
-		return getType().getName();
-	}
-
 	@Override
 	public void save() {
 		Ebean.beginTransaction();
@@ -246,13 +238,14 @@ public class Product extends PopularNamedModel {
 				key_ingredients_new = null;
 			}
 
+			types.flush(getId());
+
 			Ebean.commitTransaction();
 		}
 		finally {
 			Ebean.endTransaction();
 		}
 		brand_id_tracker.flush(App.cache().brand_product, getId());
-		product_type_id_tracker.flush(App.cache().type_product, getId());
 	}
 
 	private ProductIngredient createProductIngredient(Alias ingredient, boolean isKey, int order) {
@@ -277,30 +270,49 @@ public class Product extends PopularNamedModel {
 	                                     long priceMin, long priceMax,
 	                                     boolean discontinued,
 	                                     Page page) {
-		if(priceMax <= priceMin) {
+		if (priceMax <= priceMin) {
 			priceMax = Long.MAX_VALUE;
 		}
 
 		SelectQuery query = new SelectQuery();
-		query.select("DISTINCT main.id as id, main.popularity");
-		query.from(TABLENAME + " main JOIN " + ProductIngredient.TABLENAME + " aux ON main.id = aux.product_id");
+		query.select("DISTINCT id, popularity");
+		query.from(TABLENAME);
 
 		//Discontinued products
 		//		if (!discontinued) {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
-		query.where("main.price BETWEEN " + priceMin + " AND " + priceMax);
+		query.where("price BETWEEN " + priceMin + " AND " + priceMax);
 
 		if (brands.length > 0) {
-			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
+			query.where("brand_id IN (" + Util.joinString(",", brands) + ")");
 		}
 
 		if (negBrands.length > 0) {
-			query.where("main.brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
+			query.where("brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
 		}
 
-		if (types.length > 0) {
-			query.where("main.product_type_id IN (" + Util.joinString(",", types) + ")");
+		query.other("ORDER BY popularity DESC, id ASC");
+
+		TLongList result = query.execute();
+		TLongSet filter = new TLongHashSet();
+		TLongSet ingredients_intersect = null;
+		TLongSet types_intersect = null;
+
+		if (nedIngredients.length > 0) {
+			TLongSet alias_ids = new TLongHashSet();
+			for (long ingredient_id : nedIngredients) {
+				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+				alias_ids.addAll(aliases);
+			}
+			long[] list = alias_ids.toArray();
+
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT product_id as id");
+			q.from(ProductIngredient.TABLENAME);
+			q.where("alias_id IN (" + Util.joinString(",", list) + ")");
+
+			filter.addAll(q.execute());
 		}
 
 		if (ingredients.length > 0) {
@@ -311,33 +323,44 @@ public class Product extends PopularNamedModel {
 			}
 			long[] list = alias_ids.toArray();
 
-			query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
-			query.other("GROUP BY main.id");
-			query.other("HAVING count(*) >= " + ingredients.length);
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT product_id as id");
+			q.from(ProductIngredient.TABLENAME);
+			q.where("alias_id IN (" + Util.joinString(",", list) + ")");
+			q.other("GROUP BY product_id");
+			q.other("HAVING count(*) >= " + ingredients.length);
+
+			ingredients_intersect = new TLongHashSet(q.execute());
 		}
 
-		query.other("ORDER BY main.popularity DESC, main.id ASC");
+		if (types.length > 0) {
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT product_id as id");
+			q.from(ProductType.TABLENAME);
+			q.where("type_id IN (" + Util.joinString(",", types) + ")");
+			//			q.other("GROUP BY product_id");
+			//			q.other("HAVING count(*) >= " + types.length);
 
-		TLongList result = query.execute();
-		TLongSet filter = new TLongHashSet();
-
-		if (nedIngredients.length > 0) {
-			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : nedIngredients) {
-				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
-				alias_ids.addAll(aliases);
-			}
-			long[] list = alias_ids.toArray();
-
-			SelectQuery neg_query = new SelectQuery();
-			neg_query.select("DISTINCT aux.product_id as id");
-			neg_query.from(ProductIngredient.TABLENAME + " aux");
-			neg_query.where("aux.alias_id IN (" + Util.joinString(",", list) + ")");
-
-			filter.addAll(neg_query.execute());
+			types_intersect = new TLongHashSet(q.execute());
 		}
-		result = page.filter(result, filter);
+
+		result = page.filter(result, filter, ingredients_intersect, types_intersect);
 
 		return App.cache().products.getList(result.toArray());
+	}
+
+	public static class ProductTypeHistory extends ManyToManyHistory<ProductType> {
+		@Override
+		protected MemCache.ManyToManyIndex<ProductType> getIndex() {
+			return App.cache().product_type;
+		}
+
+		@Override
+		protected ProductType create(long id, long other_id) {
+			ProductType object = new ProductType();
+			object.setProduct_id(id);
+			object.setType_id(other_id);
+			return object;
+		}
 	}
 }

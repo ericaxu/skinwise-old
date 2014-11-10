@@ -3,7 +3,7 @@ package src.models.data;
 import src.App;
 import src.models.util.BaseFinder;
 import src.models.util.BaseModel;
-import src.models.util.ManyToMany;
+import src.models.util.ManyToManyModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
-public class ProductIngredient extends BaseModel implements ManyToMany {
+public class ProductIngredient extends ManyToManyModel {
 	private long product_id;
 	private long alias_id;
 
