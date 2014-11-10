@@ -6,7 +6,7 @@ db = db.DB("cache/paula.cache.db")
 crawler = web.Crawler(db)
 
 #File in
-file_product_paula_type_corrections_json = "data/products.paula.type.corrections.json.txt"
+file_products_paula_type_corrections_json = "data/products.paula.type.corrections.json.txt"
 #File out
 file_products_paula_json = "data/products.paula.json.txt"
 #Crawled URLs
@@ -75,7 +75,7 @@ urls = util.list_unique(urls)
 
 print("Fetching products")
 
-type_corrections = util.json_read(file_product_paula_type_corrections_json, "{}")
+type_corrections = util.json_read(file_products_paula_type_corrections_json, "{}")
 result = dict()
 result['products'] = dict()
 

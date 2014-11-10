@@ -5,6 +5,8 @@ from util import (web, db, parser, util)
 db = db.DB("cache/birchbox.cache.db")
 crawler = web.Crawler(db)
 
+#File in
+file_products_birchbox_type_corrections_json = "data/products.birchbox.type.corrections.json.txt"
 #File out
 file_products_birchbox_json = "data/products.birchbox.json.txt"
 #Crawled URLs
@@ -58,6 +60,8 @@ def getIngredients(ingredients):
 
 	return (key, other)
 
+type_corrections = util.json_read(file_products_birchbox_type_corrections_json, "{}")
+
 types = set()
 types_unique = set()
 
@@ -88,6 +92,8 @@ for url in urls:
 		prod_type = prod_type_tmp
 	else:
 		print("Product only has holiday as type: " + name)
+
+	prod_type = [x if x not in type_corrections else type_corrections[x] for x in prod_type]
 	prod_type.sort()
 
 	for x in prod_type:
