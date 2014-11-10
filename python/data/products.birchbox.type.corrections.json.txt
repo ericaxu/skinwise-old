@@ -19,7 +19,7 @@
 	"skincare/moisturizers": "Skincare,Moisturizer",
 	"skincare/moisturizers/bb-cc-cream": "Skincare,BB Cream",
 	"skincare/moisturizers/daily-moisturizers": "Skincare,Moisturizer",
-	"skincare/moisturizers/eye-creams": "Skincare,Eye Care,Eye cream",
+	"skincare/moisturizers/eye-creams": "Skincare,Eye Care,Eye Cream",
 	"skincare/moisturizers/face-oils": "Skincare,Moisturizer,Facial Oil",
 	"skincare/moisturizers/lip-balms-treatments": "Skincare,Lip Care,Lip Balm",
 	"skincare/moisturizers/night-creams": "Skincare,Moisturizer",

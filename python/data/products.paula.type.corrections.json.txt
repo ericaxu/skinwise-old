@@ -116,7 +116,7 @@
 	"Skin Care > Skin-Lightening Products": "Skincare,Skin Lightener",
 	"Skin Care > Specialty Products > Lash Growth/ Lash Conditioners": "Skincare,Lash Conditioner",
 	"Skin Care > Specialty Products > Specialty Skin Care Products": "Skincare,Other Skincare",
-	"Skin Care > Specialty Products > Wrinkle Fillers": "Skincare,Wrinkle Fillers",
+	"Skin Care > Specialty Products > Wrinkle Fillers": "Skincare,Wrinkle Filler",
 	"Skin Care > Sunscreens (including Kids) > Powder Sunscreen": "Skincare,Sunscreen",
 	"Skin Care > Sunscreens (including Kids) > Water-Resistant Sunscreen": "Skincare,Sunscreen",
 	"Skin Care > Sunscreens (including Kids)": "Skincare,Sunscreen",
