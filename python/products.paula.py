@@ -31,17 +31,6 @@ description_corrections = {
 	r'p>': ""
 }
 
-# $replace_rules_str = array(
-# 	"aqua (water) eau)" => "aqua (water) eau",
-# 	", iron oxides)." => ", iron oxides.",
-# 	"active ingredients:" => ",",
-# 	"other ingredients:" => ",",
-# 	"active:" => ",",
-# 	"other:" => ",",
-# 	"(and)" => ",",
-# 	";" => ","
-# );
-
 print("Searching product urls")
 
 # Find max page number
@@ -79,6 +68,8 @@ type_corrections = util.json_read(file_products_paula_type_corrections_json, "{}
 result = dict()
 result['products'] = dict()
 
+unit_unique = set()
+
 for url in urls:
 	page_html = crawler.crawl_selective(key="product/%s" % url, url=url_product_page % url, regex=r'id="main"(.*?)Skip to Top')
 
@@ -109,6 +100,16 @@ for url in urls:
 		pieces = product_price_size.split('-')
 		product_price = pieces[0].strip()
 		product_size = pieces[1].strip()
+
+	if product_size:
+		(size, unit) = parser.split_size_unit(product_size)
+		# if unit in size_map:
+		# 	unit = size_map[unit]
+		if size:
+			unit_unique.add(unit)
+			product_size = size + " " + unit
+		else:
+			print(product_size)
 
 	product_ingredients = parser.regex_find(r'<div id="[^"]*pnlTabBodyIngredients"[^>]*>(.*?)<\/div>', page_table, 1)
 	product_ingredients = web.html_unescape(parser.regex_remove(r'<strong>\\xa0<\/strong>', product_ingredients))
@@ -172,6 +173,10 @@ for url in urls:
 		product_other_ingredients = ingredients
 
 	createProduct(product_name, product_key_ingredients, product_other_ingredients)
+
+unit_unique = list(unit_unique)
+unit_unique.sort()
+print(unit_unique)
 
 util.json_write(result, file_products_paula_json)
 

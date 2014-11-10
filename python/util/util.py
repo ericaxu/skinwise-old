@@ -56,3 +56,10 @@ def list_unique(input):
 	Order is preserved
 	"""
 	return list(collections.OrderedDict.fromkeys(input))
+
+def isnumeric(input):
+	try:
+		float(input)
+		return True
+	except ValueError:
+		return False

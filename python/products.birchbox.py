@@ -26,7 +26,8 @@ badnames = [
 	"system",
 	"duo",
 	"trio",
-	"microdelivery peel"
+	"microdelivery peel",
+	"Travel Tote"
 ]
 
 size_map = {
@@ -34,9 +35,19 @@ size_map = {
 	"oz.": "fl. oz.",
 	"fl oz": "fl. oz.",
 	"fl. oz": "fl. oz.",
+	"fl.oz": "fl. oz.",
+	"fl oz.": "fl. oz.",
+	"oz. each": "fl. oz.",
 	"oz bottle": "fl. oz.",
 	"oz (113 g)": "fl. oz.",
+	"US fl oz": "fl. oz.",
+	"US fl. oz.": "fl. oz.",
+	"Fl Oz": "fl. oz.",
+	"-oz. Cleanser": "fl. oz.",
+	"fl. oz. per face mask": "fl. oz.",
 	"g": "g.",
+	"g Net wt": "g.",
+	"g Net wt.": "g.",
 	"ml": "ml.",
 	"mL": "ml.",
 	"ml. each": "ml.",
@@ -44,6 +55,7 @@ size_map = {
 	"individual masks": "masks",
 	"single-use sheet masks": "masks",
 	"Sheet": "sheets",
+	"Swabs": "swabs",
 	"wipes inside a mirrored compact": "wipes",
 	"single-use 2-step patch": "patches",
 	"single-use 2-step patches": "patches",
@@ -106,6 +118,7 @@ type_corrections = util.json_read(file_products_birchbox_type_corrections_json, 
 
 types = set()
 types_unique = set()
+unit_unique = set()
 
 for url in urls:
 	product_info = crawler.crawl_selective(key="product/%s" % url, url=url_product_page % url, 
@@ -152,32 +165,34 @@ for url in urls:
 
 	for x in prod_type:
 		types_unique.add(x)
-	prod_type= ",".join(prod_type)
+	prod_type = ",".join(prod_type)
 	types.add(prod_type)
 
 	price = parser.regex_find(r'<span itemprop="price"><strong>([^<]*)</strong></span>', product_info, 1)
-	size = parser.regex_find(r'<label>Size:</label><span>([^<]*)</span>', product_info, 1)
-	size = parser.regex_remove(r'&nbsp;', size).strip()
+	sizes = parser.regex_find(r'<label>Size:</label><span>([^<]*)</span>', product_info, 1)
+	sizes = parser.regex_remove(r'&nbsp;', sizes).strip()
 	# description = parser.strip_tags(parser.regex_find(r'<span itemprop="description"><p>(.*?)</p>', product_info, 1))
 	# description += "<br>" + parser.strip_tags(parser.regex_find(r'How it Works</h4>(.*?)</p>', product_info, 1))
 	# description += "<br>" + parser.strip_tags(parser.regex_find(r'How to Use</h4>(.*?)</p>', product_info, 1))
-	size = [x.strip() for x in parser.regex_split(r'/|,| or|;', size)]
-	size = [x for x in size if x]
+	sizes = [x.strip() for x in parser.regex_split(r'/|,| or|;', sizes)]
+	sizes = [x for x in sizes if x]
 	# print("%r"%size)
 	size_tmp = list()
-	for s in size:
-		split = s.split(' ')
-		if not split[0].isnumeric():
+	for s in sizes:
+		(size, unit) = parser.split_size_unit(s)
+		if not size:
+			print(s)
 			continue
-		unit = s[len(split[0])+1:]
 		if unit in size_map:
 			unit = size_map[unit]
 
+		unit_unique.add(unit)
+
 		if unit == "fl. oz.":
-			size_tmp = [split[0] + " " + unit]
+			size_tmp = [size + " " + unit]
 			break
-		size_tmp.append(split[0] + " " + unit)
-	size = size_tmp
+		size_tmp.append(size + " " + unit)
+	sizes = size_tmp
 	image = parser.strip_tags(parser.regex_find(r'<img itemprop="image" src="(.*?)"', product_info, 1))
 	product = dict()
 	product["name"] = web.html_unescape(name)
@@ -185,7 +200,7 @@ for url in urls:
 	product['types'] = prod_type
 	product["description"] = "" # web.html_unescape(description)
 	product['price'] = price
-	product['size'] = web.html_unescape(size[0] if len(size) else "")
+	product['size'] = web.html_unescape(sizes[0] if len(sizes) else "")
 	(key_ingredients, other_ingredients) = getIngredients(web.html_unescape(ingredients))
 	product["key_ingredients"] = key_ingredients
 	product["ingredients"] = other_ingredients
@@ -193,6 +208,10 @@ for url in urls:
 
 	key = parser.product_key(product['brand'], product['name'])
 	result["products"][key] = product
+
+unit_unique = list(unit_unique)
+unit_unique.sort()
+print(unit_unique)
 
 result['types'] = list(types)
 result['types'].sort()

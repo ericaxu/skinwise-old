@@ -1,5 +1,7 @@
 import re
 
+from util import (util)
+
 re_compiled = dict()
 
 def get_regex(regex):
@@ -70,10 +72,7 @@ def regex_find(regex, input, group=None):
 	if isinstance(group, list):
 		if result is None:
 			return [""] * len(group)
-		data = list()
-		for i in group:
-			data.append(result.group(i))
-		return data
+		return [result.group(i) for i in group]
 	if result is None:
 		return ""
 	return result.group(group)
@@ -140,3 +139,15 @@ def good_key(name):
 def product_key(brand, name):
 	"""Make a uniquely identifiable key for products"""
 	return good_key("%s %s" % (brand, name))
+
+def split_size_unit(input):
+	find = regex_find(r'^([0-9\.]+)\s*(.*)', input)
+	if not find:
+		return (None, None)
+
+	size = find.group(1)
+	unit = find.group(2)
+	if not util.isnumeric(size):
+		return (None, None)
+	return (size, unit)
+
