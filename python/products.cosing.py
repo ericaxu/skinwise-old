@@ -53,15 +53,27 @@ for brand_id in brands:
 	brand['website'] = parser.regex_find(r'<a href="([^"]+)">', brand['website'], 1).strip()
 
 	brand['country'] = parser.regex_find(r'<strong>Country:  </strong>.*?title="([^"]+)"', brand_html, 1).strip()
+	if brand['country'] == "not available":
+		brand['country'] = ""
 
-	result['brands'][parser.good_key(brand['name'])] = brand
+	brand_name = brand['name']
+
+	brand_key = parser.good_key(brand_name)
+	parts = brand_key.split(" ")
+	for i in range(1, len(parts)):
+		maybe_brand_name = " ".join(parts[:-i])
+		if maybe_brand_name in result['brands']:
+			brand_name = result['brands'][maybe_brand_name]['name']
+
+	if brand_name == brand['name']:
+		result['brands'][brand_key] = brand
 
 	products_html = parser.regex_find(r'<Products>(.*?)</Products>', brand_html, 1)
 	product_html_list = parser.regex_find_all(r'<Product>(.*?)</Product>', products_html)
 
 	for product_html in product_html_list:
 		product = dict()
-		product["brand"] = brand['name']
+		product["brand"] = brand_name
 
 		product_type_and_name = parser.regex_find(r'<ProductName><a href=.*?type=([^&]*).*?>(.*?)</a></ProductName>', product_html, [1,2])
 		product["type"] = product_type_and_name[0]
@@ -69,7 +81,7 @@ for brand_id in brands:
 			product["type"] = type_corrections[product["type"]]
 		types_unique.add(product["type"])
 		product["name"] = product_type_and_name[1]
-		product["name"] = parser.strip_brand(brand['name'], product["name"])
+		product["name"] = parser.strip_brand(brand_name, product["name"])
 		if not product["name"]:
 			product["name"] = product_type_and_name[1]
 
@@ -83,12 +95,13 @@ for brand_id in brands:
 			product['key_ingredients'] = ""
 
 		product_ingredients = parser.regex_find(r'"IngredientList.*?<Value>(.*?)</Value>', product_html, 1)
-		product['ingredients'] = parser.strip_tags(product_ingredients)
+		product['ingredients'] = parser.fix_space(parser.regex_replace(r'<[^>]*?>', " ", product_ingredients)).strip()
 		if product['ingredients'] == "n/a":
 			product['ingredients'] = ""
 
-		product['price'] = ""
-		product['size'] = ""
+		(size, price) = parser.regex_find(r'<PriceValue>(.*?), (.*?)<br />.*?</PriceValue>', product_html, [1, 2])
+		product['price'] = price
+		product['size'] = size
 
 		key = parser.product_key(product['brand'], product['name'])
 		if not product['key_ingredients'] == "" or not product['ingredients'] == "":
