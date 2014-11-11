@@ -517,31 +517,55 @@ public class MemCache {
 		//Getters
 
 		public <L extends TLongCollection> L getIdsL(L result, Set<T> relations) {
-			for (T relation : relations) {
-				result.add(relation.getLeftId());
+			lock.readLock().lock();
+			try {
+				for (T relation : relations) {
+					result.add(relation.getLeftId());
+				}
+				return result;
 			}
-			return result;
+			finally {
+				lock.readLock().unlock();
+			}
 		}
 
 		public <L extends TLongCollection> L getIdsR(L result, Set<T> relations) {
-			for (T relation : relations) {
-				result.add(relation.getRightId());
+			lock.readLock().lock();
+			try {
+				for (T relation : relations) {
+					result.add(relation.getRightId());
+				}
+				return result;
 			}
-			return result;
+			finally {
+				lock.readLock().unlock();
+			}
 		}
 
 		public Set<T> getByR(long right_id) {
-			if (!right_index.containsKey(right_id)) {
-				right_index.put(right_id, new HashSet<>());
+			lock.writeLock().lock();
+			try {
+				if (!right_index.containsKey(right_id)) {
+					right_index.put(right_id, new HashSet<>());
+				}
+				return right_index.get(right_id);
 			}
-			return right_index.get(right_id);
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 
 		public Set<T> getByL(long left_id) {
-			if (!left_index.containsKey(left_id)) {
-				left_index.put(left_id, new HashSet<>());
+			lock.writeLock().lock();
+			try {
+				if (!left_index.containsKey(left_id)) {
+					left_index.put(left_id, new HashSet<>());
+				}
+				return left_index.get(left_id);
 			}
-			return left_index.get(left_id);
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 
 		//Setters
