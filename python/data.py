@@ -140,7 +140,9 @@ def import_data():
 	# discontinued
 	for key, product in result['products'].items():
 		if "Discontinued" in product['name']:
-			product['popularity'] = -1;
+			product['popularity'] = -1
+		if 'popularity' not in product:
+			product['popularity'] = 0
 
 	# brands
 	corrections = util.json_read(file_products_brand_corrections_json, "{}")
