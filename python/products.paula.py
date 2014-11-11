@@ -88,7 +88,7 @@ for url in urls:
 
 	product_claims = parser.regex_find(r'<div id="[^"]*pnlTabBodyClaims"[^>]*>(.*?)<\/div>', page_table, 1)
 	product_claims = web.html_unescape(parser.strip_tags(product_claims))
-	product_claims = parser.fix_space(parser.regex_replace_dict(description_corrections, product_claims))
+	product_claims = parser.fix_space(parser.regex_replace_dict(description_corrections, product_claims)).strip("/").strip(">")
 
 	product_category = parser.regex_find(r'<a id="[^"]*hlCategory"[^>]*>(.*?)<\/a>', page_table, 1)
 	if product_category in type_corrections:
@@ -118,26 +118,6 @@ for url in urls:
 
 	product_key_ingredients = parser.regex_find(r'<dd[^>]*>(.*?)<\/dd>', product_ingredients, 1)
 	product_other_ingredients = parser.regex_find_all(r'<p[^>]*>(.*?)<\/p>', product_ingredients)
-
-	def getIngredients(ingredients):
-		ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients).strip()
-
-		if ingredients.startswith(":"):
-			ingredients = ingredients[1:]
-		key = ""
-		other = ""
-
-		ingredients = parser.fix_space(parser.strip_tags(ingredients))
-
-		other = parser.regex_find(r'(?i)(Other|Inactive) *:', ingredients)
-		if other is None:
-			other = parser.regex_remove(r'^(?i)Actives* *:', ingredients).strip()
-		else:
-			split = parser.regex_split(r'(?i)(Other|Inactive) *:', ingredients)
-			key = parser.regex_remove(r'^(?i)Actives* *:', split[0]).strip()
-			other = split[-1].strip()
-
-		return (key, other)
 
 	def createProduct(name, key_ingredients, ingredients):
 		product = dict()
@@ -169,7 +149,7 @@ for url in urls:
 		product_other_ingredients = product_other_ingredients[0]
 		product_other_ingredients = parser.regex_replace_dict(ingredient_corrections, product_other_ingredients)
 		product_other_ingredients = parser.regex_remove(r'<strong>(.*?)<\/strong>', product_other_ingredients)
-		key_ingredients, ingredients = getIngredients(product_other_ingredients)
+		key_ingredients, ingredients = parser.parse_ingredients(product_other_ingredients)
 		if key_ingredients != "":
 			product_key_ingredients = key_ingredients
 		product_other_ingredients = ingredients

@@ -94,7 +94,7 @@ result["products"] = dict()
 
 
 def getIngredients(ingredients):
-	ingredients = parser.regex_replace(r' (?i)Ingredients*:', ":", ingredients).strip()
+	ingredients = parser.regex_replace(r'\s*(?i)Ingredients*:', ":", ingredients).strip()
 
 	if ingredients.startswith(":"):
 		ingredients = ingredients[1:]
@@ -124,9 +124,7 @@ for url in urls:
 		regex = r'<script>(bbui\.context\.set[^<]+)</script>.*<div class="product-detail-page"(.*?)<div class="content-block shipping-note well">')
 	name = parser.regex_find(r'data-product-name="(.*?)"', product_info, 1).strip()
 	brand = parser.regex_find(r'data-brand-name="(.*?)">', product_info, 1).strip()
-	ingredients = parser.regex_replace(r'<[^>]*?>', " | ", parser.regex_find(r'<div class="bbox-target">(.*?)</div>', product_info, 1))
-	ingredients = parser.regex_replace(r'\|\s*\|', "|", ingredients)
-	ingredients = ingredients.strip("| ")
+	ingredients = parser.regex_replace(r'<[^>]*?>', " ", parser.regex_find(r'<div class="bbox-target">(.*?)</div>', product_info, 1))
 	ingredients = ingredients.replace(";", ",")
 	if not brand or not ingredients:
 		continue
@@ -199,7 +197,7 @@ for url in urls:
 	product["description"] = "" # web.html_unescape(description)
 	product['price'] = price
 	product['size'] = web.html_unescape(sizes[0] if len(sizes) else "")
-	(key_ingredients, other_ingredients) = getIngredients(web.html_unescape(ingredients))
+	(key_ingredients, other_ingredients) = parser.parse_ingredients(web.html_unescape(ingredients))
 	product["key_ingredients"] = key_ingredients
 	product["ingredients"] = other_ingredients
 	product["image"] = image

@@ -165,3 +165,22 @@ def split_size_unit(input):
 		return (None, None)
 	return (size, unit)
 
+def parse_ingredients(ingredients):
+	ingredients = regex_replace(r'\s*(?i)Ingredients*:', ":", ingredients).strip()
+
+	if ingredients.startswith(":"):
+		ingredients = ingredients[1:]
+	key = ""
+	other = ""
+
+	ingredients = fix_space(strip_tags(ingredients))
+
+	other = regex_find(r'(?i)(Other|Inactive) *:', ingredients)
+	if other is None:
+		other = regex_remove(r'^(?i)Actives* *:', ingredients).strip()
+	else:
+		split = regex_split(r'(?i)(Other|Inactive) *:', ingredients)
+		key = regex_remove(r'^(?i)Actives* *:', split[0]).strip()
+		other = split[-1].strip()
+
+	return (key, other)
