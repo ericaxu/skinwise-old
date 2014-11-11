@@ -41,17 +41,19 @@
                 </div>
             }
 
-            <!--
-            @@if(product.getProduct_type_id != 0) {
+            @if(product.getTypes.size > 0) {
                 <div class="claim">
                     <h3>What It Does</h3>
-                    <p><a href="/type/@@product.getProduct_type_id" class="silent"><span class='product_type neutral'>@@product.getTypeName</span></a></p>
-                    @@if(product.hasDescription) {
-                        <p>@@product.getDescription</p>
+                    <p>
+                        @for(t <- product.getTypes) {
+                            <a href="/type/@t.getId" class="silent"><span class='product_type neutral'>@t.getName</span></a>
+                        }
+                    </p>
+                    @if(product.hasDescription) {
+                        <p>@product.getDescription</p>
                     }
                 </div>
             }
-            -->
 
             @if(!product.getKey_ingredients.isEmpty) {
                 <div class="active_ingredients">
