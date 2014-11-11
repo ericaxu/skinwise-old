@@ -59,6 +59,8 @@ public class ProductController extends Controller {
 		public long[] neg_ingredients;
 		public long price_min;
 		public long price_max;
+		public long price_per_size_min;
+		public long price_per_size_max;
 	}
 
 	public static class ResponseProductObject {
@@ -186,6 +188,7 @@ public class ProductController extends Controller {
 					request.types,
 					request.ingredients, request.neg_ingredients,
 					request.price_min, request.price_max,
+					request.price_per_size_min, request.price_per_size_max,
 					false,
 					page);
 

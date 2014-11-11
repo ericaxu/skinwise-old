@@ -31,6 +31,7 @@ public class Product extends PopularNamedModel {
 	private String image;
 
 	private long price;
+	private float price_per_size;
 	private float size;
 	private String size_unit;
 
@@ -50,6 +51,10 @@ public class Product extends PopularNamedModel {
 
 	public long getPrice() {
 		return price;
+	}
+
+	public float getPrice_per_size() {
+		return price_per_size;
 	}
 
 	public float getSize() {
@@ -75,10 +80,16 @@ public class Product extends PopularNamedModel {
 
 	public void setPrice(long price) {
 		this.price = price;
+		if (size != 0f) {
+			price_per_size = ((float) price / size) / 100f;
+		}
 	}
 
 	public void setSize(float size) {
 		this.size = size;
+		if (size != 0f) {
+			price_per_size = ((float) price / size) / 100f;
+		}
 	}
 
 	public void setSize_unit(String size_unit) {
@@ -268,10 +279,14 @@ public class Product extends PopularNamedModel {
 	                                     long[] types,
 	                                     long[] ingredients, long[] nedIngredients,
 	                                     long priceMin, long priceMax,
+	                                     float pricePerSizeMin, float pricePerSizeMax,
 	                                     boolean discontinued,
 	                                     Page page) {
-		if (priceMax < priceMin) {
+		if (priceMax < priceMin || priceMax == 0) {
 			priceMax = Long.MAX_VALUE;
+		}
+		if (pricePerSizeMax < pricePerSizeMin || pricePerSizeMax == 0f) {
+			pricePerSizeMax = Float.MAX_VALUE;
 		}
 
 		SelectQuery query = new SelectQuery();
@@ -283,6 +298,7 @@ public class Product extends PopularNamedModel {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
 		query.where("price BETWEEN " + priceMin + " AND " + priceMax);
+		query.where("price_per_size BETWEEN " + pricePerSizeMin + " AND " + pricePerSizeMax);
 
 		if (brands.length > 0) {
 			query.where("brand_id IN (" + Util.joinString(",", brands) + ")");
