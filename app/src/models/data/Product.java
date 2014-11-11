@@ -193,6 +193,10 @@ public class Product extends PopularNamedModel {
 		return getBrand().getName();
 	}
 
+	public String getDisplaySize() {
+		return Util.formatNumber(getSize()) + " " + getSize_unit();
+	}
+
 	@Override
 	public void save() {
 		Ebean.beginTransaction();

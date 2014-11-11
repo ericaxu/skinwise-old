@@ -36,7 +36,7 @@
                 <div>
                     <span class="price_info">@product.getFormattedPrice</span>
                     @if(product.getSize != 0) {
-                        <p>Size: @product.getSize @product.getSize_unit</p>
+                        <p>Size: @product.getDisplaySize</p>
                     }
                 </div>
             }

@@ -109,6 +109,15 @@ public class Util {
 		return StringUtils.strip(input, "\t ,./?`~!@#$^&*;:=+-_\\|");
 	}
 
+	public static String formatNumber(double d) {
+		if (d == (long) d) {
+			return String.format("%d", (long) d);
+		}
+		else {
+			return String.format("%s", d);
+		}
+	}
+
 	public static String goodKey(String input) {
 		input = input.replaceAll("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
 		return input.replaceAll("\\s+", " ");
