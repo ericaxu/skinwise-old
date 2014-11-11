@@ -45,12 +45,12 @@ size_map = {
 	"Fl Oz": "fl. oz.",
 	"-oz. Cleanser": "fl. oz.",
 	"fl. oz. per face mask": "fl. oz.",
-	"g": "g.",
-	"g Net wt": "g.",
-	"g Net wt.": "g.",
-	"ml": "ml.",
-	"mL": "ml.",
-	"ml. each": "ml.",
+	"g.": "g",
+	"g Net wt": "g",
+	"g Net wt.": "g",
+	"ml.": "ml",
+	"mL": "ml",
+	"ml. each": "ml",
 	"mask": "masks",
 	"individual masks": "masks",
 	"single-use sheet masks": "masks",
@@ -152,8 +152,6 @@ for url in urls:
 	prod_type_tmp = [x for x in prod_type if not x.startswith("skincare/holiday")]
 	if len(prod_type_tmp) > 0:
 		prod_type = prod_type_tmp
-	else:
-		print("Product only has holiday as type: " + name)
 
 	prod_type = [x if x not in type_corrections else type_corrections[x] for x in prod_type]
 	prod_type = [x for x in prod_type if x != ""]
@@ -182,13 +180,20 @@ for url in urls:
 		if unit in size_map:
 			unit = size_map[unit]
 
-		unit_unique.add(unit)
-
-		if unit == "fl. oz.":
+		if unit == "ml":
 			size_tmp = [size + " " + unit]
 			break
+
+		(size, unit) = parser.try_convert_unit(size, unit)
+		unit_unique.add(unit)
+
+		if unit == "ml":
+			size_tmp = [size + " " + unit]
+			break
+			
 		size_tmp.append(size + " " + unit)
 	sizes = size_tmp
+
 	image = parser.strip_tags(parser.regex_find(r'<img itemprop="image" src="(.*?)"', product_info, 1))
 	product = dict()
 	product["name"] = web.html_unescape(name)

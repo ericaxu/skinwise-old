@@ -1,5 +1,6 @@
 import re
 
+from math import log10, floor
 from util import (util)
 
 re_compiled = dict()
@@ -163,6 +164,18 @@ def split_size_unit(input):
 	unit = find.group(2)
 	if not util.isnumeric(size):
 		return (None, None)
+	return (size, unit)
+
+def try_convert_unit(size, unit):
+	size = float(size)
+	if unit == "fl. oz.":
+		size *= 29.5735
+		sigfig = 2 if size > 100 else 1
+		size = round(size, sigfig-1-int(floor(log10(size))))
+		unit = "ml"
+	size = str(size)
+	if '.' in size:
+		size = size.strip('0').strip('.')
 	return (size, unit)
 
 def parse_ingredients(ingredients):

@@ -108,6 +108,7 @@ for url in urls:
 		# if unit in size_map:
 		# 	unit = size_map[unit]
 		if size:
+			(size, unit) = parser.try_convert_unit(size, unit)
 			unit_unique.add(unit)
 			product_size = size + " " + unit
 		else:
