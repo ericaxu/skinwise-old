@@ -14,6 +14,7 @@ import src.models.util.ManyToManyModel;
 import src.models.util.NamedModel;
 import src.util.Util;
 
+import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -280,6 +281,7 @@ public class MemCache {
 			if (name == null) {
 				return null;
 			}
+			name = Normalizer.normalize(name, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 			return name.toLowerCase();
 		}
 	}
@@ -363,7 +365,7 @@ public class MemCache {
 
 		@Override
 		protected String _key(Product input) {
-			return (input.getBrandName() + " " + input.getName()).toLowerCase();
+			return super._key(input.getBrandName() + " " + input.getName());
 		}
 
 		@Override
