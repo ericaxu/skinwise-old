@@ -8,6 +8,7 @@ crawler = web.Crawler(db)
 
 #File in
 file_products_cosing_type_corrections_json = "data/products.cosing.type.corrections.json.txt"
+file_products_brand_corrections_json = "data/products.brand.corrections.json.txt"
 #File out
 file_products_cosing_json = "data/products.cosing.json.txt"
 #Crawled URLs
@@ -38,6 +39,7 @@ result = dict()
 result['products'] = dict()
 result['brands'] = dict()
 
+brand_corrections = util.json_read(file_products_brand_corrections_json, "{}")
 type_corrections = util.json_read(file_products_cosing_type_corrections_json, "{}")
 types_unique = set()
 
@@ -67,6 +69,10 @@ for brand_id in brands:
 
 	if brand_name == brand['name']:
 		result['brands'][brand_key] = brand
+
+	if brand_name in brand_corrections:
+		brand_name = brand_corrections[brand_name]
+		brand['name'] = brand_name
 
 	products_html = parser.regex_find(r'<Products>(.*?)</Products>', brand_html, 1)
 	product_html_list = parser.regex_find_all(r'<Product>(.*?)</Product>', products_html)

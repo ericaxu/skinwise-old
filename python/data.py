@@ -14,6 +14,7 @@ file_ingredients_cosdna_json = "data/ingredients.cosdna.json.txt"
 file_ingredients_inci_json = "data/ingredients.inci.json.txt"
 file_products_paula_json = "data/products.paula.json.txt"
 file_products_birchbox_json = "data/products.birchbox.json.txt"
+file_products_cosing_json = "data/products.cosing.json.txt"
 file_images_duckduckgo_json = "data/images.duckduckgo.json.txt"
 file_ingredients_alias_additions_json = "data/ingredients.alias.additions.json.txt"
 file_products_brand_corrections_json = "data/products.brand.corrections.json.txt"
@@ -73,23 +74,36 @@ def import_data():
 
 	del inci
 
-	# paula
-	paula = util.json_read(file_products_paula_json, "{}")
-	if 'products' in paula:
-		for key, product in paula['products'].items():
+	# cosing
+	cosing = util.json_read(file_products_cosing_json, "{}")
+	if 'products' in cosing:
+		for key, product in cosing['products'].items():
 			if product['ingredients'] != "" or product['key_ingredients']!= "":
 				result['products'][key] = product
  
-	del paula
+	del cosing
 
 	# birchbox
 	birchbox = util.json_read(file_products_birchbox_json, "{}")
 	if 'products' in birchbox:
 		for key, product in birchbox['products'].items():
 			if product['ingredients'] != "" or product['key_ingredients']!= "":
+				if key in result['products']:
+					print("birchbox duplicate: " + key)
 				result['products'][key] = product
  
 	del birchbox
+
+	# paula
+	paula = util.json_read(file_products_paula_json, "{}")
+	if 'products' in paula:
+		for key, product in paula['products'].items():
+			if product['ingredients'] != "" or product['key_ingredients']!= "":
+				if key in result['products']:
+					print("paula's choice duplicate: " + key)
+				result['products'][key] = product
+ 
+	del paula
 
 	# duckduckgo
 	duckduckgo = util.json_read(file_images_duckduckgo_json, "{}")
