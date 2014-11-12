@@ -88,7 +88,7 @@
                 @if(!product.getIngredients.isEmpty) {
                     <div class="ingredients">
                         <h3>Ingredients</h3>
-                        }
+                }
             }
 
             @if(!product.getIngredients.isEmpty) {
@@ -115,15 +115,32 @@
             }
         </div>
         </div>
+            <div class="similar_products section">
+                <h3>Similar Products</h3>
+                <div class="products_list">
+                    <ul class="horizontal">
+                    </ul>
+                    <div class="end_of_results"></div>
+                    <div id="loading_spinner"></div>
+                </div>
+            </div>
         </div>
 
         } {
 
     <script>
-    checkImage ( $ ( '.picture img' ), '  @product.getImage ');
-    postToAPI ( '/product/ingredientinfo', {
-    id : @product.getId
-    }, getIngredientInfoSuccess ) ;
+    checkImage($('.picture img'), ' @product.getImage');
+    postToAPI ('/product/ingredientinfo', {
+        id : @product.getId
+    }, getIngredientInfoSuccess);
+    postToAPI('/brand/all', {}, function(response) {
+        getBrandsSuccess(response, function() {
+            postToAPI('/product/similar', {
+                id: @product.getId
+            }, loadSimilarProducts);
+        });
+    });
+
     </script>
 
 }

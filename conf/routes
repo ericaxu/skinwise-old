@@ -47,6 +47,7 @@ POST        /api/type/all                        src.controllers.data.TypeContro
 POST        /api/product/byid                    src.controllers.data.ProductController.api_product_byid()
 POST        /api/product/filter                  src.controllers.data.ProductController.api_product_filter()
 POST        /api/product/ingredientinfo          src.controllers.data.ProductController.api_ingredient_info()
+POST        /api/product/similar                 src.controllers.data.ProductController.api_product_similar()
 
 # User API
 #POST        /api/user/signup                        src.controllers.UserController.api_signup()

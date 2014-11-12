@@ -274,4 +274,39 @@ public class ProductController extends Controller {
 			return Api.write(new ErrorResponse(e));
 		}
 	}
+
+	@BodyParser.Of(BodyParser.TolerantText.class)
+	public static Result api_product_similar() {
+		try {
+			Api.RequestGetById request =
+					Api.read(ctx(), Api.RequestGetById.class);
+
+			Page page = new Page(0, 20);
+			List<Product> result = Product.byFilter(
+					new long[]{},
+					new long[]{},
+					new long[]{},
+					new long[]{},
+					new long[]{},
+					0,
+					0,
+					0,
+					0,
+					false,
+					page
+			);
+
+			Api.ResponseResultList response = new Api.ResponseResultList();
+			response.count = page.count;
+
+			for (Product product : result) {
+				response.results.add(new ResponseProductObject(product));
+			}
+
+			return Api.write(response);
+		}
+		catch (BadRequestException e) {
+			return Api.write(new ErrorResponse(e));
+		}
+	}
 }

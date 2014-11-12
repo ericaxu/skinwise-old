@@ -261,3 +261,5 @@ SW.EDITOR = {
         ]
     }
 }
+
+SW.NUM_SIMILAR_PRODUCTS = 6;

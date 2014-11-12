@@ -218,6 +218,13 @@ function getBrandsSuccess(response, callback) {
     callback && callback();
 }
 
+function loadSimilarProducts(response) {
+    var num_shown = Math.min(response.results.length, SW.NUM_SIMILAR_PRODUCTS);
+    for (var i = 0; i < num_shown; i++) {
+        $('.products_list ul').append(productResultHTML(response.results[i]));
+    }
+}
+
 $(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();

@@ -345,3 +345,33 @@ function addEl(tag, parent, className, text, attr) {
 
     return $el;
 }
+
+function productResultHTML(product) {
+    var $list_item = addEl('li', null, 'product');
+    var $link = addEl('a', $list_item, '', '', { href: '/product/' + product.id });
+    var $img_container = addEl('div', $link, 'product_img_container');
+    var $img = addEl('img', $img_container, 'product_img', '', {
+        src: product.image || SW_PLACEHOLDER_URL,
+        alt: product.brand + ' ' + product.name
+    })
+    // check if image is ok
+    if (product.image) {
+        checkImage($img, product.image);
+    }
+    addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
+    addEl('div', $link, 'product_name', product.name);
+    addEl('div', $link, '', formatPrice(product));
+
+    return $list_item;
+}
+
+
+function formatPrice(product) {
+    if (product.price && product.size && product.size_unit) {
+        return product.price + ' / ' + product.size + ' ' + product.size_unit;
+    } else if (product.price) {
+        return product.price;
+    } else {
+        return '';
+    }
+}
