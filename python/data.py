@@ -162,10 +162,10 @@ def import_data():
 	corrections = util.json_read(file_products_brand_corrections_json, "{}")
 	for key, product in result['products'].items():
 		# Brand correction applied
-		if product['brand'] in corrections:
-			product['brand'] = corrections[product['brand']]
 		if product['brand'].endswith('\u00ae') or product['brand'].endswith('\u2122'):
 			product['brand'] = product['brand'][:-1]
+		if product['brand'] in corrections:
+			product['brand'] = corrections[product['brand']]
 		brand_key = parser.good_key(product['brand'])
 		result['brands'][brand_key] = {"name": product['brand']}
 	del corrections
