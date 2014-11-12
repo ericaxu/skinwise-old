@@ -1,0 +1,23 @@
+@import "util/_mixins";
+@import "util/_colors";
+
+.compare_products {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+
+    td {
+        width: 50%;
+        border: 1px solid @border;
+        padding: 6px 10px;
+    }
+}
+
+.product_img {
+    width: auto;
+    height: auto;
+    max-width: 250px;
+    max-height: 250px;
+    padding: 20px;
+    box-sizing: border-box;
+}

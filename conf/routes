@@ -6,6 +6,7 @@
 GET         /                                    src.controllers.HtmlController.index()
 GET         /products                            src.controllers.HtmlController.products()
 GET         /ingredients                         src.controllers.HtmlController.ingredients()
+GET         /compare                             src.controllers.HtmlController.compare()
 GET         /profile                             src.controllers.HtmlController.profile()
 GET         /routine                             src.controllers.HtmlController.routine()
 GET         /about                               src.controllers.HtmlController.about()

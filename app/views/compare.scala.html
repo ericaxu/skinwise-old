@@ -1,0 +1,21 @@
+@(state: src.controllers.util.ResponseState)
+
+@template("Compare Products - Skin Wise", state) {
+
+    <link rel="stylesheet" media="screen" href='@routes.Assets.at("/public", "stylesheets/compare.css")'>
+
+} {
+
+    <div class="compare_products_container">
+        <input class="compare_input_left">
+        <input class="compare_input_right">
+        <div id="loading_spinner"></div>
+        <table class="compare_products">
+        </table>
+    </div>
+
+} {
+
+    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
+    <script src='@routes.Assets.at("/public", "javascripts/compare.js")'></script>
+}

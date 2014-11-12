@@ -181,7 +181,6 @@ function setupNavSearchAutocomplete() {
     });
 
     $search_select.on('change', function() {
-        setLastSearchedCatgory($(this).val());
         enableAutocomplete($search_select.val(), $nav_search, '.search_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH, $('#nav_searchbar_not_found'));
         $nav_search.val('');
     });

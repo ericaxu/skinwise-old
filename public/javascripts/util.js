@@ -346,18 +346,22 @@ function addEl(tag, parent, className, text, attr) {
     return $el;
 }
 
-function productResultHTML(product) {
-    var $list_item = addEl('li', null, 'product');
-    var $link = addEl('a', $list_item, '', '', { href: '/product/' + product.id });
-    var $img_container = addEl('div', $link, 'product_img_container');
-    var $img = addEl('img', $img_container, 'product_img', '', {
+function addProductImage(product, $parent) {
+    var $img = addEl('img', $parent, 'product_img', '', {
         src: product.image || SW_PLACEHOLDER_URL,
         alt: product.brand + ' ' + product.name
-    })
+    });
     // check if image is ok
     if (product.image) {
         checkImage($img, product.image);
     }
+}
+
+function productResultHTML(product) {
+    var $list_item = addEl('li', null, 'product');
+    var $link = addEl('a', $list_item, '', '', { href: '/product/' + product.id });
+    var $img_container = addEl('div', $link, 'product_img_container');
+    addProductImage(product, $img_container);
     addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
     addEl('div', $link, 'product_name', product.name);
     addEl('div', $link, '', formatPrice(product));

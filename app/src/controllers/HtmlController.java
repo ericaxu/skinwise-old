@@ -22,6 +22,11 @@ public class HtmlController extends Controller {
 		return ok(ingredients.render(state));
 	}
 
+	public static Result compare() {
+		ResponseState state = new ResponseState(session());
+		return ok(compare.render(state));
+	}
+
 	public static Result profile() {
 		ResponseState state = new ResponseState(session());
 		return ok(profile.render(state));
