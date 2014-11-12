@@ -290,7 +290,8 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
     });
 
     $selector.off('blur').on('blur', function() {
-        $no_result_el.hide();
+        $no_result_el && $no_result_el.hide();
+        $(this).autocomplete('close');
     });
 }
 
