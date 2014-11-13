@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import src.App;
 import src.models.MemCache;
 import src.models.data.*;
+import src.models.util.NamedModel;
 import src.util.Json;
 import src.util.Logger;
 import src.util.Util;
@@ -55,18 +56,23 @@ public class Export {
 		Util.writeAll(path, json);
 	}
 
-	public static DBFormat.NamedObject export(Function object) {
-		DBFormat.NamedObject result = new DBFormat.NamedObject();
+	public static <T extends DBFormat.NamedObject> T exportNamedModel(NamedModel object, T result) {
+		result.id = object.getId();
 		result.name = object.getName();
 		result.description = object.getDescription();
 		return result;
 	}
 
+	public static DBFormat.NamedObject exportNamedModel(NamedModel object) {
+		return exportNamedModel(object, new DBFormat.NamedObject());
+	}
+
+	public static DBFormat.NamedObject export(Function object) {
+		return exportNamedModel(object);
+	}
+
 	public static DBFormat.IngredientObject export(Ingredient object) {
-		DBFormat.IngredientObject result = new DBFormat.IngredientObject();
-		result.name = object.getName();
-		result.cas_no = object.getCas_number();
-		result.description = object.getDescription();
+		DBFormat.IngredientObject result = exportNamedModel(object, new DBFormat.IngredientObject());
 		result.popularity = object.getPopularity();
 		result.active = object.isActive();
 		for (Function function : object.getFunctions()) {
@@ -82,16 +88,11 @@ public class Export {
 	}
 
 	public static DBFormat.NamedObject export(Brand object) {
-		DBFormat.NamedObject result = new DBFormat.NamedObject();
-		result.name = object.getName();
-		result.description = object.getDescription();
-		return result;
+		return exportNamedModel(object);
 	}
 
 	public static DBFormat.TypeOject export(Type object) {
-		DBFormat.TypeOject result = new DBFormat.TypeOject();
-		result.name = object.getName();
-		result.description = object.getDescription();
+		DBFormat.TypeOject result = exportNamedModel(object, new DBFormat.TypeOject());
 		Type parent = object.getParent();
 		if (parent != null) {
 			result.parent = parent.getName();
@@ -103,10 +104,8 @@ public class Export {
 	}
 
 	public static DBFormat.ProductObject export(Product object) {
-		DBFormat.ProductObject result = new DBFormat.ProductObject();
-		result.name = object.getName();
+		DBFormat.ProductObject result = exportNamedModel(object, new DBFormat.ProductObject());
 		result.brand = object.getBrandName();
-		result.description = object.getDescription();
 		result.image = object.getImage();
 		result.price = object.getFormattedPrice();
 		String sizeUnit = object.getSize_unit();

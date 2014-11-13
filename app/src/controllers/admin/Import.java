@@ -4,6 +4,7 @@ import src.App;
 import src.models.MemCache;
 import src.models.data.*;
 import src.models.util.BaseModel;
+import src.models.util.NamedModel;
 import src.util.JoinableExecutor;
 import src.util.Json;
 import src.util.Logger;
@@ -40,10 +41,13 @@ public class Import {
 			createBrand(object, cache);
 		}
 
-		Logger.debug(TAG, "Importing product types");
+		Logger.debug(TAG, "Importing types");
 		for (DBFormat.TypeOject object : input.types.values()) {
 			object.sanitize();
 			createType(object, cache);
+		}
+		for (DBFormat.TypeOject object : input.types.values()) {
+			createTypeWithParent(object, cache);
 		}
 
 		Logger.debug(TAG, "Importing ingredients");
@@ -146,11 +150,18 @@ public class Import {
 		}
 	}
 
-	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {
-		Function result = cache.functions.get(object.name);
-
-		if (result == null) {
-			result = new Function();
+	private static <T extends NamedModel> void createNamedObject(DBFormat.NamedObject object,
+	                                                             MemCache.NamedIndex<T> index, T result) {
+		if (object.id > 0) {
+			long old_id = result.getId();
+			if (old_id != object.id) {
+				if (BaseModel.isIdNull(old_id)) {
+					result.setId(object.id);
+				}
+				else {
+					Logger.info(TAG, "Id mismatch! Trying to substitute " + object.id + " for " + old_id);
+				}
+			}
 		}
 
 		result.setName(object.name);
@@ -158,7 +169,17 @@ public class Import {
 
 		result.save();
 
-		cache.functions.update(result);
+		index.update(result);
+	}
+
+	private static void createFunction(DBFormat.NamedObject object, MemCache cache) {
+		Function result = cache.functions.get(object.name);
+
+		if (result == null) {
+			result = new Function();
+		}
+
+		createNamedObject(object, cache.functions, result);
 	}
 
 	private static void createBrand(DBFormat.NamedObject object, MemCache cache) {
@@ -168,36 +189,35 @@ public class Import {
 			result = new Brand();
 		}
 
-		result.setName(object.name);
-		result.setDescription(object.description);
-
-		result.save();
-
-		cache.brands.update(result);
+		createNamedObject(object, cache.brands, result);
 	}
 
 	private static void createType(DBFormat.TypeOject object, MemCache cache) {
-		Type parent = cache.types.get(object.parent);
-		if (parent == null && !object.parent.isEmpty()) {
-			parent = new Type();
-			parent.setName(object.parent);
-			parent.save();
-			cache.types.update(parent);
-		}
-
 		Type result = cache.types.get(object.name);
 
 		if (result == null) {
 			result = new Type();
 		}
 
-		result.setName(object.name);
-		result.setDescription(object.description);
-		result.setParent(parent);
+		createNamedObject(object, cache.types, result);
+	}
 
-		result.save();
+	private static void createTypeWithParent(DBFormat.TypeOject object, MemCache cache) {
+		Type parent = cache.types.get(object.parent);
+		if (parent == null && !object.parent.isEmpty()) {
+			Logger.info(TAG, "Type parent " + object.parent + " not found!");
+		}
 
-		cache.types.update(result);
+		Type result = cache.types.get(object.name);
+		if (result == null) {
+			Logger.info(TAG, "Type " + object.name + " not found!");
+			return;
+		}
+
+		synchronized (result) {
+			result.setParent(parent);
+			result.save();
+		}
 	}
 
 	private static void createIngredient(DBFormat.IngredientObject object, MemCache cache) {
@@ -249,18 +269,14 @@ public class Import {
 			result = new Ingredient();
 		}
 
-		result.setName(object.name);
 		result.setCas_number(object.cas_no);
 		result.setActive(object.active);
-		result.setDescription(object.description);
 		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
 		}
 		result.setFunctions(functionList);
 
-		result.save();
-
-		cache.ingredients.update(result);
+		createNamedObject(object, cache.ingredients, result);
 
 		createAlias(object.name, result, cache);
 
@@ -355,10 +371,8 @@ public class Import {
 
 		String oldName = result.getName();
 		long oldBrandId = result.getBrand_id();
-		result.setName(object.name);
 		result.setBrand(brand);
 		result.setTypes(types);
-		result.setDescription(object.description);
 		result.setImage(object.image);
 		result.setPrice(parsePrice(object.price));
 		if (!object.size.isEmpty() && object.size.contains(" ")) {
@@ -378,7 +392,7 @@ public class Import {
 		result.setIngredients(ingredients);
 		result.setKeyIngredients(key_ingredients);
 
-		result.save();
+		createNamedObject(object, cache.products, result);
 
 		cache.products.update(result, oldBrandId, oldName);
 

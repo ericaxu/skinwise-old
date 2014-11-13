@@ -17,8 +17,10 @@ url_index = url_root + "index.php"
 url_brand = url_root + "product.php?type=%%27%%20OR%%20%%271%%27=%%271&brand=%d"
 
 ingredient_corrections = {
-	"(Vaccinium Myrtillus (Bilberry) Extract": "Vaccinium Myrtillus (Bilberry) Extract",
-	", Organic Lemon Peel Oil)": ", Organic Lemon Peel Oil",
+	r'\(Vaccinium Myrtillus \(Bilberry\) Extract': "Vaccinium Myrtillus (Bilberry) Extract",
+	r', Organic Lemon Peel Oil\)': ", Organic Lemon Peel Oil",
+	r' Ishea Butter\)': " (shea Butter)",
+	r'Fragrance Iparfum\)': "Fragrance (parfum)"
 }
 
 print("Parsing brands and products")
@@ -104,6 +106,8 @@ for brand_id in brands:
 		product['ingredients'] = parser.fix_space(parser.regex_replace(r'<[^>]*?>', " ", product_ingredients)).strip()
 		if product['ingredients'] == "n/a":
 			product['ingredients'] = ""
+
+		product['ingredients'] = parser.regex_replace_dict(ingredient_corrections, product['ingredients'])
 
 		(size, price) = parser.regex_find(r'<PriceValue>(.*?), (.*?)<br />.*?</PriceValue>', product_html, [1, 2])
 		product['price'] = price

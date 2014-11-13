@@ -114,15 +114,6 @@ def import_data():
  
 	del duckduckgo
 
-	# export popularity
-	export = util.json_read(file_export_json, "{}")
-	if 'products' in export:
-		for key, product in export['products'].items():
-			key = parser.product_key(product['brand'], product['name'])
-			if key in result['products'] and 'popularity' in product:
-				result['products'][key]['popularity'] = product['popularity']
-	del export
-
 	# ingredient aliases
 	aliases = util.json_read(file_ingredients_alias_additions_json, "{}")
 	for key, alias_obj in aliases.items():
@@ -169,6 +160,19 @@ def import_data():
 		brand_key = parser.good_key(product['brand'])
 		result['brands'][brand_key] = {"name": product['brand']}
 	del corrections
+
+	# export popularity & IDs
+	export = util.json_read(file_export_json, "{}")
+	if 'products' in export:
+		for key, product in export['products'].items():
+			key = parser.product_key(product['brand'], product['name'])
+			if key in result['products']:
+				if 'popularity' in product:
+					result['products'][key]['popularity'] = product['popularity']
+				if 'id' in product:
+					result['products'][key]['id'] = product['id']
+	# TODO: Set other stuff
+	del export
 
 	return result
 

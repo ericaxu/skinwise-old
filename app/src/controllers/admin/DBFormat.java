@@ -14,7 +14,18 @@ public class DBFormat {
 	public Map<String, ProductObject> products = new HashMap<>();
 
 	@JsonPropertyOrder(alphabetic = true)
-	public static class NamedObject {
+	public static class DBObject {
+		public long id;
+
+		public void sanitize() {
+			if (id < 0) {
+				id = 0;
+			}
+		}
+	}
+
+	@JsonPropertyOrder(alphabetic = true)
+	public static class NamedObject extends DBObject{
 		public String name;
 		public String description;
 

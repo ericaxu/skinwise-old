@@ -68,6 +68,9 @@ public class Util {
 	private static DecimalFormat priceFormatter = new DecimalFormat("#,###");
 
 	public static long parsePrice(String price) throws NumberFormatException {
+		if (price.isEmpty()) {
+			return 0;
+		}
 		//Strip dollar sign
 		if (price.startsWith("$")) {
 			price = price.substring(1);
@@ -101,8 +104,14 @@ public class Util {
 	}
 
 	public static double getNumberFrom(Matcher matcher, int group) {
-		String result = matcher.group(group);
-		return Double.parseDouble(result);
+		String result = StringUtils.strip(matcher.group(group), ".");
+		try {
+			return Double.parseDouble(result);
+		}
+		catch (NumberFormatException e) {
+			Logger.debug("Util", result);
+		}
+		return 0;
 	}
 
 	public static String cleanTrim(String input) {
