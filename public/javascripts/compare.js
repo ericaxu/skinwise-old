@@ -109,36 +109,64 @@ function findCommonIngredients(left, right) {
     return common;
 }
 
+function updateHash() {
+    var hash = '';
+
+    var left_id = SW.PRODUCTS_FOR_COMPARE[0] && SW.PRODUCTS_FOR_COMPARE[0].id;
+    var right_id = SW.PRODUCTS_FOR_COMPARE[1] && SW.PRODUCTS_FOR_COMPARE[1].id;
+
+    if (left_id) {
+        hash += 'l=' + left_id;
+        if (right_id) {
+            hash += ';'
+        }
+    }
+    if (right_id) {
+        hash += 'r=' + right_id;
+    }
+
+    location.hash = hash;
+}
+
+function loadHash() {
+    if (location.hash.length > 0) {
+        var hash = location.hash.slice(1, location.hash.length);
+        var products = hash.split(';');
+
+        var left_id = products[0].split('=')[1];
+        var right_id = products[1].split('=')[1];
+
+        fetchProductForComparison(left_id, 0);
+        fetchProductForComparison(right_id, 1);
+    }
+}
+
+function fetchProductForComparison(id, index) {
+    postToAPI('/product/byid', {
+        id: id
+    }, function(response) {
+        SW.PRODUCTS_FOR_COMPARE[index] = response.results[0];
+        postToAPI('/product/ingredientinfo', {
+            id: id
+        }, function(response) {
+            SW.PRODUCTS_FOR_COMPARE[index].ingredients = response.results;
+            getIngredientInfoSuccess(response);
+            updateHash();
+            refreshCompare();
+        });
+    });
+}
+
 $(document).on('ready', function() {
-    postToAPI('/brand/all', {}, getBrandsSuccess);
+    postToAPI('/brand/all', {}, function(response) {
+        getBrandsSuccess(response, loadHash);
+    });
     enableAutocomplete('product', $('.compare_input_left'), '.compare_products_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
     enableAutocomplete('product', $('.compare_input_right'), '.compare_products_container', SW.AUTOCOMPLETE_LIMIT.NAV_SEARCH);
     $('.compare_input_left').on('autocompleteselect', function(event, ui) {
-        postToAPI('/product/byid', {
-            id: ui.item.value
-        }, function(response) {
-            SW.PRODUCTS_FOR_COMPARE[0] = response.results[0];
-            postToAPI('/product/ingredientinfo', {
-                id: ui.item.value
-            }, function(response) {
-                SW.PRODUCTS_FOR_COMPARE[0].ingredients = response.results;
-                getIngredientInfoSuccess(response);
-                refreshCompare();
-            });
-        });
+        fetchProductForComparison(ui.item.value, 0);
     });
     $('.compare_input_right').on('autocompleteselect', function(event, ui) {
-        postToAPI('/product/byid', {
-            id: ui.item.value
-        }, function(response) {
-            SW.PRODUCTS_FOR_COMPARE[1] = response.results[0];
-            postToAPI('/product/ingredientinfo', {
-                id: ui.item.value
-            }, function(response) {
-                getIngredientInfoSuccess(response);
-                SW.PRODUCTS_FOR_COMPARE[1].ingredients = response.results;
-                refreshCompare();
-            });
-        });
+        fetchProductForComparison(ui.item.value, 1);
     });
 });
