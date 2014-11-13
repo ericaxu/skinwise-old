@@ -304,7 +304,10 @@ function setupAddFilterPopup() {
 
 function showExtraFiltersFromUrl() {
     if (location.hash.length > 0) {
-        var reverse_mapping = {};
+        var reverse_mapping = {
+            'ph': 'price_max ',
+            'pl': 'price_min '
+        };
         var query = {};
 
         for (var filter_type in SW.FILTER_ABBR_MAPPING) {
@@ -338,21 +341,27 @@ function showExtraFiltersFromUrl() {
 }
 
 function showExtraFilter(filter_key, id) {
-    var result = $('#' + filter_key + '_' + id + '_filter_option');
-    if (result.length > 0) {
-        result.addClass('selected');
+    if (filter_key === 'price_max') {
+        $('#price_filter').slider('values', 1, parseInt(id)).trigger('change');
+    } else if (filter_key === 'price_min') {
+        $('#price_filter').slider('values', 0, parseInt(id)).trigger('change');
     } else {
-        fetchFilterInfo(filter_key, id, function(response) {
-            var new_filter = {
-                id: id,
-                name: response.results[0].name,
-                count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count,
-                selected: true
-            };
+        var result = $('#' + filter_key + '_' + id + '_filter_option');
+        if (result.length > 0) {
+            result.addClass('selected');
+        } else {
+            fetchFilterInfo(filter_key, id, function(response) {
+                var new_filter = {
+                    id: id,
+                    name: response.results[0].name,
+                    count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count,
+                    selected: true
+                };
 
-            var $filters = $('.' + filter_key + '_filters');
-            $filters.append(getFilterHTML(new_filter, filter_key));
-        });
+                var $filters = $('.' + filter_key + '_filters');
+                $filters.append(getFilterHTML(new_filter, filter_key));
+            });
+        }
     }
 }
 
@@ -372,16 +381,50 @@ function changeHash(query) {
                 hash += query[filter_type][i] + ',';
             }
             hash += query[filter_type][query[filter_type].length - 1];
-
         }
+    }
+
+    if (query.price_min !== 0) {
+        if (need_divide) {
+            hash += '&';
+        }
+        need_divide = true;
+        hash += ('pl=' + query.price_min / 100);
+    }
+
+    if (query.price_max !== -1) {
+        if (need_divide) {
+            hash += '&';
+        }
+        need_divide = true;
+        hash += ('ph=' + query.price_max / 100);
     }
 
     location.hash = hash;
 }
 
+function onSliderChange() {
+    var values = $('#price_filter').slider('values');
+    if (values[1] === SW.PRICE_FILTER_RANGE.MAX) {
+        $('#price_label').text('$' + values[0] + ' - unlimited');
+    } else {
+        $('#price_label').text('$' + values[0] + ' - $' + values[1]);
+    }
+}
+
 function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
+        $('#price_filter').slider({
+            range: true,
+            min: SW.PRICE_FILTER_RANGE.MIN,
+            max: SW.PRICE_FILTER_RANGE.MAX,
+            values: [SW.PRICE_FILTER_RANGE.MIN, SW.PRICE_FILTER_RANGE.MAX],
+            slide: onSliderChange,
+            stop: function(event, ui) {
+                refetch();
+            }
+        }).on('change', onSliderChange);
 
         loadFilters();
         showExtraFiltersFromUrl();
@@ -393,22 +436,6 @@ function initBrowse(type) {
         handleBrowseScroll();
         setupAddFilterPopup();
 
-        $('#price_filter').slider({
-            range: true,
-            min: SW.PRICE_FILTER_RANGE.MIN,
-            max: SW.PRICE_FILTER_RANGE.MAX,
-            values: [SW.PRICE_FILTER_RANGE.MIN, SW.PRICE_FILTER_RANGE.MAX],
-            slide: function(event, ui) {
-                if (ui.values[1] === SW.PRICE_FILTER_RANGE.MAX) {
-                    $('#price_label').text('$' + ui.values[0] + ' - unlimited');
-                } else {
-                    $('#price_label').text('$' + ui.values[0] + ' - $' + ui.values[1]);
-                }
-            },
-            stop: function(event, ui) {
-                refetch();
-            }
-        });
 
         $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
