@@ -8,7 +8,7 @@ function refreshCompare() {
     var common_ingredients = findCommonIngredients(left_ingredients, right_ingredients);
     var common_ingredient_ids = common_ingredients.map(extra_ingredient);
 
-    var $table = $('.compare_products');
+    var $table = $('.compare_products tbody');
     $table.empty();
 
     var $image_row = addEl('tr', $table);
@@ -21,12 +21,18 @@ function refreshCompare() {
         var current = SW.PRODUCTS_FOR_COMPARE[i];
         var $image_td = addEl('td', $image_row, 'short');
         addProductImage(current, $image_td);
-        var $name_td = addEl('td', $name_row, 'emphasis short');
-        addEl('a', $name_td, 'short', current.name, {href: '/product/' + current.id});
+        var $name_td = addEl('td', $name_row, 'short');
+        addEl('span', $name_td, 'emphasis', 'Name: ');
+        addEl('a', $name_td, '', current.name, {href: '/product/' + current.id});
         var $brand_td = addEl('td', $brand_row, 'short');
+        addEl('span', $brand_td, 'emphasis', 'Brand: ');
         addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, {href: '/brand/' + current.brand});
-        addEl('td', $price_row, 'short', current.price);
-        addEl('td', $size_row, 'short', current.size + ' ' + current.size_unit);
+        var $price_td = addEl('td', $price_row, 'short');
+        addEl('span', $price_td, 'emphasis', 'Price: ');
+        addEl('span', $price_td, '', current.price);
+        var $size_td = addEl('td', $size_row, 'short');
+        addEl('span', $size_td, 'emphasis', 'Size: ');
+        addEl('span', $size_td, '', current.size + ' ' + current.size_unit);
     }
 
     if (common_ingredients.length > 0) {
@@ -56,6 +62,7 @@ function refreshCompare() {
             });
 
             if (unique_ingredients.length > 0) {
+                addEl('span', $ingredient_td, 'emphasis', 'Unique ingredients: ');
                 for (var j = 0; j < unique_ingredients.length; j++) {
                     var ingredient = unique_ingredients[j];
                     addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
