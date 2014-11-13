@@ -224,6 +224,12 @@ function loadSimilarProducts(response) {
     }
 }
 
+function setNavsearchCategory(category) {
+    if (category) {
+        $('#search_category_select').val(category).trigger('change');
+    }
+}
+
 $(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();
