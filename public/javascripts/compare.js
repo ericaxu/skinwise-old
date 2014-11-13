@@ -1,4 +1,13 @@
+function extra_ingredient(ingredient) {
+    return ingredient.id;
+}
+
 function refreshCompare() {
+    var left_ingredients = (SW.PRODUCTS_FOR_COMPARE[0] && SW.PRODUCTS_FOR_COMPARE[0].ingredients) || [];
+    var right_ingredients = (SW.PRODUCTS_FOR_COMPARE[1] && SW.PRODUCTS_FOR_COMPARE[1].ingredients) || [];
+    var common_ingredients = findCommonIngredients(left_ingredients, right_ingredients);
+    var common_ingredient_ids = common_ingredients.map(extra_ingredient);
+
     var $table = $('.compare_products');
     $table.empty();
 
@@ -10,19 +19,75 @@ function refreshCompare() {
 
     for (var i = 0; i < 2; i++) {
         var current = SW.PRODUCTS_FOR_COMPARE[i];
-        var $image_td = addEl('td', $image_row);
-        //addEl('img', $image_td, '', '', {
-        //    alt: current.name,
-        //    src: current.image
-        //});
+        var $image_td = addEl('td', $image_row, 'short');
         addProductImage(current, $image_td);
-        var $name_td = addEl('td', $name_row, '');
-        addEl('a', $name_td, '', current.name, { href: '/product/' + current.id });
-        var $brand_td = addEl('td', $brand_row);
-        addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, { href: '/brand/' + current.brand });
-        addEl('td', $price_row, '', current.price);
-        addEl('td', $size_row, '', current.size + ' ' + current.size_unit);
+        var $name_td = addEl('td', $name_row, 'emphasis short');
+        addEl('a', $name_td, 'short', current.name, {href: '/product/' + current.id});
+        var $brand_td = addEl('td', $brand_row, 'short');
+        addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, {href: '/brand/' + current.brand});
+        addEl('td', $price_row, 'short', current.price);
+        addEl('td', $size_row, 'short', current.size + ' ' + current.size_unit);
     }
+
+    if (common_ingredients.length > 0) {
+        var $common_ingredients_tr = addEl('tr', $table);
+        var $common_ingredients_td = addEl('td', $common_ingredients_tr, '', '', {colspan: "2"});
+        addEl('span', $common_ingredients_td, 'emphasis', 'Common ingredients: ');
+        for (var i = 0; i < common_ingredients.length - 1; i++) {
+            var ingredient = common_ingredients[i];
+            addEl('a', $common_ingredients_td, 'ingredient', ingredient.name, {
+                href: '/ingredient/' + ingredient.id
+            }).data('id', ingredient.id);
+            $common_ingredients_td.append(', ');
+        }
+        var ingredient = common_ingredients[common_ingredients.length - 1];
+        addEl('a', $common_ingredients_td, 'ingredient', ingredient.name, {
+            href: '/ingredient/' + ingredient.id
+        }).data('id', ingredient.id);
+    }
+
+    var $ingredient_row = addEl('tr', $table);
+
+    if (common_ingredients.length !== left_ingredients.length || common_ingredients.length !== right_ingredients.length) {
+        for (var i = 0; i < 2; i++) {
+            var $ingredient_td = addEl('td', $ingredient_row);
+            var unique_ingredients = SW.PRODUCTS_FOR_COMPARE[i].ingredients.filter(function(ingredient) {
+                return common_ingredient_ids.indexOf(ingredient.id) === -1;
+            });
+
+            if (unique_ingredients.length > 0) {
+                for (var j = 0; j < unique_ingredients.length; j++) {
+                    var ingredient = unique_ingredients[j];
+                    addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
+                        href: '/ingredient/' + ingredient.id
+                    }).data('id', ingredient.id);
+                    $ingredient_td.append(', ');
+                }
+                var ingredient = unique_ingredients[unique_ingredients.length - 1];
+                addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
+                    href: '/ingredient/' + ingredient.id
+                }).data('id', ingredient.id);
+            }
+        }
+    }
+
+    setupIngredientInfobox();
+}
+
+function findCommonIngredients(left, right) {
+    var left_ids = left.map(extra_ingredient);
+    var right_ids = right.map(extra_ingredient);
+
+    var common = [];
+
+    for (var i = 0; i < left_ids.length; i++) {
+        var id = left_ids[i];
+        if (right_ids.indexOf(id) !== -1) {
+            common.push(left[i]);
+        }
+    }
+
+    return common;
 }
 
 $(document).on('ready', function() {
@@ -34,7 +99,13 @@ $(document).on('ready', function() {
             id: ui.item.value
         }, function(response) {
             SW.PRODUCTS_FOR_COMPARE[0] = response.results[0];
-            refreshCompare();
+            postToAPI('/product/ingredientinfo', {
+                id: ui.item.value
+            }, function(response) {
+                SW.PRODUCTS_FOR_COMPARE[0].ingredients = response.results;
+                getIngredientInfoSuccess(response);
+                refreshCompare();
+            });
         });
     });
     $('.compare_input_right').on('autocompleteselect', function(event, ui) {
@@ -42,7 +113,13 @@ $(document).on('ready', function() {
             id: ui.item.value
         }, function(response) {
             SW.PRODUCTS_FOR_COMPARE[1] = response.results[0];
-            refreshCompare();
+            postToAPI('/product/ingredientinfo', {
+                id: ui.item.value
+            }, function(response) {
+                getIngredientInfoSuccess(response);
+                SW.PRODUCTS_FOR_COMPARE[1].ingredients = response.results;
+                refreshCompare();
+            });
         });
     });
 });

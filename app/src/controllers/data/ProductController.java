@@ -214,7 +214,7 @@ public class ProductController extends Controller {
 			Product result = App.cache().products.get(request.id);
 			Api.checkNotNull(result, "Product", request.id);
 
-			Set<Ingredient> ingredients = new HashSet<>();
+			List<Ingredient> ingredients = new ArrayList<>();
 
 			List<ProductIngredient> links = result.getProductIngredients();
 
