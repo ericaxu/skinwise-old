@@ -19,20 +19,28 @@ function refreshCompare() {
 
     for (var i = 0; i < 2; i++) {
         var current = SW.PRODUCTS_FOR_COMPARE[i];
-        var $image_td = addEl('td', $image_row, 'short');
-        addProductImage(current, $image_td);
-        var $name_td = addEl('td', $name_row, 'short');
-        addEl('span', $name_td, 'emphasis', 'Name: ');
-        addEl('a', $name_td, '', current.name, {href: '/product/' + current.id});
-        var $brand_td = addEl('td', $brand_row, 'short');
-        addEl('span', $brand_td, 'emphasis', 'Brand: ');
-        addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, {href: '/brand/' + current.brand});
-        var $price_td = addEl('td', $price_row, 'short');
-        addEl('span', $price_td, 'emphasis', 'Price: ');
-        addEl('span', $price_td, '', current.price);
-        var $size_td = addEl('td', $size_row, 'short');
-        addEl('span', $size_td, 'emphasis', 'Size: ');
-        addEl('span', $size_td, '', current.size + ' ' + current.size_unit);
+        if (current) {
+            var $image_td = addEl('td', $image_row, 'short');
+            addProductImage(current, $image_td);
+            var $name_td = addEl('td', $name_row, 'short');
+            addEl('span', $name_td, 'emphasis', 'Name: ');
+            addEl('a', $name_td, '', current.name, {href: '/product/' + current.id});
+            var $brand_td = addEl('td', $brand_row, 'short');
+            addEl('span', $brand_td, 'emphasis', 'Brand: ');
+            addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, {href: '/brand/' + current.brand});
+            var $price_td = addEl('td', $price_row, 'short');
+            addEl('span', $price_td, 'emphasis', 'Price: ');
+            addEl('span', $price_td, '', current.price);
+            var $size_td = addEl('td', $size_row, 'short');
+            addEl('span', $size_td, 'emphasis', 'Size: ');
+            addEl('span', $size_td, '', current.size + ' ' + current.size_unit);
+        } else {
+            var $image_td = addEl('td', $image_row, 'short');
+            var $name_td = addEl('td', $name_row, 'short');
+            var $brand_td = addEl('td', $brand_row, 'short');
+            var $price_td = addEl('td', $price_row, 'short');
+            var $size_td = addEl('td', $size_row, 'short');
+        }
     }
 
     if (common_ingredients.length > 0) {
@@ -57,23 +65,27 @@ function refreshCompare() {
     if (common_ingredients.length !== left_ingredients.length || common_ingredients.length !== right_ingredients.length) {
         for (var i = 0; i < 2; i++) {
             var $ingredient_td = addEl('td', $ingredient_row);
-            var unique_ingredients = SW.PRODUCTS_FOR_COMPARE[i].ingredients.filter(function(ingredient) {
-                return common_ingredient_ids.indexOf(ingredient.id) === -1;
-            });
+            var ingredient_list = (i === 0) ? left_ingredients : right_ingredients;
+            if (ingredient_list.length > 0) {
+                var unique_ingredients = ingredient_list.filter(function(ingredient) {
+                    return common_ingredient_ids.indexOf(ingredient.id) === -1;
+                });
 
-            if (unique_ingredients.length > 0) {
-                addEl('span', $ingredient_td, 'emphasis', 'Unique ingredients: ');
-                for (var j = 0; j < unique_ingredients.length; j++) {
-                    var ingredient = unique_ingredients[j];
+                if (unique_ingredients.length > 0) {
+                    addEl('span', $ingredient_td, 'emphasis', 'Unique ingredients: ');
+                    for (var j = 0; j < unique_ingredients.length; j++) {
+                        var ingredient = unique_ingredients[j];
+                        addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
+                            href: '/ingredient/' + ingredient.id
+                        }).data('id', ingredient.id);
+                        $ingredient_td.append(', ');
+                    }
+                    var ingredient = unique_ingredients[unique_ingredients.length - 1];
                     addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
                         href: '/ingredient/' + ingredient.id
                     }).data('id', ingredient.id);
-                    $ingredient_td.append(', ');
                 }
-                var ingredient = unique_ingredients[unique_ingredients.length - 1];
-                addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
-                    href: '/ingredient/' + ingredient.id
-                }).data('id', ingredient.id);
+
             }
         }
     }
