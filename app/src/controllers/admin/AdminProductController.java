@@ -20,7 +20,6 @@ import src.models.data.ProductProperty;
 import src.models.data.Type;
 import src.models.user.Permissible;
 import src.models.util.BaseModel;
-import src.util.Util;
 
 public class AdminProductController extends Controller {
 	private static final String TAG = "AdminProductController";
@@ -37,9 +36,6 @@ public class AdminProductController extends Controller {
 		public String description;
 		@NotNull
 		public String image;
-		public String price;
-		public float size;
-		public String size_unit;
 		//		@NotNull
 		//		public String ingredients;
 		//		@NotNull
@@ -77,20 +73,9 @@ public class AdminProductController extends Controller {
 
 			Brand brand = cache.brands.get(request.brand_id);
 			Api.checkNotNull(brand, "Brand", request.brand_id);
-			long price;
-			try {
-				price = Util.parsePrice(request.price);
-			}
-			catch (NumberFormatException e) {
-				throw new BadRequestException(Response.INVALID, "Bad price");
-			}
 
 			//			List<Alias> ingredients = cache.matcher.matchAllAliases(request.ingredients);
 			//			List<Alias> key_ingredients = cache.matcher.matchAllAliases(request.key_ingredients);
-
-			if (request.size_unit == null) {
-				request.size_unit = "";
-			}
 
 			String oldName = result.getName();
 			long oldBrandId = result.getBrand_id();
@@ -102,10 +87,6 @@ public class AdminProductController extends Controller {
 				result.setDescription(request.description);
 				result.setImage(request.image);
 				result.setPopularity(request.popularity);
-
-				result.setPrice(price);
-				result.setSize(request.size);
-				result.setSize_unit(request.size_unit);
 
 				result.save();
 

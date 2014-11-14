@@ -12,10 +12,7 @@ import src.util.Util;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = Product.TABLENAME)
@@ -29,11 +26,6 @@ public class Product extends PopularNamedModel {
 
 	@Column(length = 1023)
 	private String image;
-
-	private long price;
-	private float price_per_size;
-	private float size;
-	private String size_unit;
 
 	//Get/Set
 
@@ -49,22 +41,6 @@ public class Product extends PopularNamedModel {
 		return image;
 	}
 
-	public long getPrice() {
-		return price;
-	}
-
-	public float getPrice_per_size() {
-		return price_per_size;
-	}
-
-	public float getSize() {
-		return size;
-	}
-
-	public String getSize_unit() {
-		return size_unit;
-	}
-
 	public void setBrand_id(long brand_id) {
 		brand_id_tracker.setValue(this.brand_id, brand_id);
 		this.brand_id = brand_id;
@@ -76,24 +52,6 @@ public class Product extends PopularNamedModel {
 
 	public void setImage(String image) {
 		this.image = image;
-	}
-
-	public void setPrice(long price) {
-		this.price = price;
-		if (size != 0f) {
-			price_per_size = ((float) price / size) / 100f;
-		}
-	}
-
-	public void setSize(float size) {
-		this.size = size;
-		if (size != 0f) {
-			price_per_size = ((float) price / size) / 100f;
-		}
-	}
-
-	public void setSize_unit(String size_unit) {
-		this.size_unit = size_unit;
 	}
 
 	//Many-One Brand relations
@@ -180,24 +138,16 @@ public class Product extends PopularNamedModel {
 		return App.cache().product_product_properties.getMany(this.getId());
 	}
 
-	//Others
-
-	public String getFormattedIngredientPercent(long ingredient_id) {
-		TLongList product_properties = getProductProperties();
-		for (int i = 0; i < product_properties.size(); i++) {
-			long property_id = product_properties.get(i);
-			ProductProperty property = App.cache().product_properties.get(property_id);
-			if (property.getKey().equals("ingredients." + ingredient_id + ".percent")) {
-				return " (" + property.getNumber_value() + "%)";
-			}
+	public Map<String, ProductProperty> getProperties() {
+		Map<String, ProductProperty> result = new HashMap<>();
+		for (long id : getProductProperties().toArray()) {
+			ProductProperty property = App.cache().product_properties.get(id);
+			result.put(property.getKey(), property);
 		}
-
-		return "";
+		return result;
 	}
 
-	public String getFormattedPrice() {
-		return Util.formatPrice(getPrice());
-	}
+	//Others
 
 	public String getBrandName() {
 		if (getBrand() == null) {
@@ -206,8 +156,20 @@ public class Product extends PopularNamedModel {
 		return getBrand().getName();
 	}
 
-	public String getDisplaySize() {
-		return Util.formatNumber(getSize()) + " " + getSize_unit();
+	public String getFormattedPrice() {
+		ProductProperty property = getProperties().get(ProductProperty.PRICE);
+		if (property == null) {
+			return "";
+		}
+		return property.getText_value();
+	}
+
+	public String getFormattedSize() {
+		ProductProperty property = getProperties().get(ProductProperty.SIZE);
+		if (property == null) {
+			return "";
+		}
+		return Util.formatNumber(property.getNumber_value()) + " " + property.getText_value();
 	}
 
 	@Override
@@ -292,40 +254,78 @@ public class Product extends PopularNamedModel {
 
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
+	public static abstract class ProductPropertyFilter {
+		public String key;
+
+		public ProductPropertyFilter(String key) {
+			this.key = key;
+		}
+	}
+
+	public static class ProductPropertyNumberFilter extends ProductPropertyFilter {
+		public double min;
+		public double max;
+
+		public ProductPropertyNumberFilter(String key, double min, double max) {
+			super(key);
+			this.min = min;
+			this.max = max;
+		}
+	}
+
+	public static class ProductPropertyTextFilter extends ProductPropertyFilter {
+		public String text;
+
+		public ProductPropertyTextFilter(String key, String text) {
+			super(key);
+			this.text = text;
+		}
+	}
+
 	public static List<Product> byFilter(long[] brands, long[] negBrands,
 	                                     long[] types,
 	                                     long[] ingredients, long[] nedIngredients,
-	                                     long priceMin, long priceMax,
-	                                     float pricePerSizeMin, float pricePerSizeMax,
+	                                     ProductPropertyNumberFilter[] property_number_filters,
+	                                     ProductPropertyTextFilter[] property_text_filters,
 	                                     boolean discontinued,
 	                                     Page page) {
-		if (priceMax < priceMin || priceMax == 0) {
-			priceMax = Long.MAX_VALUE;
-		}
-		if (pricePerSizeMax < pricePerSizeMin || pricePerSizeMax == 0f) {
-			pricePerSizeMax = Float.MAX_VALUE;
-		}
 
 		SelectQuery query = new SelectQuery();
-		query.select("DISTINCT id, popularity");
-		query.from(TABLENAME);
+		query.select("DISTINCT main.id, main.popularity");
+		query.from(TABLENAME + " main INNER JOIN " + ProductProperty.TABLENAME + " aux ON main.id = aux.product_id");
 
 		//Discontinued products
 		//		if (!discontinued) {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
-		query.where("price BETWEEN " + priceMin + " AND " + priceMax);
-		query.where("price_per_size BETWEEN " + pricePerSizeMin + " AND " + pricePerSizeMax);
+
+		if (property_number_filters != null && property_number_filters.length > 0) {
+			for (ProductPropertyNumberFilter filter : property_number_filters) {
+				if (filter.max < filter.min) {
+					filter.max = Double.MAX_VALUE;
+				}
+				query.where("(aux._key = ? AND aux.number_value BETWEEN " + filter.min +
+						" AND " + filter.max + ")");
+				query.input(filter.key);
+			}
+		}
+
+		if (property_text_filters != null && property_text_filters.length > 0) {
+			for (ProductPropertyTextFilter filter : property_text_filters) {
+				query.where("(aux._key = ? AND aux.text_value = ?)");
+				query.input(filter.key).input(filter.text);
+			}
+		}
 
 		if (brands.length > 0) {
-			query.where("brand_id IN (" + Util.joinString(",", brands) + ")");
+			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
 		}
 
 		if (negBrands.length > 0) {
-			query.where("brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
+			query.where("main.brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
 		}
 
-		query.other("ORDER BY popularity DESC, id ASC");
+		query.other("ORDER BY main.popularity DESC, main.id ASC");
 
 		TLongList result = query.execute();
 		TLongSet filter = new TLongHashSet();

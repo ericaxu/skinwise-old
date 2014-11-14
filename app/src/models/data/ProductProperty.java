@@ -13,6 +13,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = ProductProperty.TABLENAME)
 public class ProductProperty extends BaseModel {
+	public static final String INGREDIENT_PERCENT = "ingredients.%d.percent";
+	public static final String PRICE = "price";
+	public static final String PRICE_PER_SIZE = "pricepersize";
+	public static final String SIZE = "size";
+	public static final String SUNSCREEN_SPF = "sunscreen.spf";
+
 	@Index
 	private long product_id;
 	private transient LongHistory product_id_tracker = new LongHistory();

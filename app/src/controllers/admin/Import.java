@@ -337,21 +337,15 @@ public class Import {
 			Matcher percentageMatcher = percentagePattern.matcher(original);
 			if (percentageMatcher.find()) {
 				double percent = Util.getNumberFrom(percentageMatcher, 1);
-				String key = "ingredients." + ingredient_id + ".percent";
-				ProductProperty property = new ProductProperty();
-				property.setKey(key);
-				property.setNumber_value(percent);
-				properties.add(property);
+				String key = String.format(ProductProperty.INGREDIENT_PERCENT, ingredient_id);
+				properties.add(createProperty(key, percent, null));
 			}
 		}
 
 		Matcher spfMatcher = spfPattern.matcher(object.name);
 		if (spfMatcher.find()) {
 			double spf = Util.getNumberFrom(spfMatcher, 1);
-			ProductProperty property = new ProductProperty();
-			property.setKey("sunscreen.spf");
-			property.setNumber_value(spf);
-			properties.add(property);
+			properties.add(createProperty(ProductProperty.SUNSCREEN_SPF, spf, null));
 		}
 
 		Brand brand = cache.brands.get(object.brand);
@@ -374,17 +368,19 @@ public class Import {
 		result.setBrand(brand);
 		result.setTypes(types);
 		result.setImage(object.image);
-		result.setPrice(parsePrice(object.price));
+		long price = parsePrice(object.price);
+		if (!object.price.isEmpty()) {
+			properties.add(createProperty(ProductProperty.PRICE, price, Util.formatPrice(price)));
+		}
 		if (!object.size.isEmpty() && object.size.contains(" ")) {
 			String[] pieces = object.size.split(" ");
 			String sizeString = pieces[0];
 			String unit = object.size.substring(sizeString.length() + 1);
 			float size = Float.parseFloat(sizeString);
-			result.setSize(size);
-			result.setSize_unit(unit);
-		}
-		else {
-			result.setSize_unit("");
+			properties.add(createProperty(ProductProperty.SIZE, size, unit));
+			if (!object.price.isEmpty()) {
+				properties.add(createProperty(ProductProperty.PRICE_PER_SIZE, (double) price / size, null));
+			}
 		}
 		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
@@ -401,6 +397,14 @@ public class Import {
 			property.save();
 			cache.product_properties.update(property);
 		}
+	}
+
+	private static ProductProperty createProperty(String key, double numberValue, String textValue) {
+		ProductProperty property = new ProductProperty();
+		property.setKey(key);
+		property.setNumber_value(numberValue);
+		property.setText_value(textValue);
+		return property;
 	}
 
 	private static List<Alias> multithreadedIngredientSearch(Set<String> ingredients) {

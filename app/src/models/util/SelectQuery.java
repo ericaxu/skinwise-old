@@ -6,9 +6,11 @@ import play.db.DB;
 import src.util.Logger;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SelectQuery {
 	private static final String TAG = "SelectQuery";
@@ -17,6 +19,7 @@ public class SelectQuery {
 	private boolean select = false;
 	private boolean from = false;
 	private boolean where = false;
+	private List<Object> inputs = new ArrayList<>();
 
 	public SelectQuery select(String input) {
 		if (from || where) {
@@ -68,6 +71,11 @@ public class SelectQuery {
 		return this;
 	}
 
+	public SelectQuery input(Object object) {
+		inputs.add(object);
+		return this;
+	}
+
 	public String get() {
 		return buffer.toString();
 	}
@@ -76,8 +84,13 @@ public class SelectQuery {
 		TLongList result = new TLongArrayList();
 		try {
 			Connection connection = DB.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(get());
+			String query = get();
+			Logger.debug(TAG, query);
+			PreparedStatement statement = connection.prepareStatement(query);
+			for (int i = 0; i < inputs.size(); i++) {
+				statement.setObject(i + 1, inputs.get(i));
+			}
+			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				result.add(resultSet.getLong("id"));
 			}

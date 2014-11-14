@@ -12,16 +12,12 @@ import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.ResponseState;
-import src.models.MemCache;
 import src.models.data.*;
 import src.models.util.Page;
-import src.util.Util;
 import views.html.product;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ProductController extends Controller {
 	public static class ResponseIngredientObject {
@@ -46,6 +42,12 @@ public class ProductController extends Controller {
 		}
 	}
 
+	public static class RequestProductNumberPropertyFilter {
+		public String key;
+		public double min;
+		public double max;
+	}
+
 	public static class RequestProductFilter extends Api.RequestGetAllByPage {
 		@NotNull
 		public long[] brands;
@@ -57,49 +59,8 @@ public class ProductController extends Controller {
 		public long[] neg_brands;
 		@NotNull
 		public long[] neg_ingredients;
-		public long price_min;
-		public long price_max;
-		public long price_per_size_min;
-		public long price_per_size_max;
-	}
-
-	public static class ResponseProductObject {
-		public long id;
-		public long brand;
-		public String line;
-		public String name;
-		public String description;
-		public String image;
-		public String price;
-		public float size;
-		public String size_unit;
-
-		public ResponseProductObject(Product result) {
-			this(
-					result.getId(),
-					result.getBrand_id(),
-					result.getLine(),
-					result.getName(),
-					result.getDescription(),
-					result.getImage(),
-					result.getPrice(),
-					result.getSize(),
-					result.getSize_unit()
-			);
-		}
-
-		public ResponseProductObject(long id, long brand, String line, String name,
-		                             String description, String image, long price, float size, String size_unit) {
-			this.id = id;
-			this.brand = brand;
-			this.line = line;
-			this.name = name;
-			this.description = description;
-			this.image = image;
-			this.price = Util.formatPrice(price);
-			this.size = size;
-			this.size_unit = size_unit;
-		}
+		@NotNull
+		public RequestProductNumberPropertyFilter[] number_properties;
 	}
 
 	public static class ResponseProductPropertyObject {
@@ -109,12 +70,60 @@ public class ProductController extends Controller {
 		public String text_value;
 		public double number_value;
 
+		public ResponseProductPropertyObject(ProductProperty result) {
+			this(
+					result.getId(),
+					result.getProduct_id(),
+					result.getKey(),
+					result.getText_value(),
+					result.getNumber_value()
+			);
+		}
+
 		public ResponseProductPropertyObject(long id, long product_id, String key, String text_value, double number_value) {
 			this.id = id;
 			this.product_id = product_id;
 			this.key = key;
 			this.text_value = text_value;
 			this.number_value = number_value;
+		}
+	}
+
+	public static class ResponseProductObject {
+		public long id;
+		public long brand;
+		public String line;
+		public String name;
+		public String description;
+		public String image;
+		public List<ResponseProductPropertyObject> properties = new ArrayList<>();
+
+		public ResponseProductObject(Product result) {
+			this(
+					result.getId(),
+					result.getBrand_id(),
+					result.getLine(),
+					result.getName(),
+					result.getDescription(),
+					result.getImage()
+			);
+
+			List<ProductProperty> properties = App.cache().product_properties.getList(
+					result.getProductProperties().toArray());
+
+			for (ProductProperty property : properties) {
+				this.properties.add(new ResponseProductPropertyObject(property));
+			}
+		}
+
+		private ResponseProductObject(long id, long brand, String line, String name,
+		                              String description, String image) {
+			this.id = id;
+			this.brand = brand;
+			this.line = line;
+			this.name = name;
+			this.description = description;
+			this.image = image;
 		}
 	}
 
@@ -182,13 +191,27 @@ public class ProductController extends Controller {
 				Api.checkNotNull(object, "Ingredient", id);
 			}
 
+			for (RequestProductNumberPropertyFilter property : request.number_properties) {
+				if (property.key == null || property.key.isEmpty()) {
+					throw new BadRequestException(Response.INVALID, "Bad property key: " + property.key);
+				}
+			}
+
+			Product.ProductPropertyNumberFilter[] numberFilters =
+					new Product.ProductPropertyNumberFilter[request.number_properties.length];
+
+			for (int i = 0; i < numberFilters.length; i++) {
+				RequestProductNumberPropertyFilter property = request.number_properties[i];
+				numberFilters[i] = new Product.ProductPropertyNumberFilter(
+						property.key, property.min, property.max);
+			}
+
 			Page page = new Page(request.page, 20);
 			List<Product> result = Product.byFilter(
 					request.brands, request.neg_brands,
 					request.types,
 					request.ingredients, request.neg_ingredients,
-					request.price_min, request.price_max,
-					request.price_per_size_min, request.price_per_size_max,
+					numberFilters, null,
 					false,
 					page);
 
@@ -244,38 +267,6 @@ public class ProductController extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
-	public static Result api_product_properties() {
-		try {
-			Api.RequestGetById request = Api.read(ctx(), Api.RequestGetById.class);
-
-			MemCache cache = App.cache();
-
-			Product result = cache.products.get(request.id);
-			Api.checkNotNull(result, "Product", request.id);
-
-			List<ProductProperty> properties = cache.product_properties.getList(
-					result.getProductProperties().toArray());
-
-			Api.ResponseResultList response = new Api.ResponseResultList();
-
-			for (ProductProperty property : properties) {
-				response.results.add(new ResponseProductPropertyObject(
-						property.getId(),
-						property.getProduct_id(),
-						property.getKey(),
-						property.getText_value(),
-						property.getNumber_value()
-				));
-			}
-
-			return Api.write(response);
-		}
-		catch (BadRequestException e) {
-			return Api.write(new ErrorResponse(e));
-		}
-	}
-
-	@BodyParser.Of(BodyParser.TolerantText.class)
 	public static Result api_product_similar() {
 		try {
 			Api.RequestGetById request =
@@ -288,10 +279,7 @@ public class ProductController extends Controller {
 					new long[]{},
 					new long[]{},
 					new long[]{},
-					0,
-					0,
-					0,
-					0,
+					null, null,
 					false,
 					page
 			);

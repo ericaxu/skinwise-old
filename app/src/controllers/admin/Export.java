@@ -108,13 +108,7 @@ public class Export {
 		result.brand = object.getBrandName();
 		result.image = object.getImage();
 		result.price = object.getFormattedPrice();
-		String sizeUnit = object.getSize_unit();
-		if (sizeUnit != null && !sizeUnit.isEmpty()) {
-			result.size = object.getSize() + " " + sizeUnit;
-		}
-		else {
-			result.size = "";
-		}
+		result.size = object.getFormattedSize();
 		Set<Type> types = object.getTypes();
 		List<String> typesString = new ArrayList<>();
 		for (Type type : types) {
