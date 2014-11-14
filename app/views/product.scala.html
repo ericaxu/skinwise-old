@@ -32,10 +32,14 @@
             <h1 class="name">@product.getName</h1>
             <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
 
-            <div>
-                <span class="price_info">@product.getFormattedPrice</span>
-                <p>Size: @product.getFormattedSize</p>
-            </div>
+            @defining(product.getFormattedPrice) { formatted_price =>
+                @if(formatted_price) {
+                    <div>
+                        <span class="price_info">@formatted_price</span>
+                        <p>Size: @product.getFormattedSize</p>
+                    </div>
+                }
+            }
 
             @if(product.getTypes.size > 0) {
                 <div class="claim">
