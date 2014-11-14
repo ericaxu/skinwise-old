@@ -83,18 +83,23 @@ function fetchProducts(page, callback, query) {
     if (SW.CUR_INGREDIENT && (ingredients.indexOf(SW.CUR_INGREDIENT) === -1 || ingredients.length === 0)) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
+
+    var properties = {};
     var price_filter = $('#price_filter').slider('values');
     // Set min price to 1 cent if max is not unlimited - we don't want to include products that don't have prices
     var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.PRICE_FILTER_RANGE.MAX) ? 1 : price_filter[0] * 100;
     var price_max = price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100;
+    properties['price'] = {
+        min: price_min,
+        max: price_max
+    };
     var query = {
         types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
         neg_brands: getSelectedFilters('neg_brand'),
         ingredients: ingredients,
         neg_ingredients: getSelectedFilters('neg_ingredient'),
-        price_min: price_min,
-        price_max: price_max,
+        number_properties: properties,
         page: page
     };
 
@@ -390,20 +395,28 @@ function changeHash(query) {
         }
     }
 
-    if (query.price_min !== 0) {
-        if (need_divide) {
-            hash += '&';
-        }
-        need_divide = true;
-        hash += ('pl=' + query.price_min / 100);
-    }
+    for (var key in query.number_properties) {
+        if (key === 'price') {
 
-    if (query.price_max !== -1) {
-        if (need_divide) {
-            hash += '&';
+            var price_range = query.number_properties[key];
+
+            if (price_range.min !== 0) {
+                if (need_divide) {
+                    hash += '&';
+                }
+                need_divide = true;
+                hash += ('pl=' + price_range.min / 100);
+            }
+
+            if (price_range.max !== -1) {
+                if (need_divide) {
+                    hash += '&';
+                }
+                need_divide = true;
+                hash += ('ph=' + price_range.max / 100);
+            }
+
         }
-        need_divide = true;
-        hash += ('ph=' + query.price_max / 100);
     }
 
     location.hash = hash;
