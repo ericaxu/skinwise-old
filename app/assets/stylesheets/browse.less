@@ -274,6 +274,24 @@ footer {
 
 #price_label {
     text-align: center;
-    font-family: "Proxima Nova Light";
+    font-family: "Proxima Nova Light", sans-serif;
     font-size: 16px;
+}
+
+.filter_blank_slate.open_add_filter_popup {
+    border: 3px dashed @border;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    font-family: "Proxima Nova Light", sans-serif;
+    text-transform: uppercase;
+    color: @border;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-size: 1em;
+
+    &:hover {
+        border: 3px dashed @dark_text;
+        color: @dark_text;
+    }
 }

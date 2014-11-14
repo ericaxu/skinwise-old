@@ -39,6 +39,7 @@ function getFilterHTML(filter_obj, filter_key) {
             if ($option.hasClass('selected')) {
                 refetch(SW.BROWSE_TYPE);
             }
+            setupEmptyFilterBlankSlate();
         };
         confirmAction(action, delete_callback, 'delete_filter');
     });
@@ -225,6 +226,7 @@ function handleAddFilter() {
             addFilter(SW.BROWSE_TYPE, filter_key, new_filter);
 
             var $filters = $('.' + filter_key + '_filters');
+            $filters.find('.filter_blank_slate').remove();
             $filters.append(getFilterHTML(new_filter, filter_key));
             $add_filter.val('');
             $('.popup').hide();
@@ -282,7 +284,7 @@ function checkIfFilterAlreadyExists(filter_key, id) {
 
 function setupAddFilterPopup() {
     var $add_filter = $('#add_filter');
-    $('.open_add_filter_popup').on('click', function() {
+    $(document).on('click', '.open_add_filter_popup', function() {
         // Reset
         cleanupErrors();
         $add_filter.val('');
@@ -412,6 +414,23 @@ function onSliderChange() {
     }
 }
 
+function setupEmptyFilterBlankSlate() {
+    var filter_keys = SW.FILTER_TYPES[SW.BROWSE_TYPE] || [];
+    for (var i = 0; i < filter_keys.length; i++) {
+        var filter_key = filter_keys[i];
+        var $filters = $('.' + filter_key + '_filters');
+        if ($filters.html() === '') {
+            var $add_filter_button = $filters.parent().find('.open_add_filter_popup');
+            var autocomplete_type = $add_filter_button.data('type');
+            var filter_key = $add_filter_button.data('filterKey');
+            addEl('div', $filters, 'filter_blank_slate open_add_filter_popup', 'Add a filter').data({
+                type: autocomplete_type,
+                filterKey: filter_key
+            });
+        }
+    }
+}
+
 function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
@@ -457,6 +476,8 @@ function initBrowse(type) {
                 $('.filter_container').show();
             }
         });
+
+        setupEmptyFilterBlankSlate();
 
     });
 }

@@ -32,7 +32,7 @@
             <h1 class="name">@product.getName</h1>
             <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
 
-            @if(product.getPrice != 0) {
+            @if(product.getFormattedPrice != "") {
                 <div>
                     <span class="price_info">@product.getFormattedPrice</span>
                     @if(product.getSize != 0) {
