@@ -155,6 +155,8 @@ for url in urls:
 			product_key_ingredients = key_ingredients
 		product_other_ingredients = ingredients
 
+	product_key_ingredients = parser.fix_space(parser.strip_tags(product_key_ingredients))
+	product_other_ingredients = parser.fix_space(parser.strip_tags(product_other_ingredients))
 	createProduct(product_name, product_key_ingredients, product_other_ingredients)
 
 unit_unique = list(unit_unique)
