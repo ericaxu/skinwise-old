@@ -373,10 +373,10 @@ function productResultHTML(product) {
 
 
 function formatPrice(product) {
-    if (product.price && product.size && product.size_unit) {
-        return product.price + ' / ' + product.size + ' ' + product.size_unit;
-    } else if (product.price) {
-        return product.price;
+    if (product.properties.price && product.properties.size) {
+        return product.properties.price.text_value + ' / ' + product.properties.size.number_value + ' ' + product.properties.size.text_value;
+    } else if (product.properties.price) {
+        return product.properties.price.text_value;
     } else {
         return '';
     }
