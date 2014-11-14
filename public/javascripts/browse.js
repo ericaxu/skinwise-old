@@ -406,8 +406,12 @@ function changeHash(query) {
     location.hash = hash;
 }
 
-function onSliderChange() {
-    var values = $('#price_filter').slider('values');
+function onSliderChange(event, ui) {
+    if (ui) {
+        var values = ui.values;
+    } else {
+        var values = $('#price_filter').slider('values');
+    }
     if (values[1] === SW.PRICE_FILTER_RANGE.MAX) {
         $('#price_label').text('$' + values[0] + ' - unlimited');
     } else {
@@ -442,6 +446,7 @@ function initBrowse(type) {
             values: [SW.PRICE_FILTER_RANGE.MIN, SW.PRICE_FILTER_RANGE.MAX],
             slide: onSliderChange,
             stop: function(event, ui) {
+                onSliderChange(event, ui);
                 refetch();
             }
         }).on('change', onSliderChange);
