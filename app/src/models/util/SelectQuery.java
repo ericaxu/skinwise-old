@@ -85,7 +85,6 @@ public class SelectQuery {
 		try {
 			Connection connection = DB.getConnection();
 			String query = get();
-			Logger.debug(TAG, query);
 			PreparedStatement statement = connection.prepareStatement(query);
 			for (int i = 0; i < inputs.size(); i++) {
 				statement.setObject(i + 1, inputs.get(i));
