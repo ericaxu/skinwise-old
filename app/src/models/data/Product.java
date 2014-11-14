@@ -285,8 +285,8 @@ public class Product extends PopularNamedModel {
 	public static List<Product> byFilter(long[] brands, long[] negBrands,
 	                                     long[] types,
 	                                     long[] ingredients, long[] nedIngredients,
-	                                     ProductPropertyNumberFilter[] property_number_filters,
-	                                     ProductPropertyTextFilter[] property_text_filters,
+	                                     List<ProductPropertyNumberFilter> property_number_filters,
+	                                     List<ProductPropertyTextFilter> property_text_filters,
 	                                     boolean discontinued,
 	                                     Page page) {
 
@@ -299,7 +299,7 @@ public class Product extends PopularNamedModel {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
 
-		if (property_number_filters != null && property_number_filters.length > 0) {
+		if (property_number_filters != null && property_number_filters.size() > 0) {
 			for (ProductPropertyNumberFilter filter : property_number_filters) {
 				if (filter.max < filter.min) {
 					filter.max = Double.MAX_VALUE;
@@ -310,7 +310,7 @@ public class Product extends PopularNamedModel {
 			}
 		}
 
-		if (property_text_filters != null && property_text_filters.length > 0) {
+		if (property_text_filters != null && property_text_filters.size() > 0) {
 			for (ProductPropertyTextFilter filter : property_text_filters) {
 				query.where("(aux._key = ? AND aux.text_value = ?)");
 				query.input(filter.key).input(filter.text);

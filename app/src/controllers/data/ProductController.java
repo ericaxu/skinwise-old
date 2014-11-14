@@ -18,6 +18,7 @@ import views.html.product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ProductController extends Controller {
 	public static class ResponseIngredientObject {
@@ -43,7 +44,6 @@ public class ProductController extends Controller {
 	}
 
 	public static class RequestProductNumberPropertyFilter {
-		public String key;
 		public double min;
 		public double max;
 	}
@@ -60,7 +60,7 @@ public class ProductController extends Controller {
 		@NotNull
 		public long[] neg_ingredients;
 		@NotNull
-		public RequestProductNumberPropertyFilter[] number_properties;
+		public Map<String, RequestProductNumberPropertyFilter> number_properties;
 	}
 
 	public static class ResponseProductPropertyObject {
@@ -191,19 +191,12 @@ public class ProductController extends Controller {
 				Api.checkNotNull(object, "Ingredient", id);
 			}
 
-			for (RequestProductNumberPropertyFilter property : request.number_properties) {
-				if (property.key == null || property.key.isEmpty()) {
-					throw new BadRequestException(Response.INVALID, "Bad property key: " + property.key);
-				}
-			}
+			List<Product.ProductPropertyNumberFilter> numberFilters = new ArrayList<>();
 
-			Product.ProductPropertyNumberFilter[] numberFilters =
-					new Product.ProductPropertyNumberFilter[request.number_properties.length];
-
-			for (int i = 0; i < numberFilters.length; i++) {
-				RequestProductNumberPropertyFilter property = request.number_properties[i];
-				numberFilters[i] = new Product.ProductPropertyNumberFilter(
-						property.key, property.min, property.max);
+			for (Map.Entry<String, RequestProductNumberPropertyFilter> entry :
+					request.number_properties.entrySet()) {
+				numberFilters.add(new Product.ProductPropertyNumberFilter(
+						entry.getKey(), entry.getValue().min, entry.getValue().max));
 			}
 
 			Page page = new Page(request.page, 20);
