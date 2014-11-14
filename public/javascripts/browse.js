@@ -361,6 +361,7 @@ function showExtraFilter(filter_key, id) {
                 };
 
                 var $filters = $('.' + filter_key + '_filters');
+                $filters.find('.filter_blank_slate').remove();
                 $filters.append(getFilterHTML(new_filter, filter_key));
             });
         }
@@ -455,7 +456,6 @@ function initBrowse(type) {
         handleBrowseScroll();
         setupAddFilterPopup();
 
-
         $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
             refetch();
@@ -478,6 +478,5 @@ function initBrowse(type) {
         });
 
         setupEmptyFilterBlankSlate();
-
     });
 }
