@@ -336,11 +336,11 @@ public class Import {
 			String original = keyIngredientOriginals.get(i);
 			Matcher percentageMatcher = percentagePattern.matcher(original);
 			if (percentageMatcher.find()) {
-				double precent = Util.getNumberFrom(percentageMatcher, 1);
-				String key = "ingredients." + ingredient_id + ".precent";
+				double percent = Util.getNumberFrom(percentageMatcher, 1);
+				String key = "ingredients." + ingredient_id + ".percent";
 				ProductProperty property = new ProductProperty();
 				property.setKey(key);
-				property.setNumber_value(precent);
+				property.setNumber_value(percent);
 				properties.add(property);
 			}
 		}

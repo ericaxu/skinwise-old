@@ -187,7 +187,7 @@ public class Product extends PopularNamedModel {
 		for (int i = 0; i < product_properties.size(); i++) {
 			long property_id = product_properties.get(i);
 			ProductProperty property = App.cache().product_properties.get(property_id);
-			if (property.getKey().equals("ingredients." + ingredient_id + ".precent")) {
+			if (property.getKey().equals("ingredients." + ingredient_id + ".percent")) {
 				return " (" + property.getNumber_value() + "%)";
 			}
 		}
