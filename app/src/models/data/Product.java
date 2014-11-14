@@ -290,27 +290,36 @@ public class Product extends PopularNamedModel {
 	                                     boolean discontinued,
 	                                     Page page) {
 
+		boolean hasNumberFilter = property_number_filters != null && property_number_filters.size() > 0;
+		boolean hasTextFilter = property_text_filters != null && property_text_filters.size() > 0;
+		boolean hasFilter = hasNumberFilter || hasTextFilter;
+
 		SelectQuery query = new SelectQuery();
 		query.select("DISTINCT main.id, main.popularity");
-		query.from(TABLENAME + " main INNER JOIN " + ProductProperty.TABLENAME + " aux ON main.id = aux.product_id");
+
+		if (hasFilter) {
+			query.from(TABLENAME + " main INNER JOIN " + ProductProperty.TABLENAME + " aux ON main.id = aux.product_id");
+		}
+		else {
+			query.from(TABLENAME + " main");
+		}
 
 		//Discontinued products
 		//		if (!discontinued) {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
 
-		if (property_number_filters != null && property_number_filters.size() > 0) {
+		if (hasNumberFilter) {
 			for (ProductPropertyNumberFilter filter : property_number_filters) {
 				if (filter.max < filter.min) {
 					filter.max = Double.MAX_VALUE;
 				}
-				query.where("(aux._key = ? AND aux.number_value BETWEEN " + filter.min +
-						" AND " + filter.max + ")");
-				query.input(filter.key);
+				query.where("(aux._key = ? AND aux.number_value BETWEEN ? AND ?)");
+				query.input(filter.key).input(filter.min).input(filter.max);
 			}
 		}
 
-		if (property_text_filters != null && property_text_filters.size() > 0) {
+		if (hasTextFilter) {
 			for (ProductPropertyTextFilter filter : property_text_filters) {
 				query.where("(aux._key = ? AND aux.text_value = ?)");
 				query.input(filter.key).input(filter.text);
