@@ -84,14 +84,17 @@ function fetchProducts(page, callback, query) {
         ingredients.push(SW.CUR_INGREDIENT);
     }
     var price_filter = $('#price_filter').slider('values');
+    // Set min price to 1 cent if max is not unlimited - we don't want to include products that don't have prices
+    var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.PRICE_FILTER_RANGE.MAX) ? 1 : price_filter[0] * 100;
+    var price_max = price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100;
     var query = {
         types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
         neg_brands: getSelectedFilters('neg_brand'),
         ingredients: ingredients,
         neg_ingredients: getSelectedFilters('neg_ingredient'),
-        price_min: price_filter[0] * 100,
-        price_max: price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100,
+        price_min: price_min,
+        price_max: price_max,
         page: page
     };
 
