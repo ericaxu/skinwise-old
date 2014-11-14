@@ -17,6 +17,7 @@ import src.models.util.Page;
 import views.html.product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +97,7 @@ public class ProductController extends Controller {
 		public String name;
 		public String description;
 		public String image;
-		public List<ResponseProductPropertyObject> properties = new ArrayList<>();
+		public Map<String, ResponseProductPropertyObject> properties = new HashMap<>();
 
 		public ResponseProductObject(Product result) {
 			this(
@@ -112,7 +113,7 @@ public class ProductController extends Controller {
 					result.getProductProperties().toArray());
 
 			for (ProductProperty property : properties) {
-				this.properties.add(new ResponseProductPropertyObject(property));
+				this.properties.put(property.getKey(), new ResponseProductPropertyObject(property));
 			}
 		}
 
