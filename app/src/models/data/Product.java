@@ -182,6 +182,19 @@ public class Product extends PopularNamedModel {
 
 	//Others
 
+	public String getFormattedIngredientPercent(long ingredient_id) {
+		TLongList product_properties = getProductProperties();
+		for (int i = 0; i < product_properties.size(); i++) {
+			long property_id = product_properties.get(i);
+			ProductProperty property = App.cache().product_properties.get(property_id);
+			if (property.getKey().equals("ingredients." + ingredient_id + ".precent")) {
+				return " (" + property.getNumber_value() + "%)";
+			}
+		}
+
+		return "";
+	}
+
 	public String getFormattedPrice() {
 		return Util.formatPrice(getPrice());
 	}
