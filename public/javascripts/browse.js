@@ -89,10 +89,12 @@ function fetchProducts(page, callback, query) {
     // Set min price to 1 cent if max is not unlimited - we don't want to include products that don't have prices
     var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.PRICE_FILTER_RANGE.MAX) ? 1 : price_filter[0] * 100;
     var price_max = price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100;
-    properties['price'] = {
-        min: price_min,
-        max: price_max
-    };
+    if (price_min !== 0 || price_max !== SW.PRICE_FILTER_RANGE.INFINITY) {
+        properties['price'] = {
+            min: price_min,
+            max: price_max
+        };
+    }
     var query = {
         types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
