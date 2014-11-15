@@ -12,21 +12,10 @@ import java.util.Comparator;
 @Entity
 @Table(name = ProductIngredient.TABLENAME)
 public class ProductIngredient extends ManyToManyModel {
-	private long product_id;
-	private long alias_id;
-
 	private int item_order;
 	private boolean is_key;
 
 	//Get/Set
-
-	public long getProduct_id() {
-		return product_id;
-	}
-
-	public long getAlias_id() {
-		return alias_id;
-	}
 
 	public boolean isIs_key() {
 		return is_key;
@@ -34,14 +23,6 @@ public class ProductIngredient extends ManyToManyModel {
 
 	public int getItem_order() {
 		return item_order;
-	}
-
-	public void setProduct_id(long product_id) {
-		this.product_id = product_id;
-	}
-
-	public void setAlias_id(long alias_id) {
-		this.alias_id = alias_id;
 	}
 
 	public void setIs_key(boolean is_key) {
@@ -55,31 +36,19 @@ public class ProductIngredient extends ManyToManyModel {
 	//Relations
 
 	public Product getProduct() {
-		return App.cache().products.get(product_id);
+		return App.cache().products.get(getLeft_id());
 	}
 
 	public Alias getAlias() {
-		return App.cache().alias.get(alias_id);
+		return App.cache().alias.get(getRight_id());
 	}
 
 	public void setProduct(Product product) {
-		setProduct_id(BaseModel.getIdIfExists(product));
+		setLeft_id(BaseModel.getIdIfExists(product));
 	}
 
 	public void setAlias(Alias alias) {
-		setAlias_id(BaseModel.getIdIfExists(alias));
-	}
-
-	//ManyToMany relations
-
-	@Override
-	public long getLeftId() {
-		return getProduct_id();
-	}
-
-	@Override
-	public long getRightId() {
-		return getAlias_id();
+		setRight_id(BaseModel.getIdIfExists(alias));
 	}
 
 	//Static

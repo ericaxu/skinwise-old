@@ -350,9 +350,9 @@ public class Product extends PopularNamedModel {
 			long[] list = alias_ids.toArray();
 
 			SelectQuery q = new SelectQuery();
-			q.select("DISTINCT product_id as id");
+			q.select("DISTINCT left_id as id");
 			q.from(ProductIngredient.TABLENAME);
-			q.where("alias_id IN (" + Util.joinString(",", list) + ")");
+			q.where("right_id IN (" + Util.joinString(",", list) + ")");
 
 			filter.addAll(q.execute());
 		}
@@ -366,10 +366,10 @@ public class Product extends PopularNamedModel {
 			long[] list = alias_ids.toArray();
 
 			SelectQuery q = new SelectQuery();
-			q.select("DISTINCT product_id as id");
+			q.select("DISTINCT left_id as id");
 			q.from(ProductIngredient.TABLENAME);
-			q.where("alias_id IN (" + Util.joinString(",", list) + ")");
-			q.other("GROUP BY product_id");
+			q.where("right_id IN (" + Util.joinString(",", list) + ")");
+			q.other("GROUP BY left_id");
 			q.other("HAVING count(*) >= " + ingredients.length);
 
 			ingredients_intersect = new TLongHashSet(q.execute());
@@ -377,10 +377,10 @@ public class Product extends PopularNamedModel {
 
 		if (types.length > 0) {
 			SelectQuery q = new SelectQuery();
-			q.select("DISTINCT product_id as id");
+			q.select("DISTINCT left_id as id");
 			q.from(ProductType.TABLENAME);
-			q.where("type_id IN (" + Util.joinString(",", types) + ")");
-			//			q.other("GROUP BY product_id");
+			q.where("right_id IN (" + Util.joinString(",", types) + ")");
+			//			q.other("GROUP BY left_id");
 			//			q.other("HAVING count(*) >= " + types.length);
 
 			types_intersect = new TLongHashSet(q.execute());
@@ -398,10 +398,10 @@ public class Product extends PopularNamedModel {
 		}
 
 		@Override
-		protected ProductType create(long id, long other_id) {
+		protected ProductType create(long product_id, long type_id) {
 			ProductType object = new ProductType();
-			object.setProduct_id(id);
-			object.setType_id(other_id);
+			object.setLeft_id(product_id);
+			object.setRight_id(type_id);
 			return object;
 		}
 	}

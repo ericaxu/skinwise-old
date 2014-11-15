@@ -19,7 +19,7 @@ public abstract class ManyToManyHistory<T extends ManyToManyModel> {
 			Set<T> product_types = getIndex().getByL(id);
 			other_cache = new TLongHashSet();
 			for (T product_type : product_types) {
-				other_cache.add(product_type.getRightId());
+				other_cache.add(product_type.getRight_id());
 			}
 		}
 

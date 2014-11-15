@@ -60,7 +60,7 @@ public class Ingredient extends PopularNamedModel {
 			Set<IngredientFunction> ingredient_functions = getIngredient_functions();
 			functions_cache = new TLongHashSet();
 			for (IngredientFunction ingredient_function : ingredient_functions) {
-				functions_cache.add(ingredient_function.getFunction_id());
+				functions_cache.add(ingredient_function.getRight_id());
 			}
 		}
 
@@ -122,7 +122,7 @@ public class Ingredient extends PopularNamedModel {
 				List<IngredientFunction> ingredient_functions_new = new ArrayList<>();
 				for (long function_id : functions_new.toArray()) {
 					IngredientFunction ingredient_function = new IngredientFunction();
-					ingredient_function.setFunction_id(function_id);
+					ingredient_function.setRight_id(function_id);
 					ingredient_function.setIngredient(this);
 					ingredient_function.save();
 					ingredient_functions_new.add(ingredient_function);
@@ -157,10 +157,10 @@ public class Ingredient extends PopularNamedModel {
 	public static List<Ingredient> byFilter(long[] functions, Page page) {
 		SelectQuery query = new SelectQuery();
 		query.select("DISTINCT main.id as id, main.popularity");
-		query.from(TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux ON main.id = aux.ingredient_id");
+		query.from(TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux ON main.id = aux.left_id");
 
 		if (functions.length > 0) {
-			query.where("aux.function_id IN (" + Util.joinString(",", functions) + ")");
+			query.where("aux.right_id IN (" + Util.joinString(",", functions) + ")");
 			query.other("GROUP BY main.id");
 			query.other("HAVING count(*) = " + functions.length);
 		}

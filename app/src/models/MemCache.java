@@ -522,7 +522,7 @@ public class MemCache {
 			lock.readLock().lock();
 			try {
 				for (T relation : relations) {
-					result.add(relation.getLeftId());
+					result.add(relation.getLeft_id());
 				}
 				return result;
 			}
@@ -535,7 +535,7 @@ public class MemCache {
 			lock.readLock().lock();
 			try {
 				for (T relation : relations) {
-					result.add(relation.getRightId());
+					result.add(relation.getRight_id());
 				}
 				return result;
 			}
@@ -605,15 +605,15 @@ public class MemCache {
 		//Internals
 
 		private void _add(T object) {
-			long left = object.getLeftId();
-			long right = object.getRightId();
+			long left = object.getLeft_id();
+			long right = object.getRight_id();
 			getByL(left).add(object);
 			getByR(right).add(object);
 		}
 
 		private void _remove(T object) {
-			long left = object.getLeftId();
-			long right = object.getRightId();
+			long left = object.getLeft_id();
+			long right = object.getRight_id();
 			getByL(left).remove(object);
 			getByR(right).remove(object);
 		}
@@ -676,7 +676,7 @@ public class MemCache {
 
 	private static class IngredientFunctionGetter implements ManyToManyGetter<IngredientFunction> {
 		public List<IngredientFunction> all() {
-			return IngredientFunction.all();
+			return IngredientFunction.find.all();
 		}
 	}
 
