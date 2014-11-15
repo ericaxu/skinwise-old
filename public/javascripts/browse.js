@@ -85,16 +85,32 @@ function fetchProducts(page, callback, query) {
     }
 
     var properties = {};
+
     var price_filter = $('#price_filter').slider('values');
-    // Set min price to 1 cent if max is not unlimited - we don't want to include products that don't have prices
-    var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.SLIDER_RANGE.PRICE_MAX) ? 1 : price_filter[0] * 100;
-    var price_max = price_filter[1] === SW.SLIDER_RANGE.PRICE_MAX ? SW.SLIDER_RANGE.INFINITY : price_filter[1] * 100;
-    if (price_min !== 0 || price_max !== SW.SLIDER_RANGE.INFINITY) {
+    if (price_filter[0] !== SW.SLIDER_RANGE.PRICE_MIN || price_filter[1] !== SW.SLIDER_RANGE.PRICE_MAX) {
         properties['price'] = {
-            min: price_min,
-            max: price_max
+            min: price_filter[0] * 100,
+            max: price_filter[1] * 100
         };
     }
+
+    var price_per_size_filter = $('#price_per_size_filter').slider('values');
+    if (price_per_size_filter[0] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MIN || price_per_size_filter[1] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MAX) {
+        properties['pricepersize'] = {
+            min: price_per_size_filter[0] * 100 / SW.CONVERSION.ML_IN_OZ,
+            max: price_per_size_filter[1] * 100 / SW.CONVERSION.ML_IN_OZ
+        };
+    }
+
+    var spf_filter = $('#sunscreen_spf_filter').slider('values');
+    if (spf_filter[0] !== SW.SLIDER_RANGE.SPF_MIN || spf_filter[1] !== SW.SLIDER_RANGE.SPF_MAX) {
+        properties['sunscreen.spf'] = {
+            min: spf_filter[0],
+            max: spf_filter[1]
+        };
+    }
+
+
     var query = {
         types: SW.CUR_TYPE ? [SW.CUR_TYPE] : getSelectedFilters('type'),
         brands: SW.CUR_BRAND ? [SW.CUR_BRAND] : getSelectedFilters('brand'),
@@ -441,12 +457,12 @@ function onPricePerSizeSliderChange(event, ui) {
     if (ui) {
         var values = ui.values;
     } else {
-        var values = $('#price_per_oz_filter').slider('values');
+        var values = $('#price_per_size_filter').slider('values');
     }
     if (values[1] === SW.SLIDER_RANGE.PRICE_MAX) {
-        $('#price_per_oz_label').text('$' + values[0] + ' - unlimited');
+        $('#price_per_size_label').text('$' + values[0] + ' - unlimited');
     } else {
-        $('#price_per_oz_label').text('$' + values[0] + ' - $' + values[1]);
+        $('#price_per_size_label').text('$' + values[0] + ' - $' + values[1]);
     }
 }
 
@@ -456,7 +472,7 @@ function onSpfSliderChange(event, ui) {
     } else {
         var values = $('#sunscreen_spf_filter').slider('values');
     }
-    $('#sunscreen_spf_label').text('SPF' + values[0] + ' - SPF ' + values[1]);
+    $('#sunscreen_spf_label').text('SPF ' + values[0] + ' - ' + values[1]);
 }
 
 function setupEmptyFilterBlankSlate() {
@@ -504,7 +520,7 @@ function setupFilterSlides() {
         }
     }).on('change', onPriceSliderChange);
 
-    $('#price_per_oz_filter').slider({
+    $('#price_per_size_filter').slider({
         range: true,
         min: SW.SLIDER_RANGE.PRICE_PER_OZ_MIN,
         max: SW.SLIDER_RANGE.PRICE_PER_OZ_MAX,
