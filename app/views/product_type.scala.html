@@ -8,58 +8,7 @@
 
     <div class="brand_detail">
         <h1>@product_type.getName</h1>
-
-        <div class="product_filter filter_area">
-            <div class="result_summary"></div>
-
-            <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
-
-            <div class="filter_container closed">
-                <div class="filter_group">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Price</h3>
-                            <div id="price_label">$0 - unlimited</div>
-                        </div>
-                        <div id="price_filter"></div>
-                    </div>
-                </div>
-
-                <div class="filter_group">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>From Brand</h3>
-                            <span class="open_add_filter_popup" data-type="brand" data-filter-key="brand">+</span>
-                        </div>
-                        <div class="brand_filters"></div>
-                    </div>
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Not From Brand</h3>
-                            <span class="open_add_filter_popup" data-type="brand" data-filter-key="neg_brand">+</span>
-                        </div>
-                        <div class="neg_brand_filters"></div>
-                    </div>
-                </div>
-
-                <div class="filter_group">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Contains</h3>
-                            <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="ingredient">+</span>
-                        </div>
-                        <div class="ingredient_filters"></div>
-                    </div>
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Does not contain</h3>
-                            <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="neg_ingredient">+</span>
-                        </div>
-                        <div class="neg_ingredient_filters"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @filters(false, false, true, true, true, true)
 
         <div class="products_list">
             <ul class="horizontal">

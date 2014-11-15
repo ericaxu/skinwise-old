@@ -1,0 +1,117 @@
+@(open: Boolean, type_filter: Boolean, price_filter: Boolean, brand_filter: Boolean, ingredient_filter: Boolean, advanced_filters: Boolean)
+
+<div class="product_filter filter_area">
+    <div class="result_summary"></div>
+
+    @if(open) {
+        <div class="filter_toggle_link open">Refine results <span class="chevron top"></span></div>
+        <div class="filter_container">
+    } else {
+        <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
+        <div class="filter_container closed">
+    }
+        @if(type_filter || price_filter) {
+            <div class="filter_group">
+                @if(type_filter) {
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Type</h3>
+                            <span class="open_add_filter_popup" data-type="type" data-filter-key="type">+</span>
+                        </div>
+                        <div class="type_filters"></div>
+                    </div>
+                }
+                @if(price_filter) {
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Price</h3>
+                            <div id="price_label" class="slider_label">$0 - unlimited</div>
+                        </div>
+                        <div id="price_filter"></div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if(brand_filter) {
+            <div class="filter_group">
+                <div class="filter_section">
+                    <div class="filter_header">
+                        <h3>From Brand</h3>
+                        <span class="open_add_filter_popup" data-type="brand" data-filter-key="brand">+</span>
+                    </div>
+                    <div class="brand_filters"></div>
+                </div>
+                <div class="filter_section">
+                    <div class="filter_header">
+                        <h3>Not From Brand</h3>
+                        <span class="open_add_filter_popup" data-type="brand" data-filter-key="neg_brand">+</span>
+                    </div>
+                    <div class="neg_brand_filters"></div>
+                </div>
+            </div>
+        }
+
+        @if(type_filter) {
+            <div class="filter_group">
+                <div class="filter_section">
+                    <div class="filter_header">
+                        <h3>Contains</h3>
+                        <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="ingredient">+</span>
+                    </div>
+                    <div class="ingredient_filters"></div>
+                </div>
+                <div class="filter_section">
+                    <div class="filter_header">
+                        <h3>Does not contain</h3>
+                        <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="neg_ingredient">+</span>
+                    </div>
+                    <div class="neg_ingredient_filters"></div>
+                </div>
+            </div>
+        }
+
+        @if(advanced_filters) {
+            <div class="advanced_filter_container">
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Has Benefit</h3>
+                            <span class="open_add_filter_popup" data-type="benefit" data-filter-key="benefit">+</span>
+                        </div>
+                        <div class="benefit_filters"></div>
+                    </div>
+                </div>
+
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Price/oz.</h3>
+                            <span class="open_add_filter_popup invisible" data-type="benefit" data-filter-key="benefit">
+                                +</span>
+                            <div id="price_per_size_label" class="slider_label">$0 - unlimited</div>
+                        </div>
+                        <div id="price_per_size_filter"></div>
+                    </div>
+                </div>
+
+
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Sunscreen SPF</h3>
+                            <span class="open_add_filter_popup invisible" data-type="benefit" data-filter-key="benefit">
+                                +</span>
+                            <div id="sunscreen_spf_label" class="slider_label">SPF 0 - 110</div>
+                        </div>
+                        <div id="sunscreen_spf_filter"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" class="toggle_advanced_filters explicit">Show Advanced Filters</a>
+            </div>
+        }
+    </div>
+</div>

@@ -8,48 +8,7 @@
 
     <div class="brand_detail">
         <h1>@brand.getName</h1>
-
-        <div class="product_filter filter_area">
-            <div class="result_summary"></div>
-
-            <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
-
-            <div class="filter_container closed">
-                <div class="filter_group">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Type</h3>
-                            <span class="open_add_filter_popup" data-type="type" data-filter-key="type">+</span>
-                        </div>
-                        <div class="type_filters"></div>
-                    </div>
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Price</h3>
-                            <div id="price_label">$0 - unlimited</div>
-                        </div>
-                        <div id="price_filter"></div>
-                    </div>
-                </div>
-
-                <div class="filter_group">
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Contains</h3>
-                            <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="ingredient">+</span>
-                        </div>
-                        <div class="ingredient_filters"></div>
-                    </div>
-                    <div class="filter_section">
-                        <div class="filter_header">
-                            <h3>Does not contain</h3>
-                            <span class="open_add_filter_popup" data-type="ingredient" data-filter-key="neg_ingredient">+</span>
-                        </div>
-                        <div class="neg_ingredient_filters"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @filters(false, true, true, false, true, true)
 
         <div class="products_list">
             <ul class="horizontal">
