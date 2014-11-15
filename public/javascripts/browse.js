@@ -87,9 +87,9 @@ function fetchProducts(page, callback, query) {
     var properties = {};
     var price_filter = $('#price_filter').slider('values');
     // Set min price to 1 cent if max is not unlimited - we don't want to include products that don't have prices
-    var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.PRICE_FILTER_RANGE.MAX) ? 1 : price_filter[0] * 100;
-    var price_max = price_filter[1] === SW.PRICE_FILTER_RANGE.MAX ? SW.PRICE_FILTER_RANGE.INFINITY : price_filter[1] * 100;
-    if (price_min !== 0 || price_max !== SW.PRICE_FILTER_RANGE.INFINITY) {
+    var price_min = (price_filter[0] === 0 && price_filter[1] !== SW.SLIDER_RANGE.PRICE_MAX) ? 1 : price_filter[0] * 100;
+    var price_max = price_filter[1] === SW.SLIDER_RANGE.PRICE_MAX ? SW.SLIDER_RANGE.INFINITY : price_filter[1] * 100;
+    if (price_min !== 0 || price_max !== SW.SLIDER_RANGE.INFINITY) {
         properties['price'] = {
             min: price_min,
             max: price_max
@@ -424,17 +424,39 @@ function changeHash(query) {
     location.hash = hash;
 }
 
-function onSliderChange(event, ui) {
+function onPriceSliderChange(event, ui) {
     if (ui) {
         var values = ui.values;
     } else {
         var values = $('#price_filter').slider('values');
     }
-    if (values[1] === SW.PRICE_FILTER_RANGE.MAX) {
+    if (values[1] === SW.SLIDER_RANGE.PRICE_MAX) {
         $('#price_label').text('$' + values[0] + ' - unlimited');
     } else {
         $('#price_label').text('$' + values[0] + ' - $' + values[1]);
     }
+}
+
+function onPricePerSizeSliderChange(event, ui) {
+    if (ui) {
+        var values = ui.values;
+    } else {
+        var values = $('#price_per_oz_filter').slider('values');
+    }
+    if (values[1] === SW.SLIDER_RANGE.PRICE_MAX) {
+        $('#price_per_oz_label').text('$' + values[0] + ' - unlimited');
+    } else {
+        $('#price_per_oz_label').text('$' + values[0] + ' - $' + values[1]);
+    }
+}
+
+function onSpfSliderChange(event, ui) {
+    if (ui) {
+        var values = ui.values;
+    } else {
+        var values = $('#sunscreen_spf_filter').slider('values');
+    }
+    $('#sunscreen_spf_label').text('SPF' + values[0] + ' - SPF ' + values[1]);
 }
 
 function setupEmptyFilterBlankSlate() {
@@ -454,20 +476,64 @@ function setupEmptyFilterBlankSlate() {
     }
 }
 
+function setupToggleAdvancedFilters() {
+    $('.toggle_advanced_filters').on('click', function(e) {
+        e.preventDefault();
+        var $advanced_filters = $('.advanced_filter_container');
+        if ($advanced_filters.is(':visible')) {
+            $advanced_filters.hide();
+            $(this).text('Show Advanced Filters');
+        } else {
+            $advanced_filters.show();
+            $(this).text('Hide Advanced Filters');
+
+        }
+    })
+}
+
+function setupFilterSlides() {
+    $('#price_filter').slider({
+        range: true,
+        min: SW.SLIDER_RANGE.PRICE_MIN,
+        max: SW.SLIDER_RANGE.PRICE_MAX,
+        values: [SW.SLIDER_RANGE.PRICE_MIN, SW.SLIDER_RANGE.PRICE_MAX],
+        slide: onPriceSliderChange,
+        stop: function(event, ui) {
+            onPriceSliderChange(event, ui);
+            refetch();
+        }
+    }).on('change', onPriceSliderChange);
+
+    $('#price_per_oz_filter').slider({
+        range: true,
+        min: SW.SLIDER_RANGE.PRICE_PER_OZ_MIN,
+        max: SW.SLIDER_RANGE.PRICE_PER_OZ_MAX,
+        values: [SW.SLIDER_RANGE.PRICE_PER_OZ_MIN, SW.SLIDER_RANGE.PRICE_PER_OZ_MAX],
+        slide: onPricePerSizeSliderChange,
+        stop: function(event, ui) {
+            onPricePerSizeSliderChange(event, ui);
+            refetch();
+        }
+    }).on('change', onPricePerSizeSliderChange);
+
+    $('#sunscreen_spf_filter').slider({
+        range: true,
+        min: SW.SLIDER_RANGE.SPF_MIN,
+        max: SW.SLIDER_RANGE.SPF_MAX,
+        values: [SW.SLIDER_RANGE.SPF_MIN, SW.SLIDER_RANGE.SPF_MAX],
+        slide: onSpfSliderChange,
+        stop: function(event, ui) {
+            onSpfSliderChange(event, ui);
+            refetch();
+        }
+    }).on('change', onSpfSliderChange);
+}
+
 function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
-        $('#price_filter').slider({
-            range: true,
-            min: SW.PRICE_FILTER_RANGE.MIN,
-            max: SW.PRICE_FILTER_RANGE.MAX,
-            values: [SW.PRICE_FILTER_RANGE.MIN, SW.PRICE_FILTER_RANGE.MAX],
-            slide: onSliderChange,
-            stop: function(event, ui) {
-                onSliderChange(event, ui);
-                refetch();
-            }
-        }).on('change', onSliderChange);
+
+        setupFilterSlides();
 
         loadFilters();
         showExtraFiltersFromUrl();
@@ -501,5 +567,6 @@ function initBrowse(type) {
         });
 
         setupEmptyFilterBlankSlate();
+        setupToggleAdvancedFilters();
     });
 }

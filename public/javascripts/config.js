@@ -77,7 +77,7 @@ SW.FEEDBACK = {
 }
 
 SW.FILTER_TYPES = {
-    product: ['type', 'brand', 'neg_brand', 'ingredient', 'neg_ingredient'],
+    product: ['type', 'brand', 'neg_brand', 'ingredient', 'neg_ingredient', 'benefit'],
     ingredient: ['function']
 }
 
@@ -104,9 +104,13 @@ SW.FILTER_ABBR_MAPPING = {
     neg_ingredients: 'ni'
 };
 
-SW.PRICE_FILTER_RANGE = {
-    MIN: 0,
-    MAX: 201,
+SW.SLIDER_RANGE = {
+    PRICE_MIN: 0,
+    PRICE_MAX: 201,
+    PRICE_PER_OZ_MIN: 0,
+    PRICE_PER_OZ_MAX: 101,
+    SPF_MIN: 0,
+    SPF_MAX: 120,
     INFINITY: -1
 };
 

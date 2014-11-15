@@ -23,7 +23,7 @@
                 <div class="filter_section">
                     <div class="filter_header">
                         <h3>Price</h3>
-                        <div id="price_label">$0 - unlimited</div>
+                        <div id="price_label" class="slider_label">$0 - unlimited</div>
                     </div>
                     <div id="price_filter"></div>
                 </div>
@@ -61,6 +61,44 @@
                     </div>
                     <div class="neg_ingredient_filters"></div>
                 </div>
+            </div>
+
+            <div class="advanced_filter_container">
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Has Benefit</h3>
+                            <span class="open_add_filter_popup" data-type="benefit" data-filter-key="benefit">+</span>
+                        </div>
+                        <div class="benefit_filters"></div>
+                    </div>
+                </div>
+
+
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Price/oz.</h3>
+                            <div id="price_per_oz_label" class="slider_label">$0 - unlimited</div>
+                        </div>
+                        <div id="price_per_oz_filter"></div>
+                    </div>
+                </div>
+
+
+                <div class="filter_group">
+                    <div class="filter_section">
+                        <div class="filter_header">
+                            <h3>Sunscreen SPF</h3>
+                            <div id="sunscreen_spf_label" class="slider_label">SPF 0 - SPF 110</div>
+                        </div>
+                        <div id="sunscreen_spf_filter"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" class="toggle_advanced_filters explicit">Show Advanced Filters</a>
             </div>
         </div>
     </div>
