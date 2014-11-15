@@ -310,6 +310,14 @@ public class Import {
 		List<Alias> ingredients = cache.matcher.matchAllAliases(object.ingredients, ingredientOriginals);
 		List<Alias> key_ingredients = cache.matcher.matchAllAliases(object.key_ingredients, keyIngredientOriginals);
 
+		Set<Ingredient> keyIngredientsSet = new HashSet<>();
+		for (Alias alias : key_ingredients) {
+			Ingredient ingredient = alias.getIngredient();
+			if (ingredient != null) {
+				keyIngredientsSet.add(ingredient);
+			}
+		}
+
 		Iterator<Alias> iterator = ingredients.iterator();
 		Iterator<String> iterator2 = ingredientOriginals.iterator();
 		while (iterator.hasNext()) {
@@ -317,10 +325,14 @@ public class Import {
 			String original = iterator2.next();
 			Ingredient ingredient = alias.getIngredient();
 			if (ingredient != null && ingredient.isActive()) {
-				iterator.remove();
 				key_ingredients.add(alias);
-				iterator2.remove();
 				keyIngredientOriginals.add(original);
+				keyIngredientsSet.add(ingredient);
+			}
+
+			if (keyIngredientsSet.contains(ingredient)) {
+				iterator.remove();
+				iterator2.remove();
 			}
 		}
 

@@ -114,6 +114,7 @@ public class Export {
 		for (Type type : types) {
 			typesString.add(type.getName());
 		}
+		Collections.sort(typesString);
 		result.types = Util.joinString(",", typesString);
 		List<String> key_ingredients = new ArrayList<>();
 		for (Alias ing : object.getKey_ingredients()) {
