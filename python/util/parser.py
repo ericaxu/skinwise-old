@@ -1,4 +1,5 @@
 import re
+import unicodedata
 
 from math import log10, floor
 from util import (util)
@@ -144,10 +145,14 @@ def str_capitalize(input):
 	"""Capitalize every word in the input"""
 	return " ".join(word.capitalize() for word in input.split())
 
+def strip_accents(s):
+	"""strip any accents off string"""
+	return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
+
 # This is mapped to the same method in Java
 def good_key(name):
 	"""Make a uniquely identifiable key for things like ingredients"""
-	name = regex_replace(r'[^0-9a-zA-Z ]', ' ', name).strip().lower()
+	name = regex_replace(r'[^0-9a-zA-Z ]', ' ', strip_accents(name)).strip().lower()
 	return regex_replace(r'\s+', ' ', name)
 
 # This is mapped to the same method in Java

@@ -182,11 +182,17 @@ def import_data():
 	del active
 
 	# discontinued
+	removed = list()
 	for key, product in result['products'].items():
 		if "Discontinued" in product['name']:
 			product['popularity'] = -1
 		if 'popularity' not in product:
 			product['popularity'] = 0
+		if "spf 0" in key:
+			removed.append(key)
+
+	for key in removed:
+		result['products'].pop(key, None)
 
 	# export popularity & IDs
 	export = util.json_read(file_export_json, "{}")
@@ -202,7 +208,6 @@ def import_data():
 			if key in result['products']:
 				if 'popularity' in product:
 					result['products'][key]['popularity'] = product['popularity']
-	# TODO: Set other stuff
 	del export
 
 	return result

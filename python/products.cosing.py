@@ -88,12 +88,12 @@ for brand_id in brands:
 		if product["type"] in type_corrections:
 			product["type"] = type_corrections[product["type"]]
 		types_unique.add(product["type"])
-		product["name"] = product_type_and_name[1]
+		product["name"] = product_type_and_name[1].encode('iso-8859-1').decode('utf8')
 		product["name"] = parser.strip_brand(brand_name, product["name"])
 		if not product["name"]:
 			product["name"] = product_type_and_name[1]
 
-		product['description'] = parser.regex_find(r'class="Description".*?<Value>(.*?)</Value>', product_html, 1)
+		product['description'] = parser.regex_find(r'class="Description".*?<Value>(.*?)</Value>', product_html, 1).encode('iso-8859-1').decode('utf8')
 		if product['description'] == "n/a":
 			product['description'] = ""
 

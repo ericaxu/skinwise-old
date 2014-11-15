@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -125,6 +126,10 @@ public class Util {
 		return StringUtils.strip(input, "\t ,./?`~!@#$^&*;:=+-_\\|");
 	}
 
+	public static String stripAccents(String input) {
+		return Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+	}
+
 	public static String formatNumber(double d) {
 		if (d == (long) d) {
 			return String.format("%d", (long) d);
@@ -135,7 +140,7 @@ public class Util {
 	}
 
 	public static String goodKey(String input) {
-		input = input.replaceAll("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
+		input = stripAccents(input).replaceAll("[^0-9a-zA-Z ]", " ").trim().toLowerCase();
 		return input.replaceAll("\\s+", " ");
 	}
 
