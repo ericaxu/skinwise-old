@@ -7,6 +7,7 @@ import gnu.trove.set.hash.TLongHashSet;
 import src.App;
 import src.models.MemCache;
 import src.models.util.*;
+import src.util.TLongIntersectSet;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -156,6 +157,17 @@ public class Product extends PopularNamedModel {
 		return getBrand().getName();
 	}
 
+	public String getFormattedIngredientPercent(long ingredient_id) {
+		String key = String.format(ProductProperty.INGREDIENT_PERCENT, ingredient_id);
+		ProductProperty property = getProperties().get(key);
+
+		if (property != null) {
+			return " (" + property.getNumber_value() + "%)";
+		}
+
+		return "";
+	}
+
 	public String getFormattedPrice() {
 		ProductProperty property = getProperties().get(ProductProperty.PRICE);
 		if (property == null) {
@@ -298,71 +310,62 @@ public class Product extends PopularNamedModel {
 	                                     boolean discontinued,
 	                                     Page page) {
 
-		boolean hasNumberFilter = property_number_filters != null && property_number_filters.size() > 0;
-		boolean hasTextFilter = property_text_filters != null && property_text_filters.size() > 0;
-		boolean hasFilter = hasNumberFilter || hasTextFilter;
-
 		SelectQuery query = new SelectQuery();
-		query.select("DISTINCT main.id, main.popularity");
-
-		if (hasFilter) {
-			query.from(TABLENAME + " main INNER JOIN " + ProductProperty.TABLENAME + " aux ON main.id = aux.product_id");
-		}
-		else {
-			query.from(TABLENAME + " main");
-		}
+		query.select("DISTINCT id, popularity");
+		query.from(TABLENAME);
 
 		//Discontinued products
 		//		if (!discontinued) {
 		//			query.where("main.name NOT LIKE '%Discontinued%'");
 		//		}
 
-		if (hasNumberFilter) {
-			for (ProductPropertyNumberFilter filter : property_number_filters) {
-				if (filter.max < filter.min) {
-					filter.max = Double.MAX_VALUE;
-				}
-				query.where("(aux._key = ? AND aux.number_value BETWEEN ? AND ?)");
-				query.input(filter.key).input(filter.min).input(filter.max);
-			}
-		}
-
-		if (hasTextFilter) {
-			for (ProductPropertyTextFilter filter : property_text_filters) {
-				query.where("(aux._key = ? AND aux.text_value = ?)");
-				query.input(filter.key).input(filter.text);
-			}
-		}
-
 		if (brands.length > 0) {
-			query.where("main.brand_id IN (" + Util.joinString(",", brands) + ")");
+			query.where("brand_id IN (" + Util.joinString(",", brands) + ")");
 		}
 
 		if (negBrands.length > 0) {
-			query.where("main.brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
+			query.where("brand_id NOT IN (" + Util.joinString(",", negBrands) + ")");
 		}
 
-		query.other("ORDER BY main.popularity DESC, main.id ASC");
+		query.other("ORDER BY popularity DESC, id ASC");
 
 		TLongList result = query.execute();
-		TLongSet filter = new TLongHashSet();
-		TLongSet ingredients_intersect = null;
-		TLongSet types_intersect = null;
+		TLongSet negative_filter = new TLongHashSet();
+		TLongIntersectSet positive_filter = new TLongIntersectSet();
 
-		if (nedIngredients.length > 0) {
-			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : nedIngredients) {
-				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
-				alias_ids.addAll(aliases);
-			}
-			long[] list = alias_ids.toArray();
-
+		boolean hasNumberFilter = property_number_filters != null && property_number_filters.size() > 0;
+		boolean hasTextFilter = property_text_filters != null && property_text_filters.size() > 0;
+		boolean hasFilter = hasNumberFilter || hasTextFilter;
+		if (hasFilter) {
 			SelectQuery q = new SelectQuery();
-			q.select("DISTINCT left_id as id");
-			q.from(ProductIngredient.TABLENAME);
-			q.where("right_id IN (" + Util.joinString(",", list) + ")");
+			q.select("DISTINCT product_id as id");
+			q.from(ProductProperty.TABLENAME);
 
-			filter.addAll(q.execute());
+			int filters = 0;
+
+			if (hasNumberFilter) {
+				for (ProductPropertyNumberFilter filter : property_number_filters) {
+					if (filter.max < filter.min) {
+						filter.max = Double.MAX_VALUE;
+					}
+					q.where("(_key = ? AND number_value BETWEEN ? AND ?)", "OR");
+					q.input(filter.key).input(filter.min).input(filter.max);
+				}
+				filters += property_number_filters.size();
+			}
+
+			if (hasTextFilter) {
+				for (ProductPropertyTextFilter filter : property_text_filters) {
+					q.where("(_key = ? AND text_value = ?)", "OR");
+					q.input(filter.key).input(filter.text);
+				}
+				filters += property_text_filters.size();
+			}
+
+			q.other("GROUP BY id");
+			q.other("HAVING count(*) = " + filters);
+
+			positive_filter.intersect(q.execute());
 		}
 
 		if (ingredients.length > 0) {
@@ -380,7 +383,7 @@ public class Product extends PopularNamedModel {
 			q.other("GROUP BY left_id");
 			q.other("HAVING count(*) >= " + ingredients.length);
 
-			ingredients_intersect = new TLongHashSet(q.execute());
+			positive_filter.intersect(q.execute());
 		}
 
 		if (types.length > 0) {
@@ -391,10 +394,26 @@ public class Product extends PopularNamedModel {
 			//			q.other("GROUP BY left_id");
 			//			q.other("HAVING count(*) >= " + types.length);
 
-			types_intersect = new TLongHashSet(q.execute());
+			positive_filter.intersect(q.execute());
 		}
 
-		result = page.filter(result, filter, ingredients_intersect, types_intersect);
+		if (nedIngredients.length > 0) {
+			TLongSet alias_ids = new TLongHashSet();
+			for (long ingredient_id : nedIngredients) {
+				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
+				alias_ids.addAll(aliases);
+			}
+			long[] list = alias_ids.toArray();
+
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT left_id as id");
+			q.from(ProductIngredient.TABLENAME);
+			q.where("right_id IN (" + Util.joinString(",", list) + ")");
+
+			negative_filter.addAll(q.execute());
+		}
+
+		result = page.filter(result, negative_filter, positive_filter.get());
 
 		return App.cache().products.getList(result.toArray());
 	}

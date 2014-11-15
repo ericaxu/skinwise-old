@@ -52,6 +52,11 @@ public class SelectQuery {
 	}
 
 	public SelectQuery where(String input) {
+		where(input, "AND");
+		return this;
+	}
+
+	public SelectQuery where(String input, String join) {
 		if (!select || !from) {
 			throw new RuntimeException("Query error!");
 		}
@@ -60,7 +65,7 @@ public class SelectQuery {
 			buffer.append(" WHERE ");
 		}
 		else {
-			buffer.append(" AND ");
+			buffer.append(" " + join + " ");
 		}
 		buffer.append(input);
 		return this;
@@ -85,6 +90,7 @@ public class SelectQuery {
 		try {
 			Connection connection = DB.getConnection();
 			String query = get();
+			//Logger.debug(TAG, query);
 			PreparedStatement statement = connection.prepareStatement(query);
 			for (int i = 0; i < inputs.size(); i++) {
 				statement.setObject(i + 1, inputs.get(i));
