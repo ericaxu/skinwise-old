@@ -680,6 +680,12 @@ public class MemCache {
 		}
 	}
 
+	private static class IngredientBenefitGetter implements ManyToManyGetter<IngredientBenefit> {
+		public List<IngredientBenefit> all() {
+			return IngredientBenefit.find.all();
+		}
+	}
+
 	private static class ProductTypeGetter implements ManyToManyGetter<ProductType> {
 		public List<ProductType> all() {
 			return ProductType.find.all();
@@ -819,6 +825,7 @@ public class MemCache {
 
 	//MemCache
 	public NamedIndex<Function> functions;
+	public NamedIndex<Benefit> benefits;
 	public NamedIndex<Brand> brands;
 	public NamedIndex<Type> types;
 	public NamedIndex<Ingredient> ingredients;
@@ -830,6 +837,7 @@ public class MemCache {
 	public OneToManyIndex<Product> brand_product;
 	public OneToManyIndex<ProductProperty> product_product_properties;
 	public ManyToManyIndex<IngredientFunction> ingredient_function;
+	public ManyToManyIndex<IngredientBenefit> ingredient_benefit;
 	public ManyToManyIndex<ProductType> product_type;
 	public ManyToManyIndex<ProductIngredient> product_ingredient;
 
@@ -837,6 +845,7 @@ public class MemCache {
 
 	public MemCache() {
 		functions = new NamedIndex<>(Function.find);
+		benefits = new NamedIndex<>(Benefit.find);
 		brands = new NamedIndex<>(Brand.find);
 		types = new NamedIndex<>(Type.find);
 		ingredients = new NamedIndex<>(Ingredient.find);
@@ -848,6 +857,7 @@ public class MemCache {
 		brand_product = new OneToManyIndex<>(new BrandProductGetter(), Product.find);
 		product_product_properties = new OneToManyIndex<>(new ProductProductPropertyGetter(), ProductProperty.find);
 		ingredient_function = new ManyToManyIndex<>(new IngredientFunctionGetter());
+		ingredient_benefit = new ManyToManyIndex<>(new IngredientBenefitGetter());
 		product_type = new ManyToManyIndex<>(new ProductTypeGetter());
 		product_ingredient = new ManyToManyIndex<>(new ProductIngredientGetter());
 
@@ -856,6 +866,7 @@ public class MemCache {
 
 	public void init() {
 		functions.cache();
+		benefits.cache();
 		brands.cache();
 		types.cache();
 		ingredients.cache();
@@ -867,6 +878,7 @@ public class MemCache {
 		brand_product.cache();
 		product_product_properties.cache();
 		ingredient_function.cache();
+		ingredient_benefit.cache();
 		product_type.cache();
 		product_ingredient.cache();
 

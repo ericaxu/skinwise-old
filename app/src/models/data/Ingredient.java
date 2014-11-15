@@ -6,10 +6,8 @@ import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
 import src.App;
-import src.models.util.NamedFinder;
-import src.models.util.Page;
-import src.models.util.PopularNamedModel;
-import src.models.util.SelectQuery;
+import src.models.MemCache;
+import src.models.util.*;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -48,27 +46,14 @@ public class Ingredient extends PopularNamedModel {
 
 	//Many-Many Functions relation
 
-	private Set<IngredientFunction> getIngredient_functions() {
-		return App.cache().ingredient_function.getByL(getId());
-	}
-
-	private transient TLongSet functions_cache;
-	private transient TLongSet functions_new;
+	private transient ManyToManyHistory<IngredientFunction> functions = new IngredientFunctionHistory();
 
 	public TLongSet getFunctionIds() {
-		if (functions_cache == null) {
-			Set<IngredientFunction> ingredient_functions = getIngredient_functions();
-			functions_cache = new TLongHashSet();
-			for (IngredientFunction ingredient_function : ingredient_functions) {
-				functions_cache.add(ingredient_function.getRight_id());
-			}
-		}
-
-		return functions_cache;
+		return functions.getOtherIds(getId());
 	}
 
-	public void setFunctionIds(TLongSet function_ids) {
-		functions_new = function_ids;
+	public void setFunctionIds(TLongSet type_ids) {
+		functions.setOtherIds(type_ids);
 	}
 
 	public Set<Function> getFunctions() {
@@ -77,6 +62,26 @@ public class Ingredient extends PopularNamedModel {
 
 	public void setFunctions(Set<Function> input) {
 		setFunctionIds(App.cache().functions.getIdSet(input));
+	}
+
+	//Many-Many Benefits relation
+
+	private transient ManyToManyHistory<IngredientBenefit> benefits = new IngredientBenefitHistory();
+
+	public TLongSet getBenefitIds() {
+		return benefits.getOtherIds(getId());
+	}
+
+	public void setBenefitIds(TLongSet type_ids) {
+		benefits.setOtherIds(type_ids);
+	}
+
+	public Set<Benefit> getBenefits() {
+		return App.cache().benefits.getSet(getBenefitIds().toArray());
+	}
+
+	public void setBenefits(Set<Benefit> input) {
+		setBenefitIds(App.cache().benefits.getIdSet(input));
 	}
 
 	//One-Many Aliases relation
@@ -113,33 +118,8 @@ public class Ingredient extends PopularNamedModel {
 		try {
 			super.save();
 
-			if (functions_new != null) {
-				//Commit to DB first
-				List<IngredientFunction> ingredient_functions_old = new ArrayList<>(getIngredient_functions());
-				for (IngredientFunction ingredient_function : ingredient_functions_old) {
-					ingredient_function.delete();
-				}
-				List<IngredientFunction> ingredient_functions_new = new ArrayList<>();
-				for (long function_id : functions_new.toArray()) {
-					IngredientFunction ingredient_function = new IngredientFunction();
-					ingredient_function.setRight_id(function_id);
-					ingredient_function.setIngredient(this);
-					ingredient_function.save();
-					ingredient_functions_new.add(ingredient_function);
-				}
-
-				//Commit to memcache
-				for (IngredientFunction ingredient_function : ingredient_functions_old) {
-					App.cache().ingredient_function.remove(ingredient_function);
-				}
-				for (IngredientFunction ingredient_function : ingredient_functions_new) {
-					App.cache().ingredient_function.add(ingredient_function);
-				}
-
-				//Update cache
-				functions_cache = functions_new;
-				functions_new = null;
-			}
+			functions.flush(getId());
+			benefits.flush(getId());
 
 			Ebean.commitTransaction();
 		}
@@ -172,5 +152,35 @@ public class Ingredient extends PopularNamedModel {
 		result = page.filter(result, filter);
 
 		return App.cache().ingredients.getList(result.toArray());
+	}
+
+	public static class IngredientFunctionHistory extends ManyToManyHistory<IngredientFunction> {
+		@Override
+		protected MemCache.ManyToManyIndex<IngredientFunction> getIndex() {
+			return App.cache().ingredient_function;
+		}
+
+		@Override
+		protected IngredientFunction create(long ingredient_id, long function_id) {
+			IngredientFunction object = new IngredientFunction();
+			object.setLeft_id(ingredient_id);
+			object.setRight_id(function_id);
+			return object;
+		}
+	}
+
+	public static class IngredientBenefitHistory extends ManyToManyHistory<IngredientBenefit> {
+		@Override
+		protected MemCache.ManyToManyIndex<IngredientBenefit> getIndex() {
+			return App.cache().ingredient_benefit;
+		}
+
+		@Override
+		protected IngredientBenefit create(long ingredient_id, long benefit_id) {
+			IngredientBenefit object = new IngredientBenefit();
+			object.setLeft_id(ingredient_id);
+			object.setRight_id(benefit_id);
+			return object;
+		}
 	}
 }

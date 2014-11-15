@@ -68,20 +68,20 @@ public class Product extends PopularNamedModel {
 
 	private transient ManyToManyHistory<ProductType> types = new ProductTypeHistory();
 
-	public TLongSet getTypesIds() {
+	public TLongSet getTypeIds() {
 		return types.getOtherIds(getId());
 	}
 
-	public void setTypesIds(TLongSet type_ids) {
+	public void setTypeIds(TLongSet type_ids) {
 		types.setOtherIds(type_ids);
 	}
 
 	public Set<Type> getTypes() {
-		return App.cache().types.getSet(getTypesIds().toArray());
+		return App.cache().types.getSet(getTypeIds().toArray());
 	}
 
 	public void setTypes(Set<Type> input) {
-		setTypesIds(App.cache().types.getIdSet(input));
+		setTypeIds(App.cache().types.getIdSet(input));
 	}
 
 	//Many-Many Aliases relations
