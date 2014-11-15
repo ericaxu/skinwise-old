@@ -62,7 +62,7 @@
                         <p>@for(i <- 0 to key.size - 2) {
                             @if(key(i).getIngredient != null) {
                                 @defining(key(i).getIngredient.getId) { id =>
-                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@key(i).getDisplayName</span></a>,
+                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id"><span class="infobox_anchor"></span>@key(i).getDisplayName</span></a>,
                                 }
                             } else {
                                 <span class="ingredient unrecognized">@key(i).getDisplayName</span>,
@@ -71,7 +71,7 @@
 
                             @if(key(key.size - 1).getIngredient != null) {
                                 @defining(key(key.size - 1).getIngredient.getId) { id =>
-                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@key(key.size - 1).getDisplayName</span></a>
+                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id"><span class="infobox_anchor"></span>@key(key.size - 1).getDisplayName</span></a>
                                 }
                             } else {
                                 <span class="ingredient unrecognized">@key(key.size - 1).getDisplayName</span>
@@ -96,7 +96,7 @@
                     <p>@for(i <- 0 to ing.size - 2) {
                         @if(ing(i).getIngredient != null) {
                             @defining(ing(i).getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@ing(i).getDisplayName</span></a>,
+                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id"><span class="infobox_anchor"></span>@ing(i).getDisplayName</span></a>,
                             }
                         } else {
                             <span class="ingredient unrecognized">@ing(i).getDisplayName</span>,
@@ -105,7 +105,7 @@
 
                         @if(ing(ing.size - 1).getIngredient != null) {
                             @defining(ing(ing.size - 1).getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@ing(ing.size - 1).getDisplayName</span></a>
+                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id"><span class="infobox_anchor"></span>@ing(ing.size - 1).getDisplayName</span></a>
                             }
                         } else {
                             <span class="ingredient unrecognized">@ing(ing.size - 1).getDisplayName</span>

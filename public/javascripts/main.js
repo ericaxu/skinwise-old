@@ -5,7 +5,7 @@ function setupIngredientInfobox() {
         var id = $(this).data('id');
         clearTimeout(SW.ING_BOX.DISMISS_TIMEOUT_ID);
         clearTimeout(SW.ING_BOX.TIMEOUT_ID);
-        SW.ING_BOX.TIMEOUT_ID = setTimeout(function() {
+        SW.ING_BOX.TIMEOUT_ID = setTimeout($.proxy(function() {
             if (SW.ING[id]) {
                 var ingredient_data = SW.ING[id];
                 var $ingredient_info = addEl('div').on('click', function(e) {
@@ -28,10 +28,11 @@ function setupIngredientInfobox() {
                 $ingredient_info.appendTo('body');
                 addEl('p', $ingredient_info, '', ingredient_data.description);
                 $('.ingredient_infobox').remove();
-                var left_offset = Math.min($(document).width() - 470, e.pageX + 10);
-                $ingredient_info.addClass('ingredient_infobox').show().offset({top: e.pageY + 10, left: left_offset});
+                var left_offset = Math.min($(document).width() - 470, $(this).find('.infobox_anchor').offset().left);
+                var top_offset = $(this).find('.infobox_anchor').offset().top + 10;
+                $ingredient_info.addClass('ingredient_infobox').show().offset({ top: top_offset, left: left_offset});
             }
-        }, SW.ING_BOX.TIMEOUT);
+        }, this), SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
         clearTimeout(SW.FUNC_BOX.TIMEOUT_ID);
         SW.ING_BOX.DISMISS_TIMEOUT_ID = setTimeout(function() {
