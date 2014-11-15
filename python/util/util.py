@@ -32,7 +32,7 @@ def json_decode(input):
 	"""
 	decode json
 	"""
-	return json.loads(input)
+	return json.loads(input, object_hook=collections.OrderedDict)
 
 def mkdir(dir):
 	"""

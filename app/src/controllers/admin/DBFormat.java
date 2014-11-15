@@ -9,6 +9,7 @@ import java.util.*;
 public class DBFormat {
 	public Map<String, IngredientObject> ingredients = new HashMap<>();
 	public Map<String, NamedObject> functions = new HashMap<>();
+	public Map<String, NamedObject> benefits = new HashMap<>();
 	public Map<String, NamedObject> brands = new HashMap<>();
 	public Map<String, TypeOject> types = new HashMap<>();
 	public Map<String, ProductObject> products = new HashMap<>();
@@ -22,10 +23,19 @@ public class DBFormat {
 				id = 0;
 			}
 		}
+
+		public List<String> sanitize(List<String> input) {
+			if (input == null) {
+				input = new ArrayList<>();
+			}
+			input.remove("");
+			input.remove(null);
+			return new ArrayList<>(new LinkedHashSet<>(input));
+		}
 	}
 
 	@JsonPropertyOrder(alphabetic = true)
-	public static class NamedObject extends DBObject{
+	public static class NamedObject extends DBObject {
 		public String name;
 		public String description;
 
@@ -43,6 +53,7 @@ public class DBFormat {
 		public long popularity;
 		public boolean active;
 		public List<String> functions = new ArrayList<>();
+		public List<String> benefits = new ArrayList<>();
 		public List<String> alias = new ArrayList<>();
 
 		@Override
@@ -51,18 +62,9 @@ public class DBFormat {
 			cas_no = Util.notNull(cas_no).trim();
 			ec_no = Util.notNull(ec_no).trim();
 			restriction = Util.notNull(restriction).trim();
-			if (functions == null) {
-				functions = new ArrayList<>();
-			}
-			if (alias == null) {
-				alias = new ArrayList<>();
-			}
-			functions.remove("");
-			functions.remove(null);
-			alias.remove("");
-			alias.remove(null);
-			functions = new ArrayList<>(new LinkedHashSet<>(functions));
-			alias = new ArrayList<>(new LinkedHashSet<>(alias));
+			functions = sanitize(functions);
+			benefits = sanitize(benefits);
+			alias = sanitize(alias);
 		}
 	}
 

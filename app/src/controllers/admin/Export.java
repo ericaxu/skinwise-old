@@ -28,6 +28,12 @@ public class Export {
 			result.functions.put(Util.goodKey(resultObject.name), resultObject);
 		}
 
+		Logger.debug(TAG, "Exporting benefits");
+		for (Benefit object : cache.benefits.all()) {
+			DBFormat.NamedObject resultObject = export(object);
+			result.benefits.put(Util.goodKey(resultObject.name), resultObject);
+		}
+
 		Logger.debug(TAG, "Exporting brands");
 		for (Brand object : cache.brands.all()) {
 			DBFormat.NamedObject resultObject = export(object);
@@ -71,6 +77,10 @@ public class Export {
 		return exportNamedModel(object);
 	}
 
+	public static DBFormat.NamedObject export(Benefit object) {
+		return exportNamedModel(object);
+	}
+
 	public static DBFormat.IngredientObject export(Ingredient object) {
 		DBFormat.IngredientObject result = exportNamedModel(object, new DBFormat.IngredientObject());
 		result.popularity = object.getPopularity();
@@ -78,11 +88,15 @@ public class Export {
 		for (Function function : object.getFunctions()) {
 			result.functions.add(function.getName());
 		}
+		for (Benefit benefit : object.getBenefits()) {
+			result.benefits.add(benefit.getName());
+		}
 		List<Alias> aliases = App.cache().alias.getList(object.getAliases().toArray());
 		for (Alias alias : aliases) {
 			result.alias.add(alias.getName());
 		}
 		Collections.sort(result.functions);
+		Collections.sort(result.benefits);
 		Collections.sort(result.alias);
 		return result;
 	}

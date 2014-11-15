@@ -30,19 +30,25 @@ public class Import {
 		MemCache cache = App.cache();
 
 		Logger.debug(TAG, "Importing functions");
-		for (DBFormat.NamedObject object : input.functions.values()) {
+		for (DBFormat.NamedObject object : sortNamedObjects(input.functions)) {
 			object.sanitize();
 			createFunction(object, cache);
 		}
 
+		Logger.debug(TAG, "Importing benefits");
+		for (DBFormat.NamedObject object : sortNamedObjects(input.benefits)) {
+			object.sanitize();
+			createBenefit(object, cache);
+		}
+
 		Logger.debug(TAG, "Importing brands");
-		for (DBFormat.NamedObject object : input.brands.values()) {
+		for (DBFormat.NamedObject object : sortNamedObjects(input.brands)) {
 			object.sanitize();
 			createBrand(object, cache);
 		}
 
 		Logger.debug(TAG, "Importing types");
-		for (DBFormat.TypeOject object : input.types.values()) {
+		for (DBFormat.TypeOject object : sortNamedObjects(input.types)) {
 			object.sanitize();
 			createType(object, cache);
 		}
@@ -145,14 +151,35 @@ public class Import {
 		Logger.debug(TAG, "Matched " + matched + "/" + allIngredients.size() + " ingredients from all products");
 
 		Logger.debug(TAG, "Importing products");
-		for (DBFormat.ProductObject object : input.products.values()) {
+		for (DBFormat.ProductObject object : sortNamedObjects(input.products)) {
 			createProduct(object, cache);
 		}
 	}
 
+	private static <T extends DBFormat.NamedObject> List<T> sortNamedObjects(Map<String, T> input) {
+		List<T> result = new ArrayList<>(input.values());
+		result.sort(new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				boolean a1 = BaseModel.isIdNull(o1.id);
+				boolean a2 = BaseModel.isIdNull(o2.id);
+				if (a1 == a2) {
+					return Long.compare(o1.id, o2.id);
+				}
+				if (a1) {
+					return 1;
+				}
+				else {
+					return -1;
+				}
+			}
+		});
+		return result;
+	}
+
 	private static <T extends NamedModel> void createNamedObject(DBFormat.NamedObject object,
 	                                                             MemCache.NamedIndex<T> index, T result) {
-		if (object.id > 0) {
+		if (!BaseModel.isIdNull(object.id)) {
 			long old_id = result.getId();
 			if (old_id != object.id) {
 				if (BaseModel.isIdNull(old_id)) {
@@ -180,6 +207,16 @@ public class Import {
 		}
 
 		createNamedObject(object, cache.functions, result);
+	}
+
+	private static void createBenefit(DBFormat.NamedObject object, MemCache cache) {
+		Benefit result = cache.benefits.get(object.name);
+
+		if (result == null) {
+			result = new Benefit();
+		}
+
+		createNamedObject(object, cache.benefits, result);
 	}
 
 	private static void createBrand(DBFormat.NamedObject object, MemCache cache) {
@@ -248,7 +285,7 @@ public class Import {
 			}
 		}
 
-		Set<Function> functionList = new HashSet<>();
+		Set<Function> functions = new HashSet<>();
 		for (String f : object.functions) {
 			f = f.trim();
 			if (f.isEmpty()) {
@@ -259,7 +296,22 @@ public class Import {
 				Logger.debug(TAG, "Function not found! " + f);
 			}
 			else {
-				functionList.add(function);
+				functions.add(function);
+			}
+		}
+
+		Set<Benefit> benefits = new HashSet<>();
+		for (String b : object.benefits) {
+			b = b.trim();
+			if (b.isEmpty()) {
+				continue;
+			}
+			Benefit benefit = cache.benefits.get(b);
+			if (benefit == null) {
+				Logger.debug(TAG, "Benefit not found! " + b);
+			}
+			else {
+				benefits.add(benefit);
 			}
 		}
 
@@ -274,7 +326,8 @@ public class Import {
 		if (object.popularity != 0) {
 			result.setPopularity(object.popularity);
 		}
-		result.setFunctions(functionList);
+		result.setFunctions(functions);
+		result.setBenefits(benefits);
 
 		createNamedObject(object, cache.ingredients, result);
 

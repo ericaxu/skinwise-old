@@ -713,6 +713,7 @@ public class MemCache {
 			Queue<String> queue = new LinkedList<>(Arrays.asList(ingredients));
 
 			List<String> result = new ArrayList<>();
+			String last = null;
 			while (!queue.isEmpty()) {
 				String ingredient = queue.poll();
 				ingredient = ingredient.replace("\\", "/");
@@ -724,6 +725,14 @@ public class MemCache {
 				else {
 					ingredient = Util.cleanTrim(ingredient);
 					if (!ingredient.isEmpty()) {
+						if (ingredient.length() == 1 && Character.isDigit(ingredient.charAt(0))) {
+							last = ingredient;
+							continue;
+						}
+						else if (last != null) {
+							ingredient = last + "," + ingredient;
+							last = null;
+						}
 						result.add(ingredient);
 					}
 				}
