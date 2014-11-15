@@ -704,12 +704,22 @@ public class MemCache {
 		public static List<String> splitIngredients(String ingredient_string) {
 			ingredient_string = ingredient_string.replaceAll("\\s*(?i)May contains*:*\\s*", ",");
 			String[] ingredients = ingredient_string.split(",(?=[^\\)]*(?:\\(|$))");
+			Queue<String> queue = new LinkedList<>(Arrays.asList(ingredients));
 
 			List<String> result = new ArrayList<>();
-			for (String ingredient : ingredients) {
-				ingredient = Util.cleanTrim(ingredient);
-				if (!ingredient.isEmpty()) {
-					result.add(ingredient);
+			while (!queue.isEmpty()) {
+				String ingredient = queue.poll();
+				ingredient = ingredient.replace("\\", "/");
+				int slashes = ingredient.length() - ingredient.replace("/", "").length();
+				if (slashes >= 4) {
+					//Probably split the ingredient by slash
+					queue.addAll(Arrays.asList(ingredient.split("/")));
+				}
+				else {
+					ingredient = Util.cleanTrim(ingredient);
+					if (!ingredient.isEmpty()) {
+						result.add(ingredient);
+					}
 				}
 			}
 
