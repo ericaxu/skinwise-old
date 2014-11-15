@@ -371,12 +371,14 @@ function productResultHTML(product) {
     return $list_item;
 }
 
-
 function formatPrice(product) {
-    if (product.properties.price && product.properties.size) {
-        return product.properties.price.text_value + ' / ' + product.properties.size.number_value + ' ' + product.properties.size.text_value;
-    } else if (product.properties.price) {
-        return product.properties.price.text_value;
+    var properties = product.properties;
+    if (properties.price && properties.size) {
+        var price_per_oz = (properties.pricepersize.number_value * SW.CONVERSION.ML_IN_OZ / 100).toFixed(2);
+        return properties.price.text_value + ' / ' + properties.size.number_value + ' '
+            + properties.size.text_value + ', $' + price_per_oz + '/oz.';
+    } else if (properties.price) {
+        return properties.price.text_value;
     } else {
         return '';
     }

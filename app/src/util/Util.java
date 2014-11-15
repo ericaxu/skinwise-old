@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 
 public class Util {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final double ML_IN_OZ = 29.5735;
 
 	public static String notNull(String input) {
 		if (input == null) {
@@ -101,6 +102,12 @@ public class Util {
 			result += String.format(".%02d", decimal);
 		}
 		return "$" + result;
+	}
+
+	public static String formatPricePerOz(double price_per_ml) {
+		DecimalFormat decimal_format = new DecimalFormat("0.##");
+		double price_per_oz = price_per_ml * ML_IN_OZ / 100;
+		return "$" + decimal_format.format(price_per_oz) + "/oz.";
 	}
 
 	public static double getNumberFrom(Matcher matcher, int group) {

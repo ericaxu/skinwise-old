@@ -172,6 +172,14 @@ public class Product extends PopularNamedModel {
 		return Util.formatNumber(property.getNumber_value()) + " " + property.getText_value();
 	}
 
+	public String getFormattedPricePerSize() {
+		ProductProperty property = getProperties().get(ProductProperty.PRICE_PER_SIZE);
+		if (property == null) {
+			return "";
+		}
+		return Util.formatPricePerOz(property.getNumber_value());
+	}
+
 	@Override
 	public void save() {
 		Ebean.beginTransaction();
