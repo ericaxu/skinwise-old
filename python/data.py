@@ -109,7 +109,7 @@ def import_data():
 	duckduckgo = util.json_read(file_images_duckduckgo_json, "{}")
 	if 'images' in duckduckgo:
 		for key, image in duckduckgo['images'].items():
-			if key in result['products']:
+			if key in result['products'] and 'image' not in result['products'][key]:
 				result['products'][key]['image'] = image['url']
  
 	del duckduckgo
