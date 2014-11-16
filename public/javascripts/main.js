@@ -147,6 +147,7 @@ function redirectToSelectedItem(provided_id) {
     } else {
         var id = $nav_search.data('id');
     }
+
     // Go to page if id is present
     if (id !== undefined && id !== '') {
         location.href = '/' + $search_select.val() + '/' + id;
@@ -186,7 +187,9 @@ function setupNavSearchAutocomplete() {
         $nav_search.val('');
     });
 
-    $('#nav_searchbar_btn').on('click', redirectToSelectedItem);
+    $('#nav_searchbar_btn').on('click', function() {
+        redirectToSelectedItem();
+    });
 }
 
 function handleEnterKey() {
