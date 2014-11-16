@@ -1,7 +1,7 @@
 function ingredientResultHTML(ing) {
     var $list_item = addEl('li', null, 'ingredient_item');
     var $header = addEl('h2', $list_item, 'name');
-    addEl('a', $header, '', ing.name, {href: '/ingredient/' + ing.id});
+    addEl('a', $header, '', ing.display_name, {href: '/ingredient/' + ing.id});
     var $functions = addEl('p', $list_item, 'functions');
 
     for (var j = 0; j < ing.functions.length; j++) {
