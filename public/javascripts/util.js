@@ -401,9 +401,15 @@ function ingredientLinkHTML(ingredient) {
 function formatPrice(product) {
     var properties = product.properties;
     if (properties.price && properties.size) {
-        var price_per_oz = (properties.pricepersize.number_value * SW.CONVERSION.ML_IN_OZ / 100).toFixed(2);
-        return properties.price.text_value + ' / ' + properties.size.number_value + ' '
-            + properties.size.text_value + ', $' + price_per_oz + '/oz.';
+        if (properties.size.text_value === 'ml') {
+            var price_per_oz = (properties.pricepersize.number_value * SW.CONVERSION.ML_IN_OZ / 100).toFixed(2);
+            return properties.price.text_value + ' / ' + properties.size.number_value + ' '
+                + properties.size.text_value + ', $' + price_per_oz + '/oz.';
+        } else {
+            var price_per_size = (properties.pricepersize.number_value / 100).toFixed(2);
+            return properties.price.text_value + ' / ' + properties.size.number_value + ' '
+                + properties.size.text_value + ', $' + price_per_size + '/' + properties.size.text_value;
+        }
     } else if (properties.price) {
         return properties.price.text_value;
     } else {

@@ -105,10 +105,15 @@ public class Util {
 		return "$" + result;
 	}
 
-	public static String formatPricePerOz(double price_per_ml) {
+	public static String formatPricePerOz(double price_per_ml, String size_unit) {
 		DecimalFormat decimal_format = new DecimalFormat("0.##");
-		double price_per_oz = price_per_ml * ML_IN_OZ / 100;
-		return "$" + decimal_format.format(price_per_oz) + "/oz.";
+		if (size_unit.equals("ml")) {
+			double price_per_oz = price_per_ml * ML_IN_OZ / 100;
+			return "$" + decimal_format.format(price_per_oz) + "/oz.";
+		} else {
+			double price_per_oz = price_per_ml / 100;
+			return "$" + decimal_format.format(price_per_oz) + "/" + size_unit;
+		}
 	}
 
 	public static double getNumberFrom(Matcher matcher, int group) {

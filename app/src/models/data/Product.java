@@ -185,11 +185,12 @@ public class Product extends PopularNamedModel {
 	}
 
 	public String getFormattedPricePerSize() {
-		ProductProperty property = getProperties().get(ProductProperty.PRICE_PER_SIZE);
-		if (property == null) {
+		ProductProperty price_per_size = getProperties().get(ProductProperty.PRICE_PER_SIZE);
+		ProductProperty size = getProperties().get(ProductProperty.SIZE);
+		if (price_per_size == null || size == null) {
 			return "";
 		}
-		return Util.formatPricePerOz(property.getNumber_value());
+		return Util.formatPricePerOz(price_per_size.getNumber_value(), size.getText_value());
 	}
 
 	@Override
