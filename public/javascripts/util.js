@@ -371,6 +371,17 @@ function productResultHTML(product) {
     return $list_item;
 }
 
+function ingredientLinkHTML(ingredient) {
+    var $ingredient_link = addEl('a', '', '', '', {
+        href: '/ingredient/' + ingredient.id
+    });
+    var $ingredient_span = addEl('span', $ingredient_link, 'ingredient').data('id', ingredient.id);
+    addEl('span', $ingredient_span, 'infobox_anchor');
+    $ingredient_span.append(ingredient.name);
+
+    return $ingredient_link;
+}
+
 function formatPrice(product) {
     var properties = product.properties;
     if (properties.price && properties.size) {

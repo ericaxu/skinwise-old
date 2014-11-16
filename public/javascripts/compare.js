@@ -30,10 +30,12 @@ function refreshCompare() {
             addEl('a', $brand_td, '', SW.BRANDS[current.brand].name, {href: '/brand/' + current.brand});
             var $price_td = addEl('td', $price_row, 'short');
             addEl('span', $price_td, 'emphasis', 'Price: ');
-            addEl('span', $price_td, '', current.price);
+            var price = current.properties.price ? current.properties.price.text_value : 'Unknown';
+            addEl('span', $price_td, '', price);
             var $size_td = addEl('td', $size_row, 'short');
             addEl('span', $size_td, 'emphasis', 'Size: ');
-            addEl('span', $size_td, '', current.size + ' ' + current.size_unit);
+            var size = current.properties.size ? current.properties.size.number_value + ' ' + current.properties.size.text_value : 'Unknown';
+            addEl('span', $size_td, '', size);
         } else {
             var $image_td = addEl('td', $image_row, 'short');
             var $name_td = addEl('td', $name_row, 'short');
@@ -48,16 +50,10 @@ function refreshCompare() {
         var $common_ingredients_td = addEl('td', $common_ingredients_tr, '', '', {colspan: "2"});
         addEl('span', $common_ingredients_td, 'emphasis', 'Common ingredients: ');
         for (var i = 0; i < common_ingredients.length - 1; i++) {
-            var ingredient = common_ingredients[i];
-            addEl('a', $common_ingredients_td, 'ingredient', ingredient.name, {
-                href: '/ingredient/' + ingredient.id
-            }).data('id', ingredient.id);
+            $common_ingredients_td.append(ingredientLinkHTML(common_ingredients[i]));
             $common_ingredients_td.append(', ');
         }
-        var ingredient = common_ingredients[common_ingredients.length - 1];
-        addEl('a', $common_ingredients_td, 'ingredient', ingredient.name, {
-            href: '/ingredient/' + ingredient.id
-        }).data('id', ingredient.id);
+        $common_ingredients_td.append(ingredientLinkHTML(common_ingredients.pop()));
     }
 
     var $ingredient_row = addEl('tr', $table);
@@ -74,16 +70,10 @@ function refreshCompare() {
                 if (unique_ingredients.length > 0) {
                     addEl('span', $ingredient_td, 'emphasis', 'Unique ingredients: ');
                     for (var j = 0; j < unique_ingredients.length; j++) {
-                        var ingredient = unique_ingredients[j];
-                        addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
-                            href: '/ingredient/' + ingredient.id
-                        }).data('id', ingredient.id);
+                        $ingredient_td.append(ingredientLinkHTML(unique_ingredients[j]));
                         $ingredient_td.append(', ');
                     }
-                    var ingredient = unique_ingredients[unique_ingredients.length - 1];
-                    addEl('a', $ingredient_td, 'ingredient', ingredient.name, {
-                        href: '/ingredient/' + ingredient.id
-                    }).data('id', ingredient.id);
+                    $ingredient_td.append(ingredientLinkHTML(unique_ingredients.pop()));
                 }
 
             }
@@ -134,10 +124,12 @@ function loadHash() {
         var products = hash.split(';');
 
         var left_id = products[0].split('=')[1];
-        var right_id = products[1].split('=')[1];
-
         fetchProductForComparison(left_id, 0);
-        fetchProductForComparison(right_id, 1);
+
+        if (products.length > 1) {
+            var right_id = products[1].split('=')[1];
+            fetchProductForComparison(right_id, 1);
+        }
     }
 }
 
