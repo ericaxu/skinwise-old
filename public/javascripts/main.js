@@ -187,11 +187,6 @@ function setupNavSearchAutocomplete() {
     });
 
     $('#nav_searchbar_btn').on('click', redirectToSelectedItem);
-
-    // Open autocomplete menu when focus on input
-    $nav_search.on('focus', function() {
-        $(this).autocomplete('search');
-    });
 }
 
 function handleEnterKey() {

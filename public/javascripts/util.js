@@ -293,6 +293,10 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
         $no_result_el && $no_result_el.hide();
         $(this).autocomplete('close');
     });
+
+    $selector.on('focus', function() {
+        $(this).autocomplete('search');
+    });
 }
 
 // Show placeholder image if image is unavailable

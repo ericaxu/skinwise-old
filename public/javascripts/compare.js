@@ -124,20 +124,25 @@ function loadHash() {
         var products = hash.split(';');
 
         var left_id = products[0].split('=')[1];
-        fetchProductForComparison(left_id, 0);
+        fetchProductForComparison(left_id, 0, '.compare_input_left');
 
         if (products.length > 1) {
             var right_id = products[1].split('=')[1];
-            fetchProductForComparison(right_id, 1);
+            fetchProductForComparison(right_id, 1, '.compare_input_right');
         }
     }
 }
 
-function fetchProductForComparison(id, index) {
+function fetchProductForComparison(id, index, input_name_selector) {
     postToAPI('/product/byid', {
         id: id
     }, function(response) {
-        SW.PRODUCTS_FOR_COMPARE[index] = response.results[0];
+        var product = response.results[0];
+        if (input_name_selector !== undefined) {
+            var brand = SW.BRANDS[product.brand].name;
+            $(input_name_selector).val(brand + ' - ' + product.name);
+        }
+        SW.PRODUCTS_FOR_COMPARE[index] = product;
         postToAPI('/product/ingredientinfo', {
             id: id
         }, function(response) {
