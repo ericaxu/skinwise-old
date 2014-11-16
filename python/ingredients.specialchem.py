@@ -32,7 +32,6 @@ result['functions'] = dict()
 
 functions = set()
 
-popularity = len(search_ids)
 for id in search_ids:
 	page_html = crawler.crawl_selective(key="ingredient/%s" % id, url=url_ingredient % id, \
 		regex=r'<h2 id="inciresulth2">INCI Directory<\/h2>(.*?)<td rowspan="2" id="PageMiddleRight">')
@@ -60,10 +59,7 @@ for id in search_ids:
 	for function in ingredient['functions']:
 		functions.add(function.strip())
 
-	ingredient['popularity'] = popularity
-
 	result['ingredients'][parser.good_key(ingredient_name)] = ingredient
-	popularity -= 1
 
 for function_name in functions:
 	result['functions'][parser.good_key(function_name)] = {'name': function_name}

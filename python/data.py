@@ -208,6 +208,11 @@ def import_data():
 			if key in result['products']:
 				if 'popularity' in product:
 					result['products'][key]['popularity'] = product['popularity']
+	if 'ingredients' in export:
+		for key, ingredient in export['ingredients'].items():
+			if key in result['ingredients']:
+				if 'popularity' in ingredient:
+					result['ingredients'][key]['popularity'] = ingredient['popularity']
 	del export
 
 	return result
