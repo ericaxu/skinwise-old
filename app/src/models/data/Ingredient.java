@@ -27,6 +27,9 @@ public class Ingredient extends PopularNamedModel {
 	@Column(length = 127)
 	private String cas_number;
 
+	@Column(length = 1023)
+	private String display_name;
+
 	//Get/Set
 
 	public boolean isActive() {
@@ -37,12 +40,20 @@ public class Ingredient extends PopularNamedModel {
 		return cas_number;
 	}
 
+	public String getDisplay_name() {
+		return display_name;
+	}
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 
 	public void setCas_number(String cas_number) {
 		this.cas_number = cas_number;
+	}
+
+	public void setDisplay_name(String display_name) {
+		this.display_name = display_name;
 	}
 
 	//Many-Many Functions relation
@@ -102,7 +113,7 @@ public class Ingredient extends PopularNamedModel {
 	}
 
 	public String getDisplayName() {
-		return WordUtils.capitalizeFully(getName());
+		return getDisplay_name();
 	}
 
 	public TLongSet getProducts() {

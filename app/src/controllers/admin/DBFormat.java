@@ -47,6 +47,7 @@ public class DBFormat {
 
 	@JsonPropertyOrder(alphabetic = true)
 	public static class IngredientObject extends NamedObject {
+		public String display_name;
 		public String cas_no;
 		public String ec_no;
 		public String restriction;
@@ -59,6 +60,7 @@ public class DBFormat {
 		@Override
 		public void sanitize() {
 			super.sanitize();
+			display_name = Util.notNull(display_name).trim();
 			cas_no = Util.notNull(cas_no).trim();
 			ec_no = Util.notNull(ec_no).trim();
 			restriction = Util.notNull(restriction).trim();

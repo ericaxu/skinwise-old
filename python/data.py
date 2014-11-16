@@ -33,7 +33,7 @@ def import_data():
 	if not 'brands' in result:
 		result['brands'] = dict()
 
-	# specialchem
+	# specialchem ingredients
 	specialchem = util.json_read(file_ingredients_specialchem_json, "{}")
 	if 'ingredients' in specialchem:
 		for key, ingredient in specialchem['ingredients'].items():
@@ -49,11 +49,10 @@ def import_data():
 
 	del specialchem
 
-	# cosdna
+	# cosdna ingredients
 	cosdna = util.json_read(file_ingredients_cosdna_json, "{}")
 	if 'ingredients' in cosdna:
 		for key, cosdna_ingredient in cosdna['ingredients'].items():
-			# ingredients has the ingredient
 			if key in result['ingredients']:
 				ingredient = result['ingredients'][key]
 				if 'alias' not in ingredient:
@@ -62,13 +61,14 @@ def import_data():
 					# Cosdna has some alias for us!
 					ingredient['alias'].extend(cosdna_ingredient['alias'])
 				# Cosdna has a name for us!
+				ingredient['display_name'] = cosdna_ingredient['name']
 				ingredient['alias'].append(cosdna_ingredient['name'])
 				ingredient['alias'] = util.list_unique(ingredient['alias'])
 				ingredient['alias'].sort()
 
 	del cosdna
 
-	# inci
+	# inci functions
 	inci = util.json_read(file_ingredients_inci_json, "{}")
 
 	if 'functions' in inci:
@@ -89,7 +89,7 @@ def import_data():
 		brand_key = parser.good_key(product['brand'])
 		result['brands'][brand_key] = {"name": product['brand']}
 
-	# cosing
+	# cosing products
 	cosing = util.json_read(file_products_cosing_json, "{}")
 	if 'products' in cosing:
 		for key, product in cosing['products'].items():
@@ -100,7 +100,7 @@ def import_data():
  
 	del cosing
 
-	# birchbox
+	# birchbox products
 	birchbox = util.json_read(file_products_birchbox_json, "{}")
 	if 'products' in birchbox:
 		for key, product in birchbox['products'].items():
@@ -113,7 +113,7 @@ def import_data():
  
 	del birchbox
 
-	# paula
+	# paula products
 	paula = util.json_read(file_products_paula_json, "{}")
 	if 'products' in paula:
 		for key, product in paula['products'].items():
@@ -131,7 +131,7 @@ def import_data():
 
 	del brand_corrections
 
-	# duckduckgo
+	# duckduckgo images
 	duckduckgo = util.json_read(file_images_duckduckgo_json, "{}")
 	if 'images' in duckduckgo:
 		for key, image in duckduckgo['images'].items():

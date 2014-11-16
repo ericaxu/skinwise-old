@@ -32,18 +32,20 @@ public class IngredientController extends Controller {
 	public static class ResponseIngredientObject {
 		public long id;
 		public String name;
+		public String display_name;
 		public String cas_number;
 		public String description;
 		public long[] functions;
 		public List<String> aliases;
 		public int product_count;
 
-		public ResponseIngredientObject(long id, String name,
+		public ResponseIngredientObject(long id, String name, String display_name,
 		                                String cas_number, String description,
 		                                long[] functions, List<String> aliases,
 		                                int product_count) {
 			this.id = id;
 			this.name = name;
+			this.display_name = display_name;
 			this.cas_number = cas_number;
 			this.description = description;
 			this.functions = functions;
@@ -88,6 +90,7 @@ public class IngredientController extends Controller {
 			response.results.add(new ResponseIngredientObject(
 					result.getId(),
 					result.getName(),
+					result.getDisplay_name(),
 					result.getCas_number(),
 					result.getDescription(),
 					result.getFunctionIds().toArray(),
@@ -122,7 +125,8 @@ public class IngredientController extends Controller {
 			for (Ingredient ingredient : result) {
 				response.results.add(new ResponseIngredientObject(
 						ingredient.getId(),
-						ingredient.getDisplayName(),
+						ingredient.getName(),
+						ingredient.getDisplay_name(),
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray(),
@@ -152,6 +156,7 @@ public class IngredientController extends Controller {
 				ingredientObject = new ResponseIngredientObject(
 						ingredient.getId(),
 						ingredient.getName(),
+						ingredient.getDisplay_name(),
 						ingredient.getCas_number(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray(),

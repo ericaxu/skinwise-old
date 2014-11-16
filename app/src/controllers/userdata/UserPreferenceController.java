@@ -99,7 +99,8 @@ public class UserPreferenceController extends Controller {
 					Ingredient ingredient = App.cache().ingredients.get(id);
 					response.results.add(new IngredientController.ResponseIngredientObject(
 							id,
-							ingredient.getDisplayName(),
+							ingredient.getName(),
+							ingredient.getDisplay_name(),
 							ingredient.getCas_number(),
 							ingredient.getDescription(),
 							ingredient.getFunctionIds().toArray(),

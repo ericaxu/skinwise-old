@@ -258,7 +258,7 @@ public class ProductController extends Controller {
 			for (Ingredient ingredient : ingredients) {
 				results.add(new ResponseIngredientObject(
 						ingredient.getId(),
-						WordUtils.capitalizeFully(ingredient.getName()),
+						ingredient.getDisplay_name(),
 						ingredient.getDescription(),
 						ingredient.getFunctionIds().toArray()
 				));

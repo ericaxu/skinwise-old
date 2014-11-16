@@ -321,6 +321,10 @@ public class Import {
 			result = new Ingredient();
 		}
 
+		if (object.display_name.isEmpty()) {
+			object.display_name = object.name;
+		}
+		result.setDisplay_name(object.display_name);
 		result.setCas_number(object.cas_no);
 		result.setActive(object.active);
 		if (object.popularity != 0) {

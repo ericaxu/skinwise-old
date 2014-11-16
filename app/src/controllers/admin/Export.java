@@ -83,6 +83,8 @@ public class Export {
 
 	public static DBFormat.IngredientObject export(Ingredient object) {
 		DBFormat.IngredientObject result = exportNamedModel(object, new DBFormat.IngredientObject());
+		result.display_name = object.getDisplay_name();
+		result.cas_no = object.getCas_number();
 		result.popularity = object.getPopularity();
 		result.active = object.isActive();
 		for (Function function : object.getFunctions()) {
