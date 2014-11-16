@@ -377,7 +377,7 @@ public class Product extends PopularNamedModel {
 					"first.right_id = second.id AND second.ingredient_id = third.left_id");
 			q.where("third.right_id IN (" + Util.joinString(",", benefits) + ")");
 			q.other("GROUP BY id");
-			q.other("HAVING count(*) >= " + benefits.length);
+			q.other("HAVING count(DISTINCT third.right_id) = " + benefits.length);
 
 			positive_filter.intersect(q.execute());
 		}
@@ -390,7 +390,7 @@ public class Product extends PopularNamedModel {
 					"first.right_id = second.id");
 			q.where("second.ingredient_id IN (" + Util.joinString(",", ingredients) + ")");
 			q.other("GROUP BY id");
-			q.other("HAVING count(*) >= " + ingredients.length);
+			q.other("HAVING count(DISTINCT second.ingredient_id) = " + ingredients.length);
 
 			positive_filter.intersect(q.execute());
 		}

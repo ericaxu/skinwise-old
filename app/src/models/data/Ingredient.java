@@ -151,7 +151,7 @@ public class Ingredient extends PopularNamedModel {
 			q.from(IngredientFunction.TABLENAME);
 			q.where("right_id IN (" + Util.joinString(",", functions) + ")");
 			q.other("GROUP BY id");
-			q.other("HAVING count(*) = " + functions.length);
+			q.other("HAVING count(DISTINCT right_id) = " + functions.length);
 
 			positive_filter.intersect(q.execute());
 		}
@@ -162,7 +162,7 @@ public class Ingredient extends PopularNamedModel {
 			q.from(IngredientBenefit.TABLENAME);
 			q.where("right_id IN (" + Util.joinString(",", benefits) + ")");
 			q.other("GROUP BY id");
-			q.other("HAVING count(*) = " + benefits.length);
+			q.other("HAVING count(DISTINCT right_id) = " + benefits.length);
 
 			positive_filter.intersect(q.execute());
 		}
