@@ -402,6 +402,13 @@ public class Import {
 			if (BaseModel.isIdNull(ingredient_id)) {
 				continue;
 			}
+			//Bump ingredient popularity
+			//Use this when recreating new ingredient popularity
+			//			Ingredient ingredient = alias.getIngredient();
+			//			synchronized (ingredient) {
+			//				ingredient.incrementPopularity(1);
+			//				ingredient.save();
+			//			}
 			String original = keyIngredientOriginals.get(i);
 			Matcher percentageMatcher = percentagePattern.matcher(original);
 			if (percentageMatcher.find()) {
