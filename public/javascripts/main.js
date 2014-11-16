@@ -29,7 +29,7 @@ function setupIngredientInfobox() {
                 addEl('p', $ingredient_info, '', ingredient_data.description);
                 $('.ingredient_infobox').remove();
                 var left_offset = Math.min($(document).width() - 470, $(this).find('.infobox_anchor').offset().left);
-                var top_offset = $(this).find('.infobox_anchor').offset().top + 10;
+                var top_offset = $(this).find('.infobox_anchor').offset().top + 25;
                 $ingredient_info.addClass('ingredient_infobox').show().offset({ top: top_offset, left: left_offset});
             }
         }, this), SW.ING_BOX.TIMEOUT);
