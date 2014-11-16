@@ -8,7 +8,6 @@ import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
-import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
 import src.controllers.util.Prettyfy;
@@ -51,18 +50,32 @@ public class ProductController extends Controller {
 	}
 
 	public static class RequestProductFilter extends Api.RequestGetAllByPage {
-		@NotNull
 		public long[] brands;
-		@NotNull
 		public long[] ingredients;
-		@NotNull
 		public long[] types;
-		@NotNull
+		public long[] benefits;
 		public long[] neg_brands;
-		@NotNull
 		public long[] neg_ingredients;
-		@NotNull
 		public Map<String, RequestProductNumberPropertyFilter> number_properties;
+
+		public void sanitize() {
+			brands = sanitize(brands);
+			ingredients = sanitize(ingredients);
+			types = sanitize(types);
+			benefits = sanitize(benefits);
+			neg_brands = sanitize(neg_brands);
+			neg_ingredients = sanitize(neg_ingredients);
+			if (number_properties == null) {
+				number_properties = new HashMap<>();
+			}
+		}
+
+		public long[] sanitize(long[] input) {
+			if (input == null) {
+				input = new long[0];
+			}
+			return input;
+		}
 	}
 
 	public static class ResponseProductPropertyObject {
@@ -167,6 +180,7 @@ public class ProductController extends Controller {
 	public static Result api_product_filter() {
 		try {
 			RequestProductFilter request = Api.read(ctx(), RequestProductFilter.class);
+			request.sanitize();
 
 			for (long id : request.brands) {
 				Brand object = App.cache().brands.get(id);
@@ -204,7 +218,7 @@ public class ProductController extends Controller {
 			Page page = new Page(request.page, 20);
 			List<Product> result = Product.byFilter(
 					request.brands, request.neg_brands,
-					request.types,
+					request.types, request.benefits,
 					request.ingredients, request.neg_ingredients,
 					numberFilters, null,
 					false,
@@ -269,6 +283,7 @@ public class ProductController extends Controller {
 
 			Page page = new Page(0, 20);
 			List<Product> result = Product.byFilter(
+					new long[]{},
 					new long[]{},
 					new long[]{},
 					new long[]{},

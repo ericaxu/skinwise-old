@@ -1,5 +1,6 @@
 package src.models.data;
 
+import com.avaje.ebean.annotation.Index;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import org.apache.commons.lang3.text.WordUtils;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Table(name = Alias.TABLENAME)
 public class Alias extends NamedModel {
 
+	@Index
 	private long ingredient_id;
 	private transient LongHistory ingredient_id_tracker = new LongHistory();
 

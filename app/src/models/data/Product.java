@@ -303,7 +303,7 @@ public class Product extends PopularNamedModel {
 	}
 
 	public static List<Product> byFilter(long[] brands, long[] negBrands,
-	                                     long[] types,
+	                                     long[] types, long[] benefits,
 	                                     long[] ingredients, long[] nedIngredients,
 	                                     List<ProductPropertyNumberFilter> property_number_filters,
 	                                     List<ProductPropertyTextFilter> property_text_filters,
@@ -368,19 +368,28 @@ public class Product extends PopularNamedModel {
 			positive_filter.intersect(q.execute());
 		}
 
-		if (ingredients.length > 0) {
-			TLongSet alias_ids = new TLongHashSet();
-			for (long ingredient_id : ingredients) {
-				TLongList aliases = App.cache().ingredient_alias.getMany(ingredient_id);
-				alias_ids.addAll(aliases);
-			}
-			long[] list = alias_ids.toArray();
-
+		if (benefits.length > 0) {
 			SelectQuery q = new SelectQuery();
-			q.select("DISTINCT left_id as id");
-			q.from(ProductIngredient.TABLENAME);
-			q.where("right_id IN (" + Util.joinString(",", list) + ")");
-			q.other("GROUP BY left_id");
+			q.select("DISTINCT first.left_id as id");
+			q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
+					Alias.TABLENAME + " second INNER JOIN " +
+					IngredientBenefit.TABLENAME + " third ON " +
+					"first.right_id = second.id AND second.ingredient_id = third.left_id");
+			q.where("third.right_id IN (" + Util.joinString(",", benefits) + ")");
+			q.other("GROUP BY id");
+			q.other("HAVING count(*) >= " + benefits.length);
+
+			positive_filter.intersect(q.execute());
+		}
+
+		if (ingredients.length > 0) {
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT first.left_id as id");
+			q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
+					Alias.TABLENAME + " second ON " +
+					"first.right_id = second.id");
+			q.where("second.ingredient_id IN (" + Util.joinString(",", ingredients) + ")");
+			q.other("GROUP BY id");
 			q.other("HAVING count(*) >= " + ingredients.length);
 
 			positive_filter.intersect(q.execute());

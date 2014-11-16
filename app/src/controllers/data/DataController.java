@@ -22,6 +22,7 @@ import java.util.List;
 public class DataController extends Controller {
 	private static enum AutocompleteType {
 		FUNCTION("function"),
+		BENEFIT("benefit"),
 		BRAND("brand"),
 		TYPE("type"),
 		INGREDIENT("ingredient"),
@@ -83,6 +84,9 @@ public class DataController extends Controller {
 			switch (type) {
 				case FUNCTION:
 					result = cache.functions.search(request.query, numResults, false);
+					break;
+				case BENEFIT:
+					result = cache.benefits.search(request.query, numResults, false);
 					break;
 				case BRAND:
 					result = cache.brands.search(request.query, numResults, false);

@@ -1,10 +1,14 @@
 package src.models.util;
 
+import com.avaje.ebean.annotation.Index;
+
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class ManyToManyModel extends BaseModel {
+	@Index
 	private long left_id;
+	@Index
 	private long right_id;
 
 	//Get/Set
