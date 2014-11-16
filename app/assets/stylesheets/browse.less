@@ -303,3 +303,32 @@ footer {
     padding-top: 20px;
     border-top: 1px solid @border;
 }
+
+.disabled.filter_section {
+    color: @border;
+    .ui-slider .ui-slider-range {
+        background: @border;
+    }
+    .clear_slider {
+        display: none;
+    }
+}
+
+.slider_left_label, .slider_right_label {
+    margin-top: 10px;
+    display: inline-block;
+    font-family: "Proxima Nova Light", sans-serif;
+    font-size: 14px;
+}
+
+.slider_right_label {
+    float: right;
+}
+
+.clear_slider {
+    display: inline-block;
+    float: right;
+    font-family: "Proxima Nova Light", sans-serif;
+    font-size: 16px;
+    padding-top: 8px;
+}

@@ -134,7 +134,7 @@ function setupBackToTop() {
     });
     $to_top.on('click', function(e) {
         e.preventDefault();
-        $('body').animate({scrollTop: 0}, 100);
+        window.scrollTo(0, 0);
     });
 }
 

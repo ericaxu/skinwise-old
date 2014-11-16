@@ -446,11 +446,8 @@ function onPriceSliderChange(event, ui) {
     } else {
         var values = $('#price_filter').slider('values');
     }
-    if (values[1] === SW.SLIDER_RANGE.PRICE_MAX) {
-        $('#price_label').text('$' + values[0] + ' - unlimited');
-    } else {
-        $('#price_label').text('$' + values[0] + ' - $' + values[1]);
-    }
+    $('#price_label').text('$' + values[0] + ' - $' + values[1]);
+    $('#price_filter').parent().removeClass('disabled');
 }
 
 function onPricePerSizeSliderChange(event, ui) {
@@ -459,11 +456,8 @@ function onPricePerSizeSliderChange(event, ui) {
     } else {
         var values = $('#price_per_size_filter').slider('values');
     }
-    if (values[1] === SW.SLIDER_RANGE.PRICE_MAX) {
-        $('#price_per_size_label').text('$' + values[0] + ' - unlimited');
-    } else {
-        $('#price_per_size_label').text('$' + values[0] + ' - $' + values[1]);
-    }
+    $('#price_per_size_label').text('$' + values[0] + ' - $' + values[1]);
+    $('#price_per_size_filter').parent().removeClass('disabled');
 }
 
 function onSpfSliderChange(event, ui) {
@@ -473,6 +467,7 @@ function onSpfSliderChange(event, ui) {
         var values = $('#sunscreen_spf_filter').slider('values');
     }
     $('#sunscreen_spf_label').text('SPF ' + values[0] + ' - ' + values[1]);
+    $('#sunscreen_spf_filter').parent().removeClass('disabled');
 }
 
 function setupEmptyFilterBlankSlate() {
@@ -580,6 +575,18 @@ function initBrowse(type) {
                 $(this).find('.chevron').removeClass('bottom').addClass('top');
                 $('.filter_container').show();
             }
+        });
+
+        $('.clear_slider').on('click', function(e) {
+            e.preventDefault();
+            var $filter_container = $(this).parent().parent();
+            var $slider = $filter_container.find('.slider_filter');
+            var min = $slider.slider('option', 'min');
+            var max = $slider.slider('option', 'max');
+            $slider.slider('values', 0, min).slider('values', 1, max).trigger('change');
+            refetch();
+            $filter_container.find('.slider_label').text('No filter applied');
+            $filter_container.addClass('disabled');
         });
 
         setupEmptyFilterBlankSlate();
