@@ -392,8 +392,8 @@ function ingredientLinkHTML(ingredient) {
         href: '/ingredient/' + ingredient.id
     });
     var $ingredient_span = addEl('span', $ingredient_link, 'ingredient').data('id', ingredient.id);
-    addEl('span', $ingredient_span, 'infobox_anchor');
-    $ingredient_span.append(ingredient.name);
+    addEl('span', $ingredient_span, 'infobox_anchor', ingredient.name.slice(0, 1));
+    $ingredient_span.append(ingredient.name.slice(1));
 
     return $ingredient_link;
 }
