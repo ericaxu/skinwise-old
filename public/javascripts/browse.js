@@ -89,7 +89,7 @@ function fetchProducts(page, callback, query) {
     var properties = {};
 
     var price_filter = $('#price_filter').slider('values');
-    if (price_filter[0] !== SW.SLIDER_RANGE.PRICE_MIN || price_filter[1] !== SW.SLIDER_RANGE.PRICE_MAX) {
+    if (!$('#price_filter').parent().hasClass('disabled')) {
         properties['price'] = {
             min: price_filter[0] * 100,
             max: price_filter[1] * 100
@@ -97,7 +97,7 @@ function fetchProducts(page, callback, query) {
     }
 
     var price_per_size_filter = $('#pricepersize_filter').slider('values');
-    if (price_per_size_filter[0] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MIN || price_per_size_filter[1] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MAX) {
+    if (!$('#pricepersize_filter').parent().hasClass('disabled')) {
         properties['pricepersize'] = {
             min: price_per_size_filter[0] * 100 / SW.CONVERSION.ML_IN_OZ,
             max: price_per_size_filter[1] * 100 / SW.CONVERSION.ML_IN_OZ
@@ -105,7 +105,7 @@ function fetchProducts(page, callback, query) {
     }
 
     var spf_filter = $('#sunscreen_spf_filter').slider('values');
-    if (spf_filter[0] !== SW.SLIDER_RANGE.SPF_MIN || spf_filter[1] !== SW.SLIDER_RANGE.SPF_MAX) {
+    if (!$('#sunscreen_spf_filter').parent().hasClass('disabled')) {
         properties['sunscreen.spf'] = {
             min: spf_filter[0],
             max: spf_filter[1]
@@ -386,6 +386,7 @@ function showExtraFilter(filter_key, value, index) {
         toggleAdvancedFilters(true);
     }
     if (SW.FILTER_PARSING_MAPPING[filter_key] === 'range') {
+        var escaped_filter_key = escapeForSelector(filter_key);
         $('#' + escaped_filter_key + '_filter').slider('values', index, parseInt(value)).trigger('change');
     } else if (SW.FILTER_PARSING_MAPPING[filter_key] === 'array') {
         var escaped_filter_key = escapeForSelector(filter_key.slice(0, filter_key.length - 1));
@@ -583,9 +584,9 @@ function initBrowse(type) {
             var min = $slider.slider('option', 'min');
             var max = $slider.slider('option', 'max');
             $slider.slider('values', 0, min).slider('values', 1, max).trigger('change');
-            refetch();
             $filter_container.find('.slider_label').text('No filter applied');
             $filter_container.addClass('disabled');
+            refetch();
         });
 
         setupEmptyFilterBlankSlate();

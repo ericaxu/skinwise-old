@@ -16,6 +16,7 @@ function refreshCompare() {
     var $brand_row = addEl('tr', $table);
     var $price_row = addEl('tr', $table);
     var $size_row = addEl('tr', $table);
+    var $price_per_size_row = addEl('tr', $table);
 
     for (var i = 0; i < 2; i++) {
         var current = SW.PRODUCTS_FOR_COMPARE[i];
@@ -36,6 +37,19 @@ function refreshCompare() {
             addEl('span', $size_td, 'emphasis', 'Size: ');
             var size = current.properties.size ? current.properties.size.number_value + ' ' + current.properties.size.text_value : 'Unknown';
             addEl('span', $size_td, '', size);
+            var $price_per_size_td = addEl('td', $price_per_size_row, 'short');
+            if (current.properties.pricepersize && current.properties.size && current.properties.size.text_value === 'ml') {
+                addEl('span', $price_per_size_td, 'emphasis', 'Price/oz: ');
+                var price_per_size = '$' + (current.properties.pricepersize.number_value * SW.CONVERSION.ML_IN_OZ / 100).toFixed(2);
+                addEl('span', $price_per_size_td, '', price_per_size);
+            } else if (current.properties.pricepersize && current.properties.size) {
+                addEl('span', $price_per_size_td, 'emphasis', 'Price/' + current.properties.size.text_value + ': ');
+                var price_per_size = '$' + current.properties.pricepersize.number_value;
+                addEl('span', $price_per_size_td, '', price_per_size);
+            } else {
+                addEl('span', $price_per_size_td, 'emphasis', 'Price/oz.: ');
+                addEl('span', $price_per_size_td, '', 'Unknown');
+            }
         } else {
             var $image_td = addEl('td', $image_row, 'short');
             var $name_td = addEl('td', $name_row, 'short');
