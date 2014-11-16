@@ -411,6 +411,16 @@ function formatPrice(product) {
     }
 }
 
+function escapeForSelector(string) {
+    var selector_characters = ['#', '\\.'];
+    for (var i = 0; i < selector_characters.length; i++) {
+        var character = selector_characters[i];
+        string = string.replace(new RegExp(character, 'g'), '_');
+    }
+
+    return string;
+}
+
 function removeDiacritics(str) {
     var defaultDiacriticsRemovalMap = [
         {

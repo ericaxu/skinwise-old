@@ -96,7 +96,7 @@ function fetchProducts(page, callback, query) {
         };
     }
 
-    var price_per_size_filter = $('#price_per_size_filter').slider('values');
+    var price_per_size_filter = $('#pricepersize_filter').slider('values');
     if (price_per_size_filter[0] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MIN || price_per_size_filter[1] !== SW.SLIDER_RANGE.PRICE_PER_OZ_MAX) {
         properties['pricepersize'] = {
             min: price_per_size_filter[0] * 100 / SW.CONVERSION.ML_IN_OZ,
@@ -133,11 +133,17 @@ function fetchProducts(page, callback, query) {
 }
 
 function fetchIngredients(page, callback) {
-    postToAPI('/ingredient/filter', {
+    var query = {
         functions: SW.CUR_FUNCTION ? [SW.CUR_FUNCTION] : getSelectedFilters('function'),
         benefits: getSelectedFilters('benefit'),
         page: page
-    }, callback);
+    };
+    postToAPI('/ingredient/filter', query, function(response) {
+        callback(response);
+        if (!SW.CUR_FUNCTION) {
+            changeHash(query);
+        }
+    });
 }
 
 function fetchNextPage() {
@@ -339,18 +345,17 @@ function setupAddFilterPopup() {
 
 function showExtraFiltersFromUrl() {
     if (location.hash.length > 0) {
-        var reverse_mapping = {
-            'ph': 'price_max ',
-            'pl': 'price_min '
-        };
+        var reverse_mapping = {};
         var query = {};
 
         for (var filter_type in SW.FILTER_ABBR_MAPPING) {
-            var abbr = SW.FILTER_ABBR_MAPPING[filter_type];
-            reverse_mapping[abbr] = filter_type;
+            if (SW.FILTER_ABBR_MAPPING.hasOwnProperty(filter_type)) {
+                var abbr = SW.FILTER_ABBR_MAPPING[filter_type];
+                reverse_mapping[abbr] = filter_type;
 
-            // Default empty filter types to empty array
-            query[filter_type] = [];
+                // Default empty filter types to empty array
+                query[filter_type] = [];
+            }
         }
 
         var hash = location.hash.slice(1, location.hash.length);
@@ -359,35 +364,37 @@ function showExtraFiltersFromUrl() {
         for (var i = 0; i < filters_by_type.length; i++) {
             var parts = filters_by_type[i].split('=');
             var filter_name = reverse_mapping[parts[0]];
-            var filter_items = parts[1].split(',');
-            query[filter_name] = filter_items;
+            query[filter_name] = parts[1].split(',');
         }
 
         for (var filter_key in query) {
-            var filters = query[filter_key];
-            filter_key = filter_key.slice(0, filter_key.length - 1);
+            if (query.hasOwnProperty(filter_key)) {
+                var filters = query[filter_key];
 
-            for (var i = 0; i < filters.length; i++) {
-                var filter_id = filters[i];
-                showExtraFilter(filter_key, filter_id);
+                for (var i = 0; i < filters.length; i++) {
+                    var value = filters[i];
+                    showExtraFilter(filter_key, value, i);
+                }
             }
         }
     }
 }
 
-function showExtraFilter(filter_key, id) {
-    if (filter_key === 'price_max') {
-        $('#price_filter').slider('values', 1, parseInt(id)).trigger('change');
-    } else if (filter_key === 'price_min') {
-        $('#price_filter').slider('values', 0, parseInt(id)).trigger('change');
-    } else {
-        var result = $('#' + filter_key + '_' + id + '_filter_option');
+function showExtraFilter(filter_key, value, index) {
+    if (SW.ADVANCED_PRODUCT_FILTERS.indexOf(filter_key) !== -1) {
+        toggleAdvancedFilters(true);
+    }
+    if (SW.FILTER_PARSING_MAPPING[filter_key] === 'range') {
+        $('#' + escaped_filter_key + '_filter').slider('values', index, parseInt(value)).trigger('change');
+    } else if (SW.FILTER_PARSING_MAPPING[filter_key] === 'array') {
+        var escaped_filter_key = escapeForSelector(filter_key.slice(0, filter_key.length - 1));
+        var result = $('#' + escaped_filter_key + '_' + value + '_filter_option');
         if (result.length > 0) {
             result.addClass('selected');
         } else {
-            fetchFilterInfo(filter_key, id, function(response) {
+            fetchFilterInfo(filter_key, value, function(response) {
                 var new_filter = {
-                    id: id,
+                    id: value,
                     name: response.results[0].name,
                     count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count,
                     selected: true
@@ -406,41 +413,28 @@ function changeHash(query) {
     var need_divide = false;
 
     for (var filter_type in SW.FILTER_ABBR_MAPPING) {
-        if (query[filter_type].length > 0) {
-            if (need_divide) {
-                hash += '&';
-            }
-            need_divide = true;
-
-            hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=');
-            for (var i = 0; i < query[filter_type].length - 1; i++) {
-                hash += query[filter_type][i] + ',';
-            }
-            hash += query[filter_type][query[filter_type].length - 1];
-        }
-    }
-
-    for (var key in query.number_properties) {
-        if (key === 'price') {
-
-            var price_range = query.number_properties[key];
-
-            if (price_range.min !== 0) {
+        if (query[filter_type] || (query.number_properties && query.number_properties[filter_type])) {
+            if (SW.FILTER_PARSING_MAPPING[filter_type] === 'array' && query[filter_type].length > 0) {
                 if (need_divide) {
                     hash += '&';
                 }
                 need_divide = true;
-                hash += ('pl=' + price_range.min / 100);
-            }
 
-            if (price_range.max !== -1) {
+                hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=');
+                for (var i = 0; i < query[filter_type].length - 1; i++) {
+                    hash += query[filter_type][i] + ',';
+                }
+                hash += query[filter_type][query[filter_type].length - 1];
+            } else if (SW.FILTER_PARSING_MAPPING[filter_type] === 'range' && query.number_properties[filter_type]) {
                 if (need_divide) {
                     hash += '&';
                 }
                 need_divide = true;
-                hash += ('ph=' + price_range.max / 100);
-            }
 
+                var min = query.number_properties[filter_type].min * SW.FILTER_RANGE_CONVERSION[filter_type];
+                var max = query.number_properties[filter_type].max * SW.FILTER_RANGE_CONVERSION[filter_type];
+                hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=' + Math.round(min) + ',' +  Math.round(max));
+            }
         }
     }
 
@@ -461,10 +455,10 @@ function onPricePerSizeSliderChange(event, ui) {
     if (ui) {
         var values = ui.values;
     } else {
-        var values = $('#price_per_size_filter').slider('values');
+        var values = $('#pricepersize_filter').slider('values');
     }
     $('#price_per_size_label').text('$' + values[0] + ' - $' + values[1]);
-    $('#price_per_size_filter').parent().removeClass('disabled');
+    $('#pricepersize_filter').parent().removeClass('disabled');
 }
 
 function onSpfSliderChange(event, ui) {
@@ -494,19 +488,16 @@ function setupEmptyFilterBlankSlate() {
     }
 }
 
-function setupToggleAdvancedFilters() {
-    $('.toggle_advanced_filters').on('click', function(e) {
-        e.preventDefault();
-        var $advanced_filters = $('.advanced_filter_container');
-        if ($advanced_filters.is(':visible')) {
-            $advanced_filters.hide();
-            $(this).text('Show Advanced Filters');
-        } else {
-            $advanced_filters.show();
-            $(this).text('Hide Advanced Filters');
-
-        }
-    })
+function toggleAdvancedFilters(show) {
+    show = (show === undefined) ? false : show;
+    var $advanced_filters = $('.advanced_filter_container');
+    if ($advanced_filters.is(':visible') && !show) {
+        $advanced_filters.hide();
+        $('.toggle_advanced_filters').text('Show Advanced Filters');
+    } else {
+        $advanced_filters.show();
+        $('.toggle_advanced_filters').text('Hide Advanced Filters');
+    }
 }
 
 function setupFilterSlides() {
@@ -522,7 +513,7 @@ function setupFilterSlides() {
         }
     }).on('change', onPriceSliderChange);
 
-    $('#price_per_size_filter').slider({
+    $('#pricepersize_filter').slider({
         range: true,
         min: SW.SLIDER_RANGE.PRICE_PER_OZ_MIN,
         max: SW.SLIDER_RANGE.PRICE_PER_OZ_MAX,
@@ -597,6 +588,11 @@ function initBrowse(type) {
         });
 
         setupEmptyFilterBlankSlate();
-        setupToggleAdvancedFilters();
+
+
+        $('.toggle_advanced_filters').on('click', function(e) {
+            e.preventDefault();
+            toggleAdvancedFilters();
+        })
     });
 }

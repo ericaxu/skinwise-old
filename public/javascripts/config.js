@@ -101,8 +101,38 @@ SW.FILTER_ABBR_MAPPING = {
     brands: 'b',
     neg_brands: 'nb',
     ingredients: 'i',
-    neg_ingredients: 'ni'
+    neg_ingredients: 'ni',
+    benefits: 'be',
+    price: 'p',
+    pricepersize: 'pp',
+    'sunscreen.spf': 's',
+    functions: 'f'
 };
+
+SW.ADVANCED_PRODUCT_FILTERS = ['benefits', 'pricepersize', 'sunscreen.spf'];
+
+SW.FILTER_PARSING_MAPPING = {
+    types: 'array',
+    brands: 'array',
+    neg_brands: 'array',
+    ingredients: 'array',
+    neg_ingredients: 'array',
+    benefits: 'array',
+    price: 'range',
+    pricepersize: 'range',
+    'sunscreen.spf': 'range',
+    functions: 'array'
+};
+
+SW.CONVERSION = {
+    ML_IN_OZ: 29.5735
+};
+
+SW.FILTER_RANGE_CONVERSION = {
+    price: 0.01,
+    pricepersize: 0.01 * SW.CONVERSION.ML_IN_OZ,
+    'sunscreen.spf': 1
+}
 
 SW.SLIDER_RANGE = {
     PRICE_MIN: 0,
@@ -269,7 +299,3 @@ SW.EDITOR = {
 SW.NUM_SIMILAR_PRODUCTS = 6;
 
 SW.PRODUCTS_FOR_COMPARE =  [null, null];
-
-SW.CONVERSION = {
-    ML_IN_OZ: 29.5735
-};
