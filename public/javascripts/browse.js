@@ -249,10 +249,11 @@ function handleAddFilter() {
             return;
         }
 
-        var result = checkIfFilterAlreadyExists(filter_key, id);
+        var result = checkIfFilterAlreadyExists(filter_key, id, name);
 
         if (result.found) {
             showAddFilterError(result.error);
+            return;
         }
 
         fetchFilterInfo(filter_key, id, function(response) {
@@ -299,7 +300,7 @@ function handleBrowseScroll() {
     });
 }
 
-function checkIfFilterAlreadyExists(filter_key, id) {
+function checkIfFilterAlreadyExists(filter_key, id, name) {
     var result = {
         found: false,
         error: ''
