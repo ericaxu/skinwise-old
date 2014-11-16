@@ -294,9 +294,21 @@ function enableAutocomplete(type, $selector, append_to, limit, $no_result_el) {
         $(this).autocomplete('close');
     });
 
-    $selector.on('focus', function() {
+    $selector.off('focus').on('focus', function() {
         $(this).autocomplete('search');
     });
+
+    $(document).on('keyup', function(e) {
+        // 13 is ENTER
+        if (e.which === 13) {
+            // If autocomplete is showing results, use the first one
+            if ($('.ui-autocomplete').is(':visible')) {
+                $('.ui-autocomplete .ui-menu-item:first-child').trigger('click');
+                e.stopImmediatePropagation();
+            }
+        }
+    });
+
 }
 
 // Show placeholder image if image is unavailable

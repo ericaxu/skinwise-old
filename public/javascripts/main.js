@@ -152,12 +152,6 @@ function redirectToSelectedItem(provided_id) {
     if (id !== undefined && id !== '') {
         location.href = '/' + $search_select.val() + '/' + id;
     }
-    // If autocomplete is showing results, use the first one
-    else if ($('.search_container .ui-autocomplete').is(':visible')) {
-        $('.search_container .ui-autocomplete .ui-menu-item:first-child').trigger('click');
-        id = $nav_search.data('id');
-        location.href = '/' + $search_select.val() + '/' + id;
-    }
     // Last attempt: ask server if there's any match
     else {
         var query = $nav_search.val();
