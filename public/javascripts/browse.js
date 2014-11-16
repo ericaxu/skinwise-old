@@ -26,7 +26,9 @@ function getFilterHTML(filter_obj, filter_key) {
         id: filter_key + '_' + filter_obj.id + '_filter_option'
     }).data('id', filter_obj.id);
     addEl('span', $option, 'filter_option_text', filter_obj.name);
-    $option.append(' (' + filter_obj.count + ')');
+    if (filter_key !== 'benefit') {
+        $option.append(' (' + filter_obj.count + ')');
+    }
     if (filter_obj.selected) {
         $option.addClass('selected');
     }
@@ -117,6 +119,7 @@ function fetchProducts(page, callback, query) {
         neg_brands: getSelectedFilters('neg_brand'),
         ingredients: ingredients,
         neg_ingredients: getSelectedFilters('neg_ingredient'),
+        benefits: getSelectedFilters('benefit'),
         number_properties: properties,
         page: page
     };
@@ -213,6 +216,9 @@ function fetchFilterInfo(filter_key, id, callback) {
             break;
         case 'function':
             var url = '/function/byid';
+            break;
+        case 'benefit':
+            var url = '/benefit/byid';
             break;
         default:
             showError('Unrecognized filter key ' + filter_key);

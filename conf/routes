@@ -28,6 +28,9 @@ POST        /api/autocomplete                   src.controllers.data.DataControl
 POST        /api/function/byid                  src.controllers.data.FunctionController.api_function_byid()
 POST        /api/function/all                   src.controllers.data.FunctionController.api_function_all()
 
+#Benefit API
+POST        /api/benefit/byid                   src.controllers.data.BenefitController.api_benefit_byid()
+
 # Ingredient API
 POST        /api/ingredient/byid                src.controllers.data.IngredientController.api_ingredient_byid()
 POST        /api/ingredient/filter              src.controllers.data.IngredientController.api_ingredient_filter()

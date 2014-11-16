@@ -200,6 +200,11 @@ public class ProductController extends Controller {
 				Api.checkNotNull(object, "Ingredient", id);
 			}
 
+			for (long id : request.benefits) {
+				Benefit object = App.cache().benefits.get(id);
+				Api.checkNotNull(object, "Benefit", id);
+			}
+
 			List<Product.ProductPropertyNumberFilter> numberFilters = new ArrayList<>();
 
 			for (Map.Entry<String, RequestProductNumberPropertyFilter> entry :

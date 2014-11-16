@@ -32,7 +32,7 @@
     "retinal": "Treat Acne,Anti-aging",
     "retinol": "Anti-aging,Lighten Skin,Treat Acne",
     "retinyl palmitate": "Repair Sun Damage,Anti-aging",
-    "salicylic acid": "Acne Treatment,Melasma Treatment,Anti-aging",
+    "salicylic acid": "Treat Acne,Treat Melasma,Anti-aging",
     "sodium ascorbyl phosphate": "Anti-aging,Treat Acne",
     "squalane": "Hydrate Skin",
     "tazarotene": "Anti-aging,Lighten Skin,Treat Acne,Shrink Pores,Treat Psoriasis",
