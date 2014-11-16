@@ -26,7 +26,7 @@ function getFilterHTML(filter_obj, filter_key) {
         id: filter_key + '_' + filter_obj.id + '_filter_option'
     }).data('id', filter_obj.id);
     addEl('span', $option, 'filter_option_text', filter_obj.name);
-    if (filter_key !== 'benefit') {
+    if (filter_key !== 'benefit' || SW.BROWSE_TYPE === 'ingredient') {
         $option.append(' (' + filter_obj.count + ')');
     }
     if (filter_obj.selected) {
@@ -135,6 +135,7 @@ function fetchProducts(page, callback, query) {
 function fetchIngredients(page, callback) {
     postToAPI('/ingredient/filter', {
         functions: SW.CUR_FUNCTION ? [SW.CUR_FUNCTION] : getSelectedFilters('function'),
+        benefits: getSelectedFilters('benefit'),
         page: page
     }, callback);
 }
@@ -252,7 +253,7 @@ function handleAddFilter() {
             var new_filter = {
                 id: id,
                 name: name,
-                count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count
+                count: SW.FILTER_TYPES.ingredient.indexOf(filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count
             };
 
             addFilter(SW.BROWSE_TYPE, filter_key, new_filter);

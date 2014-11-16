@@ -78,7 +78,7 @@ SW.FEEDBACK = {
 
 SW.FILTER_TYPES = {
     product: ['type', 'brand', 'neg_brand', 'ingredient', 'neg_ingredient', 'benefit'],
-    ingredient: ['function']
+    ingredient: ['function', 'benefit']
 }
 
 SW.BACK_TO_TOP_THRESHOLD = 300;
