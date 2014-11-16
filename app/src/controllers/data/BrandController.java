@@ -6,6 +6,7 @@ import play.mvc.Result;
 import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.data.Brand;
 import views.html.brand;
@@ -28,7 +29,7 @@ public class BrandController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(brand.render(state, result));
+		return ok(Prettyfy.prettify(brand.render(state, result)));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

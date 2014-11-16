@@ -20,8 +20,8 @@ GET         /brand/:id                          src.controllers.data.BrandContro
 GET         /function/:id                       src.controllers.data.FunctionController.function(id: Long)
 GET         /type/:id                           src.controllers.data.TypeController.product_type(id: Long)
 
-# Search
-GET         /api/search/:query                  src.controllers.data.DataController.search(query)
+# Search API
+# GET         /api/search/:query                  src.controllers.data.DataController.search(query)
 POST        /api/autocomplete                   src.controllers.data.DataController.api_autocomplete()
 
 # Function API

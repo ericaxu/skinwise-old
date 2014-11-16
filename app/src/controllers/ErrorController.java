@@ -5,6 +5,7 @@ import play.mvc.Result;
 import src.controllers.api.Api;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.user.Permissible;
 import src.util.Logger;
@@ -18,7 +19,7 @@ public class ErrorController extends Controller {
 
 	public static Result notfound() {
 		ResponseState state = new ResponseState(session());
-		return ok(error404.render(state));
+		return ok(Prettyfy.prettify(error404.render(state)));
 	}
 
 	public static Result api_notfound(String route) {
@@ -34,7 +35,7 @@ public class ErrorController extends Controller {
 			result = t;
 		}
 
-		return ok(error500.render(state, result));
+		return ok(Prettyfy.prettify(error500.render(state, result)));
 	}
 
 	public static Result api_error(Throwable t) {

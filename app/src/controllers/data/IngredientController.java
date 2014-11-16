@@ -9,6 +9,7 @@ import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.data.Alias;
 import src.models.data.Function;
@@ -66,7 +67,7 @@ public class IngredientController extends Controller {
 
 		result.incrementPopularity(1);
 
-		return ok(ingredient.render(state, result));
+		return ok(Prettyfy.prettify(ingredient.render(state, result)));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

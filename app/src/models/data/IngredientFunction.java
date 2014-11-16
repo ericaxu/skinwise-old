@@ -7,7 +7,6 @@ import src.models.util.ManyToManyModel;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Entity
 @Table(name = IngredientFunction.TABLENAME)

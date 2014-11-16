@@ -14,7 +14,6 @@ import src.controllers.api.response.Response;
 import src.controllers.data.IngredientController;
 import src.controllers.util.ResponseState;
 import src.models.data.Ingredient;
-import src.models.data.Product;
 import src.models.user.User;
 import src.models.userdata.UserPreference;
 import src.util.Json;
@@ -22,7 +21,6 @@ import src.util.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserPreferenceController extends Controller {
@@ -30,7 +28,6 @@ public class UserPreferenceController extends Controller {
 	public static final String INGREDIENTS_WORKING = "ingredient_working";
 	public static final String INGREDIENTS_NOT_WORKING = "ingredient_not_working";
 	public static final String INGREDIENTS_BAD_REACTION = "ingredient_bad_reaction";
-
 
 	public static class RequestSetList extends Request {
 		@NotEmpty
@@ -72,9 +69,10 @@ public class UserPreferenceController extends Controller {
 			if (request.key.equals(INGREDIENTS_WORKING) ||
 					request.key.equals(INGREDIENTS_NOT_WORKING) ||
 					request.key.equals(INGREDIENTS_BAD_REACTION)) {
-					set_list(state.getUser(), request.key, dbObject);
+				set_list(state.getUser(), request.key, dbObject);
 				return Api.write(new InfoResponse("Preference saved."));
-			} else {
+			}
+			else {
 				return Api.write(new ErrorResponse(Response.INVALID, "Set list key " + request.key + " is not valid."));
 			}
 		}
@@ -110,7 +108,8 @@ public class UserPreferenceController extends Controller {
 					));
 				}
 				return Api.write(response);
-			} else {
+			}
+			else {
 				return Api.write(new ErrorResponse(Response.INVALID, "Get list key " + request.key + " is not valid."));
 			}
 		}

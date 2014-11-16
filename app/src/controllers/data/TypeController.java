@@ -6,6 +6,7 @@ import play.mvc.Result;
 import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.data.Type;
 import views.html.product_type;
@@ -28,7 +29,7 @@ public class TypeController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(product_type.render(state, result));
+		return ok(Prettyfy.prettify(product_type.render(state, result)));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

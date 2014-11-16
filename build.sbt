@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.32",
   "org.apache.commons" % "commons-lang3" % "3.3.2",
   "net.sf.trove4j" % "trove4j" % "3.0.3",
+  "com.googlecode.htmlcompressor" % "htmlcompressor" % "1.5.2",
   javaJdbc,
   javaEbean,
   cache,

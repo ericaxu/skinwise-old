@@ -170,7 +170,7 @@ class SearchEngine[T] {
     }
 
     // Decreasing sort (for full name matches, the higher the score the better).
-    val weightedResults = scores.toList.sortBy { case (name, score) => -score }
+    val weightedResults = scores.toList.sortBy { case (name, score) => -score}
 
     // Optimization idea : sorting with a priority queue with a max number of elements.
     val slicedResults = weightedResults.slice(0, limit)
@@ -185,9 +185,11 @@ class SearchEngine[T] {
 object Levenshtein {
 
   def findMatches(query: String, dict: Trie, maxResults: Int): List[(String, Double)] = {
-    val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value }))
+    val results = mutable.PriorityQueue[(String, Double)]()(Ordering.by({ case (result, value) => value}))
 
-    val initialRow = List(range(0, query.length + 1).map({ _.toDouble }))
+    val initialRow = List(range(0, query.length + 1).map({
+      _.toDouble
+    }))
     findMatches(query, dict, maxResults, results, Nil, initialRow)
 
     val resultList: List[(String, Double)] = results.dequeueAll
@@ -260,7 +262,7 @@ object Levenshtein {
         dict.nodes.get(char) match {
           case Some(node) =>
             trieTraverse(char, node)
-            dict.nodes.filter { case (c, _) => c != char } foreach (trieTraverse)
+            dict.nodes.filter { case (c, _) => c != char} foreach (trieTraverse)
           case None => dict.nodes.foreach(trieTraverse)
         }
       }

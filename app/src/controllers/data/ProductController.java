@@ -11,6 +11,7 @@ import src.controllers.api.request.BadRequestException;
 import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.api.response.Response;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.data.*;
 import src.models.util.Page;
@@ -138,7 +139,7 @@ public class ProductController extends Controller {
 
 		result.incrementPopularity(1);
 
-		return ok(product.render(state, result));
+		return ok(Prettyfy.prettify(product.render(state, result)));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)

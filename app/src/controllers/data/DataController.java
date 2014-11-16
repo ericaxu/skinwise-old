@@ -138,7 +138,6 @@ public class DataController extends Controller {
 			}
 		}
 
-		return Controller.ok(finalResults);
+		return ok(finalResults);
 	}
-
 }
