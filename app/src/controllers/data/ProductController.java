@@ -69,13 +69,6 @@ public class ProductController extends Controller {
 				number_properties = new HashMap<>();
 			}
 		}
-
-		public long[] sanitize(long[] input) {
-			if (input == null) {
-				input = new long[0];
-			}
-			return input;
-		}
 	}
 
 	public static class ResponseProductPropertyObject {

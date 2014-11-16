@@ -400,8 +400,6 @@ public class Product extends PopularNamedModel {
 			q.select("DISTINCT left_id as id");
 			q.from(ProductType.TABLENAME);
 			q.where("right_id IN (" + Util.joinString(",", types) + ")");
-			//			q.other("GROUP BY left_id");
-			//			q.other("HAVING count(*) >= " + types.length);
 
 			positive_filter.intersect(q.execute());
 		}

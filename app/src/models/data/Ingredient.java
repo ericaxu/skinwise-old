@@ -8,6 +8,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import src.App;
 import src.models.MemCache;
 import src.models.util.*;
+import src.util.TLongIntersectSet;
 import src.util.Util;
 
 import javax.persistence.Column;
@@ -134,22 +135,39 @@ public class Ingredient extends PopularNamedModel {
 
 	public static NamedFinder<Ingredient> find = new NamedFinder<>(Ingredient.class);
 
-	public static List<Ingredient> byFilter(long[] functions, Page page) {
+	public static List<Ingredient> byFilter(long[] functions, long[] benefits, Page page) {
 		SelectQuery query = new SelectQuery();
-		query.select("DISTINCT main.id as id, main.popularity");
-		query.from(TABLENAME + " main JOIN " + IngredientFunction.TABLENAME + " aux ON main.id = aux.left_id");
-
-		if (functions.length > 0) {
-			query.where("aux.right_id IN (" + Util.joinString(",", functions) + ")");
-			query.other("GROUP BY main.id");
-			query.other("HAVING count(*) = " + functions.length);
-		}
-
-		query.other("ORDER BY main.popularity DESC, main.id ASC");
+		query.select("DISTINCT id, popularity");
+		query.from(TABLENAME + " main");
+		query.other("ORDER BY popularity DESC, id ASC");
 
 		TLongList result = query.execute();
-		TLongSet filter = new TLongHashSet();
-		result = page.filter(result, filter);
+		TLongSet negative_filter = new TLongHashSet();
+		TLongIntersectSet positive_filter = new TLongIntersectSet();
+
+		if (functions.length > 0) {
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT left_id as id");
+			q.from(IngredientFunction.TABLENAME);
+			q.where("right_id IN (" + Util.joinString(",", functions) + ")");
+			q.other("GROUP BY id");
+			q.other("HAVING count(*) = " + functions.length);
+
+			positive_filter.intersect(q.execute());
+		}
+
+		if (benefits.length > 0) {
+			SelectQuery q = new SelectQuery();
+			q.select("DISTINCT left_id as id");
+			q.from(IngredientBenefit.TABLENAME);
+			q.where("right_id IN (" + Util.joinString(",", benefits) + ")");
+			q.other("GROUP BY id");
+			q.other("HAVING count(*) = " + benefits.length);
+
+			positive_filter.intersect(q.execute());
+		}
+
+		result = page.filter(result, negative_filter, positive_filter.get());
 
 		return App.cache().ingredients.getList(result.toArray());
 	}

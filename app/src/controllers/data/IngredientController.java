@@ -7,7 +7,6 @@ import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
 import src.controllers.api.request.BadRequestException;
-import src.controllers.api.request.NotNull;
 import src.controllers.api.response.ErrorResponse;
 import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
@@ -21,8 +20,13 @@ import java.util.List;
 
 public class IngredientController extends Controller {
 	public static class RequestIngredientFilter extends Api.RequestGetAllByPage {
-		@NotNull
 		public long[] functions;
+		public long[] benefits;
+
+		public void sanitize() {
+			functions = sanitize(functions);
+			benefits = sanitize(benefits);
+		}
 	}
 
 	public static class ResponseIngredientObject {
@@ -102,6 +106,7 @@ public class IngredientController extends Controller {
 	public static Result api_ingredient_filter() {
 		try {
 			RequestIngredientFilter request = Api.read(ctx(), RequestIngredientFilter.class);
+			request.sanitize();
 
 			for (long id : request.functions) {
 				Function object = App.cache().functions.get(id);
@@ -109,7 +114,7 @@ public class IngredientController extends Controller {
 			}
 
 			Page page = new Page(request.page, 20);
-			List<Ingredient> result = Ingredient.byFilter(request.functions, page);
+			List<Ingredient> result = Ingredient.byFilter(request.functions, request.benefits, page);
 
 			Api.ResponseResultList response = new Api.ResponseResultList();
 			response.count = page.count;
