@@ -30,5 +30,6 @@
 	"bite beauty agave lip mask": "http://community.sephora.com/t5/image/serverpage/image-id/78763i179FD350C47EC9E0",
 	"beauticontrol skinlogics clear spot treatment duo": "http://beauticontrol.com/eprofile/Skinlogics%20Clear%20Spot%20Treatment%20Duo.jpg",
 	"beauticontrol perfecting creme to powder finish": "http://ecx.images-amazon.com/images/I/51bwizg%2BcUL._SX425_.jpg",
-	"proactiv proactiv complexion perfecting hydrator": "http://www.allure.com/images/beauty-products/skin/2013/proactiv-complexion-perfecting-hydrator.jpg"
+	"proactiv proactiv complexion perfecting hydrator": "http://www.allure.com/images/beauty-products/skin/2013/proactiv-complexion-perfecting-hydrator.jpg",
+	"acne org aha": "http://img.pclady.com.cn/images/pclady/brand/brand_logo/20106/15/12765780201810890_s3.jpg"
 }
