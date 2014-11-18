@@ -1,2 +1,21 @@
-skinwise
-========
+# Skin Wise Changelog
+
+- 2014/11/15: benefit filter
+- 2014/11/13: product comparison
+- 2014/11/09: price, price/oz, SPF filter
+- 2014/11/05: user preferences seen in ingredient list
+- 2014/11/01: popularity score
+- 2014/10/27: negative filters
+- 2014/10/26: multithreaded import
+- 2014/10/26: memcache!
+- 2014/10/25: Birchbox data ready
+- 2014/10/23: new Python crawlers
+- 2014/10/20: real product images
+- 2014/10/18: infobox
+- 2014/10/16: autocomplete
+- 2014/10/15: product and ingredient filter system
+- 2014/10/13: feedback system
+- 2014/10/12: functioning admin portal
+- 2014/10/12: search
+- 2014/10/09: register/login
+- 2014/09/30: got started
