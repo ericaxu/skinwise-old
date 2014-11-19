@@ -122,7 +122,7 @@ function updateHash() {
     if (left_id) {
         hash += 'l=' + left_id;
         if (right_id) {
-            hash += ';'
+            hash += '&'
         }
     }
     if (right_id) {
@@ -135,7 +135,7 @@ function updateHash() {
 function loadHash() {
     if (location.hash.length > 0) {
         var hash = location.hash.slice(1, location.hash.length);
-        var products = hash.split(';');
+        var products = hash.split('&');
 
         var left_id = products[0].split('=')[1];
         fetchProductForComparison(left_id, 0, '.compare_input_left');
