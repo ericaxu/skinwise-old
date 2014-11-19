@@ -12,6 +12,10 @@ function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function toInt(n) {
+    return parseInt(n, 10);
+}
+
 function postToAPI(url, params, successCallback, errorCallback, message) {
     log('Post to ' + url, params);
 
@@ -65,9 +69,13 @@ function showMessage(message) {
     }));
     $('.notice_container').append($notice_box);
     $notice_box.fadeIn(SW.CONFIG.NOTICE_FADE_IN);
-    setTimeout(function() {
-        $notice_box.fadeOut(200);
-    }, message.timeout || SW.CONFIG.DEFAULT_NOTICE_TIMEOUT);
+
+    message.timeout = toInt(message.timeout);
+    if (message.timeout !== -1) {
+        setTimeout(function() {
+            $notice_box.fadeOut(200);
+        }, message.timeout || SW.CONFIG.DEFAULT_NOTICE_TIMEOUT);
+    }
 }
 
 function showError(message) {
