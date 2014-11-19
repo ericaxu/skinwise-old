@@ -15,144 +15,153 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Import {
+	public static AtomicBoolean importing = new AtomicBoolean(false);
+
 	private static final String TAG = "Import";
 	private static final String percentageRegex = "\\(*\\s*([0-9\\.]+)\\s*%\\s*\\)*";
 	private static final Pattern percentagePattern = Pattern.compile(percentageRegex);
 	private static final Pattern spfPattern = Pattern.compile("(?i)SPF *([0-9]+)");
 
 	public static synchronized void importDB(String path) throws IOException {
-		String json = Util.readAll(path);
-		DBFormat input = Json.deserialize(json, DBFormat.class);
-		MemCache cache = App.cache();
+		importing.set(true);
+		try {
+			String json = Util.readAll(path);
+			DBFormat input = Json.deserialize(json, DBFormat.class);
+			MemCache cache = App.cache();
 
-		Logger.debug(TAG, "Importing functions");
-		for (DBFormat.NamedObject object : sortNamedObjects(input.functions)) {
-			object.sanitize();
-			createFunction(object, cache);
-		}
+			Logger.debug(TAG, "Importing functions");
+			for (DBFormat.NamedObject object : sortNamedObjects(input.functions)) {
+				object.sanitize();
+				createFunction(object, cache);
+			}
 
-		Logger.debug(TAG, "Importing benefits");
-		for (DBFormat.NamedObject object : sortNamedObjects(input.benefits)) {
-			object.sanitize();
-			createBenefit(object, cache);
-		}
+			Logger.debug(TAG, "Importing benefits");
+			for (DBFormat.NamedObject object : sortNamedObjects(input.benefits)) {
+				object.sanitize();
+				createBenefit(object, cache);
+			}
 
-		Logger.debug(TAG, "Importing brands");
-		for (DBFormat.NamedObject object : sortNamedObjects(input.brands)) {
-			object.sanitize();
-			createBrand(object, cache);
-		}
+			Logger.debug(TAG, "Importing brands");
+			for (DBFormat.NamedObject object : sortNamedObjects(input.brands)) {
+				object.sanitize();
+				createBrand(object, cache);
+			}
 
-		Logger.debug(TAG, "Importing types");
-		for (DBFormat.TypeOject object : sortNamedObjects(input.types)) {
-			object.sanitize();
-			createType(object, cache);
-		}
-		for (DBFormat.TypeOject object : input.types.values()) {
-			createTypeWithParent(object, cache);
-		}
+			Logger.debug(TAG, "Importing types");
+			for (DBFormat.TypeOject object : sortNamedObjects(input.types)) {
+				object.sanitize();
+				createType(object, cache);
+			}
+			for (DBFormat.TypeOject object : input.types.values()) {
+				createTypeWithParent(object, cache);
+			}
 
-		Logger.debug(TAG, "Importing ingredients");
-		for (DBFormat.IngredientObject object : input.ingredients.values()) {
-			object.sanitize();
-			createIngredient(object, cache);
-		}
+			Logger.debug(TAG, "Importing ingredients");
+			for (DBFormat.IngredientObject object : input.ingredients.values()) {
+				object.sanitize();
+				createIngredient(object, cache);
+			}
 
-		Logger.debug(TAG, "Looking through products");
+			Logger.debug(TAG, "Looking through products");
 
-		Set<String> allIngredients = new HashSet<>();
-		Set<String> brands = new HashSet<>();
-		Set<String> types = new HashSet<>();
-		for (DBFormat.ProductObject object : input.products.values()) {
-			object.sanitize();
+			Set<String> allIngredients = new HashSet<>();
+			Set<String> brands = new HashSet<>();
+			Set<String> types = new HashSet<>();
+			for (DBFormat.ProductObject object : input.products.values()) {
+				object.sanitize();
 
-			brands.add(object.brand);
-			types.addAll(Arrays.asList(object.types.split(",")));
+				brands.add(object.brand);
+				types.addAll(Arrays.asList(object.types.split(",")));
 
-			List<String> ingredients = MemCache.Matcher.splitIngredients(object.ingredients);
-			allIngredients.addAll(ingredients);
-			ingredients = MemCache.Matcher.splitIngredients(object.key_ingredients);
-			allIngredients.addAll(ingredients);
-		}
+				List<String> ingredients = MemCache.Matcher.splitIngredients(object.ingredients);
+				allIngredients.addAll(ingredients);
+				ingredients = MemCache.Matcher.splitIngredients(object.key_ingredients);
+				allIngredients.addAll(ingredients);
+			}
 
-		brands.remove("");
-		types.remove("");
-		allIngredients.remove("");
+			brands.remove("");
+			types.remove("");
+			allIngredients.remove("");
 
-		Set<String> allIngredientsNew = new HashSet<>();
-		for (String ingredient : allIngredients) {
-			allIngredientsNew.add(Util.cleanTrim(ingredient.replaceAll("\\(*\\s*[0-9\\.]+\\s*%\\s*\\)*", "")));
-		}
+			Set<String> allIngredientsNew = new HashSet<>();
+			for (String ingredient : allIngredients) {
+				allIngredientsNew.add(Util.cleanTrim(ingredient.replaceAll("\\(*\\s*[0-9\\.]+\\s*%\\s*\\)*", "")));
+			}
 
-		allIngredients = allIngredientsNew;
+			allIngredients = allIngredientsNew;
 
-		Logger.debug(TAG, "Importing product brands and types");
-		//Create brands not entered in the system
-		for (String brand : brands) {
-			Brand object = cache.brands.get(brand);
-			if (object == null) {
-				object = new Brand();
-				object.setName(brand);
-				object.setDescription("");
-				object.save();
-				cache.brands.update(object);
+			Logger.debug(TAG, "Importing product brands and types");
+			//Create brands not entered in the system
+			for (String brand : brands) {
+				Brand object = cache.brands.get(brand);
+				if (object == null) {
+					object = new Brand();
+					object.setName(brand);
+					object.setDescription("");
+					object.save();
+					cache.brands.update(object);
+				}
+			}
+
+			//Create types not entered in the system
+			for (String type : types) {
+				Type object = cache.types.get(type);
+				if (object == null) {
+					object = new Type();
+					object.setName(type);
+					object.setDescription("");
+					object.save();
+					cache.types.update(object);
+				}
+			}
+
+			Logger.debug(TAG, "Importing product ingredients");
+			List<Alias> pending;
+
+			//First pass
+			Logger.debug(TAG, "Ingredient names - first pass");
+			pending = multithreadedIngredientSearch(allIngredients);
+			for (Alias name : pending) {
+				name.save();
+				cache.alias.update(name);
+			}
+
+			//Second pass
+			Logger.debug(TAG, "Ingredient names - second pass");
+			pending = multithreadedIngredientSearch(allIngredients);
+			for (Alias name : pending) {
+				name.save();
+				cache.alias.update(name);
+			}
+
+			//Unmatched
+			int matched = allIngredients.size();
+			for (String string : allIngredients) {
+				Alias alias = cache.matcher.matchAlias(string);
+
+				if (alias == null) {
+					alias = new Alias();
+					alias.setName(string);
+					alias.save();
+					cache.alias.update(alias);
+					matched--;
+				}
+			}
+
+			Logger.debug(TAG, "Matched " + matched + "/" + allIngredients.size() + " ingredients from all products");
+
+			Logger.debug(TAG, "Importing products");
+			for (DBFormat.ProductObject object : sortNamedObjects(input.products)) {
+				createProduct(object, cache);
 			}
 		}
-
-		//Create types not entered in the system
-		for (String type : types) {
-			Type object = cache.types.get(type);
-			if (object == null) {
-				object = new Type();
-				object.setName(type);
-				object.setDescription("");
-				object.save();
-				cache.types.update(object);
-			}
-		}
-
-		Logger.debug(TAG, "Importing product ingredients");
-		List<Alias> pending;
-
-		//First pass
-		Logger.debug(TAG, "Ingredient names - first pass");
-		pending = multithreadedIngredientSearch(allIngredients);
-		for (Alias name : pending) {
-			name.save();
-			cache.alias.update(name);
-		}
-
-		//Second pass
-		Logger.debug(TAG, "Ingredient names - second pass");
-		pending = multithreadedIngredientSearch(allIngredients);
-		for (Alias name : pending) {
-			name.save();
-			cache.alias.update(name);
-		}
-
-		//Unmatched
-		int matched = allIngredients.size();
-		for (String string : allIngredients) {
-			Alias alias = cache.matcher.matchAlias(string);
-
-			if (alias == null) {
-				alias = new Alias();
-				alias.setName(string);
-				alias.save();
-				cache.alias.update(alias);
-				matched--;
-			}
-		}
-
-		Logger.debug(TAG, "Matched " + matched + "/" + allIngredients.size() + " ingredients from all products");
-
-		Logger.debug(TAG, "Importing products");
-		for (DBFormat.ProductObject object : sortNamedObjects(input.products)) {
-			createProduct(object, cache);
+		finally {
+			importing.set(false);
 		}
 	}
 

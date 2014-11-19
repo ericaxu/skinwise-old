@@ -1,8 +1,10 @@
 package src.controllers.util;
 
 import play.mvc.Http;
+import src.controllers.admin.Import;
 import src.controllers.api.request.UnauthorizedException;
 import src.controllers.api.response.Response;
+import src.controllers.api.response.ResponseMessage;
 import src.models.user.User;
 
 public class ResponseState {
@@ -12,6 +14,10 @@ public class ResponseState {
 	public ResponseState(Http.Session session) {
 		this.user = SessionHelper.getUser(session);
 		this.response = new Response();
+		if (importing()) {
+			this.response.addMessage(ResponseMessage.info("We're fixing some stuff real quick. " +
+					"Some information might not show up properly just yet.", -1));
+		}
 	}
 
 	public User getUser() {
@@ -29,6 +35,10 @@ public class ResponseState {
 
 	public void setResponse(Response response) {
 		this.response = response;
+	}
+
+	public boolean importing() {
+		return Import.importing.get();
 	}
 
 	public boolean userHasPermission(String... permissions) {
