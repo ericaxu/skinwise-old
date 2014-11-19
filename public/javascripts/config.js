@@ -124,6 +124,16 @@ SW.FILTER_PARSING_MAPPING = {
     functions: 'array'
 };
 
+SW.ARRAY_TO_FILTER_KEY = {
+    types: 'type',
+    brands: 'brand',
+    neg_brands: 'neg_brand',
+    ingredients: 'ingredient',
+    neg_ingredients: 'neg_ingredient',
+    benefits: 'benefit',
+    functions: 'function'
+};
+
 SW.CONVERSION = {
     ML_IN_OZ: 29.5735
 };

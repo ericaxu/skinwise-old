@@ -394,11 +394,12 @@ function showExtraFilter(filter_key, value, index) {
         if (result.length > 0) {
             result.addClass('selected');
         } else {
+            filter_key = SW.ARRAY_TO_FILTER_KEY[filter_key];
             fetchFilterInfo(filter_key, value, function(response) {
                 var new_filter = {
                     id: value,
                     name: response.results[0].name,
-                    count: filter_key === 'function' ? response.results[0].ingredient_count : response.results[0].product_count,
+                    count:  ['function', 'benefit'].indexOf(filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count,
                     selected: true
                 };
 
