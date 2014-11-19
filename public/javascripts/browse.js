@@ -135,7 +135,7 @@ function fetchProducts(page, callback, query) {
 function fetchIngredients(page, callback) {
     var query = {
         functions: SW.CUR_FUNCTION ? [SW.CUR_FUNCTION] : getSelectedFilters('function'),
-        benefits: getSelectedFilters('benefit'),
+        benefits: SW.CUR_BENEFIT ? [SW.CUR_BENEFIT] : getSelectedFilters('benefit'),
         page: page
     };
     postToAPI('/ingredient/filter', query, function(response) {

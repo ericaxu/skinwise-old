@@ -29,6 +29,14 @@
             </p>
         </div>
 
+        <div class="benefits section">
+            <h3>Benefits</h3>
+            <p>@for(b <- ingredient.getBenefits) {
+                <a class="benefit neutral" href="/benefit/@b.getId">@b.getName</a>
+            }
+            </p>
+        </div>
+
         <div class="description section">
             <h3>What It Is</h3>
             <p>@ingredient.getDescription</p>
@@ -36,7 +44,7 @@
 
         <div class="contained_products section">
             <h3>Products with @ingredient.getDisplayName</h3>
-            @filters(false, true, true, true, true, true)
+            @product_filters(false, true, true, true, true, true)
 
             <div class="products_list">
                 <ul class="horizontal">

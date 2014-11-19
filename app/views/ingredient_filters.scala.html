@@ -1,0 +1,39 @@
+@(open: Boolean, function_filter: Boolean, benefit_filter: Boolean)
+
+<div class="ingredient_filter filter_area">
+    <div class="result_summary"></div>
+
+    @if(open) {
+        <div class="filter_toggle_link open">Refine results <span class="chevron top"></span></div>
+        <div class="filter_container">
+    } else {
+        <div class="filter_toggle_link">Refine results <span class="chevron bottom"></span></div>
+        <div class="filter_container closed">
+    }
+
+    @if(function_filter) {
+        <div class="filter_group">
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Function</h3>
+                    <span class="open_add_filter_popup" data-type="function" data-filter-key="function">+</span>
+                </div>
+                <div class="function_filters"></div>
+            </div>
+        </div>
+    }
+
+    @if(benefit_filter) {
+        <div class="filter_group">
+            <div class="filter_section">
+                <div class="filter_header">
+                    <h3>Has Benefit</h3>
+                    <span class="open_add_filter_popup" data-type="benefit" data-filter-key="benefit">+</span>
+                </div>
+                <div class="benefit_filters"></div>
+            </div>
+        </div>
+    }
+
+    </div>
+</div>

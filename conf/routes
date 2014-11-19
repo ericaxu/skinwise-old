@@ -19,6 +19,7 @@ GET         /product/:id                        src.controllers.data.ProductCont
 GET         /brand/:id                          src.controllers.data.BrandController.brand(id: Long)
 GET         /function/:id                       src.controllers.data.FunctionController.function(id: Long)
 GET         /type/:id                           src.controllers.data.TypeController.product_type(id: Long)
+GET         /benefit/:id                        src.controllers.data.BenefitController.benefit(id: Long)
 
 # Search API
 # GET         /api/search/:query                  src.controllers.data.DataController.search(query)

@@ -22,6 +22,7 @@ function setupIngredientInfobox() {
                         addEl('a', $functions, 'function neutral', fullyCapitalize(SW.FUNC[func_id].name), {
                             href: '/function/' + func_id
                         }).data('id', func_id);
+                        $functions.append(' ');
 
                     }
                 }

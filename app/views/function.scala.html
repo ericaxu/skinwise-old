@@ -11,7 +11,8 @@
     <div class="function_detail">
         <h1>@WordUtils.capitalizeFully(function.getName)</h1>
         <p>@function.getDescription</p>
-        <div class="result_summary"></div>
+
+        @ingredient_filters(false, false, true)
 
         <div class="ingredients_list">
             <ul></ul>

@@ -6,8 +6,10 @@ import play.mvc.Result;
 import src.App;
 import src.controllers.ErrorController;
 import src.controllers.api.Api;
+import src.controllers.util.Prettyfy;
 import src.controllers.util.ResponseState;
 import src.models.data.Benefit;
+import views.html.benefit;
 
 public class BenefitController extends Controller {
 	public static class BenefitObject extends Api.ResponseNamedModelObject {
@@ -27,7 +29,7 @@ public class BenefitController extends Controller {
 			return ErrorController.notfound();
 		}
 
-		return ok(/*Prettyfy.prettify(benefit.render(state, result))*/);
+		return ok(Prettyfy.prettify(benefit.render(state, result)));
 	}
 
 	@BodyParser.Of(BodyParser.TolerantText.class)
