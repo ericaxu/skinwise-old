@@ -110,7 +110,8 @@ public class Util {
 		if (size_unit.equals("ml")) {
 			double price_per_oz = price_per_ml * ML_IN_OZ / 100;
 			return "$" + decimal_format.format(price_per_oz) + "/oz.";
-		} else {
+		}
+		else {
 			double price_per_oz = price_per_ml / 100;
 			return "$" + decimal_format.format(price_per_oz) + "/" + size_unit;
 		}
