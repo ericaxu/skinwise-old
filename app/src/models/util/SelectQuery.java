@@ -87,9 +87,9 @@ public class SelectQuery {
 
 	public TLongList execute() {
 		TLongList result = new TLongArrayList();
+		String query = get();
 		try {
 			Connection connection = DB.getConnection();
-			String query = get();
 			//Logger.debug(TAG, query);
 			PreparedStatement statement = connection.prepareStatement(query);
 			for (int i = 0; i < inputs.size(); i++) {
@@ -104,6 +104,7 @@ public class SelectQuery {
 		}
 		catch (SQLException e) {
 			Logger.error(TAG, e);
+			Logger.debug(TAG, query);
 		}
 		return result;
 	}
