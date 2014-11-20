@@ -387,9 +387,10 @@ function productResultHTML(product, similar_id) {
     var $list_item = addEl('li', null, 'product');
     var $link = addEl('a', $list_item, 'silent', '', {href: '/product/' + product.id});
     var $img_container = addEl('div', $link, 'product_img_container');
+    var brand_name = SW.BRANDS[product.brand].name;
     addProductImage(product, $img_container);
-    addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
     addEl('div', $link, 'product_name', product.name);
+    addEl('div', $link, 'product_brand', brand_name);
     addEl('div', $link, '', formatPrice(product));
 
     if (similar_id !== undefined) {
