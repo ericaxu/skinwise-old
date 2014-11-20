@@ -211,10 +211,10 @@ function getBrandsSuccess(response, callback) {
     callback && callback();
 }
 
-function loadSimilarProducts(response) {
+function loadSimilarProducts(response, similar_id) {
     var num_shown = Math.min(response.results.length, SW.NUM_SIMILAR_PRODUCTS);
     for (var i = 0; i < num_shown; i++) {
-        $('.products_list ul').append(productResultHTML(response.results[i]));
+        $('.products_list ul').append(productResultHTML(response.results[i], similar_id));
     }
 }
 

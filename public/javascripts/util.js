@@ -383,14 +383,23 @@ function addProductImage(product, $parent) {
     }
 }
 
-function productResultHTML(product) {
+function productResultHTML(product, similar_id) {
     var $list_item = addEl('li', null, 'product');
-    var $link = addEl('a', $list_item, '', '', {href: '/product/' + product.id});
+    var $link = addEl('a', $list_item, 'silent', '', {href: '/product/' + product.id});
     var $img_container = addEl('div', $link, 'product_img_container');
     addProductImage(product, $img_container);
     addEl('div', $link, 'product_brand', SW.BRANDS[product.brand].name);
     addEl('div', $link, 'product_name', product.name);
     addEl('div', $link, '', formatPrice(product));
+
+    if (similar_id !== undefined) {
+        var $compare = addEl('div', $link, 'compare_link');
+        var $compare_link = addEl('a', $compare, '', '', { href: '/compare#l=' + similar_id + '&r=' + product.id });
+        addEl('input', $compare_link, '', '', {
+            type: 'button',
+            value: 'Compmare'
+        });
+    }
 
     return $list_item;
 }
