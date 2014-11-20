@@ -346,7 +346,9 @@ function setupAddFilterPopup() {
     });
 }
 
-function showExtraFiltersFromUrl() {
+function loadFiltersFromUrl() {
+    resetFilters();
+
     if (location.hash.length > 0) {
         var reverse_mapping = {};
         var query = {};
@@ -381,6 +383,18 @@ function showExtraFiltersFromUrl() {
             }
         }
     }
+}
+
+function resetFilters() {
+    $('.filter_option').removeClass('selected');
+    $('.slider_filter').each(function() {
+        var $filter_container = $(this).parent();
+        var min = $(this).slider('option', 'min');
+        var max = $(this).slider('option', 'max');
+        $(this).slider('values', 0, min).slider('values', 1, max).trigger('change');
+        $filter_container.find('.slider_label').text('No filter applied');
+        $filter_container.addClass('disabled');
+    });
 }
 
 function showExtraFilter(filter_key, value, index) {
@@ -443,7 +457,13 @@ function changeHash(query) {
         }
     }
 
-    location.hash = hash;
+    if (hash !== '') {
+        hash = '#' + hash;
+    }
+
+    if (hash !== location.hash) {
+        history.pushState(null, null, location.pathname + hash);
+    }
 }
 
 function onPriceSliderChange(event, ui) {
@@ -543,6 +563,11 @@ function setupFilterSlides() {
     }).on('change', onSpfSliderChange);
 }
 
+function handleHashChange() {
+    loadFiltersFromUrl();
+    refetch();
+}
+
 function initBrowse(type) {
     $(document).on('ready', function() {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
@@ -550,7 +575,7 @@ function initBrowse(type) {
         setupFilterSlides();
 
         loadFilters();
-        showExtraFiltersFromUrl();
+        loadFiltersFromUrl();
 
         postToAPI('/brand/all', {}, function(response) {
             getBrandsSuccess(response, fetchNextPage);
@@ -600,4 +625,6 @@ function initBrowse(type) {
             toggleAdvancedFilters();
         })
     });
+
+    window.onpopstate = handleHashChange;
 }
