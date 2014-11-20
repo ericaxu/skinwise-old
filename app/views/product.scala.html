@@ -43,7 +43,11 @@
                 @if(formatted_price) {
                     <div>
                         <span class="price_info">@formatted_price</span>
-                        <p>Size: @product.getFormattedSize (@product.getFormattedPricePerSize)</p>
+                        @defining(product.getFormattedSize) { formatted_size =>
+                            @if(formatted_size) {
+                                <p>Size: @product.getFormattedSize (@product.getFormattedPricePerSize)</p>
+                            }
+                        }
                     </div>
                 }
             }
