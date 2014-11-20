@@ -267,9 +267,11 @@ function handleAddFilter() {
 
             var $filters = $('.' + filter_key + '_filters');
             $filters.find('.filter_blank_slate').remove();
+            new_filter.selected = true;
             $filters.append(getFilterHTML(new_filter, filter_key));
             $add_filter.val('');
             $('.popup').hide();
+            refetch();
         });
 
     });
