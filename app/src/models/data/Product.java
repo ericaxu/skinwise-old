@@ -428,53 +428,55 @@ public class Product extends PopularNamedModel {
 	}
 
 	public static List<Product> similar(Product product, int num) {
-		List<Alias> key_ingredient_aliases = product.getKey_ingredients();
-		TLongList key_ingredients = new TLongArrayList();
-		for (Alias alias : key_ingredient_aliases) {
-			long ingredient_id = alias.getIngredient_id();
-			if (!BaseModel.isIdNull(ingredient_id)) {
-				key_ingredients.add(ingredient_id);
-			}
+		TLongList key_ingredients = getIngredientIds(product.getKey_ingredients());
+		TLongList ingredients = getIngredientIds(product.getIngredients());
+
+		if (key_ingredients.isEmpty() && ingredients.isEmpty()) {
+			return new ArrayList<>();
 		}
 
-		TLongList result = productBySimilarIngredients(product.getId(), key_ingredients, num);
+		TLongSet all_ingredients = new TLongHashSet(key_ingredients);
+		all_ingredients.addAll(ingredients);
 
-		if (result.size() < num) {
-			List<Alias> ingredient_aliases = product.getIngredients();
-			TLongList ingredients = new TLongArrayList();
-			for (Alias alias : ingredient_aliases) {
-				long ingredient_id = alias.getIngredient_id();
-				if (!BaseModel.isIdNull(ingredient_id)) {
-					ingredients.add(ingredient_id);
-				}
-			}
+		String case_in = "sum(CASE WHEN second.ingredient_id IN (" +
+				Util.joinString(",", key_ingredients.toArray()) +
+				") THEN 10 ELSE 1 END) as score";
 
-			int remaining = num - result.size();
-			TLongList result2 = productBySimilarIngredients(product.getId(), ingredients, remaining);
-			result.addAll(result2);
+		if (key_ingredients.isEmpty()) {
+			case_in = "sum(1) as score";
 		}
 
-		return App.cache().products.getList(result.toArray());
-	}
-
-	private static TLongList productBySimilarIngredients(long exclude, TLongList ingredient_ids, int num) {
-		if (ingredient_ids.size() == 0) {
-			return new TLongArrayList();
-		}
 		SelectQuery q = new SelectQuery();
-		q.select("DISTINCT first.left_id as id, count(*), third.popularity");
+		q.select("DISTINCT first.left_id as id, " +
+				case_in + ", " +
+				"third.popularity");
 		q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
 				Alias.TABLENAME + " second INNER JOIN " +
 				Product.TABLENAME + " third ON " +
 				"first.right_id = second.id AND " +
 				"first.left_id = third.id");
-		q.where("second.ingredient_id IN (" + Util.joinString(",", ingredient_ids.toArray()) + ")");
-		q.where("first.left_id <> " + exclude);
+
+		q.where("second.ingredient_id IN (" + Util.joinString(",", all_ingredients.toArray()) + ")");
+
+		q.where("first.left_id <> " + product.getId());
 		q.other("GROUP BY id");
-		q.other("ORDER BY count(*) DESC, third.popularity DESC");
+		q.other("ORDER BY score DESC, third.popularity DESC");
 		q.other("LIMIT " + num);
 
-		return q.execute();
+		TLongList result = q.execute();
+
+		return App.cache().products.getList(result.toArray());
+	}
+
+	private static TLongList getIngredientIds(List<Alias> aliases) {
+		TLongList ingredients = new TLongArrayList();
+		for (Alias alias : aliases) {
+			long ingredient_id = alias.getIngredient_id();
+			if (!BaseModel.isIdNull(ingredient_id)) {
+				ingredients.add(ingredient_id);
+			}
+		}
+		return ingredients;
 	}
 
 	public static class ProductTypeHistory extends ManyToManyHistory<ProductType> {

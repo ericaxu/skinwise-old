@@ -5,8 +5,10 @@ import src.models.user.Permissible;
 import src.models.user.User;
 import src.models.user.Usergroup;
 import src.util.Backup;
+import src.util.Logger;
 
 public class App {
+	private static final String TAG = "App";
 	public static final String ADMIN_USER_GROUP = "Administrators";
 
 	private static MemCache cache;
@@ -45,8 +47,9 @@ public class App {
 		System.gc();
 	}
 
-	public static MemCache cache() {
+	public static synchronized MemCache cache() {
 		if (cache == null) {
+			Logger.info(TAG, "Loading Memcache");
 			cache = new MemCache();
 			cache.init();
 		}
