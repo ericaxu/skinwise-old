@@ -1,6 +1,5 @@
 package src.controllers.data;
 
-import org.apache.commons.lang3.text.WordUtils;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -279,21 +278,13 @@ public class ProductController extends Controller {
 			Api.RequestGetById request =
 					Api.read(ctx(), Api.RequestGetById.class);
 
-			Page page = new Page(0, 20);
-			List<Product> result = Product.byFilter(
-					new long[]{},
-					new long[]{},
-					new long[]{},
-					new long[]{},
-					new long[]{},
-					new long[]{},
-					null, null,
-					false,
-					page
-			);
+			Product object = App.cache().products.get(request.id);
+			Api.checkNotNull(object, "Product", request.id);
+
+			List<Product> result = Product.similar(object, 6);
 
 			Api.ResponseResultList response = new Api.ResponseResultList();
-			response.count = page.count;
+			response.count = result.size();
 
 			for (Product product : result) {
 				response.results.add(new ResponseProductObject(product));

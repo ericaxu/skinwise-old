@@ -2,6 +2,7 @@ package src.models.data;
 
 import com.avaje.ebean.Ebean;
 import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
 import src.App;
@@ -424,6 +425,53 @@ public class Product extends PopularNamedModel {
 		result = page.filter(result, negative_filter, positive_filter.get());
 
 		return App.cache().products.getList(result.toArray());
+	}
+
+	public static List<Product> similar(Product product, int num) {
+		List<Alias> key_ingredient_aliases = product.getKey_ingredients();
+		TLongList key_ingredients = new TLongArrayList();
+		for (Alias alias : key_ingredient_aliases) {
+			long ingredient_id = alias.getIngredient_id();
+			if (!BaseModel.isIdNull(ingredient_id)) {
+				key_ingredients.add(ingredient_id);
+			}
+		}
+
+		TLongList result = productBySimilarIngredients(product.getId(), key_ingredients, num);
+
+		if (result.size() < num) {
+			List<Alias> ingredient_aliases = product.getIngredients();
+			TLongList ingredients = new TLongArrayList();
+			for (Alias alias : ingredient_aliases) {
+				long ingredient_id = alias.getIngredient_id();
+				if (!BaseModel.isIdNull(ingredient_id)) {
+					ingredients.add(ingredient_id);
+				}
+			}
+
+			int remaining = num - result.size();
+			TLongList result2 = productBySimilarIngredients(product.getId(), key_ingredients, remaining);
+			result.addAll(result2);
+		}
+
+		return App.cache().products.getList(result.toArray());
+	}
+
+	private static TLongList productBySimilarIngredients(long exclude, TLongList ingredient_ids, int num) {
+		SelectQuery q = new SelectQuery();
+		q.select("DISTINCT first.left_id as id, count(*), third.popularity");
+		q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
+				Alias.TABLENAME + " second INNER JOIN " +
+				Product.TABLENAME + " third ON " +
+				"first.right_id = second.id AND " +
+				"first.left_id = third.id");
+		q.where("second.ingredient_id IN (" + Util.joinString(",", ingredient_ids.toArray()) + ")");
+		q.where("first.left_id <> " + exclude);
+		q.other("GROUP BY id");
+		q.other("ORDER BY count(*) DESC, third.popularity DESC");
+		q.other("LIMIT " + num);
+
+		return q.execute();
 	}
 
 	public static class ProductTypeHistory extends ManyToManyHistory<ProductType> {
