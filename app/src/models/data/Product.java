@@ -458,6 +458,9 @@ public class Product extends PopularNamedModel {
 	}
 
 	private static TLongList productBySimilarIngredients(long exclude, TLongList ingredient_ids, int num) {
+		if (ingredient_ids.size() == 0) {
+			return new TLongArrayList();
+		}
 		SelectQuery q = new SelectQuery();
 		q.select("DISTINCT first.left_id as id, count(*), third.popularity");
 		q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
