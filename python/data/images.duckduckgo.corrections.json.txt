@@ -31,5 +31,5 @@
 	"beauticontrol skinlogics clear spot treatment duo": "http://beauticontrol.com/eprofile/Skinlogics%20Clear%20Spot%20Treatment%20Duo.jpg",
 	"beauticontrol perfecting creme to powder finish": "http://ecx.images-amazon.com/images/I/51bwizg%2BcUL._SX425_.jpg",
 	"proactiv proactiv complexion perfecting hydrator": "http://www.allure.com/images/beauty-products/skin/2013/proactiv-complexion-perfecting-hydrator.jpg",
-	"acne org aha": "http://img.pclady.com.cn/images/pclady/brand/brand_logo/20106/15/12765780201810890_s3.jpg"
+	"acne org aha": "https://store.acne.org/media/catalog/product/cache/1/image/2048x/af097278c5db4767b0fe9bb92fe21690/g/l/glycolic-acid-6oz.jpg"
 }
