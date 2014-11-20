@@ -450,7 +450,7 @@ public class Product extends PopularNamedModel {
 			}
 
 			int remaining = num - result.size();
-			TLongList result2 = productBySimilarIngredients(product.getId(), key_ingredients, remaining);
+			TLongList result2 = productBySimilarIngredients(product.getId(), ingredients, remaining);
 			result.addAll(result2);
 		}
 
