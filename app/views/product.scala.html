@@ -15,9 +15,8 @@
     }
 }
 
-@getProductNameWithAnchor(ingredient: src.models.data.Ingredient) = @{
-    val name = ingredient.getDisplayName;
-
+@getIngredientNameWithAnchor(alias: src.models.data.Alias) = @{
+    val name = alias.getDisplayName;
     Html("<span class='infobox_anchor'>" + name.substring(0,1) + "</span>" + name.substring(1));
 
 }
@@ -80,7 +79,7 @@
                         @for((ingredient, index) <- key_ingredients.zipWithIndex) {
                             @if(ingredient.getIngredient != null) {
                                 @defining(ingredient.getIngredient.getId) { id =>
-                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getProductNameWithAnchor(ingredient.getIngredient)@product.getFormattedIngredientPercent(id)</span></a>@if(index < key_ingredients.size() - 1) {,}
+                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a>@if(index < key_ingredients.size() - 1) {,}
                                 }
                             } else {
                                 <span class="ingredient unrecognized">@ingredient.getDisplayName</span>@if(index < key_ingredients.size() - 1) {,}
@@ -102,25 +101,16 @@
             }
 
             @if(!product.getIngredients.isEmpty) {
-                @defining(product.getIngredients) { ing =>
-                    <p>@for(i <- 0 to ing.size - 2) {
-                        @if(ing(i).getIngredient != null) {
-                            @defining(ing(i).getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getProductNameWithAnchor(ing(i).getIngredient)</span></a>,
+                @defining(product.getIngredients) { ingredients =>
+                    @for((ingredient, index) <- ingredients.zipWithIndex) {
+                        @if(ingredient.getIngredient != null) {
+                            @defining(ingredient.getIngredient.getId) { id =>
+                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a> @if(index < ingredients.size() - 1) {,}
                             }
                         } else {
-                            <span class="ingredient unrecognized">@ing(i).getDisplayName</span>,
+                            <span class="ingredient unrecognized">@ingredient.getDisplayName</span> @if(index < ingredients.size() - 1) {,}
                         }
                     }
-
-                        @if(ing(ing.size - 1).getIngredient != null) {
-                            @defining(ing(ing.size - 1).getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id"><span class="infobox_anchor"></span>@ing(ing.size - 1).getDisplayName</span></a>
-                            }
-                        } else {
-                            <span class="ingredient unrecognized">@ing(ing.size - 1).getDisplayName</span>
-                        }
-                    </p>
                 }
             }
         </div>
