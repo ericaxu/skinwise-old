@@ -138,8 +138,11 @@
 
         } {
 
+    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
     <script>
     checkImage($('.picture img'), ' @product.getImage');
+    new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
+    $('#loading_spinner').show();
     postToAPI ('/product/ingredientinfo', {
         id : @product.getId
     }, getIngredientInfoSuccess);

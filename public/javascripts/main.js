@@ -31,7 +31,7 @@ function setupIngredientInfobox() {
                 $('.ingredient_infobox').remove();
                 var left_offset = Math.min($(document).width() - 470, $(this).find('.infobox_anchor').offset().left);
                 var top_offset = $(this).find('.infobox_anchor').offset().top + 25;
-                $ingredient_info.addClass('ingredient_infobox').show().offset({ top: top_offset, left: left_offset});
+                $ingredient_info.addClass('ingredient_infobox').show().offset({top: top_offset, left: left_offset});
             }
         }, this), SW.ING_BOX.TIMEOUT);
     }).on('mouseleave', function() {
@@ -212,6 +212,7 @@ function getBrandsSuccess(response, callback) {
 }
 
 function loadSimilarProducts(response, similar_id) {
+    $('#loading_spinner').hide();
     var num_shown = Math.min(response.results.length, SW.NUM_SIMILAR_PRODUCTS);
     for (var i = 0; i < num_shown; i++) {
         $('.products_list ul').append(productResultHTML(response.results[i], similar_id));
