@@ -38,23 +38,29 @@ public class App {
 		backup = new Backup();
 		backup.start();
 		cache();
+		getMode();
 	}
 
 	public static void stop() {
 		cache = null;
+		mode = null;
 		if (backup != null) {
 			backup.kill();
 		}
 		backup = null;
-		mode = null;
 		System.gc();
 	}
 
-	public static synchronized MemCache cache() {
+	public static MemCache cache() {
 		if (cache == null) {
-			Logger.info(TAG, "Loading Memcache");
-			cache = new MemCache();
-			cache.init();
+			synchronized (App.class) {
+				if (cache == null) {
+					Logger.info(TAG, "Memcache Loading..");
+					cache = new MemCache();
+					cache.init();
+					Logger.info(TAG, "Memcache Loaded");
+				}
+			}
 		}
 		return cache;
 	}
@@ -62,6 +68,7 @@ public class App {
 	public static Mode getMode() {
 		if (mode == null) {
 			mode = Mode.getMode(ConfigFactory.load().getString("application.mode"));
+			Logger.info(TAG, "Run mode: " + mode.getName());
 		}
 		return mode;
 	}
