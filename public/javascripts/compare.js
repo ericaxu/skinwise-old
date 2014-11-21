@@ -1,4 +1,4 @@
-function extra_ingredient(ingredient) {
+function extract_ingredient_id(ingredient) {
     return ingredient.id;
 }
 
@@ -6,7 +6,7 @@ function refreshCompare() {
     var left_ingredients = (SW.PRODUCTS_FOR_COMPARE[0] && SW.PRODUCTS_FOR_COMPARE[0].ingredients) || [];
     var right_ingredients = (SW.PRODUCTS_FOR_COMPARE[1] && SW.PRODUCTS_FOR_COMPARE[1].ingredients) || [];
     var common_ingredients = findCommonIngredients(left_ingredients, right_ingredients);
-    var common_ingredient_ids = common_ingredients.map(extra_ingredient);
+    var common_ingredient_ids = common_ingredients.map(extract_ingredient_id);
 
     var $table = $('.compare_products tbody');
     $table.empty();
@@ -69,7 +69,7 @@ function refreshCompare() {
                 $common_ingredients_td.append(ingredientLinkHTML(common_ingredients[i]));
                 $common_ingredients_td.append(', ');
             }
-            $common_ingredients_td.append(ingredientLinkHTML(common_ingredients.pop()));
+            $common_ingredients_td.append(ingredientLinkHTML(common_ingredients[common_ingredients.length - 1]));
         }
 
         var $ingredient_row = addEl('tr', $table);
@@ -101,8 +101,8 @@ function refreshCompare() {
 }
 
 function findCommonIngredients(left, right) {
-    var left_ids = left.map(extra_ingredient);
-    var right_ids = right.map(extra_ingredient);
+    var left_ids = left.map(extract_ingredient_id);
+    var right_ids = right.map(extract_ingredient_id);
 
     var common = [];
 
