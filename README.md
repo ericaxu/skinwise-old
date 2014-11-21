@@ -1,5 +1,6 @@
 # Skin Wise Changelog
 
+- 2014/11/19: similar products
 - 2014/11/15: benefit filter
 - 2014/11/13: product comparison
 - 2014/11/09: price, price/oz, SPF filter
