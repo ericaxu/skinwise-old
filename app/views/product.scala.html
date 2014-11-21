@@ -1,152 +1,133 @@
 @(state: src.controllers.util.ResponseState, product: src.models.data.Product)
-@import src.controllers.userdata.UserPreferenceController;
+    @import src.controllers.userdata.UserPreferenceController;
 
-@getIngredientClass(id: Long) = @{
-    val is_working = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_WORKING, id)
-    val is_not_working = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_NOT_WORKING, id)
-    val is_bad_reaction = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_BAD_REACTION, id)
+    @getIngredientClass(id: Long) = @{
+        val is_working = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_WORKING, id)
+        val is_not_working = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_NOT_WORKING, id)
+        val is_bad_reaction = UserPreferenceController.is_in_list(state.getUser, UserPreferenceController.INGREDIENTS_BAD_REACTION, id)
 
-    if (is_bad_reaction) {
-        " bad_reaction"
-    } else if (is_not_working) {
-        " not_working"
-    } else if (is_working) {
-        " working"
-    }
-}
-
-@getIngredientNameWithAnchor(alias: src.models.data.Alias) = @{
-    val name = alias.getDisplayName;
-    Html("<span class='infobox_anchor'>" + name.substring(0,1) + "</span>" + name.substring(1));
-
-}
-
-@template(product.getBrand.getName + " " + product.getName + " - Skin Wise", state) {
-
-} {
-
-    <div class="product_detail">
-        <div class="picture">
-        @if(product.getImage.length > 0) {
-            <img src="@product.getImage" alt="@product.getBrandName @product.getName"/>
-        } else {
-            <img src="@routes.Assets.at("/public", "images/placeholder.png")" alt="No Image Available"/>
+        if(is_bad_reaction) {
+            " bad_reaction"
+        } else if(is_not_working) {
+            " not_working"
+        } else if(is_working) {
+            " working"
         }
-        </div>
+    }
 
-        <div class="detail_container">
-            <h1 class="name">@product.getName</h1>
-            <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
+    @getIngredientNameWithAnchor(alias: src.models.data.Alias) = @{
+        val name = alias.getDisplayName;
+        Html("<span class='infobox_anchor'>" + name.substring(0, 1) + "</span>" + name.substring(1));
 
-            @defining(product.getFormattedPrice) { formatted_price =>
-                @if(formatted_price) {
-                    <div>
-                        <span class="price_info">@formatted_price</span>
-                        @defining(product.getFormattedSize) { formatted_size =>
-                            @if(formatted_size) {
-                                <p>Size: @product.getFormattedSize (@product.getFormattedPricePerSize)</p>
-                            }
-                        }
-                    </div>
-                }
+    }
+
+    @template(product.getBrand.getName + " " + product.getName + " - Skin Wise", state) {
+
+    } {
+
+        <div class="product_detail">
+            <div class="picture">
+            @if(product.getImage.length > 0) {
+                <img src="@product.getImage" alt="@product.getBrandName @product.getName"/>
+            } else {
+                <img src="@routes.Assets.at("/public", "images/placeholder.png")" alt="No Image Available"/>
             }
+            </div>
 
-            <p>
-                <a href="/compare#l=@product.getId" class="explicit">
-                    Compare with other products
-                </a>
-            </p>
+            <div class="detail_container">
+                <h1 class="name">@product.getName</h1>
+                <h3 class="brand">by <a href="/brand/@product.getBrand.getId">@product.getBrandName</a></h3>
 
-            @if(product.getTypes.size > 0) {
-                <div class="claim">
-                    <h3>What It Does</h3>
-                    <p>
+                @defining(product.getFormattedPrice) { formatted_price =>
+                    @if(formatted_price) {
+                        <div>
+                            <span class="price_info">@formatted_price</span>
+                            @defining(product.getFormattedSize) { formatted_size =>
+                                @if(formatted_size) {
+                                    <p>Size: @product.getFormattedSize (@product.getFormattedPricePerSize)</p>
+                                }
+                            }
+                        </div>
+                    }
+                }
+
+                <p>
+                    <a href="/compare#l=@product.getId" class="explicit">
+                        Compare with other products
+                    </a>
+                </p>
+
+                @if(product.getTypes.size > 0) {
+                    <div class="claim">
+                        <h3>What It Does</h3>
+                        <p>
                         @for(t <- product.getTypes) {
                             <a href="/type/@t.getId" class="silent"><span class='product_type neutral'>@t.getName</span></a>
                         }
-                    </p>
-                    @if(product.hasDescription) {
-                        <p>@product.getDescription</p>
-                    }
-                </div>
-            }
+                        </p>
+                        @if(product.hasDescription) {
+                            <p>@product.getDescription</p>
+                        }
+                    </div>
+                }
 
-            @if(!product.getKey_ingredients.isEmpty) {
-                <div class="active_ingredients">
-                    <h3>Key Ingredients</h3>
-                    <p>
-                    @defining(product.getKey_ingredients) { key_ingredients =>
-                        @for((ingredient, index) <- key_ingredients.zipWithIndex) {
+                @if(!product.getKey_ingredients.isEmpty) {
+                    <div class="active_ingredients">
+                        <h3>Key Ingredients</h3>
+                        <p>
+                        @defining(product.getKey_ingredients) { key_ingredients =>
+                            @for((ingredient, index) <- key_ingredients.zipWithIndex) {
+                                @if(ingredient.getIngredient != null) {
+                                    @defining(ingredient.getIngredient.getId) { id =>
+                                        <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a>@if(index < key_ingredients.size() - 1) {,}
+                                    }
+                                } else {
+                                    <span class="ingredient unrecognized">@ingredient.getDisplayName</span> @if(index < key_ingredients.size() - 1) {,}
+                                }
+                            }
+                        }
+                        </p>
+                    </div>
+
+                    @if(!product.getIngredients.isEmpty) {
+                        <div class="other_ingredients">
+                            <h3>Other Ingredients</h3>
+                            }
+                } else {
+                    @if(!product.getIngredients.isEmpty) {
+                        <div class="ingredients">
+                            <h3>Ingredients</h3>
+                            }
+                }
+
+                @if(!product.getIngredients.isEmpty) {
+                    @defining(product.getIngredients) { ingredients =>
+                        @for((ingredient, index) <- ingredients.zipWithIndex) {
                             @if(ingredient.getIngredient != null) {
                                 @defining(ingredient.getIngredient.getId) { id =>
-                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a>@if(index < key_ingredients.size() - 1) {,}
+                                    <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a>@if(index < ingredients.size() - 1) {,}
                                 }
                             } else {
-                                <span class="ingredient unrecognized">@ingredient.getDisplayName</span>@if(index < key_ingredients.size() - 1) {,}
+                                <span class="ingredient unrecognized">@ingredient.getDisplayName</span> @if(index < ingredients.size() - 1) {,}
                             }
                         }
                     }
-                    </p>
-                </div>
-
-                @if(!product.getIngredients.isEmpty) {
-                    <div class="other_ingredients">
-                        <h3>Other Ingredients</h3>
-                        }
-            } else {
-                @if(!product.getIngredients.isEmpty) {
-                    <div class="ingredients">
-                        <h3>Ingredients</h3>
                 }
-            }
-
-            @if(!product.getIngredients.isEmpty) {
-                @defining(product.getIngredients) { ingredients =>
-                    @for((ingredient, index) <- ingredients.zipWithIndex) {
-                        @if(ingredient.getIngredient != null) {
-                            @defining(ingredient.getIngredient.getId) { id =>
-                                <a href="/ingredient/@id"><span class="ingredient@getIngredientClass(id)" data-id="@id">@getIngredientNameWithAnchor(ingredient)@product.getFormattedIngredientPercent(id)</span></a> @if(index < ingredients.size() - 1) {,}
-                            }
-                        } else {
-                            <span class="ingredient unrecognized">@ingredient.getDisplayName</span> @if(index < ingredients.size() - 1) {,}
-                        }
-                    }
-                }
-            }
-        </div>
-        </div>
-            <div class="similar_products section">
-                <h3>Products with Similar Ingredients</h3>
-                <div class="products_list">
-                    <ul class="horizontal">
-                    </ul>
-                    <div class="end_of_results"></div>
-                    <div id="loading_spinner"></div>
+            </div>
+            </div>
+                <div class="similar_products section">
+                    <h3>Products with Similar Ingredients</h3>
+                    <div class="products_list">
+                        <ul class="horizontal">
+                        </ul>
+                        <div class="end_of_results"></div>
+                        <div id="loading_spinner"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        } {
-
-    <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
-    <script>
-    checkImage($('.picture img'), ' @product.getImage');
-    new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
-    $('#loading_spinner').show();
-    postToAPI ('/product/ingredientinfo', {
-        id : @product.getId
-    }, getIngredientInfoSuccess);
-    postToAPI('/brand/all', {}, function(response) {
-        getBrandsSuccess(response, function() {
-            postToAPI('/product/similar', {
-                id: @product.getId
-            }, function(response) {
-                loadSimilarProducts(response, @product.getId);
-            });
-        });
-    });
-    setNavsearchCategory('product');
-
-    </script>
-
-}
+    } {
+        <script src='@routes.Assets.at("/public", "javascripts/vendor/spin-min.js")'></script>
+        <script>initProduct (@product.getId, '@product.getImage');</script>
+    }

@@ -225,6 +225,26 @@ function setNavsearchCategory(category) {
     }
 }
 
+function initProduct(id, image) {
+    log(id, image);
+    checkImage($('.picture img'), image);
+    new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
+    $('#loading_spinner').show();
+    postToAPI('/product/ingredientinfo', {
+        id: id
+    }, getIngredientInfoSuccess);
+    postToAPI('/brand/all', {}, function(response) {
+        getBrandsSuccess(response, function() {
+            postToAPI('/product/similar', {
+                id: id
+            }, function(response) {
+                loadSimilarProducts(response, id);
+            });
+        });
+    });
+    setNavsearchCategory('product');
+}
+
 $(document).on('ready', function() {
     setupIngredientInfobox();
     setupFunctionInfobox();

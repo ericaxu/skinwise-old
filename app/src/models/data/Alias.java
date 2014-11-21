@@ -55,7 +55,7 @@ public class Alias extends NamedModel {
 	//Others
 
 	public String getDisplayName() {
-		return WordUtils.capitalizeFully(getName());
+		return WordUtils.capitalizeFully(getName(), new char[] {'(', ' '});
 	}
 
 	@Override
