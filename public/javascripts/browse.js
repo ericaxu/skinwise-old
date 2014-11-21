@@ -346,43 +346,59 @@ function setupAddFilterPopup() {
     });
 }
 
-function loadFiltersFromUrl() {
-    resetFilters();
+function loadFiltersFromUrl(callback) {
+    if (!SW.LOADING_FILTERS_URL) {
+        resetFilters();
 
-    if (location.hash.length > 0) {
-        var reverse_mapping = {};
-        var query = {};
+        if (location.hash.length > 0) {
+            SW.LOADING_FILTERS_URL = true;
 
-        for (var filter_type in SW.FILTER_ABBR_MAPPING) {
-            if (SW.FILTER_ABBR_MAPPING.hasOwnProperty(filter_type)) {
-                var abbr = SW.FILTER_ABBR_MAPPING[filter_type];
-                reverse_mapping[abbr] = filter_type;
+            var reverse_mapping = {};
+            var query = {};
 
-                // Default empty filter types to empty array
-                query[filter_type] = [];
-            }
-        }
+            for (var filter_type in SW.FILTER_ABBR_MAPPING) {
+                if (SW.FILTER_ABBR_MAPPING.hasOwnProperty(filter_type)) {
+                    var abbr = SW.FILTER_ABBR_MAPPING[filter_type];
+                    reverse_mapping[abbr] = filter_type;
 
-        var hash = location.hash.slice(1, location.hash.length);
-        var filters_by_type = hash.split('&');
-
-        for (var i = 0; i < filters_by_type.length; i++) {
-            var parts = filters_by_type[i].split('=');
-            var filter_name = reverse_mapping[parts[0]];
-            query[filter_name] = parts[1].split(',');
-        }
-
-        for (var filter_key in query) {
-            if (query.hasOwnProperty(filter_key)) {
-                var filters = query[filter_key];
-
-                for (var i = 0; i < filters.length; i++) {
-                    var value = filters[i];
-                    showExtraFilter(filter_key, value, i);
+                    // Default empty filter types to empty array
+                    query[filter_type] = [];
                 }
             }
+
+            var hash = location.hash.slice(1, location.hash.length);
+            var filters_by_type = hash.split('&');
+
+            for (var i = 0; i < filters_by_type.length; i++) {
+                var parts = filters_by_type[i].split('=');
+                var filter_name = reverse_mapping[parts[0]];
+                query[filter_name] = parts[1].split(',');
+            }
+
+            // Calculate num of filters so that we know when we're done
+            var count = 0;
+            for (var filter_key in query) {
+                if (query.hasOwnProperty(filter_key)) {
+                    count += query[filter_key].length;
+                }
+            }
+
+            for (var filter_key in query) {
+                if (query.hasOwnProperty(filter_key)) {
+                    var filters = query[filter_key];
+
+                    for (var i = 0; i < filters.length; i++) {
+                        var value = filters[i];
+                        showExtraFilter(filter_key, value, i, count, callback);
+                    }
+                }
+            }
+        } else {
+            callback();
         }
+
     }
+
 }
 
 function resetFilters() {
@@ -397,13 +413,19 @@ function resetFilters() {
     });
 }
 
-function showExtraFilter(filter_key, value, index) {
+function showExtraFilter(filter_key, value, index, total_count, callback) {
     if (SW.ADVANCED_PRODUCT_FILTERS.indexOf(filter_key) !== -1) {
         toggleAdvancedFilters(true);
     }
     if (SW.FILTER_PARSING_MAPPING[filter_key] === 'range') {
         var escaped_filter_key = escapeForSelector(filter_key);
         $('#' + escaped_filter_key + '_filter').slider('values', index, parseInt(value)).trigger('change');
+        SW.NUM_LOADED_FILTERS += 1;
+        if (SW.NUM_LOADED_FILTERS === total_count) {
+            SW.NUM_LOADED_FILTERS = 0;
+            SW.LOADING_FILTERS_URL = false;
+            callback();
+        }
     } else if (SW.FILTER_PARSING_MAPPING[filter_key] === 'array') {
         var escaped_filter_key = escapeForSelector(filter_key.slice(0, filter_key.length - 1));
         var result = $('#' + escaped_filter_key + '_' + value + '_filter_option');
@@ -415,13 +437,19 @@ function showExtraFilter(filter_key, value, index) {
                 var new_filter = {
                     id: value,
                     name: response.results[0].name,
-                    count:  ['function', 'benefit'].indexOf(filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count,
+                    count: ['function', 'benefit'].indexOf(filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count,
                     selected: true
                 };
 
                 var $filters = $('.' + filter_key + '_filters');
                 $filters.find('.filter_blank_slate').remove();
                 $filters.append(getFilterHTML(new_filter, filter_key));
+                SW.NUM_LOADED_FILTERS += 1;
+                if (SW.NUM_LOADED_FILTERS === total_count) {
+                    SW.NUM_LOADED_FILTERS = 0;
+                    SW.LOADING_FILTERS_URL = false;
+                    callback();
+                }
             });
         }
     }
@@ -452,7 +480,7 @@ function changeHash(query) {
 
                 var min = query.number_properties[filter_type].min * SW.FILTER_RANGE_CONVERSION[filter_type];
                 var max = query.number_properties[filter_type].max * SW.FILTER_RANGE_CONVERSION[filter_type];
-                hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=' + Math.round(min) + ',' +  Math.round(max));
+                hash += (SW.FILTER_ABBR_MAPPING[filter_type] + '=' + Math.round(min) + ',' + Math.round(max));
             }
         }
     }
@@ -564,8 +592,7 @@ function setupFilterSlides() {
 }
 
 function handleHashChange() {
-    loadFiltersFromUrl();
-    refetch();
+    loadFiltersFromUrl(refetch);
 }
 
 function initBrowse(type) {
@@ -573,16 +600,17 @@ function initBrowse(type) {
         new Spinner(SW.SPINNER_CONFIG).spin(document.getElementById('loading_spinner'));
 
         setupFilterSlides();
+        setupAddFilterPopup();
 
         loadFilters();
-        loadFiltersFromUrl();
-
-        postToAPI('/brand/all', {}, function(response) {
-            getBrandsSuccess(response, fetchNextPage);
+        loadFiltersFromUrl(function() {
+            postToAPI('/brand/all', {}, function(response) {
+                getBrandsSuccess(response, refetch);
+            });
         });
+
         handleAddFilter();
         handleBrowseScroll();
-        setupAddFilterPopup();
 
         $(document).on('click', '.filter_option', function() {
             $(this).toggleClass('selected');
