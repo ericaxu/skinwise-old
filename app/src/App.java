@@ -35,10 +35,11 @@ public class App {
 			admin.save();
 		}
 
-		backup = new Backup();
-		backup.start();
 		cache();
 		getMode();
+		backup = new Backup();
+		backup.start();
+		System.gc();
 	}
 
 	public static void stop() {

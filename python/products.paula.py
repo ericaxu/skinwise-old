@@ -133,6 +133,10 @@ for url in urls:
 
 		key = parser.product_key(product['brand'], product['name'])
 
+		# Extra corrections
+		if key == "clean clear oil absorbing sheets":
+			product['size'] = "50 sheet"
+
 		result['products'][key] = product
 
 	# No other ingredients

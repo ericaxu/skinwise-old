@@ -160,6 +160,51 @@ def product_key(brand, name):
 	"""Make a uniquely identifiable key for products"""
 	return good_key("%s %s" % (brand, name))
 
+size_map = {
+	"oz": "fl. oz.",
+	"oz.": "fl. oz.",
+	"fl oz": "fl. oz.",
+	"fl. oz": "fl. oz.",
+	"fl.oz": "fl. oz.",
+	"fl oz.": "fl. oz.",
+	"oz. each": "fl. oz.",
+	"oz bottle": "fl. oz.",
+	"oz (113 g)": "fl. oz.",
+	"US fl oz": "fl. oz.",
+	"US fl. oz.": "fl. oz.",
+	"Fl Oz": "fl. oz.",
+	"-oz. Cleanser": "fl. oz.",
+	"fl. oz. per face mask": "fl. oz.",
+	"gram": "g",
+	"g.": "g",
+	"g Net wt": "g",
+	"g Net wt.": "g",
+	"kit": "kits",
+	"ml.": "ml",
+	"mL": "ml",
+	"ml. each": "ml",
+	"capsule": "capsules",
+	"mask": "masks",
+	"masques": "masks",
+	"individual masks": "masks",
+	"set": "sets",
+	"swab": "swabs",
+	"single-use sheet masks": "masks",
+	"Sheet": "sheets",
+	"sheet": "sheets",
+	"Swabs": "swabs",
+	"wipes inside a mirrored compact": "wipes",
+	"single-use 2-step patch": "patches",
+	"single-use 2-step patches": "patches",
+	"single-use cloths": "cloths",
+	"Individually Wrapped Packets": "packets",
+	"single-use packets": "packets",
+	"packets per box": "packets",
+	"pk": "packets",
+	"Towelettes": "towelettes",
+	"towelette": "towelettes"
+}
+
 def split_size_unit(input):
 	find = regex_find(r'^([0-9\.]+)\s*(.*)', input)
 	if not find:
@@ -173,6 +218,8 @@ def split_size_unit(input):
 
 def try_convert_unit(size, unit):
 	size = float(size)
+	if unit in size_map:
+		unit = size_map[unit]
 	if unit == "fl. oz.":
 		size *= 29.5735
 		sigfig = 2 if size > 100 else 1

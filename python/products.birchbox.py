@@ -30,43 +30,6 @@ badnames = [
 	"Travel Tote"
 ]
 
-size_map = {
-	"oz": "fl. oz.",
-	"oz.": "fl. oz.",
-	"fl oz": "fl. oz.",
-	"fl. oz": "fl. oz.",
-	"fl.oz": "fl. oz.",
-	"fl oz.": "fl. oz.",
-	"oz. each": "fl. oz.",
-	"oz bottle": "fl. oz.",
-	"oz (113 g)": "fl. oz.",
-	"US fl oz": "fl. oz.",
-	"US fl. oz.": "fl. oz.",
-	"Fl Oz": "fl. oz.",
-	"-oz. Cleanser": "fl. oz.",
-	"fl. oz. per face mask": "fl. oz.",
-	"g.": "g",
-	"g Net wt": "g",
-	"g Net wt.": "g",
-	"ml.": "ml",
-	"mL": "ml",
-	"ml. each": "ml",
-	"mask": "masks",
-	"individual masks": "masks",
-	"single-use sheet masks": "masks",
-	"Sheet": "sheets",
-	"Swabs": "swabs",
-	"wipes inside a mirrored compact": "wipes",
-	"single-use 2-step patch": "patches",
-	"single-use 2-step patches": "patches",
-	"single-use cloths": "cloths",
-	"Individually Wrapped Packets": "packets",
-	"single-use packets": "packets",
-	"packets per box": "packets",
-	"pk": "packets",
-	"Towelettes": "towelettes"
-}
-
 print("Searching product urls")
 
 urls = list()
@@ -177,8 +140,6 @@ for url in urls:
 		if not size:
 			print(s)
 			continue
-		if unit in size_map:
-			unit = size_map[unit]
 
 		if unit == "ml":
 			size_tmp = [size + " " + unit]
