@@ -45,7 +45,7 @@ function refreshCompare() {
                     addEl('span', $price_per_size_td, '', price_per_size);
                 } else if (current.properties.pricepersize && current.properties.size) {
                     addEl('span', $price_per_size_td, 'emphasis', 'Price/' + current.properties.size.text_value + ': ');
-                    var price_per_size = '$' + current.properties.pricepersize.number_value;
+                    var price_per_size = '$' + (current.properties.pricepersize.number_value / 100).toFixed(2);
                     addEl('span', $price_per_size_td, '', price_per_size);
                 } else {
                     addEl('span', $price_per_size_td, 'emphasis', 'Price/oz.: ');
