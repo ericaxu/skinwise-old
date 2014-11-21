@@ -1,5 +1,6 @@
 package src;
 
+import com.typesafe.config.ConfigFactory;
 import src.models.MemCache;
 import src.models.user.Permissible;
 import src.models.user.User;
@@ -13,6 +14,7 @@ public class App {
 
 	private static MemCache cache;
 	private static Backup backup;
+	private static Mode mode;
 
 	public static void start() {
 		stop();
@@ -44,6 +46,7 @@ public class App {
 			backup.kill();
 		}
 		backup = null;
+		mode = null;
 		System.gc();
 	}
 
@@ -54,5 +57,40 @@ public class App {
 			cache.init();
 		}
 		return cache;
+	}
+
+	public static Mode getMode() {
+		if (mode == null) {
+			mode = Mode.getMode(ConfigFactory.load().getString("application.mode"));
+		}
+		return mode;
+	}
+
+	public static boolean isDev() {
+		return getMode() == Mode.Dev;
+	}
+
+	public static enum Mode {
+		Dev("dev"),
+		Test("test"),
+		Prod("prod");
+		private String name;
+
+		private Mode(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public static Mode getMode(String name) {
+			for (Mode mode : Mode.values()) {
+				if (mode.getName().equalsIgnoreCase(name)) {
+					return mode;
+				}
+			}
+			return Mode.Dev;
+		}
 	}
 }

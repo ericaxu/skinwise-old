@@ -3,6 +3,7 @@ package src.models.util;
 import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TLongArrayList;
 import play.db.DB;
+import src.App;
 import src.util.Logger;
 
 import java.sql.Connection;
@@ -86,11 +87,13 @@ public class SelectQuery {
 	}
 
 	public TLongList execute() {
-		TLongList result = new TLongArrayList();
 		String query = get();
+		if (App.isDev()) {
+			Logger.debug(TAG, query);
+		}
+		TLongList result = new TLongArrayList();
 		try {
 			Connection connection = DB.getConnection();
-			//Logger.debug(TAG, query);
 			PreparedStatement statement = connection.prepareStatement(query);
 			for (int i = 0; i < inputs.size(); i++) {
 				statement.setObject(i + 1, inputs.get(i));

@@ -1,0 +1,1 @@
+./play.sh -Dconfig.file=conf/dev.conf

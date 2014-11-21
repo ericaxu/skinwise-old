@@ -364,7 +364,7 @@ public class Product extends PopularNamedModel {
 				filters += property_text_filters.size();
 			}
 
-			q.other("GROUP BY id");
+			q.other("GROUP BY product_id");
 			q.other("HAVING count(*) = " + filters);
 
 			positive_filter.intersect(q.execute());
@@ -378,7 +378,7 @@ public class Product extends PopularNamedModel {
 					IngredientBenefit.TABLENAME + " third ON " +
 					"first.right_id = second.id AND second.ingredient_id = third.left_id");
 			q.where("third.right_id IN (" + Util.joinString(",", benefits) + ")");
-			q.other("GROUP BY id");
+			q.other("GROUP BY first.left_id");
 			q.other("HAVING count(DISTINCT third.right_id) = " + benefits.length);
 
 			positive_filter.intersect(q.execute());
@@ -391,7 +391,7 @@ public class Product extends PopularNamedModel {
 					Alias.TABLENAME + " second ON " +
 					"first.right_id = second.id");
 			q.where("second.ingredient_id IN (" + Util.joinString(",", ingredients) + ")");
-			q.other("GROUP BY id");
+			q.other("GROUP BY first.left_id");
 			q.other("HAVING count(DISTINCT second.ingredient_id) = " + ingredients.length);
 
 			positive_filter.intersect(q.execute());
@@ -438,17 +438,17 @@ public class Product extends PopularNamedModel {
 		TLongSet all_ingredients = new TLongHashSet(key_ingredients);
 		all_ingredients.addAll(ingredients);
 
-		String case_in = "sum(CASE WHEN second.ingredient_id IN (" +
+		String score = "sum(CASE WHEN second.ingredient_id IN (" +
 				Util.joinString(",", key_ingredients.toArray()) +
-				") THEN 10 ELSE 1 END) as score";
+				") THEN 10 ELSE 1 END)";
 
 		if (key_ingredients.isEmpty()) {
-			case_in = "sum(1) as score";
+			score = "sum(1)";
 		}
 
 		SelectQuery q = new SelectQuery();
 		q.select("DISTINCT first.left_id as id, " +
-				case_in + ", " +
+				score + " as score, " +
 				"third.popularity");
 		q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
 				Alias.TABLENAME + " second INNER JOIN " +
@@ -459,7 +459,7 @@ public class Product extends PopularNamedModel {
 		q.where("second.ingredient_id IN (" + Util.joinString(",", all_ingredients.toArray()) + ")");
 
 		q.where("first.left_id <> " + product.getId());
-		q.other("GROUP BY id");
+		q.other("GROUP BY first.left_id");
 		q.other("ORDER BY score DESC, third.popularity DESC");
 		q.other("LIMIT " + num);
 
