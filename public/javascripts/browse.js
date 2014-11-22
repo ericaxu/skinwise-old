@@ -395,6 +395,7 @@ function loadFiltersFromUrl(callback) {
             }
         } else {
             callback();
+            SW.LOADING_FILTERS_URL = false;
         }
 
     }
@@ -420,19 +421,14 @@ function showExtraFilter(filter_key, value, index, total_count, callback) {
     if (SW.FILTER_PARSING_MAPPING[filter_key] === 'range') {
         var escaped_filter_key = escapeForSelector(filter_key);
         $('#' + escaped_filter_key + '_filter').slider('values', index, parseInt(value)).trigger('change');
-        SW.NUM_LOADED_FILTERS += 1;
-        if (SW.NUM_LOADED_FILTERS === total_count) {
-            SW.NUM_LOADED_FILTERS = 0;
-            SW.LOADING_FILTERS_URL = false;
-            callback();
-        }
+        incrementFilterCounterAndCheckCallback(total_count, callback);
     } else if (SW.FILTER_PARSING_MAPPING[filter_key] === 'array') {
-        var escaped_filter_key = escapeForSelector(filter_key.slice(0, filter_key.length - 1));
+        var escaped_filter_key = escapeForSelector(SW.ARRAY_TO_FILTER_KEY[filter_key]);
         var result = $('#' + escaped_filter_key + '_' + value + '_filter_option');
         if (result.length > 0) {
             result.addClass('selected');
+            incrementFilterCounterAndCheckCallback(total_count, callback);
         } else {
-            filter_key = SW.ARRAY_TO_FILTER_KEY[filter_key];
             fetchFilterInfo(filter_key, value, function(response) {
                 var new_filter = {
                     id: value,
@@ -444,14 +440,18 @@ function showExtraFilter(filter_key, value, index, total_count, callback) {
                 var $filters = $('.' + filter_key + '_filters');
                 $filters.find('.filter_blank_slate').remove();
                 $filters.append(getFilterHTML(new_filter, filter_key));
-                SW.NUM_LOADED_FILTERS += 1;
-                if (SW.NUM_LOADED_FILTERS === total_count) {
-                    SW.NUM_LOADED_FILTERS = 0;
-                    SW.LOADING_FILTERS_URL = false;
-                    callback();
-                }
+                incrementFilterCounterAndCheckCallback(total_count, callback);
             });
         }
+    }
+}
+
+function incrementFilterCounterAndCheckCallback(total_count, callback) {
+    SW.NUM_LOADED_FILTERS += 1;
+    if (SW.NUM_LOADED_FILTERS === total_count) {
+        SW.NUM_LOADED_FILTERS = 0;
+        SW.LOADING_FILTERS_URL = false;
+        callback();
     }
 }
 
