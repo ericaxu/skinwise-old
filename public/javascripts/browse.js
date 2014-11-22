@@ -34,7 +34,7 @@ function getFilterHTML(filter_obj, filter_key) {
     }
     addEl('span', $option, 'delete_btn').on('click', function(e) {
         e.stopPropagation();
-        var action = 'delete ' + filter_key + ' filter "' + filter_obj.name + '"';
+        var action = 'delete filter "' + filter_obj.name + '"';
         var delete_callback = function() {
             removeFilter(SW.BROWSE_TYPE, filter_key, filter_obj.id);
             $option.remove();
