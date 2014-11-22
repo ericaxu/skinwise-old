@@ -438,13 +438,23 @@ public class Product extends PopularNamedModel {
 		TLongSet all_ingredients = new TLongHashSet(key_ingredients);
 		all_ingredients.addAll(ingredients);
 
-		String score = "sum(CASE WHEN second.ingredient_id IN (" +
-				Util.joinString(",", key_ingredients.toArray()) +
-				") THEN 10 ELSE 1 END)";
+		String key_ingredients_list = "(" + Util.joinString(",", key_ingredients.toArray()) + ")";
+		String ingredients_list = "(" + Util.joinString(",", ingredients.toArray()) + ")";
 
-		if (key_ingredients.isEmpty()) {
-			score = "sum(1)";
+		String type_score = "(CASE WHEN fourth.right_id IN (" +
+				Util.joinString(",", product.getTypeIds().toArray()) +
+				") THEN 20 ELSE 0 END) ";
+
+		String ingredient_score = "(CASE ";
+		if (!key_ingredients.isEmpty()) {
+			ingredient_score += "WHEN second.ingredient_id IN " + key_ingredients_list + " THEN 10 ";
 		}
+		if (!ingredients.isEmpty()) {
+			ingredient_score += "WHEN second.ingredient_id IN " + ingredients_list + " THEN 1 ";
+		}
+		ingredient_score += "ELSE 0 END) ";
+
+		String score = "sum(" + type_score + " + " + ingredient_score + ") ";
 
 		SelectQuery q = new SelectQuery();
 		q.select("DISTINCT first.left_id as id, " +
@@ -452,9 +462,11 @@ public class Product extends PopularNamedModel {
 				"third.popularity");
 		q.from(ProductIngredient.TABLENAME + " first INNER JOIN " +
 				Alias.TABLENAME + " second INNER JOIN " +
-				Product.TABLENAME + " third ON " +
+				Product.TABLENAME + " third INNER JOIN " +
+				ProductType.TABLENAME + " fourth ON " +
 				"first.right_id = second.id AND " +
-				"first.left_id = third.id");
+				"first.left_id = third.id AND " +
+				"first.left_id = fourth.left_id");
 
 		q.where("second.ingredient_id IN (" + Util.joinString(",", all_ingredients.toArray()) + ")");
 
