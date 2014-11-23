@@ -8,7 +8,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class NamedModel extends BaseModel {
 	@Index
-	@Column(length = 1023, nullable = false)
+	@Column(length = 767, nullable = false)
 	private String name;
 
 	@Column(length = 8191)
