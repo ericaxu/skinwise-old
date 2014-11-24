@@ -418,10 +418,6 @@ public class Product extends PopularNamedModel {
 		String key_ingredients_list = "(" + Util.joinString(",", key_ingredients.toArray()) + ")";
 		String ingredients_list = "(" + Util.joinString(",", ingredients.toArray()) + ")";
 
-		String type_score = "(CASE WHEN fourth.right_id IN (" +
-				Util.joinString(",", product.getTypeIds().toArray()) +
-				") THEN 20 ELSE 0 END) ";
-
 		String ingredient_score = "(CASE ";
 		if (!key_ingredients.isEmpty()) {
 			ingredient_score += "WHEN second.ingredient_id IN " + key_ingredients_list + " THEN 10 ";
@@ -431,7 +427,19 @@ public class Product extends PopularNamedModel {
 		}
 		ingredient_score += "ELSE 0 END) ";
 
-		String score = "sum(" + type_score + " + " + ingredient_score + ") ";
+		long[] type_ids = product.getTypeIds().toArray();
+
+		String score;
+
+		if (type_ids.length > 0) {
+			String type_score = "(CASE WHEN fourth.right_id IN (" +
+					Util.joinString(",", type_ids) +
+					") THEN 20 ELSE 0 END) ";
+			score = "sum(" + type_score + " + " + ingredient_score + ") ";
+		}
+		else {
+			score = "sum(" + ingredient_score + ") ";
+		}
 
 		SelectQuery q = new SelectQuery();
 		q.select("DISTINCT first.left_id as id, " +
