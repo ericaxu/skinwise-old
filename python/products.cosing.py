@@ -23,6 +23,31 @@ ingredient_corrections = {
 	r'Fragrance Iparfum\)': "Fragrance (parfum)"
 }
 
+iso_ingredients = {
+	"curel cream foundation spf20 pa",
+	"curel face powder",
+	"curel makeup foundation",
+	"curel powder foundation",
+	"curel whitening essence",
+	"curel whitening moisture cream",
+	"curel whitening moisture face milk",
+	"curel whitening uv protection face milk spf25",
+	"paul joe intensive whitening mask",
+	"avene avene clear white essence",
+	"avene avene day protector uv spf25 pa",
+	"avene avene gentle moisturizing lotion",
+	"avene avene gentle protective toner",
+	"avene avene matifying fluid moisturizer",
+	"avene avene pressed powder spf18 pa",
+	"avene avene skin recovery cream calming formula",
+	"avene avene skincare liquid foundation",
+	"avene avene spot treatment",
+	"shiseido sunmedic medicated uv white protect spf45 pa",
+	"shiseido sunmedic uv sun protect spf31 pa",
+	"shiseido sunmedic uv sun protect spf50 pa",
+	"sk ii ii advanced whitening source pancake ex"
+	}
+
 print("Parsing brands and products")
 
 index_html = crawler.crawl_selective(key="index", url=url_index, 
@@ -93,6 +118,8 @@ for brand_id in brands:
 		if not product["name"]:
 			product["name"] = product_type_and_name[1]
 
+		key = parser.product_key(product['brand'], product['name'])
+
 		product['description'] = parser.regex_find(r'class="Description".*?<Value>(.*?)</Value>', product_html, 1).encode('iso-8859-1').decode('utf8')
 		if product['description'] == "n/a":
 			product['description'] = ""
@@ -103,6 +130,8 @@ for brand_id in brands:
 			product['key_ingredients'] = ""
 
 		product_ingredients = parser.regex_find(r'"IngredientList.*?<Value>(.*?)</Value>', product_html, 1)
+		if key in iso_ingredients:
+			continue
 		product['ingredients'] = parser.fix_space(parser.regex_replace(r'<[^>]*?>', " ", product_ingredients)).strip()
 		if product['ingredients'] == "n/a":
 			product['ingredients'] = ""
@@ -113,7 +142,6 @@ for brand_id in brands:
 		product['price'] = price
 		product['size'] = size
 
-		key = parser.product_key(product['brand'], product['name'])
 		if not product['key_ingredients'] == "" or not product['ingredients'] == "":
 			result["products"][key] = product
 

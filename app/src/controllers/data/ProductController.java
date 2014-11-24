@@ -1,6 +1,5 @@
 package src.controllers.data;
 
-import gnu.trove.set.hash.TLongHashSet;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -44,9 +43,10 @@ public class ProductController extends Controller {
 		}
 	}
 
-	public static class RequestProductNumberPropertyFilter {
+	public static class RequestProductPropertyFilter {
 		public double min;
 		public double max;
+		public String text;
 	}
 
 	public static class RequestProductFilter extends Api.RequestGetAllByPage {
@@ -56,7 +56,7 @@ public class ProductController extends Controller {
 		public long[] benefits;
 		public long[] neg_brands;
 		public long[] neg_ingredients;
-		public Map<String, RequestProductNumberPropertyFilter> number_properties;
+		public Map<String, RequestProductPropertyFilter> number_properties;
 
 		public void sanitize() {
 			brands = sanitize(brands);
@@ -205,12 +205,12 @@ public class ProductController extends Controller {
 				Api.checkNotNull(object, "Benefit", id);
 			}
 
-			List<Product.ProductPropertyNumberFilter> numberFilters = new ArrayList<>();
+			List<Product.ProductPropertyFilter> propertyFilters = new ArrayList<>();
 
-			for (Map.Entry<String, RequestProductNumberPropertyFilter> entry :
+			for (Map.Entry<String, RequestProductPropertyFilter> entry :
 					request.number_properties.entrySet()) {
-				numberFilters.add(new Product.ProductPropertyNumberFilter(
-						entry.getKey(), entry.getValue().min, entry.getValue().max));
+				propertyFilters.add(new Product.ProductPropertyFilter(
+						entry.getKey(), entry.getValue().text, entry.getValue().min, entry.getValue().max));
 			}
 
 			Page page = new Page(request.page, 20);
@@ -218,7 +218,7 @@ public class ProductController extends Controller {
 					request.brands, request.neg_brands,
 					request.types, request.benefits,
 					request.ingredients, request.neg_ingredients,
-					numberFilters, null,
+					propertyFilters,
 					false,
 					page);
 

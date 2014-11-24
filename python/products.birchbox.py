@@ -16,7 +16,16 @@ url_product_list = "https://www.birchbox.com/shop/skincare?p=%s"
 dot_ingredient_lists = [
 	"Nocturnal Rescue Mask",
 	"Daily Dose Foaming Cleanser",
-	"Glamour Shot Eyes"
+	"Glamour Shot Eyes",
+	"Floral Gel Eye Make-up Remover with Soothing Cornflower - Waterproof",
+	"Floral Lotion Eye Make-up Remover with Soothing Cornflower - 100 ml",
+	"Floral Lotion Eye Make-up Remover with Soothing Cornflower - 200 ml",
+	"Floral Water Make-up Remover with Soothing Cornflower - Travel Size",
+	"Make-up Remover Biodegradable Wipes with Soothing Cornflower",
+	"On-The-Go Essentials",
+	"Smoothing and Relaxing Patches with Soothing Cornflower",
+	"Soothing Eye Makeup Remover with Cornflower Water",
+	"Soothing Makeup Remover with Cornflower Water"
 ]
 
 badnames = [

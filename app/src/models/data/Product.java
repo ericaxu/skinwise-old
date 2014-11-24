@@ -276,39 +276,24 @@ public class Product extends PopularNamedModel {
 
 	public static NamedFinder<Product> find = new NamedFinder<>(Product.class);
 
-	public static abstract class ProductPropertyFilter {
+	public static class ProductPropertyFilter {
 		public String key;
-
-		public ProductPropertyFilter(String key) {
-			this.key = key;
-		}
-	}
-
-	public static class ProductPropertyNumberFilter extends ProductPropertyFilter {
+		public String text;
 		public double min;
 		public double max;
 
-		public ProductPropertyNumberFilter(String key, double min, double max) {
-			super(key);
+		public ProductPropertyFilter(String key, String text, double min, double max) {
+			this.key = key;
+			this.text = text;
 			this.min = min;
 			this.max = max;
-		}
-	}
-
-	public static class ProductPropertyTextFilter extends ProductPropertyFilter {
-		public String text;
-
-		public ProductPropertyTextFilter(String key, String text) {
-			super(key);
-			this.text = text;
 		}
 	}
 
 	public static List<Product> byFilter(long[] brands, long[] negBrands,
 	                                     long[] types, long[] benefits,
 	                                     long[] ingredients, long[] nedIngredients,
-	                                     List<ProductPropertyNumberFilter> property_number_filters,
-	                                     List<ProductPropertyTextFilter> property_text_filters,
+	                                     List<ProductPropertyFilter> property_filters,
 	                                     boolean discontinued,
 	                                     Page page) {
 
@@ -335,37 +320,29 @@ public class Product extends PopularNamedModel {
 		TLongSet negative_filter = new TLongHashSet();
 		TLongIntersectSet positive_filter = new TLongIntersectSet();
 
-		boolean hasNumberFilter = property_number_filters != null && property_number_filters.size() > 0;
-		boolean hasTextFilter = property_text_filters != null && property_text_filters.size() > 0;
-		boolean hasFilter = hasNumberFilter || hasTextFilter;
-		if (hasFilter) {
+		if (property_filters != null && !property_filters.isEmpty()) {
 			SelectQuery q = new SelectQuery();
 			q.select("DISTINCT product_id as id");
 			q.from(ProductProperty.TABLENAME);
 
-			int filters = 0;
-
-			if (hasNumberFilter) {
-				for (ProductPropertyNumberFilter filter : property_number_filters) {
-					if (filter.max < filter.min) {
-						filter.max = Double.MAX_VALUE;
-					}
-					q.where("(_key = ? AND number_value BETWEEN ? AND ?)", "OR");
-					q.input(filter.key).input(filter.min).input(filter.max);
+			for (ProductPropertyFilter filter : property_filters) {
+				if (filter.max < filter.min) {
+					filter.max = Double.MAX_VALUE;
 				}
-				filters += property_number_filters.size();
-			}
 
-			if (hasTextFilter) {
-				for (ProductPropertyTextFilter filter : property_text_filters) {
-					q.where("(_key = ? AND text_value = ?)", "OR");
-					q.input(filter.key).input(filter.text);
+				String where = "_key = ? AND number_value BETWEEN ? AND ? ";
+				q.input(filter.key).input(filter.min).input(filter.max);
+
+				if (filter.text != null) {
+					where += "AND text_value = ?";
+					q.input(filter.text);
 				}
-				filters += property_text_filters.size();
+
+				q.where("(" + where + ")", "OR");
 			}
 
 			q.other("GROUP BY product_id");
-			q.other("HAVING count(*) = " + filters);
+			q.other("HAVING count(*) = " + property_filters.size());
 
 			positive_filter.intersect(q.execute());
 		}
