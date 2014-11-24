@@ -429,17 +429,17 @@ function showExtraFilter(filter_key, value, index, total_count, callback) {
             result.addClass('selected');
             incrementFilterCounterAndCheckCallback(total_count, callback);
         } else {
-            fetchFilterInfo(filter_key, value, function(response) {
+            fetchFilterInfo(escaped_filter_key, value, function(response) {
                 var new_filter = {
                     id: value,
                     name: response.results[0].name,
-                    count: ['function', 'benefit'].indexOf(filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count,
+                    count: ['function', 'benefit'].indexOf(escaped_filter_key) !== -1 ? response.results[0].ingredient_count : response.results[0].product_count,
                     selected: true
                 };
 
-                var $filters = $('.' + filter_key + '_filters');
+                var $filters = $('.' + escaped_filter_key + '_filters');
                 $filters.find('.filter_blank_slate').remove();
-                $filters.append(getFilterHTML(new_filter, filter_key));
+                $filters.append(getFilterHTML(new_filter, escaped_filter_key));
                 incrementFilterCounterAndCheckCallback(total_count, callback);
             });
         }
